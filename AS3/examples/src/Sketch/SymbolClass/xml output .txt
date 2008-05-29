@@ -1,0 +1,65 @@
+<swf xmlns='http://macromedia/2003/swfx' version='9' framerate='12' siz
+8000' compressed='true' >
+  <!-- framecount=1 length=1408 -->
+  <FileAttributes hasMetadata='false' actionScript3='true' suppressCros
+ching='false' swfRelativeUrls='false' useNetwork='false'/>
+  <SetBackgroundColor color='#FFFFFF'/>
+  <DoABC2 name=''>
+  </DoABC2>
+  <DefineShape6 id='1' bounds='(-10,-10),(1110,890)' edgebounds='1100x8
+onScalingStrokes='false' usesScalingStrokes='false'>
+    <fillstyle type='0' color='#003399FF' />
+    <linestyle color='#FFCC0080' width='20' />
+    <styleChange dx='0' dy='430' fillStyle1='1' lineStyle='1' />
+    <curve cdx='4' cdy='-175' dx='157' dy='-126' />
+    <curve cdx='161' cdy='-129' dx='228' dy='0' />
+    <curve cdx='228' cdy='0' dx='161' dy='129' />
+    <curve cdx='161' cdy='129' dx='0' dy='182' />
+    <curve cdx='0' cdy='182' dx='-161' dy='129' />
+    <curve cdx='-161' cdy='129' dx='-228' dy='0' />
+    <curve cdx='-154' cdy='0' dx='-123' dy='-58' />
+    <styleChange lineStyle='0' />
+    <curve cdx='-60' cdy='-29' dx='-52' dy='-42' />
+    <curve cdx='-161' cdy='-129' dx='0' dy='-182' />
+    <line dx='0' dy='-10' />
+  </DefineShape6>
+  <DefineSprite id='2'>
+    <!-- sprite framecount=1 -->
+    <PlaceObject2 idref='1' depth='1' matrix='t0,0'/>
+    <ShowFrame/>
+  </DefineSprite>
+  <SymbolClass>
+    <Symbol idref='2' className='Bouncer' />
+  </SymbolClass>
+  <!-- instance of Bouncer -->
+  <PlaceObject2 idref='Bouncer' depth='1' matrix='t3540,2859'/>
+  <ShowFrame/>
+</swf>
+
+
+<swf xmlns='http://macromedia/2003/swfx' version='9' framerate='12' size=
+8000' compressed='true' >
+  <!-- framecount=1 length=447 -->
+  <FileAttributes hasMetadata='false' actionScript3='true' suppressCrossD
+ching='false' swfRelativeUrls='false' useNetwork='false'/>
+  <SetBackgroundColor color='#FFFFFF'/>
+  <DoABC2 name=''>
+  </DoABC2>
+  <DefineShape6 id='1' bounds='(50,-10),(8569,6949)' edgebounds='(60,0),(
+39)' usesNonScalingStrokes='false' usesScalingStrokes='false'>
+    <linestyle color='#FFCC0080' width='20' />
+    <styleChange dx='60' dy='0' lineStyle='1' />
+    <line dx='8499' dy='6939' />
+  </DefineShape6>
+  <DefineSprite id='2'>
+    <!-- sprite framecount=1 -->
+    <PlaceObject2 idref='1' depth='1' matrix='t0,0'/>
+    <ShowFrame/>
+  </DefineSprite>
+  <SymbolClass>
+    <Symbol idref='2' className='MyLineClip' />
+  </SymbolClass>
+  <!-- instance of MyLineClip -->
+  <PlaceObject2 idref='MyLineClip' depth='1' matrix='t2260,1040'/>
+  <ShowFrame/>
+</swf>

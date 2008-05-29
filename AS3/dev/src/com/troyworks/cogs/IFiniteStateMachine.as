@@ -1,0 +1,1 @@
+package com.troyworks.cogs {	/**	 * @author Troy Gardner	 */	public interface IFiniteStateMachine extends IStateMachine{	}}

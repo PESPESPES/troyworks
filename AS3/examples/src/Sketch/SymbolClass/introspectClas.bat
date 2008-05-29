@@ -1,0 +1,1 @@
+java -jar "C:\DATA_SYNC\CodeProjects\Actionscript 3.0\flexSDK\lib\swfxprinter.jar" Class.swf

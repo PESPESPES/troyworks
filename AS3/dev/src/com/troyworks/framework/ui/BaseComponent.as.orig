@@ -1,0 +1,358 @@
+﻿ /*
+* This serves as a base class that extends the Statemachine+ Event Engine and MovieClip
+* and adds common functionality to most components
+* like  access to preloading, eventDispatcher
+*
+* In addition it also operates in a late binding
+* separation of script and ui, similar to how linkage works
+* with components and clips in the library. The difference is that
+* this binding happens later,  courtesy of David Yangs prototype
+* chain hacking.
+*
+* This allows complete separation of code from
+* ui, and simpler than in using composition (passing in a reference)
+*
+* @author Troy Gardner
+* @version
+*/
+import com.troyworks.framework.IApplication;
+import com.troyworks.framework.ApplicationContext;
+import com.troyworks.framework.ui.UserIdleTracker;
+import com.troyworks.hsmf.StaticEvent;
+
+//import util.Trace;
+//parent chain: HsmfE (statemachine + events)->MovieClip->Object
+class com.troyworks.framework.ui.BaseComponent extends com.troyworks.hsmf.HsmfE
+{
+	public var app : IApplication;
+	// the base component supports
+	// preloading, transition in, active, transition out to inactive,
+	// those that have status provide it
+	public static var EVT_LOADED : String = "EVT_LOADED";
+	public static var EVT_READY : String = "EVT_READY";
+	public static var EVT_TRANSIN : String = "EVT_";
+	
+	public static var ASSETS_LOADED_EVT:StaticEvent = StaticEvent.getNext("ASSETS_LOADED");
+	public static var STAGE_RESIZE_EVT:StaticEvent = StaticEvent.getNext("STAGE_RESIZE_EVT");
+	public var _owidth : Number = null;
+	public var _oheight : Number = null;
+	public var _o_wh_asp : Number = null;
+	public var _o_hw_asp : Number = null;
+	public var o_x : Number = null;
+	public var o_y : Number = null;
+	public var o_width : Number = null;
+	public var o_height : Number = null;
+	public var isFullScreenMode : Boolean = false;
+	public var followStage : Boolean = true;
+	public var hAlign = null;
+	public var vAlign = null;
+	public var centerMe:Boolean = false;
+	function BaseComponent (clip : MovieClip)
+	{
+		super ();
+		if (followStage)
+		{
+			Stage.addListener (this);
+		}
+	}
+	public function onLoad () : Void
+	{
+		trace (this._name + " AAAAAAAAAAAAAAAAAAAonLoadAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+		//		trace ("setting owidht " + _root.vid_mc._width + "  height" + _root.vid_mc._height);
+		this._owidth = this._width;
+		this._oheight = this._height;
+		this._o_wh_asp = this._width / this._height;
+		this._o_hw_asp = this._height / this._width;
+		if (this._name.indexOf ("Menu") > - 1)
+		{
+		} else if (this.hAlign == null)
+		{
+			this.center ();
+			if (this.isFullScreenMode)
+			{
+				this.scaleToStage ();
+			}
+		}
+		this.o_x = this._x;
+		this.o_y = this._y;
+		this.o_width = this._width;
+		this.o_height = this._height;
+	}
+	public static function snapshotOriginalMC(_mc:MovieClip, override_width:Number, override_height:Number){
+		_mc._owidth = (override_width == null)? _mc._width: override_width;
+		_mc._oheight = (override_height == null)? _mc._height: override_height;
+		_mc._o_wh_asp = _mc._owidth  / _mc._oheight;
+		_mc._o_hw_asp =_mc._oheight /_mc._owidth; 
+		_mc._ox = _mc._x;
+		_mc._oy = _mc._y;
+		
+		_mc._owidth = _mc._width;
+		_mc._oheight = _mc._height;
+		
+	}
+	function captureOriginalAspect(_mc:MovieClip):Void {
+		var s_mc = _mc;
+		//////Find the viewport on the content/////////////////////////
+		// note that when a movie clip is exported from the library, a wrapper swf is created
+		//
+		var viewport = null;
+		if (_mc.viewport_mc == null) {
+			for (var i in _mc) {
+				var b = _mc[i];
+				trace(i+" = "+b);
+				if (b.viewport_mc != null) {
+					trace("found viewport l1");
+					viewport = b.viewport_mc;
+					break;
+				}
+			}
+		} else {
+			viewport = _mc.viewport_mc;
+		}
+		/////Get the original dimension pre scaling and positioning ////////////
+		if (viewport != null) {
+			trace("has a clipping region!!!!!!!!!!!!!!");
+			s_mc = viewport;
+			//offset between viewport and published content.
+			_mc.vp_ox_offset = s_mc._x;
+			_mc.vp_oy_offset = s_mc._y;
+			_mc.vp_owidth = s_mc._width;
+			_mc.vp_oheight = s_mc._height;
+			trace(" offset x "+s_mc._x+" y "+s_mc.y);
+			//scale factor between viewport and actual (masked) movie dimensions (as mask shows all stuff on stage) 
+			_mc.vp_owscale = s_mc._width/_mc._width;
+			_mc.vp_ohscale = s_mc._height/_mc._height;
+			//
+			_mc._owidth = _mc._width;
+			_mc._oheight = _mc._height;
+			_mc._o_wh_asp = s_mc._width/s_mc._height;
+			_mc._o_hw_asp = s_mc._height/s_mc._width;
+		} else {
+			// NO viewport
+			_mc.vp_ox_offset = 0;
+			_mc.vp_oy_offset = 0;
+			_mc.vp_owscale = 1;
+			_mc.vp_ohscale = 1;
+			_mc.vp_owidth = _mc._width;
+			_mc.vp_oheight = _mc._height;
+			_mc._owidth = _mc._width;
+			_mc._oheight = _mc._height;
+			_mc._o_wh_asp = s_mc._width/s_mc._height;
+			_mc._o_hw_asp = s_mc._height/s_mc._width;
+		}
+		trace(" captureOriginalAspect "+_mc._url+" "+_mc._width);
+	}
+	public function center ()
+	{
+		//Center
+		//	trace(this._name + "BaseComponent.center()" + Stage.width + " " + Stage.height  + " " + this._width + " " + this._height);
+		this._x = (Stage.width - this._width) / 2;
+		this._y = (Stage.height - this._height) / 2;
+		//	trace("setting to x " + this._x + " y " + this._y);
+		
+	}
+	public static function centerClipTo (still_mc : MovieClip, moving_mc : MovieClip, override_width:Number, override_height:Number):Void
+	{
+		//Center
+		//	trace(this._name + "BaseComponent.center()" + Stage.width + " " + Stage.height  + " " + this._width + " " + this._height);
+		var dw = (override_width == null)? still_mc._width:override_width;
+		var dh = (override_height == null)? still_mc._height:override_height;
+		var iw = moving_mc._width;
+		var ih = moving_mc._height;
+		
+//		trace("CENTERING  Moving: " + w + ", " + h +" "  
+		moving_mc._x = (dw - iw) / 2;
+		moving_mc._y = (dh - ih) / 2;
+		//	trace("setting to x " + this._x + " y " + this._y);
+		
+	}
+	function alignH (x : String, still_mc : MovieClip, moving_mc : MovieClip, snapToWholePixel : Boolean) : Number
+	{
+	//	trace ("alignH " + x + " " + still_mc + " " + moving_mc + " snap " + snapToWholePixel);
+		var r : Number = 0;
+		switch (x.toUpperCase ())
+		{
+			//assume that mask is at 0,0 so no xpos is needed
+			case "CENTER" :
+			r = (still_mc._width - moving_mc._width) / 2;
+			break;
+			case "RIGHT" :
+			r = (still_mc._width - moving_mc._width);
+			break;
+			case "LEFT" :
+			default :
+			return 0;
+		}
+		if (snapToWholePixel)
+		{
+			return Math.round (r);
+		}else
+		{
+			return r;
+		}
+	}
+	function alignV (y : String, still_mc : MovieClip, moving_mc : MovieClip, snapToWholePixel : Boolean) : Number
+	{
+	//	trace ("alignV " + y+ " " + still_mc + " " + moving_mc + " snap " + snapToWholePixel);
+		var r : Number = 0;
+		switch (y.toUpperCase ())
+		{
+			//assume that mask is at 0,0 so no ypos is needed
+			case "MIDDLE" :
+			r = (still_mc._height - moving_mc._height) / 2;
+			break;
+			case "BOTTOM" :
+			r = (still_mc._height - moving_mc._height);
+			break;
+			case "TOP" :
+			default :
+			return 0;
+		}
+		if (snapToWholePixel)
+		{
+			return Math.round (r);
+		}else
+		{
+			return r;
+		}
+	}
+	public static function scaleTo (still_mc : MovieClip, moving_mc : MovieClip, override_width:Number, override_height:Number, viewport_width:Number, viewport_height:Number)
+	{
+		trace ("Stage.width " + Stage.width + " still  mc " + still_mc._width + " moving  mc " + moving_mc._width + " override " + override_width);
+		trace ("Stage.height " + Stage.height + " still  mc " + still_mc._height+ " moving  mc " + moving_mc._height+ " override " + override_height);
+		//Scale
+		var	sw = (viewport_width == null)?moving_mc._width:viewport_width;
+		var sh =(viewport_height == null)? moving_mc._height:viewport_height;
+		var dw = override_width;
+		var dh = override_height;
+		var scaleW =(viewport_width == null)?1: viewport_width/moving_mc._width;
+		var scaleH =(viewport_height == null)?1: viewport_height/moving_mc._height;
+
+		var p_asp = sw/sh;
+		var p2_asp = sh/sw;
+	    var still_asp = override_width/override_height;
+	//	if (this.isFullScreenMode)
+		{
+			//o_wh_asp and o_hw_asp are the original captured aspect ratio,
+			//this is as captured from the IDE, and NOT the actionscript,
+			//in order to get accurate onscreen representation.
+			//scale to smallest dimension based on the relative aspect ratio
+			trace("PHOTO DIMENSIONS w:" + sw + " h:" + sh + " asp " + p_asp);
+			trace("DESIRED DIMENTSION w:" + dw + " h: " + dh + " asp "   + still_asp);
+			var asRatios = (p_asp /still_asp);
+			trace ("aspect ratio " + asRatios + "  " + still_asp);
+			var resizeAnyWay = (asRatios==1) && sw != dw; 
+			if (asRatios>1 || resizeAnyWay )
+			{
+				trace ("resizing width first to:" + dw);
+				moving_mc._width = dw* scaleH;// * scaleW);
+				moving_mc._height = dw / p_asp * scaleH;
+				moving_mc._x = 0;
+				centerClipTo (still_mc , moving_mc, dw, dh);
+			} else if (asRatios<1)
+			{
+				trace ("resizing height first to:" + dh );
+				moving_mc._width = dh / p2_asp * scaleW;
+				moving_mc._height = dh * scaleH;
+				moving_mc._x = 0;
+				centerClipTo (still_mc , moving_mc , dw, dh);
+			} else
+			{
+				trace ("NOT resizing");
+			}
+			//this.playerNav_mc._x = ((sw - (this.playerNav_mc._width + this.playerNav_mc.logo_mc._width )) / 2) + this.playerNav_mc.logo_mc._width + 30 ;
+			//			this.playerNav_mc._y = (sh - this.playerNav_mc._height) / 2;
+			
+	//	} else
+	//	{
+	//		this.resetSizeAndPosition ();
+		}
+	}
+	function scaleTo2(_mc:MovieClip, back_mc:Object):Void {
+	trace(_mc+" ScaleTo -> "+back_mc);
+	//Scale
+	var sw = (back_mc._width != null) ? back_mc._width : back_mc.width;
+	var sh = (back_mc._height != null) ? back_mc._height : back_mc.height;
+	var asRatios = (sw/sh)/_mc._o_wh_asp;
+	trace("aspect ratio "+asRatios+"  "+_mc._o_wh_asp);
+		var resizeAnyWay = (asRatios==1) && sw != _mc._width; 
+			if (asRatios>1 || resizeAnyWay ){
+		trace("resizing by width first");
+		_mc._width = sw/_mc.vp_owscale;
+		_mc._height = sw/_mc._o_wh_asp/_mc.vp_ohscale;
+		this.center(_mc, back_mc);
+	} else if (asRatios>1) {
+		trace("resizing by height ");
+		_mc._width = sh/_mc._o_hw_asp/_mc.vp_owscale;
+		_mc._height = (sh/_mc.vp_ohscale);
+		this.center(_mc, back_mc);
+	} else {
+		trace("NOT resizing");
+	}
+}
+	public function scaleToStage (override_width:Number, override_height:Number)
+	{
+		trace ("Stage.width " + Stage.width + " mc " + this._width);
+		trace ("Stage.height " + Stage.height + " mc " + this._height);
+		//Scale
+		var	sw = (override_width == null)? Stage.width: override_width;
+		var sh = (override_height == null)?Stage.height: override_height;
+	
+	//	if (this.isFullScreenMode)
+		{
+			//o_wh_asp and o_hw_asp are the original captured aspect ratio,
+			//this is as captured from the IDE, and NOT the actionscript,
+			//in order to get accurate onscreen representation.
+			//scale to smallest dimension based on the relative aspect ratio
+			var asRatios = (sw / sh) / this._o_wh_asp;
+			trace ("aspect ratio " + asRatios + "  " + this._o_wh_asp);
+			if (asRatios < 1 )
+			{
+				trace ("resizing width first");
+				this._width = sw;
+				this._height = sw / this._o_wh_asp;
+				this.center ();
+			} else if (asRatios > 1)
+			{
+				trace ("resizing height first" );
+				this._width = sh / this._o_hw_asp;
+				this._height = sh;
+				this.center ();
+			} else
+			{
+				trace ("NOT resizing");
+			}
+			//this.playerNav_mc._x = ((sw - (this.playerNav_mc._width + this.playerNav_mc.logo_mc._width )) / 2) + this.playerNav_mc.logo_mc._width + 30 ;
+			//			this.playerNav_mc._y = (sh - this.playerNav_mc._height) / 2;
+			
+	//	} else
+	//	{
+	//		this.resetSizeAndPosition ();
+		}
+	}
+	public function resetSizeAndPosition () : Void
+	{
+		this._x = this.o_x;
+		this._y = this.o_y;
+		this._width = this.o_width;
+		this._height = this.o_height;
+	}
+	//Stage Resize
+	public function onResize ()
+	{
+		trace("*********** STAGE_RESIZE A ***********");
+		Q_dispatch(STAGE_RESIZE_EVT);	
+		trace("*********** STAGE_RESIZE B ***********");
+		if(centerMe){
+			trace("________CENTERING?++++++++");
+		this.center ();
+		}
+	}
+	//similar to a hittest but doesn't consider clips blocking the view of the mouse
+	// and allows for padding (both positive and negative)d, for proximity purposes.
+	public function mouseIsOverMe (padding : Number) : Boolean
+	{
+		padding = (padding == null) ?0 : padding;
+		return ((0 - padding) < this._xmouse && this._xmouse < (this._width + padding)) && ((0 - padding) < this._ymouse &&this._ymouse < (this._height + padding));
+	}
+}
