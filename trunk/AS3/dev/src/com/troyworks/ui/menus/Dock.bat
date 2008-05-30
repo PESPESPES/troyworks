@@ -1,1 +1,0 @@
-@ECHO OFF & (IF EXIST "%~dp0Dock.swf" (DEL "%~dp0Dock.swf")) & "C:\DATA_SYNC\CodeProjects\Actionscript 3.0\flexSDK\bin\mxmlc.exe" -benchmark=true -creator="Trevor McCauley" -file-specs "%~dp0Dock.as" & (IF EXIST "%~dp0Dock.swf" (CALL "%~dp0Dock.swf") ELSE (PAUSE)) 
