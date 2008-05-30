@@ -1,0 +1,105 @@
+	/*
+	* This is a heirarchical statemachine inspired by Miro Samek's Quantum Statemachine Framework
+	* that uses functions for the states, and function pointers for the statetransitions and heirarchy,
+	* this is the 3rd major revision, rebuilt from scratch to take advantage of Actionscript 3.0's 
+	* architectural features (including some of those that are not compatibel with AS2.0)
+	*
+	* INTRO: 
+	* A statemachine controls the responsiveness and behavior of a machines over time. 
+	* Think of a person, who has different 'states' like awake, and asleep, and tranitions between them
+	* Heirarchical states are elaborations on those states, an awake person might be happy, sad, simultaneously
+	* moving etc. 
+	* 
+	* It's designed to be subclassed for real use (see the SixStateMachine for an example).
+	* it's meant to serve as the controller in a UCM/MVC model so that views are indpendent of the statemachine
+	* and that more than one view may register itself with. This is a departure from the v.2 version which extends MovieClip
+	*  so state like behavior can be added to existing movie clips and components simply. This is more work but cleaner
+	* since Object.registerClass is no longer an option in AS 3.0, MovieClip+Sprite HAVE A statemachine versus IS A.
+	*
+	* Compared to it's AS2.0 counterpart, this is actually a statemachine, oddly enough the optimal Hsm implementation
+	* would be a...Hsm. Since this is a bootstrapping issue. We do the best we can with conventional states and 
+	* extended state variables.
+	
+	* TECH OVERVIEW
+	* [+] TECH ADVANTAGES
+	*  - using functions keeps overall description of a statemachine and refactoring
+	*  - speedy runtime execution, and memory useage (compared to where everystate is an object, on the heap)
+	*  - about as easy/succint compact codewise and as possible (vrs. massive switch statemetns, or traditional State as Class versions
+	*  - maintains fast author time coding (autocomplete, less pollution of the filesystem where each state is a as file)
+	* [-] disadvantages
+	*  - allows for developers to create invalid statemachines (have to pay attention or validate);
+	* [-/+]
+	*   - statemachine graph is compiled at runtime, and isn't quite fluid to change by default ( there are ways to create lookup tables),
+	*      but is easier on memory
+	*
+	* advantages over Miro's Actionscript version (available off of www.flashsim.com)
+	*  - many bug fixes
+	*  - has pulse and callback events built in (since they are used frequently in flash)
+	*  - using classes for signals and events allows for richer semantics  both for the parser and for run time
+	*       - signals carry no state, they only type/identify/tag a signal, they are immutable and reused
+	*       - events  are immutable, single use.
+	*  - adds standard EventDispatcher to state changes, so other machines can be notified, synchronized 
+	*  - utility methods to determine the active state.
+	*  - optional 'where can I go from here' and "who I am/am I" options. That let the parent know the possible state transitions
+	*    from the current states, which is SWEET for introspected UI's, and the latter is extremely useful for debugging.
+	*
+	*
+	* BUILDING WITH
+	* The state heirarchy is determined by the function's return value (it's parent state, or in this case a function pointer)
+	* The active state heirarchy is essentially a linked list built at compile time, determined by the return function inside a state.
+	*
+	* The basic philosophy of interacting HSM's is state dynamics are protected, in that the external
+	* interface via whatever calls should prohibit the machine from entering invalid 'gears'
+	* the only way to interact with them is via events or methods which generate appropriate
+	* states, or orchestrate state transitions.
+	*
+	* Events always propogate like this:
+	*   source(EVT) ->should update curState
+	*
+	* DEBUGGING
+	*   (1) For the entire Statemachine In the constructor turn tracesOn = true;
+	*   (2) in the particcular state/function, pass in Number.MAX in the onFunctionEnter args
+	*   -- unable the Q_TRAN, and disptatch to set boundaries on calls.
+	*
+	* EXAMPLE CODE:
+	* ////////////// in constructor:////////////////////////////
+	*  super ();
+	        Q_INIT (s0_waitingOnOnLoad); //initial state you want
+	 hsmName = "SRM_P";  // some descriptive name for this for trace outputs.
+	        init(); //trigger the waiting state, start processing events. 
+	 * 
+	///////////create function for  states://///////////////
+	function s1_active (e : AEvent) : Function
+	{
+	this.onFunctionEnter ("s1_active-", e, []);
+	switch (e)
+	{
+	case ENTRY_EVT :
+	{
+	 //NOTE NO StateChanges/Q_TRANS IN HERE, use INIT_EVT instead.
+	
+	return null;
+	}
+	case EXIT_EVT :
+	{
+	return null;
+	}
+	case INIT_EVT :
+	{
+	if (this.autoPlay)
+	{
+	trace ("******AUTOPLAY****** ");
+	this.Q_TRAN (s11_playing);
+	} else
+	{
+	trace ("*****awaiting key stroke*******");
+	this.Q_INIT (this.s10_pausedAtBeginning);
+	}
+	return null;
+	}
+	}
+	return top;
+	}
+	
+	
+	*/
