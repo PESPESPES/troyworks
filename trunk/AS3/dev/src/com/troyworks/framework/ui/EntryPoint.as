@@ -8,7 +8,7 @@
 
 
 	/********************************************
-	 * Entry points are designed to be affiliated with the
+	 * Entry points are designed to be affiliated with the 'Starter'
 	 * swf that actually are the first to be clicked on or run
 	 * thier primary responsibility is to load the firestarter/bootstrapper
 	 * and wait for it to take control

@@ -1,10 +1,10 @@
 package com.troyworks.ui {
 	import flash.display.DisplayObjectContainer;	
 	import flash.text.TextFieldType;	
-	
-	import com.troyworks.ui.SketchEvent;
 
-	import fl.controls.RadioButton;	
+	import com.troyworks.ui.FlowControlEvent;
+
+	//import fl.controls.RadioButton;	
 
 	import flash.utils.Dictionary;	
 	import flash.display.Sprite;	
@@ -22,21 +22,23 @@ package com.troyworks.ui {
 	import flash.display.SimpleButton;	
 
 	/**
-	 * Sketch is a 3 part utility to help create fast prototypes 
+	 * FlowControl is a 3 part utility to help create fast prototypes 
 	 * either using Frame navigation or Stack visibility manipulation
 	 * 
-	 * 1) Is to create 'clickables' 
-	 * Clickables are low-fidelty prototypes that are created from
-	 * whiteboard sessions, simple wireframes, napkins...you name it.
+	 * 1) Is to create 'clickables' aka Flows, interactive wireframes.
 	 * 
-	 * The basic ideas is that all the core states are represented by photos, sliced
-	 * up appropriately these are imported into flash.  Hotspots are created (typically using
+	 * Clickables are low-fidelty prototypes that are created from
+	 * whiteboard sessions, simple wireframes, napkins...you name it.  They of course
+	 * can be higher fidelity, using real graphics, richer state buttons.
+	 * 
+	 * The basic ideas is that all the core states are represented by scans/photos, 
+	 * sliced up appropriately these are imported into flash either.  Hotspots are created (typically using
 	 * an (InvisiButton) to help the choose your own adventure feel, the only thing that is
 	 * required is labelling frames for application states, and giving buttons 
-	 * suitable instance names.
+	 * suitable instance names:
 	 * 
 	 * By giving any SimpleButton the following instance names, they are 'autowired' 
-	 * into calling the appropriate event/action. They provide the familiar TimeLine API
+	 * into calling the appropriate event/action. They provide the familiar MovieClip API
 	 * but don't require any actionscript.
 	 * 
 	 * AUTOBUTTONS:
@@ -48,9 +50,9 @@ package com.troyworks.ui {
 	 *  home
 	 * 
 	 * KEYSTROKES
-	 * ESC- goto first frame
-	 * LEFT - prev frame
-	 * RIGHT - next frame.
+	 *   ESC- goto first frame
+	 *   LEFT - prev frame
+	 *   RIGHT - next frame.
 	 * 
 	 * FEATURES:
 	 *    detects via onChildAdded, scoped to this clip
@@ -59,12 +61,25 @@ package com.troyworks.ui {
 	 * //TODO highlight buttons that don't go anyplace valid
 	 * //TODO (optional) ignore buttons who's parent isn't this scope
 	 * //TODO support other clickable types besides buttons.
-	 * 
 	 * //TODO Heatmap/visited links (count, breadcrumbs)
+	 * 
+	 * TO USE,
+	 * 1) in your FLA extend FlowControl.
+	 * 2) copy this into a class and have your Document level class use the following
+	 *
+	  package {
+		import com.troyworks.ui.*;
+			public dynamic class UI extends FlowControl{
+			public function UI(){
+				super();
+				setView(this,true);
+			}
+		}
+	  }
 	 * 
 	 * @author Troy Gardner (troy@troyworks.com)
 	 */
-	public class Sketch extends MovieClip {
+	public class FlowControl extends MovieClip {
 		public var output_txt : TextField;
 		public var lastFrame : int = -1;
 		public var errorFilter : GlowFilter = new GlowFilter(0xFF0000, 80);
@@ -84,9 +99,12 @@ package com.troyworks.ui {
 		public var frameLabelToNumberIdx : Object;
 		public var lastFrameNumber : Number;
 		public var view : MovieClip;
+		
+		public var preloadingRequired:Boolean = true;
+		public var autoPlay:Boolean = false;
 
 		
-		public function Sketch() {
+		public function FlowControl() {
 			super();
 			trace("ClickThrough");
 			addFrameScript(0, onFrame1);
@@ -107,14 +125,24 @@ package com.troyworks.ui {
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
 			//stage.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 			onFrameChanged();
-
-		
-			stop();
+			setView(this, true);
+			if(preloadingRequired){
+				stop();
+				///////////////////////////////
+				// load list of engines / services
+				///////////////////////////////
+			}else{
+				stop();
+				nextFrame();
+			}
 		}
 
+		/* set the actual MovieClip/Sprite we are going to use */
 		public function setView(mc : MovieClip, enableWatch : Boolean = false) : void {
+			
 			view = mc;
 			if(enableWatch) {
+				trace("enabling watch");
 				view.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
 				view.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
 				view.addEventListener(Event.ADDED, onChildAdded);
@@ -135,8 +163,9 @@ package com.troyworks.ui {
 
 		protected function onChildAdded(event : Event) : void {
 			var dO : DisplayObject = DisplayObject(event.target);
-			var isButton : Boolean = dO is SimpleButton || dO is RadioButton;
-			trace("onChildAdded " + dO.name + " " + isButton);
+			var isButton : Boolean = dO is SimpleButton;
+			// || dO is RadioButton;
+			trace("Sketch.onChildAdded " + dO.name + " " + isButton);
 			if(isButton && validDo(dO)) {
 				setupGoto(dO, dO.name);
 			}
@@ -157,8 +186,9 @@ package com.troyworks.ui {
 
 		protected function onChildRemoved(event : Event) : void {
 			var dO : DisplayObject = DisplayObject(event.target);
-			var isButton : Boolean = dO is SimpleButton || dO is RadioButton;
-			trace("XXonChildRemoved " + dO.name + " " + isButton);
+			var isButton : Boolean = dO is SimpleButton;
+			// || dO is RadioButton;
+			trace("Sketch.onChildRemoved " + dO.name + " " + isButton);
 			if(isButton) {	
 				takedownGoto(dO, dO.name); 
 			}
@@ -182,7 +212,7 @@ package com.troyworks.ui {
 				var isButton : Boolean = dO is SimpleButton;
 				var isRadio : Boolean = false;
 				//dO is RadioButton;	
-				//					trace(i + " " + dO.name + " " + isButton);
+								trace(i + " " + dO.name + " " + isButton);
 				if(isButton && validDo(dO) ) {	
 					setupGoto(dO, dO.name, MouseEvent.CLICK); 
 				}			
@@ -190,9 +220,10 @@ package com.troyworks.ui {
 		}
 
 		public function setupGoto(ie : IEventDispatcher, frame : String, event : String = MouseEvent.CLICK) : void {
-			trace("setting up " + frame);
+			trace("setting up " + frame + " for " + (ie as DisplayObject).name +":" +ie);
+			var ary : Array;
 			if(frame.indexOf("play_") == 0 || frame == "_play") {
-				var ary : Array = frame.split("_");
+				ary = frame.split("_");
 				trace("ary: " + ary.join(","));
 				if(!ie.hasEventListener(event)) {
 					if(ary.length == 1) {
@@ -206,10 +237,24 @@ package com.troyworks.ui {
 					ie.addEventListener(event, EventAdapter.create(nextFrame, [], false));
 				}	 
 			}else {
-				trace(" gotoAndStop " + frame);
+				ary = frame.split("_");
+				trace(" gotoAndStop " + frame + "  " + ary);
 				//if(!ie.hasEventListener(event)) {
-				trace(" gotoAndStop2 " + frame);
-				ie.addEventListener(event, EventAdapter.create(gotoAndStop, [frame], false));
+			
+
+				if(ary.length > 0) {
+					if(ary[0] == "gotoAndStop") {
+						trace("adding gotoAndStop");
+						ie.addEventListener(event, EventAdapter.create(gotoAndStop, [ary[1]], false));
+					}else if(ary[0] == "gotoAndPlay") {
+						trace("adding gotoAndPlay");
+						ie.addEventListener(event, EventAdapter.create(gotoAndPlay, [ary[1]], false));
+					}
+				}else {
+					trace("adding gotoAndStop2");
+					ie.addEventListener(event, EventAdapter.create(gotoAndStop, [frame], false));
+				}
+                
 			//	}
 			}
 		}
@@ -259,6 +304,7 @@ package com.troyworks.ui {
 		function requestPrevScreen(evt : Event = null) : void {
 			prevFrame();
 		}
+
 		public static function hideExcept(disObjCon : DisplayObjectContainer, except : Array = null, dontProcess : Array = null) : void {
 			var i : int = 0;
 			var  n : int = disObjCon.numChildren;
@@ -268,35 +314,35 @@ package com.troyworks.ui {
 			var nnn : int = (dontProcess == null) ? 0 : dontProcess.length;
 			var dO : DisplayObject;
 			var ignore : Boolean;
-			var dontChange:Boolean;
+			var dontChange : Boolean;
 			for(;i < n;++i) {
 				dO = disObjCon.getChildAt(i);
 				ignore = false;
 				dontChange = false;
 				inner:
 				{
-					iii = 0;
-					for(;iii < nnn;++iii) {
-						//trace("checking to ignore " + dO.name + " " +except[ii].name );
-	
-						if(dO == dontProcess[iii]) {
+				iii = 0;
+				for(;iii < nnn;++iii) {
+					//trace("checking to ignore " + dO.name + " " +except[ii].name );
+
+					if(dO == dontProcess[iii]) {
 							
-							//	trace("found something to not ignore");
-							dontChange = true;
-							break inner;
-						}
+						//	trace("found something to not ignore");
+						dontChange = true;
+						break inner;
 					}
-					ii = 0;
-					for(;ii < nn;++ii) {
-						//trace("checking to ignore " + dO.name + " " +except[ii].name );
-	
-						if(dO == except[ii]) {
+				}
+				ii = 0;
+				for(;ii < nn;++ii) {
+					//trace("checking to ignore " + dO.name + " " +except[ii].name );
+
+					if(dO == except[ii]) {
 							
-							//	trace("found something to not ignore");
-							ignore = true;
-							break inner;
-						}
+						//	trace("found something to not ignore");
+						ignore = true;
+						break inner;
 					}
+				}
 				}
 				if(dO != null && !dontChange) {
 					
@@ -308,6 +354,7 @@ package com.troyworks.ui {
 				}
 			}
 		}
+
 		public function inventoryFrames(enableFrameDebugger : Boolean = false) {
 			activeFrames = new Object();
 			frameLabelToNumberIdx = new Object();
@@ -388,13 +435,13 @@ package com.troyworks.ui {
 				var sp : Sprite;
 				var nm : String;
 				var cnm : String;
-				var evt : SketchEvent;
+				var evt : FlowControlEvent;
 				for (var i : int = 0;i < view.currentLabels.length; i++) {
 					cnm = view.currentLabels[i].name;
 					if (cnm != " " && view.currentLabels[i].frame == view.currentFrame && activeFrames[cnm] != true) {
 						activeFrames[cnm] = true;
 						///////////// PERFORM ACTIVATION ACTIONS ////////////////
-						evt = new SketchEvent(SketchEvent.ENTERED_FRAME_LABEL);
+						evt = new FlowControlEvent(FlowControlEvent.ENTERED_FRAME_LABEL);
 						evt.frameLabel = cnm;
 						var o : Function = initFrameScripts[view.currentFrame];						
 						if(o != null) {
@@ -416,7 +463,7 @@ package com.troyworks.ui {
 						trace("11111111111111111111111111111");
 
 						nm = cnm + "_mc";
-						evt = new SketchEvent(SketchEvent.LEFT_FRAME_LABEL);
+						evt = new FlowControlEvent(FlowControlEvent.LEFT_FRAME_LABEL);
 						evt.frameLabel = cnm;
 						//dispatchEvent(evt);
 						activeFrames[cnm] = false;
