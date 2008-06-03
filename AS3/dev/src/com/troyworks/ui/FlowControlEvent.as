@@ -7,14 +7,14 @@
 package com.troyworks.ui {
 	import flash.events.Event;	
 
-	public class SketchEvent extends Event {
+	public class FlowControlEvent extends Event {
 		public var frameLabel:String;
 		public static  const ENTERED_FRAME_LABEL : String = "ENTERED_FRAME_LABEL";
 		public static  const LEFT_FRAME_LABEL :  String = "LEFT_FRAME_LABEL";
 		
 		
 		//public var frameNumber:Numb
-		public function SketchEvent(msg:String = ENTERED_FRAME_LABEL,bubbles:Boolean=false, cancelable:Boolean=false) {
+		public function FlowControlEvent(msg:String = ENTERED_FRAME_LABEL,bubbles:Boolean=false, cancelable:Boolean=false) {
 			super(msg, bubbles, cancelable);
 		}
 	}

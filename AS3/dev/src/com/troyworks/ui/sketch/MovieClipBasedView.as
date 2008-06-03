@@ -5,7 +5,7 @@
 */
 
 package com.troyworks.ui.sketch {
-	import com.troyworks.ui.SketchEvent;
+	import com.troyworks.ui.FlowControlEvent;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.display.MovieClip;
@@ -184,13 +184,13 @@ package com.troyworks.ui.sketch {
 				var sp:Sprite;
 				var nm:String;
 				var cnm:String;
-				var evt:SketchEvent;
+				var evt:FlowControlEvent;
 				for (var i:int = 0; i < view.currentLabels.length; i++) {
 					cnm = view.currentLabels[i].name;
 					if (cnm  != " " && view.currentLabels[i].frame == view.currentFrame &&  activeFrames[cnm] != true) {
 						activeFrames[cnm] =  true;
 						///////////// PERFORM ACTIVATION ACTIONS ////////////////
-						evt = new SketchEvent( SketchSignals.ENTERED_FRAME_LABEL);
+						evt = new FlowControlEvent( SketchSignals.ENTERED_FRAME_LABEL);
 						evt.frameLabel = cnm;
 						var o:Function =initFrameScripts[view.currentFrame];						
 						if(o != null) 
@@ -213,7 +213,7 @@ package com.troyworks.ui.sketch {
 										trace("11111111111111111111111111111");
 
 						nm = cnm + "_mc";
-						evt = new SketchEvent( SketchSignals.LEFT_FRAME_LABEL);
+						evt = new FlowControlEvent( SketchSignals.LEFT_FRAME_LABEL);
 						evt.frameLabel = cnm;
 						//dispatchEvent(evt);
 						activeFrames[cnm] =  false;

@@ -10,7 +10,7 @@ package com.troyworks.ui {
 	 * DESCRIPTION ::
 	 *
 	 */
-	public class SketchNavigator extends Sprite {
+	public class FlowControlNavigator extends Sprite {
 		import flash.events.*;
 		import flash.text.TextFieldType;
 
@@ -18,7 +18,7 @@ package com.troyworks.ui {
 		var lastFrameNumber : Number;
 		var activeFrames : Object;
 
-		public function SketchNavigator() {
+		public function FlowControlNavigator() {
 			super();
 		}
 

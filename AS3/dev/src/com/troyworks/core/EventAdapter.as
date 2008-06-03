@@ -23,6 +23,7 @@ package com.troyworks.core {
 		}
 
 		public static function create(functionToCall : Function, callbackArguments : Array, includeEvent : Boolean = false) : Function {
+			//trace("EventAdapter.create");
 			var res : EventAdapter = new EventAdapter(functionToCall, callbackArguments);
 			if(includeEvent) {
 				return res.relayEvent;
@@ -40,12 +41,12 @@ package com.troyworks.core {
 		}
 
 		public function callFunction(evt : Event = null) : * {
-				trace("relayingEvent");
+				//trace("EventAdapter.callFunction");
 			return _fn.apply(null, _args);
 		}
 
 		public function relayEvent(evt : Event) : * {
-				trace("relayingEvent");
+			//	trace("EventAdapter.relayingEvent");
 			var args : Array = _args.concat();
 			args.unshift(evt);
 			return _fn.apply(null, args);
