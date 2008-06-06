@@ -69,8 +69,11 @@ package com.troyworks.ui {
 				trace("vp_ohscale " + to_mc.vp_ohscale + "  " + viewport.height + "/" + a_mc.height + " ?= " + (viewport.height / a_mc.height)); 
 				
 				//Added by Ksenia
-				to_mc.owidth = wholeObject.width;
-				to_mc.oheight = wholeObject.height;
+				if (wholeObject != null)
+				{
+					to_mc.owidth = wholeObject.width;
+					to_mc.oheight = wholeObject.height;
+				}
 				
 				//to_mc.owidth = s_mc.width;
 				//to_mc.oheight = s_mc.height;
@@ -179,7 +182,7 @@ package com.troyworks.ui {
 			}
 		}
 
-		public static function getAlignV( still_mc : Object, moving_mc : DisplayObject,  movingSnapShot : IDisplayObjectSnapShot = null,y : String = "MIDDLE",  snapToWholePixel : Boolean = false) : Number {
+		public static function getAlignV(still_mc : Object, moving_mc : DisplayObject, movingSnapShot : IDisplayObjectSnapShot = null, y : String = "MIDDLE",  snapToWholePixel : Boolean = false) : Number {
 			
 			trace("CALL getAlignV");
 			trace ("alignV " + y+ " still_mc.y=" + still_mc.y + " moving_mc.height=" + moving_mc.height);
@@ -229,8 +232,8 @@ package com.troyworks.ui {
 			}
 		}
 
-		public static function scaleTo(still_mc : DisplayObject, moving_mc : DisplayObject , movingSnapShot : IDisplayObjectSnapShot = null, override_width : Number = NaN, override_height : Number = NaN) : void {
-			trace("HIGHLIGHT scaleTo");
+		public static function scaleTo(still_mc : DisplayObject, moving_mc : DisplayObject , movingSnapShot : IDisplayObjectSnapShot = null, scaleType : String = "CENTER", override_width : Number = NaN, override_height : Number = NaN) : void {
+			trace("HIGHLIGHT SCALETO_AR_CENTER");
 			if(moving_mc.stage != null) {
 				trace("clip.stage.stageWidth " + moving_mc.stage.stageWidth + " still  mc " + still_mc.width + " moving  mc " + moving_mc.width + " override " + override_width);
 				trace("clip.stage.stageHeight " + moving_mc.stage.stageHeight + " still  mc " + still_mc.height + " moving  mc " + moving_mc.height + " override " + override_height);
@@ -312,14 +315,32 @@ package com.troyworks.ui {
 			trace("ww= "+ww+" hh= "+hh);
 			
 			var resize : String;
-			if(ww > hh) {
-				resize = "W";
-			}else if (ww < hh) {
-				resize = "H";
-			}else if(ww == hh) {
-				resize = "X";
+			//if (scaleType == "CENTER")
+			switch (scaleType) 
+			{
+				case "CENTER":
+					if(ww > hh) {
+						resize = "W";
+					}else if (ww < hh) {
+						resize = "H";
+					}else if(ww == hh) {
+						resize = "F";
+					}
+					break;
+				case "CROP":
+					if(ww > hh) {
+						resize = "H";
+					}else if (ww < hh) {
+						resize = "W";
+					}else if(ww == hh) {
+						resize = "F";
+					}
+					break;
+				default:
+					resize = "F";
+					break;
 			}
-			 
+			
 			var sn : IDisplayObjectSnapShot;
 			if(resize == "W") {
 				//if (asRatios > 1 || resizeAnyWay ) {
@@ -356,10 +377,10 @@ package com.troyworks.ui {
 					p2_asp = tmp2;
 				}
 				
-				//Added by Ksenia
 				//moving_mc.height = dh / scaleH;
 				//moving_mc.width = dh / scaleH / p2_asp;
 				
+				//Added by Ksenia
 				moving_mc.width = moving_mc.width / hh;
 				moving_mc.height = moving_mc.height / hh;
 				
@@ -371,13 +392,25 @@ package com.troyworks.ui {
 				moving_mc.x = getAlignH(sn, moving_mc);
 				moving_mc.y = getAlignV(sn, moving_mc);
 			} else {
-				trace("NOT resizing");
+				trace("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+				trace("resizing width: " + dh+" and height: "+dw);
+				
+				moving_mc.width = moving_mc.width / ww;
+				moving_mc.height = moving_mc.height / hh;
+				
+				sn = new DisplayObjectSnapShot();
+				sn.width = dw;
+				sn.height = dh;
+				sn.x = still_mc.x;
+				sn.y = still_mc.y;
+				moving_mc.x = getAlignH(sn, moving_mc);
+				moving_mc.y = getAlignV(sn, moving_mc);
 			}
-			trace("HIGHLIGHTO scaleTo res:  " + moving_mc.width + "  " + moving_mc.height);
+			trace("HIGHLIGHTO SCALETO "+scaleType+" res:  " + moving_mc.width + "  " + moving_mc.height);
 				//this.playerNav_mc.x = ((t_w - (this.playerNav_mc.width + this.playerNav_mc.logo_mc.width )) / 2) + this.playerNav_mc.logo_mc.width + 30 ;
 				//			this.playerNav_mc.y = (t_h - this.playerNav_mc.height) / 2;
 		}
-
+		
 		public static function center2( back_mc : Object, _mc : DisplayObject, mcSnapShot : IDisplayObjectSnapShot = null) : void {
 			//Center
 			trace("HIGHLIGHT center2");
