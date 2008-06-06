@@ -8,15 +8,10 @@ package com.troyworks.ui {
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 
-	import com.troyworks.ui.DisplayObjectSnapShot;
-	import com.troyworks.ui.IDisplayObjectSnapShot;
-
-	import flash.display.Sprite;
-
 	public class LayoutUtil {
 
 		/*******************************************************
-		 * for a given movie passed in capture it's x, y, width height, into 
+		 * for a given movie passed in capture it's x, y, width, height, into 
 		 * another object (defaults to the same)
 		 * 
 		 * Note this can get tricky.
@@ -28,6 +23,8 @@ package com.troyworks.ui {
 		 * When being used with a viewport.
 		 */
 		public static function snapshotDimensions(a_mc : DisplayObject, to_mc : IDisplayObjectSnapShot = null, override_width : Number = NaN, override_height : Number = NaN) : IDisplayObjectSnapShot {
+			
+			trace("CALL snapshotDimensions");
 			var s_mc : DisplayObject = a_mc;
 			if(to_mc == null) {
 				//new DisplayObjectSnapShot();
@@ -37,14 +34,19 @@ package com.troyworks.ui {
 			// note that when a movie clip is exported from the library, a wrapper swf is created
 			//
 			var viewport : DisplayObject = null;
+			var wholeObject : DisplayObject = null;
 			if(a_mc is DisplayObjectContainer) {
 				var doC : DisplayObjectContainer = DisplayObjectContainer(a_mc);
 				viewport = doC.getChildByName("viewport_mc");
+				wholeObject = doC.getChildByName("slug_mc");
 			}
 			/////Get the original dimension pre scaling and positioning ////////////
 			if (viewport != null) {
 				trace("has a clipping region!!!!!!!!!!!!!!");
-				s_mc = viewport;
+				
+				//Modified by Ksenia
+				//s_mc = viewport;
+				
 				to_mc.hasViewport = true;
 				//offset between viewport and published content.
 				to_mc.vp_ox_offset = viewport.x;
@@ -52,27 +54,34 @@ package com.troyworks.ui {
 				trace("viewport offset " + to_mc.vp_ox_offset + ", " + to_mc.vp_oy_offset); 
 				to_mc.vp_owidth = viewport.width;
 				to_mc.vp_oheight = viewport.height;
-				
-				
+								
 				trace("clip.width " + a_mc.width + " center " + a_mc.width / 2);
+				trace("a_mc.scaleX "+a_mc.scaleX+" a_mc.scaleY "+a_mc.scaleY);				
 				to_mc.vp_ocx_offset = (a_mc.width / a_mc.scaleX) / 2 - (viewport.x + viewport.width / 2);
 				to_mc.vp_ocy_offset = (a_mc.height / a_mc.scaleY) / 2 - (viewport.y + viewport.height / 2);
 				trace(" offset x " + viewport.x + " y " + viewport.y);
-				trace(" offset vcx " + to_mc.vp_ocx_offset + " y " + to_mc.vp_ocy_offset);
+				trace(" offset vcx " + to_mc.vp_ocx_offset + " vcy " + to_mc.vp_ocy_offset);
 				//scale factor between viewport and actual (masked) movie dimensions (as mask shows all stuff on stage)
 
 				to_mc.vp_owscale = (viewport.width / a_mc.width);
 				to_mc.vp_ohscale = (viewport.height / a_mc.height);
 				trace("vp_owscale " + to_mc.vp_owscale + "  " + viewport.width + "/" + a_mc.width + " ?= " + (viewport.width / a_mc.width)); 
 				trace("vp_ohscale " + to_mc.vp_ohscale + "  " + viewport.height + "/" + a_mc.height + " ?= " + (viewport.height / a_mc.height)); 
-				//
-				to_mc.owidth = s_mc.width;
-				to_mc.oheight = s_mc.height;
+				
+				//Added by Ksenia
+				to_mc.owidth = wholeObject.width;
+				to_mc.oheight = wholeObject.height;
+				
+				//to_mc.owidth = s_mc.width;
+				//to_mc.oheight = s_mc.height;
+				//trace("CURRENT s_mc.width "+s_mc.width+" s_mc.height "+s_mc.height);
+				//trace("ORIGINAL width "+wholeObject.width+" height "+wholeObject.height);
+				//trace("a_mc w "+a_mc.width+" h "+a_mc.height);
+				
 				to_mc.o_wh_asp = s_mc.width / s_mc.height;
 				to_mc.o_hw_asp = s_mc.height / s_mc.width;
 				to_mc.width = s_mc.width;
 				to_mc.height = s_mc.height;
-				to_mc.width = s_mc.width;
 				to_mc.scaleX = s_mc.scaleX;
 				to_mc.scaleY = s_mc.scaleY;
 			} else {
@@ -171,11 +180,16 @@ package com.troyworks.ui {
 		}
 
 		public static function getAlignV( still_mc : Object, moving_mc : DisplayObject,  movingSnapShot : IDisplayObjectSnapShot = null,y : String = "MIDDLE",  snapToWholePixel : Boolean = false) : Number {
-			//	trace ("alignV " + y+ " " + still_mc + " " + moving_mc + " snap " + snapToWholePixel);
+			
+			trace("CALL getAlignV");
+			trace ("alignV " + y+ " still_mc.y=" + still_mc.y + " moving_mc.height=" + moving_mc.height);
 			var r : Number = 0;
 			if(movingSnapShot == null) {
 				movingSnapShot = snapshotDimensions(moving_mc);
 			}
+			//Added by Ksenia					
+			var scaleH = moving_mc.height/movingSnapShot.oheight;					
+			var vp_cur_yoffset = movingSnapShot.vp_oy_offset * scaleH;
 			switch (y.toUpperCase()) {
 				//assume that mask is at 0,0 so no ypos is needed
 				case "CENTER" :
@@ -195,10 +209,15 @@ package com.troyworks.ui {
 					}
 					break;
 				case "BOTTOM" :
-					r = (still_mc.y + still_mc.height - moving_mc.height) + (moving_mc.height - (movingSnapShot.vp_oy_offset + movingSnapShot.vp_oheight));
+					//Added by Ksenia
+					var vp_cur_height = moving_mc.height * movingSnapShot.vp_ohscale;
+					r = (still_mc.y + still_mc.height - moving_mc.height) + (moving_mc.height - (vp_cur_yoffset + vp_cur_height));
+					//r = (still_mc.y + still_mc.height - moving_mc.height) + (moving_mc.height - (movingSnapShot.vp_oy_offset + movingSnapShot.vp_oheight));
 					break;
 				case "TOP" :
-					r = still_mc.y - movingSnapShot.vp_oy_offset;
+					//Added by Ksenia
+					r = still_mc.y - vp_cur_yoffset;
+					//r = still_mc.y - movingSnapShot.vp_oy_offset;
 					break;
 				default :
 					return 0;
@@ -262,21 +281,36 @@ package com.troyworks.ui {
 			//in order to get accurate onscreen representation.
 			//scale  the largest photo to smallest desired dimension based
 			// on the relative aspect ratio
+			
+			//Added by Ksenia
+			t_w = moving_mc.width * scaleW;
+			t_h = moving_mc.height * scaleH;
+			
+			trace("CUR DIMENSIONS w:"+moving_mc.width +" h:"+moving_mc.height);
 			trace("PHOTO DIMENSIONS w:" + t_w + " h:" + t_h + " asp " + p_asp);
 			trace("DESIRED DIMENTSION w:" + dw + " h: " + dh + " asp " + still_asp);
+			
 			var asRatios : Number = (p_asp / still_asp);
 			trace("aspect ratio " + asRatios + "  " + still_asp);
 			
 			var m_asp : Number = moving_mc.width / moving_mc.height;
 			var v_asp : Number = movingSnapShot.vp_owidth / movingSnapShot.vp_oheight;
+			
+			trace ("mc width "+moving_mc.width+" height "+ moving_mc.height);
+			trace("original width "+movingSnapShot.vp_owidth+" height "+movingSnapShot.vp_oheight);
+			
 			trace("MASP " + m_asp + " " + v_asp + " " + m_asp / v_asp);
 			var p_asp : Number = t_w / t_h;
 			var p2_asp : Number = t_h / t_w;
 	
 			
 			var resizeAnyWay : Boolean = (asRatios == 1) && t_w != dw;
+			trace("resizeAnyWay "+resizeAnyWay);
 			var ww : Number = t_w / dw;
 			var hh : Number = t_h / dh;
+			
+			trace("ww= "+ww+" hh= "+hh);
+			
 			var resize : String;
 			if(ww > hh) {
 				resize = "W";
@@ -296,9 +330,15 @@ package com.troyworks.ui {
 					p_asp = p2_asp;
 					p2_asp = tmp;
 				}
-				moving_mc.width = dw / scaleW;
-				moving_mc.height = dw / scaleW / p_asp ;
+				trace("scaleW = "+scaleW+" "+" dw "+dw+" dh "+dh+" p_asp "+p_asp);
+				moving_mc.width = moving_mc.width / ww;
+				moving_mc.height = moving_mc.height / ww;
+				
+				//moving_mc.width = dw / scaleW;
+				//moving_mc.height = dw / scaleW / p_asp;
+				//moving_mc.height = dw / scaleW / p2_asp ;
 				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
+				
 				sn = new DisplayObjectSnapShot();
 				sn.width = dw;
 				sn.height = dh;
@@ -315,8 +355,13 @@ package com.troyworks.ui {
 					p_asp = p2_asp;
 					p2_asp = tmp2;
 				}
-				moving_mc.height = dh / scaleH;
-				moving_mc.width = dh / scaleH / p2_asp;
+				
+				//Added by Ksenia
+				//moving_mc.height = dh / scaleH;
+				//moving_mc.width = dh / scaleH / p2_asp;
+				
+				moving_mc.width = moving_mc.width / hh;
+				moving_mc.height = moving_mc.height / hh;
 				
 				sn = new DisplayObjectSnapShot();
 				sn.width = dw;
