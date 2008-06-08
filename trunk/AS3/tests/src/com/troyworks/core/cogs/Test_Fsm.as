@@ -1,11 +1,9 @@
-﻿package com.troyworks.cogs{
-	import com.troyworks.util.DesignByContract;
-	import com.troyworks.util.DesignByContractEvent;
-	import flash.display.Sprite;
+﻿package com.troyworks.core.cogs {
+	import com.troyworks.apps.tester.SynchronousTestSuite;	
+	
 	import flash.events.EventDispatcher;
-	import com.troyworks.tester.SynchronousTestSuite;
+
 	import flash.utils.getTimer;
-	import com.troyworks.cogs.CogExternalEvent;
 
 	public class Test_Fsm extends SynchronousTestSuite {
 		protected var fsm:TwoStateFsm;
@@ -67,7 +65,7 @@
 		public function test_stateToggleSpeedTest():Boolean {
 			var res:Boolean=true;
 			var fsm:TwoStateFsm=new TwoStateFsm(true) ;
-			fsm.init();
+			fsm.initStateMachine();
 			var tA:int = getTimer();
 			var iterations:uint = 1000;
 			while(iterations--){
@@ -91,7 +89,7 @@
 			fsm =new TwoStateFsm(true) ;
 			
 			trace("CREAting TwoStateFsm");
-			fsm.init();
+			fsm.initStateMachine();
 			fsm.addEventListener(CogExternalEvent.CHANGED,onAsynchTestComplete);
 
 			var i:Number = 9;

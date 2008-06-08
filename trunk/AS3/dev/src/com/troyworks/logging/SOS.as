@@ -32,7 +32,7 @@ package com.troyworks.logging {
 				SOS._csock.connect("localhost",4445);
 			}else{
 				trace("SOS"+id+"BBBBBBBBBBBBBBBBBBBB COMMAND SOCKET ALREADY CONNECTED BBBBBBBBBBBBBBBBBBBBBBBBB");
-				isConnected = true;
+			
 			}
 			if(SOS._msock == null){
 				trace("SOS" +id+".creatingMessageSocket");
@@ -41,9 +41,9 @@ package com.troyworks.logging {
 				SOS._msock.connect("localhost",4444);
 			}else{
 				trace("SOS"+id+"BBBBBBBBBBBBBBBBBBBB MESSAGE SOCKET ALREADY CONNECTED BBBBBBBBBBBBBBBBBBBBBBBBB");				
-				isConnected = true;
+			
 			}
-
+			isConnected = true;
 			return res;
 		}
 		public function onIOErrorEvent(event:IOErrorEvent):void{
@@ -114,7 +114,7 @@ package com.troyworks.logging {
 			var s2:String = s.replace("<", " { ");
 			var s3:String = s2.replace(">", "}\n ");
 			var s4:String = s3.replace("</", "{");
-			TraceAdapter.getNormalTracer()(s4);
+			TraceAdapter.NormalTracer(s4);
 			return s4;
 		}
 		//////////////////////////// COMMANDS /////////////////////////////////////

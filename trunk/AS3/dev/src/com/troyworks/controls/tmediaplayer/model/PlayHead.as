@@ -1,36 +1,38 @@
-package com.troyworks.mediaplayer.model { 
-	import com.troyworks.hsmf.Hsmf;
-	import com.troyworks.hsmf.AEvent;
-	import com.troyworks.data.Array2;
+package com.troyworks.controls.tmediaplayer.model {
+	import com.troyworks.core.cogs.CogSignal;	
+	import com.troyworks.core.cogs.CogEvent;	
+	import com.troyworks.core.cogs.Hsm; 
+
 	/**
 	 * @author Troy Gardner
 	 */
-	public class PlayHead extends Hsmf {
-		public static var ACTIVATE_PLAYHEAD_EVT : AEvent = AEvent.getNext("ACTIVATE_PLAYHEAD_EVT");
-		public static var PLAYHEAD_PLAY : AEvent = AEvent.getNext("PLAYHEAD_PLAY");
+	public class PlayHead extends Hsm {
+		public static var ACTIVATE_PLAYHEAD_EVT : CogSignal =CogSignal.getNextSignal("ACTIVATE_PLAYHEAD_EVT");
+//		public static var PLAYHEAD_PLAY : AEvent = AEvent.getNext("PLAYHEAD_PLAY");
 		//"PAUSE", "REWIND_AND_STOP", "RESTART", "REWIND_PLAY", "FASTFORWARD_PLAY","SEEK_TO
-		public static var PLAYHEAD_PAUSE : AEvent = AEvent.getNext("PLAYHEAD_PAUSE");
+//		public static var PLAYHEAD_PAUSE : AEvent = AEvent.getNext("PLAYHEAD_PAUSE");
 		
 		//think of a needle on a record, if the head is moving but not actually on the surface
 		public var isEngaged : Boolean = false;
+		
 		public function PlayHead() {
-			super(s0_inactive, "MediaPlayer.PlayHead", true);
+			super("s0_inactive", "MediaPlayer.PlayHead", true);
 		}
 		/*.................................................................*/
-		public function s0_inactive(e : AEvent) : Function
+		public function s0_inactive(e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s0_inactive-", e, []);
-			switch (e)
+			//this.onFunctionEnter ("s0_inactive-", e, []);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY:
 				{
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					return null;
 				}
-				case INIT_EVT :
+				case SIG_INIT :
 				{
 					return null;
 				}
@@ -40,7 +42,7 @@ package com.troyworks.mediaplayer.model {
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 		}
 }

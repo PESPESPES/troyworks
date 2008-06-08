@@ -1,5 +1,5 @@
 ﻿package com.troyworks.core.cogs.proxies {
-	import flash.display.Sprite;	
+
 	import flash.net.URLLoader;
 	import com.troyworks.core.cogs.CogSignal;
 	import com.troyworks.core.cogs.CogEvent;
@@ -10,6 +10,8 @@
 	import flash.events.HTTPStatusEvent;
 	import flash.events.SecurityErrorEvent;
 	/*
+	 * Translate URLLoader events in to CogEvents for state transitions.
+	
 			public static const SIG_URLLOADER_IO_ERROR : CogSignal = URLLoaderProxy.SIG_URLLOADER_IO_ERROR;
 		public static const SIG_URLLOADER_HTTP_STATUS : CogSignal = URLLoaderProxy.SIG_URLLOADER_HTTP_STATUS;
 		public static const SIG_URLLOADER_SECURITY_ERROR : CogSignal = URLLoaderProxy.SIG_URLLOADER_SECURITY_ERROR;

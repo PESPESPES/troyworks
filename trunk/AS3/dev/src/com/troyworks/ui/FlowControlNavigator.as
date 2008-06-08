@@ -1,8 +1,9 @@
 package com.troyworks.ui {
+	import flash.display.Sprite;	
 	import flash.display.MovieClip;
 
 	/**
-	 * SketchNavigator
+	 * FlowControlNavigator
 	 * @author Troy Gardner
 	 * AUTHOR :: Troy Gardner
 	 * AUTHOR SITE :: http://www.troyworks.com/

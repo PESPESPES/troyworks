@@ -72,6 +72,8 @@ package com.troyworks.logging {
 					csock.send("<setKey><name>"+_appKeyName+"_"+logL.name+"</name><color>"+logL.color+"</color></setKey>\n");
 				}catch(err:Error){
 					//ignore
+					
+					trace(err);
 				}
 			}
 		}

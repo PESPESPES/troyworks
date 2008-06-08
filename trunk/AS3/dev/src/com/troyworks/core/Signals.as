@@ -143,6 +143,8 @@ package com.troyworks.core {
 		public static  const MOUSE_WHEEL: Signals = Signals.getNextSignal("MOUSE_WHEEL");
 		public static  const ROLL_OVER: Signals = Signals.getNextSignal("ROLL_OVER"); 
 		public static  const ROLL_OUT: Signals = Signals.getNextSignal("ROLL_OUT");
+		/////////// WORKFLOW
+		
 		
 		//////////// MEDIA PLAYER 
 		//indicate static states
@@ -150,6 +152,11 @@ package com.troyworks.core {
 		public static const START :Signals = Signals.getNextSignal("START");
 		public static const STARTING :Signals = Signals.getNextSignal("STARTING");
 		public static const STARTED :Signals = Signals.getNextSignal("STARTED");
+
+
+		public static const FINISH :Signals = Signals.getNextSignal("FINISH");
+		public static const FINISHING :Signals = Signals.getNextSignal("FINISHING");
+		public static const FINISHED :Signals = Signals.getNextSignal("FINISHED");
 		
 		
 		public static const REPLAY :Signals = Signals.getNextSignal("REPLAY");
@@ -161,17 +168,18 @@ package com.troyworks.core {
 		public static const PLAYED :Signals = Signals.getNextSignal("PLAYED");
 
 			
-		
 		public static const PAUSE : Signals = Signals.getNextSignal("PAUSE");
 		public static const PAUSING : Signals = Signals.getNextSignal("PAUSING");
 		public static const PAUSED : Signals = Signals.getNextSignal("PAUSED");
+			
 		public static const REWIND_AND_STOP : Signals = Signals.getNextSignal("REWIND_AND_STOP");
 		public static const REWIND_AND_PLAY : Signals = Signals.getNextSignal("REWIND_AND_PLAY");
-		public static const STARTED_CLIP :Signals = Signals.getNextSignal("STARTED_CLIP");
-		public static const FINISHED_CLIP :Signals = Signals.getNextSignal("FINISHED_CLIP");	
+
 		public static const STOP : Signals = Signals.getNextSignal("STOP");
 		public static const STOPPING : Signals = Signals.getNextSignal("STOPPING");
 		public static const STOPPED : Signals = Signals.getNextSignal("STOPPED");
+
+
 		public static const GOTOANDSTOP : Signals = Signals.getNextSignal("GOTOANDSTOP");
 		public static const GOTOANDPLAY :Signals = Signals.getNextSignal("GOTOANDPLAY");
 		public static const INCREMENT_FRAME : Signals = Signals.getNextSignal("INCREMENT_FRAME");

@@ -1,22 +1,23 @@
 ﻿package {
+	import flash.display.MovieClip;	
+
+	import com.troyworks.core.chain.Test_PlaceHolderUnitOfWork;	
+	import com.troyworks.apps.tester.TestEvent;	
+	import com.troyworks.apps.tester.AsynchTestRunner;	
+	import com.troyworks.apps.tester.SimpleTestRunner;	
 	import com.troyworks.logging.SOSLogger;
+
 	import flash.display.Sprite;
 	import flash.events.Event;
+
 	import com.troyworks.util.DesignByContract;
-	import com.troyworks.tester.SimpleTestRunner;
 	import com.troyworks.tester.Test_AsynchronousTestSuite;
 	import com.troyworks.util.Test_DesignByContract;
 	import com.troyworks.util.Test_SwitchPerformance;
-	import com.troyworks.util.traceTest;
-	import com.troyworks.cogs.Test_Fsm;
-	import com.troyworks.cogs.Test_Hsm;
-	import com.troyworks.cogs.*;
-	import com.troyworks.text.*;
-	import com.troyworks.tester.AsynchronousTestSuite;
-	import com.troyworks.tester.AsynchTestRunner;
-	import com.troyworks.tester.TestEvent;
+	import com.troyworks.core.cogs.Test_Fsm;
+	import com.troyworks.core.cogs.Test_Hsm;
 	import com.troyworks.logging.*;
-	import com.troyworks.datastructures.Test_ArrayX;
+	import com.troyworks.data.Test_ArrayX;
 
 	/*************************************************
 	 *  This is the 'main' TestRunner extends Sprite so it
@@ -26,122 +27,115 @@
 	 * that runs all tests across the com.troyworks.* library
 	 */
 
-	public dynamic class TroyWorks_Test extends Sprite
-	{
-		private var eventSprite:Sprite;
-		private var sos:SOS;
-		
-		private var testRunner:SimpleTestRunner;
-		private var testRunner2:AsynchTestRunner;
-		public static var trace:Function;
-		public var curStatusSize:Number = 10;
-		
+	public dynamic class TroyWorks_Test extends MovieClip {
+		private var eventSprite : Sprite;
 
+		private var testRunner : SimpleTestRunner;
+		private var testRunner2 : AsynchTestRunner;
+		public static var trace : Function = TraceAdapter.SOSTracer;
+		public var curStatusSize : Number = 10;
+
+		
 		public function TroyWorks_Test() {
-			trace = TraceAdapter.TraceToSOS;
+			super();
+			trace("TroyWorks_Test()");
+			trace("OnLoaded******************");
 			eventSprite = new Sprite();
 			addChild(eventSprite);
-			eventSprite.graphics.beginFill(0x000000);
-			eventSprite.graphics.drawCircle(0, 0, curStatusSize);
-			eventSprite.x = stage.stageWidth / 2;
-			eventSprite.y = stage.stageHeight / 2;	
-			/*sos = new SOS();
-			sos.connect();
+
 			
-			sos.showMessage("TroyWorks_Test","!!!!!!!!!!!!!!!!!!!!!!!hello from TroyWorks_Test!!!!!!!!!!!!!!!!!!!!");
-			sos.showMessage("TroyWorks_Test", "A = A \r B = B \r C = C");
-			//sos.createDialog("Hello popup");
-			sos.clearConsole();
-			TraceAdapter.setTraceOutputToSOS();
-			this.trace("HIGHLIGHT sos this.trace");
-			TraceAdapter.setTraceOutputToFlashTrace();
-			this.trace("NORMAL this.trace");
-			trace = TraceAdapter.getNormalTracer();
-			trace("trace()");
-			trace = TraceAdapter.TraceToSOS;
-			trace("trace2()");
-			
-			var log:ILogger = new SOSLogger("TroyWorks_Test");
-			log.fatal("fatal message");
-			log.fatal("fatal message with folded a\rb\rc");
-			log.debug("debug message");
-			log.error("error message");
-			log.info("info message");
-			//log.severe("severe message");
-			
-			
-		//	this.trace("normal");*/
-		
-			startSynchronousTests();
+			addEventListener(Event.ENTER_FRAME, onProgress);	
+
+			onProgress(null);
+//			startSynchronousTests();
 		}
-		public function startSynchronousTests():void{
+
+	
+
+		public function startSynchronousTests() : void {
 			try {
 				testRunner = new SimpleTestRunner();
 				testRunner.addEventListener(Event.COMPLETE, onSychronousTestComplete);
 				testRunner.addEventListener(Event.CHANGE, onProgress);
 				///////////////////////////////////////////
-			//	testRunner.addTest(Test_ArrayX);
+				//	testRunner.addTest(Test_ArrayX);
 				//testRunner.addTest(Test_DesignByContract);
-//				testRunner.addTest(Test_Fsm);
-//				testRunner.addTest(Test_SOS);
-		//		testRunner.addTest(Test_SwitchPerformance);
-//				var nE:Test_NumberExtention = new Test_NumberExtention();
+				//				testRunner.addTest(Test_Fsm);
+				//				testRunner.addTest(Test_SOS);
+				//		testRunner.addTest(Test_SwitchPerformance);
+				//				var nE:Test_NumberExtention = new Test_NumberExtention();
 
 				//testRunner.addTest(Test_Hsm);		
 				//testRunner.addTest(Test_AsynchronousTestSuite);
 				//testRunner.addTest(Test_Indexer);
 				////////RUN TEST //////////////
 				testRunner.startTest();
-
-			} catch(e:Error) {
-				var evt:TestEvent = new TestEvent(Event.COMPLETE, false);
+			} catch(e : Error) {
+				var evt : TestEvent = new TestEvent(Event.COMPLETE, false);
 				onAllTestComplete(evt);
 			}
-
 		}
-		public function onProgress(event:TestEvent):void{
-			eventSprite.graphics.beginFill(0x666666);
-			curStatusSize +=5;
+
+		public function onProgress(event : Event = null) : void {
+			
+			eventSprite.graphics.clear();
+			
+			if(curStatusSize == 10) {
+				eventSprite.graphics.beginFill(0x000000);	
+			}else {
+				eventSprite.graphics.beginFill(0x666666);
+			}
+			curStatusSize += 5;
 			eventSprite.graphics.drawCircle(0, 0, curStatusSize);
-
+			
+			trace("onResize stage.stageWidth " + stage.stageWidth);
+			eventSprite.x = stage.stageWidth / 2 - (eventSprite.width / 2);
+			eventSprite.y = stage.stageHeight / 2 - (eventSprite.height / 2);
+			
+			if(stage.stageWidth != 0 && stage.stageHeight != 0  ) {
+				removeEventListener(Event.ENTER_FRAME, onProgress);	
+			}
 		}
-		public function onSychronousTestComplete(event:TestEvent):void{
+
+		public function onSychronousTestComplete(event : TestEvent) : void {
 			startAsynchTests();
 		}
-		public function startAsynchTests():void{
+
+		public function startAsynchTests() : void {
 			try {
 				testRunner2 = new AsynchTestRunner();
 				testRunner2.addEventListener(Event.COMPLETE, onAllTestComplete);
 				testRunner2.addEventListener(Event.CHANGE, onProgress);
 				///////////////////////////////////////////
-				testRunner2.addTest(Test_Hsm);		
+				//testRunner2.addTest(Test_Hsm);
+				testRunner2.addTest(Test_PlaceHolderUnitOfWork);
+						
 				////////RUN TEST //////////////
-				testRunner2.init();
-
-			} catch(e:Error) {
-				var evt:TestEvent = new TestEvent(Event.COMPLETE, false);
+				testRunner2.initStateMachine();
+			} catch(e : Error) {
+				var evt : TestEvent = new TestEvent(Event.COMPLETE, false);
 				onAllTestComplete(evt);
 			}
-
 		}
-		public function onAllTestComplete(event:TestEvent):void{
+
+		public function onAllTestComplete(event : TestEvent) : void {
 			///////////////////////////////////////
-			eventSprite.graphics.clear();
-			var clr:Number = 0xff0000;
-			var testResults:XML = event.resultsXML;		
+
+			var clr : Number = 0xff0000;
+			var testResults : XML = event.resultsXML;		
 			trace("//////////// TEST RESULTS///////////////////" + testResults.@passedAll);
-			if (testResults.@passedAll== "true") {
+			if (testResults.@passedAll == "true") {
 				// draw a green circle for passed
 				clr = 0x00ff00;
 			} else {
 				// draw a red circle for failed
 				clr = 0xcc0000;
 			}
+			
+			eventSprite.graphics.clear();
 			eventSprite.graphics.beginFill(clr);
 			eventSprite.graphics.drawCircle(0, 0, curStatusSize);
 			trace("stage.wid " + stage.stageWidth + " h: " + stage.stageHeight);
-			eventSprite.x = stage.stageWidth / 2;
-			eventSprite.y = stage.stageHeight / 2;	
 		}
 	}
 }

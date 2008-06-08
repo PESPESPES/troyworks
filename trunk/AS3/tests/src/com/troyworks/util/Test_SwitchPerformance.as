@@ -57,9 +57,10 @@ switchSwitchSignal 98
 */
 
 package com.troyworks.util {
-	import com.troyworks.cogs.CogSignal;
+	import com.troyworks.apps.tester.SynchronousTestSuite;	
+	import com.troyworks.core.cogs.CogSignal;
 	import flash.utils.getTimer;
-	import com.troyworks.tester.SynchronousTestSuite;
+
 		
 	public class Test_SwitchPerformance extends SynchronousTestSuite{
 		private var iterations:Number = 100000;

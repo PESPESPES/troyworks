@@ -1,7 +1,7 @@
-﻿package com.troyworks.cogs{
+﻿package com.troyworks.core.cogs{
 	import flash.events.Event;
-	import com.troyworks.cogs.CogEvent;
-	import com.troyworks.cogs.CogSignal;
+	import com.troyworks.core.cogs.CogEvent;
+	import com.troyworks.core.cogs.CogSignal;
 	public class TwoStateFsm extends Fsm {
 		public function TwoStateFsm(toOff:Boolean = false) {
 			super();
@@ -20,29 +20,31 @@
 		}
 		////////////////// ACCESSORS ///////////////////////////
 		public function isOff():Boolean{
-			return currentState==OFF_state;
+			return isInState(OFF_state);
 		}
 		public function isOn():Boolean{
-			return currentState==ON_state;
+			return isInState(ON_state);
 		}
 
 		////////////////// STATES /////////////////////////////
 		public function initial(event:CogEvent):void {
 			trace("TwoStateFsm.initialState");
-			currentState=OFF_state;
-			fsm_inited();
+			tran(OFF_state);
+			fsm_hasInited = true;
 		}
 		public function initial_to_OFF(event:CogEvent):void {
 			//trace("TwoStateFsm.initial_to_OFF");
-			currentState=OFF_state;
-			fsm_inited();
+			tran(OFF_state);
+			
+			fsm_hasInited = false;
+		//	fsm_inited();
 		}
 
 		public function ON_state(event:CogEvent):void {
 			//trace("TwoStateFsm.ON_state " + event);
 			switch(event.sig){
 				case CogSignal.PULSE:
-				currentState = OFF_state;
+				requestTran(OFF_state);
 				
 				break;
 				case CogSignal.CALLBACK:
@@ -55,7 +57,7 @@
 			//trace("TwoStateFsm.OFF_state " + event);
 			switch(event.sig){
 				case CogSignal.PULSE:
-				currentState = ON_state;
+				requestTran(OFF_state);
 				break;
 				case CogSignal.CALLBACK:
 				requestTran(ON_state);

@@ -2,10 +2,9 @@ package com.troyworks.framework.ui {
 	import flash.display.MovieClip; 
 
 	/**
-	import flash.display.MovieClip;
 	 * @author Troy Gardner
 	 */
-	interface IHaveChildrenComponents {
+	public interface IHaveChildrenComponents {
 		/*  
 		 * Used for notifying that this component has loaded, when there
 		 * is a heirarchy of components, the parent waiting on all the chilren

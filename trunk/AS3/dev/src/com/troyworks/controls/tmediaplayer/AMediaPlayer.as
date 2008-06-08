@@ -1,6 +1,9 @@
-package com.troyworks.mediaplayer { 
-	import com.troyworks.framework.ui.BaseComponent;
-	import com.troyworks.hsmf.AEvent;
+package com.troyworks.controls.tmediaplayer {
+	import com.troyworks.data.ArrayX;	
+	import com.troyworks.core.cogs.Hsm;	
+	import com.troyworks.core.Signals; 
+
+
 	
 	/*******************************************************
 	 * An abstract class for concrete media player to extend
@@ -34,37 +37,41 @@ package com.troyworks.mediaplayer {
 	 * When finished (rewinds but keeps the status at end to indicate completed).
 	 *  [playbutton, rewindAndStop] [Xseek/scrub--------bar] | [3:00/3:00] | [volume---- Mute] | [minSize, maxSize]
 	 */
-	public class AMediaPlayer extends BaseComponent{
-		
-		public static var PLAY_EVT : AEvent = AEvent.getNext("PLAY_EVT");
-		public static var PAUSE_EVT : AEvent =  AEvent.getNext("PAUSE_EVT");
-		public static var REWIND_AND_STOP_EVT : AEvent =  AEvent.getNext("REWIND_AND_STOP_EVT");
-		public static var REWIND_AND_PLAY_EVT : AEvent =  AEvent.getNext("REWIND_AND_PLAY_EVT");
-		public static var STARTED_CLIP_EVT : AEvent = AEvent.getNext("STARTED_CLIP_EVT");
-		public static var FINISHED_CLIP_EVT : AEvent = AEvent.getNext("FINISHED_CLIP_EVT");	
-		public static var STOP_EVT : AEvent =  AEvent.getNext("STOP_EVT");
-		public static var GOTOANDSTOP_EVT : AEvent =  AEvent.getNext("GOTOANDSTOP_EVT");
-		public static var GOTOANDPLAY_EVT : AEvent = AEvent.getNext("GOTOANDPLAY_EVT");
-		public static var INCREMENT_FRAME_EVT : AEvent =  AEvent.getNext("INCREMENT_FRAME_EVT");
-		public static var DECREMENT_FRAME_EVT : AEvent = AEvent.getNext("DECREMENT_FRAME_EVT");
-		//public static var PLAYBACK_STATE_CHANGED_EVT : AEvent =  AEvent.getNext("PLAYBACK_STATE_CHANGED_EVT");
-		//public static var PROGRESS_CHANGED_EVT : AEvent = AEvent.getNext("PROGRESS_CHANGED_EVT");
+	public class AMediaPlayer extends Hsm 
+	{
+
+		public static var SIG_PLAY : Signals = Signals.PLAY;
+		public static var SIG_PAUSE : Signals =  Signals.PAUSE;
+		public static var SIG_REWIND_AND_STOP : Signals =  Signals.REWIND_AND_STOP;
+		public static var SIG_REWIND_AND_PLAY : Signals =  Signals.REWIND_AND_PLAY;
+		public static var SIG_STOP : Signals =  Signals.STOP;
+		public static var SIG_GOTOANDSTOP : Signals =  Signals.GOTOANDSTOP;
+		public static var SIG_GOTOANDPLAY : Signals = Signals.GOTOANDPLAY;
+
+
+		public static var SIG_STARTED_CLIP : Signals = Signals.STARTED;
+		public static var SIG_FINISHED_CLIP : Signals = Signals.FINISHED;	
+		public static var SIG_INCREMENT_FRAME : Signals =  Signals.INCREMENT_FRAME;
+		public static var SIG_DECREMENT_FRAME : Signals = Signals.DECREMENT_FRAME;
+		//public static var SIG_PLAYBACK_STATE_CHANGED : Signals =  Signals.getNext("PLAYBACK_STATE_CHANGED");
+		//public static var SIG_PROGRESS_CHANGED : Signals = Signals.getNext("PROGRESS_CHANGED");
 		public static var EVTD_PLAYBACK_STATE_CHANGED : String =  "EVTD_PLAYBACK_STATE_CHANGED";
 		public static var EVTD_PROGRESS_CHANGED : String = "EVTD_PROGRESS_CHANGED";
 	
 		//
-		public static var NEXTCLIP_EVT : AEvent =  AEvent.getNext("NEXTCLIP_EVT");
-		public static var PREVCLIP_EVT : AEvent = AEvent.getNext( "PREVCLIP_EVT");
+		public static var SIG_NEXTCLIP : Signals =  Signals.GOTO_NEXT;
+		public static var SIG_PREVCLIP : Signals = Signals.GOTO_PREVIOUS;
 		//Static Events
-		public static var PLAYFLV_EVT : AEvent =  AEvent.getNext("PLAYFLV_EVT");
-		public static var PLAYMP3_EVT : AEvent =  AEvent.getNext( "PLAYMP3_EVT");
-		public static var PLAYIMAGE_EVT : AEvent =  AEvent.getNext("PLAYIMAGE_EVT");
-		public static var PLAYSWF_EVT : AEvent =  AEvent.getNext("PLAYSWF_EVT");
-		public static var TRANS_IN_EVT : AEvent =  AEvent.getNext("TRANS_IN_EVT");
-		public static var TRANS_OUT_EVT : AEvent =  AEvent.getNext("TRANS_OUT_EVT");
+		public static var SIG_PLAYFLV : Signals =  Signals.PLAYFLV;
+		public static var SIG_PLAYMP3 : Signals =  Signals.PLAYMP3;
+		public static var SIG_PLAYIMAGE : Signals =  Signals.PLAYIMAGE;
+		public static var SIG_PLAYSWF : Signals =  Signals.PLAYSWF;
+		public static var SIG_TRANS_IN : Signals =  Signals.TRANSIN_START;
+		public static var SIG_TRANS_OUT : Signals =  Signals.TRANSOUT_START;
 		public var clipSize:Number;
+		public var __cStateOpts : ArrayX;
 	
-		public function AMediaPlayer(initialState : Function, hsmfName : String, aInit : Boolean) {
+		public function AMediaPlayer(initialState:String = "s_initial", hsmfName : String = "AMediaPlayer", aInit : Boolean = true) {
 			super(initialState , hsmfName , aInit );
 		}
 	}

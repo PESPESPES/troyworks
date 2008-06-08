@@ -1,6 +1,9 @@
-package com.troyworks.framework.loader { 
-	import com.troyworks.hsmf.Hsmf;
-	import com.troyworks.hsmf.AEvent;
+package com.troyworks.framework.loader {
+	import flash.display.Bitmap;	
+	import flash.events.Event;	
+	
+	import com.troyworks.core.cogs.CogEvent;	
+	import com.troyworks.core.cogs.Hsm; 
 	import flash.display.BitmapData;
 	import com.troyworks.controls.tloadingIndicator.MCLoadingProgressIndicator;
 	/**
@@ -32,9 +35,7 @@ package com.troyworks.framework.loader {
 	 */
 	import flash.utils.getTimer;
 	import flash.display.MovieClip;
-	import flash.media.Sound;
-	import flash.xml.XMLDocument;
-	public class MCLoader extends Hsmf implements ILoader {
+	public class MCLoader extends Hsm implements ILoader {
 		public var hasStarted : Boolean;
 		public var target : MovieClip;
 		public var target_loadTarget : MovieClip;
@@ -92,8 +93,8 @@ package com.troyworks.framework.loader {
 	
 		public function MCLoader(aURL : String, aTarget : MovieClip)
 		{
-			super (s_initial, "MCLoader", true);
-			trace("new MCLoader" + hsmID+" for " + aURL + "  " + aTarget);
+			super ("s_initial", "MCLoader", true);
+			trace("new MCLoader" + smID+" for " + aURL + "  " + aTarget);
 			if(aURL == null || aURL == ""){
 				var s : String = "***ERROR*** MCLoader's url to load cannot be blank";
 				trace(s);
@@ -121,10 +122,10 @@ package com.troyworks.framework.loader {
 	
 		public function onLoad() : void{
 			trace("-------onLOAD------------------");
-			Q_TRAN(s0_isPartiallyLoaded);
+			requestTran(s0_isPartiallyLoaded);
 		}
 		function onUnload() : void{
-			Q_TRAN(s0_notLoaded);
+			requestTran(s0_notLoaded);
 		}
 		/////////////////////////////////////////////////////////
 		function calcStats() : void{
@@ -132,15 +133,15 @@ package com.troyworks.framework.loader {
 		protected function calcBandwidth() : Number {
 			loadedInMS = endLoadTime -  startRecieveTime;//startLoadTime;//
 	
-			public var sec : Number = (loadedInMS/1000);
-			public var bytes:Number = getTotalSize(); 
-			public var bps:Number = int((bytes*8/ sec)*100)/100;
+			var sec : Number = (loadedInMS/1000);
+			var bytes:Number = getTotalSize(); 
+			var bps:Number = int((bytes*8/ sec)*100)/100;
 			Bps = int((bytes/ sec)*100)/100;
 			//data transfer rates are 1000 to 1, not  datastorage rate which is 1024:1
 			Kbps = int((bytes* 8/ 1000/sec)*100)/100;
 			KBps = int((bytes/1000/sec)*100)/100;
 			///////////////////////////////////
-			public var SKBps:Number = int((bytes/ 1024/sec)*100)/100;
+			var SKBps:Number = int((bytes/ 1024/sec)*100)/100;
 			
 			detectedConnectionSpeed = getBandwidthDescription(Kbps);
 			trace("HIGHLIGHT ############################################ CALC BANDWIDTH #################################################################");
@@ -156,7 +157,7 @@ package com.troyworks.framework.loader {
 			return Bps;
 		}
 		public static function getBandwidthDescription(Kbps:Number):String{
-			public var detectedConnectionSpeed:String = null;
+			var detectedConnectionSpeed:String = null;
 			if(Kbps > 480){
 				detectedConnectionSpeed = HIGH_SPEED;
 			}else if(Kbps> 240){
@@ -197,45 +198,51 @@ package com.troyworks.framework.loader {
 			}
 			target.visible = false;
 			if(actTarget == null){
-				Q_TRAN(s1_errorInLoading);
+				requestTran(s1_errorInLoading);
 			}
 			// start loader
 			actTarget.loadMovie(URL);
 			//
-			if(hasInited == INIT_NOT_INITED){
-				init();
+			if(!stateMachine_hasInited){
+				initStateMachine();
 			}else {
-				Q_TRAN(s0_notLoaded);
+				requestTran(s0_notLoaded);
 			}
 			//	dispatchEvent("STARTED_LOADING");
 		}
 					/*..PSEUDOSTATE...............................................................*/
-		function s_initial(e : AEvent) : void
+		function s_initial(e : CogEvent) : Function
 		{
 			//trace("************************* s_initial " + util.Trace.me(e)+" ******************");
-			onFunctionEnter ("s_initial-", e, []);
-			if(e.sig != Q_TRACE_SIG){
-				Q_INIT(s0_notLoaded);
+			//onFunctionEnter ("s_initial-", e, []);
+			switch (e.sig)
+			{
+				case SIG_ENTRY :
+				{
+					trace("Start Pulse SIG_ENTRY");
+					return s0_notLoaded;
+				}
 			}
+			
 		}
 		/*.................................................................*/
-		function s0_notLoaded(e : AEvent) : Function
+		function s0_notLoaded(e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s_notLoaded-", e, []);
-			switch (e)
+			//this.onFunctionEnter ("s_notLoaded-", e, []);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
-					trace("Start Pulse ENTRY_EVT");
+					trace("Start Pulse SIG_ENTRY");
 					startPulse(1000/24);
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					stopPulse();
 					return null;
 				}
-				case PULSE_EVT:
+				case SIG_PULSE:
 				{
 					if(actTarget.totalFrames != null && actTarget.getBytesTotal()>0 ){
 						trace("Loader.actTarget.totalFrames " + actTarget.totalFrames + " " + actTarget.getBytesTotal());
@@ -243,26 +250,26 @@ package com.troyworks.framework.loader {
 						actTarget.isSubordinateContent = isSubordinateContent;
 						startRecieveTime = getTimer();
 						latencyMS = startRecieveTime - startLoadTime;
-						Q_TRAN(s0_isPartiallyLoaded);
+						requestTran(s0_isPartiallyLoaded);
 					}else if(errorTime < getTimer() ){
-						Q_TRAN(s1_errorInLoading);
+						requestTran(s1_errorInLoading);
 					}else {
 						trace("Loader.actTarget _url " + actTarget._url + "actTarget.name " + actTarget.name+ " totalFrames " + actTarget.totalFrames + " bytesTot: " + actTarget.getBytesTotal()+ " time " +getTimer() + " " + errorTime);
 					}
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 	
 		/*.................................................................*/
-		function s0_isPartiallyLoaded(e : AEvent) : Function
+		function s0_isPartiallyLoaded(e : CogEvent) : Function
 		{
 	
-			this.onFunctionEnter ("s0_isPartiallyLoaded-", e, []);
-			switch (e)
+		//	this.onFunctionEnter ("s0_isPartiallyLoaded-", e, []);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
 					trace("Partial enter\\\\\\\\\\\\\\\\\\"+ loadingProgress_mc + " " + loadingProgress_mc.gotoLoadingPercent);
 					//gotoAndPlay("loading");
@@ -274,13 +281,13 @@ package com.troyworks.framework.loader {
 	
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					trace("Partial exit////////////////////");
 					stopPulse();
 					return null;
 				}
-				case PULSE_EVT:
+				case SIG_PULSE:
 				{
 					trace("----MCL pulse-----"  + loadingProgress_mc + " func: " + util.Trace.me(loadingProgress_mc.gotoLoadingPercent, " looking for func", true));
 					var l : Number = getAmountLoaded();
@@ -291,52 +298,52 @@ package com.troyworks.framework.loader {
 					if(tot > 0 && l >= (tot - defaultCompletelyLoadedOffset) ){
 						loadingProgress_mc.gotoLoadingPercent(99);
 						trace("finished Loading------");
-						Q_TRAN(s0_positionAndAlign);
+						requestTran(s0_positionAndAlign);
 					}else{
 						loadingProgress_mc.gotoLoadingPercent(percent);
 					}
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 		/*.................................................................*/
-		function s0_positionAndAlign(e : AEvent) : Function
+		function s0_positionAndAlign(e : CogEvent) : Function
 		{
 	
-			this.onFunctionEnter ("s0_positionAndAlign-", e, []);
-			switch (e)
+		//	this.onFunctionEnter ("s0_positionAndAlign-", e, []);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
 					startPulse(1000/12);
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
-					dispatchEvent({type:EVT_DATA_LOADED});
+					dispatchEvent(new Event(EVT_DATA_LOADED));
 					target.visible = true;
 	
 					stopPulse();
 					return null;
 				}
-				case PULSE_EVT:
+				case SIG_PULSE:
 				{
-					Q_TRAN(s0_isCompletelyLoaded);
+					requestTran(s0_isCompletelyLoaded);
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 		
 		/*.................................................................*/
-		function s0_isCompletelyLoaded(e : AEvent) : Function
-		{
-			this.onFunctionEnter ("s0_isCompletelyLoaded-", e, []);
-			switch (e)
+		function s0_isCompletelyLoaded(e : CogEvent):Function {
+
+		//	this.onFunctionEnter ("s0_isCompletelyLoaded-", e, []);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :
-				{
+				case SIG_ENTRY :
+							{
 					trace("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 					trace("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 					trace("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -350,43 +357,46 @@ package com.troyworks.framework.loader {
 						trace("SMOOTHING ..................");
 							// create new BitMap data object and		
 							// draw the loaded bitmap in new bitmap
-						var bitmap : BitmapData = new BitmapData(target_loadTarget.width,target_loadTarget.height, true, 0x000000);
-						bitmap.draw(target_loadTarget);
+						var bitmapD : BitmapData = new BitmapData(target_loadTarget.width,target_loadTarget.height, true, 0x000000);
+						bitmapD.draw(target_loadTarget);
 							
-							// create a new movieclip to display the bitmap with
-	//						var img:MovieClip = target_loadTarget.createEmptyMovieClip("smoothed_mc", target_loadTarget.getNextHighestDepth());
+						var bitmap:Bitmap = new Bitmap(bitmapD);
+						bitmap.smoothing = true;
+						// create a new movieclip to display the bitmap with
+						//var img:MovieClip = target_loadTarget.createEmptyMovieClip("smoothed_mc", target_loadTarget.getNextHighestDepth());
 	
-							// remove original bitmap
-						target_loadTarget.unloadMovie();
-						target_loadTarget.removeMovieClip();
-							// draw BitMap in new clip, using the 'smoothing' flag
-						target.addChildAt(bitmap, target.getNextHighestDepth(),"auto", true);
+						// remove original bitmap
+						//target_loadTarget.unloadMovie();
+						//target_loadTarget.removeMovieClip();
+						
+						// draw BitMap in new clip, using the 'smoothing' flag
+						target.addChildAt(bitmap, target.numChildren-1);
 					}
-					gotoAndPlay("loaded");
+					//gotoAndPlay("loaded");
 					trace("attemping to dispatch EVTFINISHEDLOADING " + dispatchEvent);
-					dispatchEvent({type:EVT_FINISHED_LOADING});
+					dispatchEvent(new Event(EVT_FINISHED_LOADING));
 					loadingProgress_mc.gotoLoadingPercent(101);
 					completelyLoadedOffset = 0;//defaultCompletelyLoadedOffset;
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 		/*.................................................................*/
-		function s1_errorInLoading(e : AEvent) : Function
+		function s1_errorInLoading(e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_errorInLoading-", e, []);
-			switch (e)
+		//	this.onFunctionEnter ("s1_errorInLoading-", e, []);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
 					stopPulse();
-					trace("!!!!!!!!!!!!!!!!!!!!!!! ERROR IN Loader " + hsmID + " LOADING "+ URL +" !!!!!!!!!!!!!!!!!!!!!!!!!!");
+					trace("!!!!!!!!!!!!!!!!!!!!!!! ERROR IN Loader " + smID + " LOADING "+ URL +" !!!!!!!!!!!!!!!!!!!!!!!!!!");
 					for(var i:String in target){
 						trace(" + " + i + " " + target[i]);
 					}
 					loadingProgress_mc.gotoLoadingPercent(-1);
-					dispatchEvent(EVT_ERROR_LOADING);
+					dispatchEvent(new Event(EVT_ERROR_LOADING));
 					return null;
 				}
 			}

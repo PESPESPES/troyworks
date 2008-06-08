@@ -1,4 +1,4 @@
-package com.troyworks.mediaplayer.ui { 
+package com.troyworks.controls.tmediaplayer.ui { 
 	import com.troyworks.framework.ui.BaseComponent;
 	
 	/**
@@ -14,21 +14,21 @@ package com.troyworks.mediaplayer.ui {
 			super();
 			
 		}
-		public function onLoad() : void{
+		/*public function onLoad() : void{
 			super.onLoad();
 			trace("SeekBarNav.onLoad");
 		//	visible = true;
 			//Q_dispatch(ASSETS_LOADED_EVT);
 		
-		}	
+		}*/	
 		public function setPlayedProgress(percent : Number) : void {
 			trace("SeekBarNav.setPlayedProgress " + percent);
-			seekbutton_mc.x= _owidth * percent;
-			played_mc.width = _owidth * percent;
+			//TODO seekbutton_mc.x= _owidth * percent;
+			//TODO played_mc.width = _owidth * percent;
 		}
 	
 		public function setLoadedProgress(percent : Number) : void {
-			loaded_mc.width = _owidth * percent;
+			//TODO  loaded_mc.width = _owidth * percent;
 		}
 	
 	}
