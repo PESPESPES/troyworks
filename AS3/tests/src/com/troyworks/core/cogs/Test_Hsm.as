@@ -1,23 +1,23 @@
-﻿package com.troyworks.cogs
-{	import com.troyworks.util.DesignByContract;
+﻿package com.troyworks.core.cogs {
+	import com.troyworks.apps.tester.TestEvent;	
+	import com.troyworks.apps.tester.TestSuite;	
+	import com.troyworks.util.DesignByContract;
 	import com.troyworks.util.DesignByContractEvent;
 	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
-	import com.troyworks.tester.AsynchronousTestSuite;
+
 	import flash.utils.getTimer;
 	import flash.utils.Timer;
     import flash.events.TimerEvent;
     import flash.events.Event;
-	import com.troyworks.tester.TestSuite;
-    import com.troyworks.tester.TestEvent;
+
 	import com.troyworks.logging.TraceAdapter;
-	import com.troyworks.cogs.Hsm;
-	import com.troyworks.cogs.IntrospectableObj;
-	import com.troyworks.cogs.NameSpaceTest;
+
+	import com.troyworks.core.cogs.NameSpaceTest;
 	import flash.utils.Timer;
 	import flash.utils.describeType;
     import flash.events.TimerEvent;
-	import com.troyworks.reflection.introspectable;
+
 
 	/* This is a comprehensive test of possible state transitios and topologies as inspried by EightStateMachine*/
 	public class Test_Hsm extends TestSuite
@@ -69,12 +69,12 @@
 		public function getEightStateMachine(initListener:Function, defaultState:String = null):EightStateMachine{
 			
 			
-			Hsm.DEFAULT_TRACE = trace;
+			StateMachine.DEFAULT_TRACE = trace;
 			cogHasInited = false;
 			var GearBox:EightStateMachine =new EightStateMachine (defaultState) ;
 			GearBox.addEventListener(CogExternalEvent.CHANGED,initListener);
 			currentResultsFunction = initListener;
-			GearBox.initHsm();
+			GearBox.initStateMachine();
 			return GearBox;
 		}
 		///////////////////////////////////////////////////////////////////

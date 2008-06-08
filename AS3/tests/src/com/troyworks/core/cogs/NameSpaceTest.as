@@ -4,9 +4,9 @@
 * @version 0.1
 */
 
-package com.troyworks.cogs {
-	import com.troyworks.cogs.Hsm;
-	import com.troyworks.cogs.*;
+package com.troyworks.core.cogs {
+	import com.troyworks.snippets.reflection.IntrospectableObj;	
+	import com.troyworks.core.cogs.*;
 	import  flash.utils.describeType;
 	
 	public class NameSpaceTest extends IntrospectableObj{

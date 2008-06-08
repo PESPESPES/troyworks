@@ -1,8 +1,9 @@
-﻿package com.troyworks.tester
-{
-	import com.troyworks.tester.AsynchronousTestSuite;
+﻿package com.troyworks.tester {
+	import com.troyworks.apps.tester.AsynchronousTestSuite;	
+	import com.troyworks.apps.tester.SynchronousTestSuite;	
+
 	public class Test_AsynchronousTestSuite extends SynchronousTestSuite
-	{	var fsm:AsynchronousTestSuite;
+	{	protected var fsm:AsynchronousTestSuite;
 		public function Test_AsynchronousTestSuite():void{		
 			super();
 		}
@@ -45,7 +46,7 @@
 			return res;
 		}*/
 
-		public function test_init3():Boolean {
+	/*	public function test_init3():Boolean {
 			var res:Boolean=false;
 			fsm =new AsynchronousTestSuite () ;
 			fsm.addTest("DummyTest");
@@ -54,6 +55,6 @@
 			fsm.init();
 			res = (fsm != null && fsm.hasCompletedAllTests);
 			return res;
-		}/**/
+		}*/
 	}
 }

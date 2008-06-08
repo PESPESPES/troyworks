@@ -9,6 +9,22 @@
 * to a UI/Engine plus engine. So when it goes 'live' it's has access to the whole
 * like it was passed into the constructor.
 * 
+* http://troyworks.com/blog/?p=91
+* 
+* An example of it's use is UIStart()
+* 
+* 
+* if(parent != stage && Object(parent).xtraVars != null){
+     var img:String = Object(parent).xtraVars["image"];
+     visualURL = (img != null)?img:visualURL;
+     for (keyStr in Object(parent).xtraVars) {
+        valueStr = String(Object(parent).xtraVars[keyStr]);
+        loading_txt.appendText("\t" + keyStr + ":\t" + valueStr + "\n");
+     }
+  }else{
+     loading_txt.appendText("\t using DEFAULTS \n");
+  }
+* 
 * @author Troy Gardner
 * @version 0.1
 */

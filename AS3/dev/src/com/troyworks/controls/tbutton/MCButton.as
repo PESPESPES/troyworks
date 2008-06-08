@@ -8,12 +8,13 @@ package com.troyworks.controls.tbutton {
 	 * by one of two different methods, one is the stacked clips (more appropriate for things
 	 * that need to be resized with end caps
 	 *  and timeline, which is great for simple buttons, 
-	 *  the frames should be [up][over][down][hit....][inactive][enabled...]
+	 *  the frames should be [up][over][down][hit....][inactive][isEnabled...]
 	 */
-	import flash.ui.Mouse;
+	import com.troyworks.framework.ui.BaseComponent;	
+	
+	import flash.text.TextField;	
 	import flash.display.MovieClip;
-	import flash.text.TextField;
-	import flash.text.TextFormat;
+
 	public class MCButton extends MovieClip {
 
 		public var isReady:Boolean = false;
@@ -31,7 +32,7 @@ package com.troyworks.controls.tbutton {
 		public var hitFrameLbl:String = "down";
 		public var outFrameLbl:String = "up";
 		public var disabledFrameLbl:String = "disabled";
-		public var enabledFrameLbl:String = "up";
+		public var isEnabledFrameLbl:String = "up";
 		
 		//uses stacked clips for up, over, down states
 		public static var STACKED_MC_BUTTON:Number = 1;
@@ -53,19 +54,23 @@ package com.troyworks.controls.tbutton {
 		 
 		//defaults
 		public var MC_ButtonStructure:Number = SINGLEFRAME_MC_BUTTON;
-		
+		private var _ox : Number;
+		private var _oy : Number;
+		private var isLoaded : Boolean;
+		private var _owidth : Number;
+		private var _oheight : Number;
+
 		/*************************************
 		 *  Constructor
 		 */
 		
 		public function MCButton(initState : Function) {
-			super(initState, name+":MCButton", false);
-			trace(name+ ". New MC BUTTON");
-			owner = IHaveChildrenComponents(parent);
+		//	super(initState, name+":MCButton", false);
+		//	trace(name+ ". New MC BUTTON");
 		//	$tevD.debugTracesOn = true;
 		}
-		function onLoad():void{
-			isLoaded = true;
+		protected function onLoad():void{
+		//TODO	isLoaded = true;
 			trace(name+".MCButton.onLoad" );
 			if(up_mc != null && over_mc != null && totalFrames ==1){
 				trace("MC_ButtonStructure = STACKED_MC_BUTTON" + up_mc + " " + over_mc);
@@ -82,7 +87,7 @@ package com.troyworks.controls.tbutton {
 			}
 			trace(name+".MCButton.onLoad "  + MC_ButtonStructure + " HIGHLIGHT " + totalFrames);
 	
-			snapshotDimensions(this);
+		//TODO	snapshotDimensions(this);
 			 var n:String = String(name);
 			//generate the label and the name and the event
 			 var a:Number = n.indexOf("__");
@@ -96,9 +101,9 @@ package com.troyworks.controls.tbutton {
 	
 			this.label_txt.text = nm;
 			//		 label = nm;
-			 enabled = this.isEnabled;
+			 isEnabled = this.isEnabled;
 			isReady = true;
-			owner.onChildClipLoad(this);
+		//TODO	owner.onChildClipLoad(this);
 		
 		//	this.init = true;
 		}
@@ -124,7 +129,7 @@ package com.troyworks.controls.tbutton {
 			body.graphics.endFill();
 			
 			isMouseOver = false;
-			enabled = true;
+			isEnabled = true;
 			embedFont = true;
 			textFormat = textFormat_tft;
 			updateState();
@@ -133,43 +138,43 @@ package com.troyworks.controls.tbutton {
 			initialized = true;	
 		}*/
 	
-		function onReleaseHandler():void {
+		protected function onReleaseHandler():void {
 			trace(name+".MCButton.onReleaseHandler---------------------------");
 			setUIState("OVER");
 			trace("dispatch click " + click_evt);
-			TEventDispatcher.DEBUG_TRACES_ON = true;
-			dispatchEvent( {type:click_evt, target:this, index:hsmID, debug:true} );
-					TEventDispatcher.DEBUG_TRACES_ON = false;
+	//TODO		TEventDispatcher.DEBUG_TRACES_ON = true;
+//TODO			dispatchEvent( new MouseEvent(type:click_evt, target:this, index:hsmID, debug:true} );
+		//			TEventDispatcher.DEBUG_TRACES_ON = false;
 				
 			//Q_dispatch(Hsmf.USER_SIG);
 			trace(name+".MCButton.onReleaseHandler2222222222---------------------------");
 		
 		}
-		function onReleaseOutsideHandler():void {
+		protected function onReleaseOutsideHandler():void {
 			trace(name+".MCButton.onReleaseOutsideHandler");
 			setUIState("OUT");
-			dispatchEvent( {type:EVTD_OUT, target:this, index:hsmID} );
+	//TODO		dispatchEvent( {type:EVTD_OUT, target:this, index:hsmID} );
 		}
-		function onPressHandler():void {
+		protected function onPressHandler():void {
 			trace(name+".MCButton.onPressHandler");	
 			setUIState("DOWN");
-			dispatchEvent( {type:EVTD_DOWN, target:this, index:hsmID} );
+		//TODO	dispatchEvent( {type:EVTD_DOWN, target:this, index:hsmID} );
 		}
-		function onRollOverHandler():void {
+		protected function onRollOverHandler():void {
 			trace(name+".MCButton.onRollOverHandler");
 			setUIState("OVER");
-			dispatchEvent( {type:EVTD_ROLLOVER, target:this, index:hsmID} );
+		//TODO	dispatchEvent( {type:EVTD_ROLLOVER, target:this, index:hsmID} );
 			isMouseOver = true;
 		}
-		function onRollOutHandler() :void{
+		protected function onRollOutHandler() :void{
 			trace(name+".MCButton.onRollOutHandler");
 			setUIState("OUT");
-			dispatchEvent( {type:EVTD_ROLLOUT, target:this, index:hsmID} );
+		//TODO	dispatchEvent( {type:EVTD_ROLLOUT, target:this, index:hsmID} );
 			isMouseOver = false;
 		}
-		public function set enabled(val:Boolean) :void{
-				public var changed:Boolean =  (val != isEnabled);
-			isEnabled = (val == null)?false:val;
+		override public function set enabled(val:Boolean) :void{
+			var changed:Boolean =  (val != isEnabled);
+			isEnabled = val;
 			trace(name +".MCButton.setEnabled " + val);
 		
 			if((isLoaded && !isReady) || (isReady && changed)){
@@ -177,24 +182,25 @@ package com.troyworks.controls.tbutton {
 				//trace("enabling");
 					setUIState();
 			     //enable the events
-				onPress = onPressHandler;
+/*				onPress = onPressHandler;
 			    onRelease = onReleaseHandler;
 				onReleaseOutside =onReleaseOutsideHandler;
 				onRollOver = onRollOverHandler;
-				onRollOut = onRollOutHandler;
+				onRollOut = onRollOutHandler;*/
 				useHandCursor = true;
 			} else {
 				//trace("disabling");
 				setUIState();
 			     //disable everything
-				delete(onPress);
+/*				delete(onPress);
 			    delete(onRelease);
 				delete(onReleaseOutside);
 				delete(onRollOver);
-				delete(onRollOut);
+				delete(onRollOut);*/
 				useHandCursor = false;
 			}
 			}
+			super.enabled = val;
 		}
 		protected function setSize(aWidth:Number, aHeight:Number):void{
 			label_txt.width = aWidth;
@@ -202,12 +208,12 @@ package com.troyworks.controls.tbutton {
 			width = aWidth;
 			height = aHeight;
 		}
-		public function setUIState(msg:String) : void {
-			trace(name+".MCButton.setUIState."+msg + " enabled " + isEnabled + " type " +MC_ButtonStructure);
+		public function setUIState(msg:String = null) : void {
+			trace(name+".MCButton.setUIState."+msg + " isEnabled " + isEnabled + " type " +MC_ButtonStructure);
 			if(isEnabled){
 				////////////// ENABLED ///////////////////////////////
 				if (msg == null || msg == "UP") {
-					trace("going to enabled");
+					trace("going to isEnabled");
 					switch(MC_ButtonStructure){
 						case STACKED_MC_BUTTON:{
 							trace("via stackedbutton");
@@ -226,11 +232,11 @@ package com.troyworks.controls.tbutton {
 						case SINGLEFRAME_MC_BUTTON:{
 							trace("via singleframe");
 							alpha = 100;
-							resetSizeAndPosition();
+					//TODO		resetSizeAndPosition();
 							break;
 						}
 						default:{
-							REQUIRE(false, "ERROR in MCButton.setUIState, invalid MC_ButtonStructure: " + MC_ButtonStructure);
+						//TODO	REQUIRE(false, "ERROR in MCButton.setUIState, invalid MC_ButtonStructure: " + MC_ButtonStructure);
 						}
 					}
 				} else if (msg == "OVER") {
@@ -289,7 +295,7 @@ package com.troyworks.controls.tbutton {
 							break;
 						}
 						case SINGLEFRAME_MC_BUTTON:{
-							resetSizeAndPosition();
+						//TODO	resetSizeAndPosition();
 							break;
 						}	
 					}

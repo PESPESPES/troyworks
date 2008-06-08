@@ -1,7 +1,6 @@
 package com.troyworks.util { 
 	/*
-	A utility for comparing two times and c
-	reating duration based on milisecond resolution.
+	A utility for comparing two times and creating duration based on milisecond resolution.
 	duration can be quantized to some units of calendar time eg. year, minute second.
 	these durations are immune to changes in calendar time, 
 	e.g. daylight savings, 
@@ -9,18 +8,21 @@ package com.troyworks.util {
 	
 	but can be converted to calendar time via adding to some relative point in Calendar time
 	e.g. 1970, 1900.
+	 * 
+	 * Note that moving in time by milliseconds, when cast back into Calendar time may not 
+	 * be quite the place intended due to things like Leap year, speed of light etc ;) 
 	*/
 	public class TimeDateUtil {
-		public static const oneSecond = 1000;
-		public static const oneMinute = 60*TimeDateUtil.oneSecond;
+		public static const oneSecond:Number = 1000;
+		public static const oneMinute:Number = 60*TimeDateUtil.oneSecond;
 		// milliseconds in a minute
-		public static const oneHour = TimeDateUtil.oneMinute*60;
-		public static const oneDay = TimeDateUtil.oneHour*24;
-		public static const oneWeek = TimeDateUtil.oneDay*7;
-		public static const oneMonth = TimeDateUtil.oneWeek*4;
-		public static const oneAveMonth = 365/12*TimeDateUtil.oneDay;
-		public static const oneQuarter = 365*TimeDateUtil.oneDay/4;
-		public static const oneYear = 365*TimeDateUtil.oneDay;
+		public static const oneHour:Number = TimeDateUtil.oneMinute*60;
+		public static const oneDay:Number = TimeDateUtil.oneHour*24;
+		public static const oneWeek:Number = TimeDateUtil.oneDay*7;
+		public static const oneMonth:Number = TimeDateUtil.oneWeek*4;
+		public static const oneAveMonth:Number = 365/12*TimeDateUtil.oneDay;
+		public static const oneQuarter:Number = 365*TimeDateUtil.oneDay/4;
+		public static const oneYear:Number = 365*TimeDateUtil.oneDay;
 		private var _msRelative:Number;
 		//////////////////////////
 		public var a_milliseconds : Number;
@@ -47,7 +49,7 @@ package com.troyworks.util {
 		}
 		public static function parseRelativeTime(dateTime : Number) : TimeDateUtil{
 			var r : Number = dateTime;
-			var res = new TimeDateUtil();
+			var res:TimeDateUtil = new TimeDateUtil();
 
 			if(r > oneYear){
 				res.a_year = Math.floor(r/TimeDateUtil.oneYear);
@@ -124,21 +126,21 @@ package com.troyworks.util {
 			return "rd";
 	}
 		public function toStopWatchString() : String{
-			var res = TimeDateUtil.parseRelativeTime(_msRelative);
+			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(_msRelative);
 			return padTo(res.a_minute,2,"0")+":"+ padTo(res.a_seconds,2,"0");
 		}
 
 		public function toClockString() : String{
-			var res = TimeDateUtil.parseRelativeTime(_msRelative);
+			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(_msRelative);
 			return res.a_hour +":"+ res.a_minute+":"+ res.a_seconds;
 		}
 		public function toString() : String{
-			var res = TimeDateUtil.parseRelativeTime(_msRelative);
+			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(_msRelative);
 			return res.a_hour +":"+ res.a_minute+":"+ res.a_seconds+"."+ res.a_milliseconds;
 		}
 	
-		public static function FormatToString(val : Number) : String{
-			var res = TimeDateUtil.parseRelativeTime(val);
+		public static function formatToString(val : Number) : String{
+			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(val);
 			return res.a_hour +":"+ res.a_minute+":"+ res.a_seconds+"."+ res.a_milliseconds;
 		}
 	}

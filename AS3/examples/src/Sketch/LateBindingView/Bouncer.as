@@ -8,7 +8,7 @@ package
 	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;
 	
-	public class Bouncer
+	public dynamic class Bouncer extends MovieClip
 	{
 		public var view:MovieClip;
 		private var vx:Number;
@@ -16,7 +16,10 @@ package
 		
 		public function Bouncer(ball:MovieClip)
 		{
+			super();
+			trace("new Bouncer");
 			view = ball;
+		//	this.txt.text = "!!!";
 			init();
 		}
 		
@@ -27,21 +30,33 @@ package
 
 			vx = Math.random() * 10 - 5;
 			vy = Math.random() * 10 - 5;
-	//		view.addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			view.addEventListener(MouseEvent.ROLL_OVER, onRollOver);
-			view.addEventListener(MouseEvent.ROLL_OUT, onRollOut);
+	//		view.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
+	if(view != null){
+			view.addEventListener(MouseEvent.ROLL_OVER, onRollOverHandler);
+			view.addEventListener(MouseEvent.ROLL_OUT, onRollOutHandler);
+	}else {
+		addEventListener(MouseEvent.ROLL_OVER, onRollOverHandler);
+	}
 
 		}
-		protected function onRollOver(event:Event):void{
-			trace("onRollOver");
-			view.alpha = .5;
+		protected function onRollOverHandler(event:Event):void{
+			trace("onRollOverHandler");
+			if(view == null){
+				alpha = .5;
+			}else{
+				view.alpha = .5;
+			}
 		}
-		protected function onRollOut(event:Event):void{
-			trace("onRollOut");
-		 	view.alpha = 1;
+		protected function onRollOutHandler(event:Event):void{
+			trace("onRollOutHandler");
+			if(view == null){
+				this.alpha = 1;
+			}else{
+				view.alpha = 1;
+			}
 		}
 
-		private function onEnterFrame(event:Event):void
+		private function onEnterFrameHandler(event:Event):void
 		{
 			view.x += vx;
 			view.y += vy;

@@ -1,3 +1,5 @@
+OUTPUT FROM THE CLASS INSPECTOR
+
 <swf xmlns='http://macromedia/2003/swfx' version='9' framerate='12' siz
 8000' compressed='true' >
   <!-- framecount=1 length=1408 -->
@@ -36,6 +38,7 @@ onScalingStrokes='false' usesScalingStrokes='false'>
   <ShowFrame/>
 </swf>
 
+OUTPUT FROM THE ASSET 
 
 <swf xmlns='http://macromedia/2003/swfx' version='9' framerate='12' size=
 8000' compressed='true' >
@@ -63,3 +66,45 @@ ching='false' swfRelativeUrls='false' useNetwork='false'/>
   <PlaceObject2 idref='MyLineClip' depth='1' matrix='t2260,1040'/>
   <ShowFrame/>
 </swf>
+
+CHANGING THE CLASS TO BOUNCER
+r.jar" Asset.swf
+<!-- Parsing swf file:/C:/DATA_SYNC/CodeProjects/workspace/TroyWorks AS3 - examp
+les/src/Sketch/SymbolClass/Asset.swf -->
+<!-- ?xml version="1.0" encoding="UTF-8"? -->
+<swf xmlns='http://macromedia/2003/swfx' version='9' framerate='12' size='11000x
+8000' compressed='true' >
+  <!-- framecount=1 length=1362 -->
+  <FileAttributes hasMetadata='false' actionScript3='true' suppressCrossDomainCa
+ching='false' swfRelativeUrls='false' useNetwork='false'/>
+  <SetBackgroundColor color='#FFFFFF'/>
+  <DoABC2 name=''>
+  </DoABC2>
+  <DefineShape6 id='1' bounds='(50,-10),(8569,6949)' edgebounds='(60,0),(8559,69
+39)' usesNonScalingStrokes='false' usesScalingStrokes='false'>
+    <linestyle color='#FFCC0080' width='20' />
+    <styleChange dx='60' dy='0' lineStyle='1' />
+    <line dx='8499' dy='6939' />
+  </DefineShape6>
+  <DefineSprite id='2'>
+    <!-- sprite framecount=1 -->
+    <PlaceObject2 idref='1' depth='1' matrix='t0,0'/>
+    <ShowFrame/>
+  </DefineSprite>
+  <SymbolClass>
+    <Symbol idref='2' className='Bouncer' />
+  </SymbolClass>
+  <!-- instance of Bouncer -->
+  <PlaceObject2 idref='Bouncer' depth='1' matrix='t2260,1040'/>
+  <ShowFrame/>
+</swf>
+
+NOTE THESE ARE THE DROIDS BEING LOOKED FOR: how to get a more meaningful linkage id? 
+  <DefineSprite id='2'>
+
+  <SymbolClass>
+    <Symbol idref='2' className='Bouncer' />
+
+GOAL
+
+look for className, rewrite it to desired Classname (e.g. Bouncer if it's MyLineClip), reload the swf bytes.

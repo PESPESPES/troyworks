@@ -5,8 +5,7 @@
 */
 
 package com.troyworks.logging {
-	import com.troyworks.tester.AsynchronousTestSuite;
-	import com.troyworks.tester.SynchronousTestSuite;
+	import com.troyworks.apps.tester.SynchronousTestSuite;	
 	import com.troyworks.logging.TraceAdapter;
 
 	
@@ -37,7 +36,22 @@ package com.troyworks.logging {
 					trace("trace()");
 //					trace = TraceAdapter.TraceToSOS;
 					trace("trace2()");
-					
+								/*sos = new SOS();
+			sos.connect();
+			
+			sos.showMessage("TroyWorks_Test","!!!!!!!!!!!!!!!!!!!!!!!hello from TroyWorks_Test!!!!!!!!!!!!!!!!!!!!");
+			sos.showMessage("TroyWorks_Test", "A = A \r B = B \r C = C");
+			//sos.createDialog("Hello popup");
+			sos.clearConsole();
+			//TraceAdapter.setTraceOutputToSOS();
+			trace("HIGHLIGHT sos this.trace");
+			//TraceAdapter.setTraceOutputToFlashTrace();
+			trace("NORMAL this.trace");
+			trace = TraceAdapter.getNormalTracer();
+			trace("trace()");
+			trace = TraceAdapter.TraceToSOS;
+			trace("trace3()");
+
 					var log:ILogger = new SOSLogger("TroyWorks_Test");
 					log.fatal("fatal message");
 					log.fatal("fatal message with folded a\rb\rc");

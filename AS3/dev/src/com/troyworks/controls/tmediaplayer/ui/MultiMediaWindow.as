@@ -1,17 +1,14 @@
-package com.troyworks.mediaplayer.ui {
+package com.troyworks.controls.tmediaplayer.ui {
+	import flash.display.DisplayObject;	
+	
+	import com.troyworks.controls.tmediaplayer.MixinPlayer;	
 	import com.troyworks.core.tweeny.Elastic;	
 	import com.troyworks.core.tweeny.Tny; 
 	import com.troyworks.framework.ui.BaseComponent;
 	import com.troyworks.framework.loader.MCLoader;
-	import de.alex_uhlmann.animationpackage.animation.Alpha;
-	import com.robertpenner.easing.Elastic;
 	import com.troyworks.framework.ui.IHaveChildrenComponents;
-	import com.troyworks.hsmf.AEvent;
 	import com.troyworks.util.DesignByContract;
-	import com.troyworks.mediaplayer.MixinPlayer;
 	import com.troyworks.controls.tdraggable.DragProxy;
-	import com.troyworks.events.EVTD;
-	import com.troyworks.events.TEventDispatcher;
 	import com.troyworks.ui.Bounds2;
 	/**
 	 * This player is a generic player for flash content that typically 
@@ -27,7 +24,7 @@ package com.troyworks.mediaplayer.ui {
 	import flash.display.MovieClip;
 	import flash.display.Stage;
 	public class MultiMediaWindow extends BaseComponent {
-		var base_mc : MovieClip;
+		var base_mc : DisplayObject;
 		public static var _className : String = "com.troyworks.mediaplayer.ui.MultiMediaWindow";
 		//These exist in a heirarchy of
 		// MyArt ( a clip you create and pass in)
@@ -79,7 +76,7 @@ package com.troyworks.mediaplayer.ui {
 			trace("ccccccccccccccccccc placeHolderArea_m:  " + placeHolderArea_mc + " cccccccccccccccccccccccccccc");
 			trace("ccccccccccccccccccc this:  " + this + " ccccccccccccccccccccccccccc");
 			trace("cccccccccccccccccccccccccccccccccccccccccccccc");
-			base_mc = (placeHolderArea_mc == null)?this:placeHolderArea_mc;
+			base_mc = (placeHolderArea_mc == null)?this.view:placeHolderArea_mc;
 			if(maskPATH != null){
 				setMaskTo(maskPATH);
 			}
@@ -197,30 +194,30 @@ package com.troyworks.mediaplayer.ui {
 	
 			maskPATH = (o == null)?0xFF0000:o;
 			if(hasOnLoad){
-				trace(name+".setMaskTo xxxxxxxxxxxxxxxxxxxxxxxxxx" + o);
+				trace(view.name+".setMaskTo xxxxxxxxxxxxxxxxxxxxxxxxxx" + o);
 				setClipContentTo(this, base_mc.mask_mc, maskPATH);
 				//trace("attempting to set mask" + base_mc.shell_mc + " " + base_mc.mask_mc);
 				base_mc.shell_mc.setMask(base_mc.mask_mc);
 			}
 				
 		}
-		public function setFrameTo(o : Object, alpha : Number) : void{
-			trace(name+".setFrameTo " + o + " alpha : " + alpha);
+		public function setFrameTo(o : Object, alpha : Number = 1) : void{
+			trace(view.name+".setFrameTo " + o + " alpha : " + alpha);
 			framePATH = o;
 			if(hasOnLoad){
 				setClipContentTo(this, base_mc.shell_mc.frame_mc, framePATH, alpha);
 			}
 		}
 		public function setLoadingProgressIndicatorTo(o : Object, alpha : Number) : void{
-			trace(name+".setLoadingProgressIndicatorTo " + o + " alpha : " + alpha);
+			trace(view.name+".setLoadingProgressIndicatorTo " + o + " alpha : " + alpha);
 			loadingProgressPATH = o;
 			if(hasOnLoad){
 				setClipContentTo(this, base_mc.shell_mc.loadingProgress_mc, loadingProgressPATH, alpha);
 			}
 			
 		}
-		public function setCoverTo(o : Object, alpha : Number) : void{
-			trace(name+".setCoverTo " + o + " alpha : " + alpha);
+		public function setCoverTo(o : Object, alpha : Number= 1) : void{
+			trace(view.name+".setCoverTo " + o + " alpha : " + alpha);
 			coverPATH = o;
 			if(hasOnLoad){
 				REQUIRE(base_mc.shell_mc.cover_mc != null, " setCoverTo base_mc.shell_mc.cover_mc cannot be null");
@@ -228,7 +225,7 @@ package com.troyworks.mediaplayer.ui {
 			}
 		}
 		public function setContentTo(o : Object, alpha : Number, filters : Array, isInteractive:Boolean) : void{
-			trace(name+".setContentTo " + o+ " alpha : " + alpha + " filters " + filters +  " isInteractive " + isInteractive + " hasOnLoad: " + hasOnLoad);
+			trace(view.name+".setContentTo " + o+ " alpha : " + alpha + " filters " + filters +  " isInteractive " + isInteractive + " hasOnLoad: " + hasOnLoad);
 			contentPATH = o;
 			contentFilters = filters; 
 			if(hasOnLoad){
@@ -267,7 +264,7 @@ package com.troyworks.mediaplayer.ui {
 			}
 		}
 		public function setBackgroundTo(o : Object, alpha : Number) : void{
-			trace(this.name + " setBackgroundTo " + o+ " alpha : " + alpha);
+			trace(this.view.name + " setBackgroundTo " + o+ " alpha : " + alpha);
 			backgroundPATH = o;
 			if(hasOnLoad){
 				REQUIRE(base_mc.shell_mc.background_mc != null, " setContentTo base_mc.shell_mc.background_mc cannot be null");
@@ -418,7 +415,7 @@ package com.troyworks.mediaplayer.ui {
 			{
 				case ENTRY_EVT :
 				{
-					trace("AAAAAAAAAAAAAAAAAAAAAAAAAAA "+ name +" 'MultiMediaWindow' s0_viewAssetsLoaded AAAAAAAAAAAAAAAAAAAAAAAAAAAA  \r " + util.Trace.me( owner));
+					trace("AAAAAAAAAAAAAAAAAAAAAAAAAAA "+ view.name +" 'MultiMediaWindow' s0_viewAssetsLoaded AAAAAAAAAAAAAAAAAAAAAAAAAAAA  \r " + util.Trace.me( owner));
 				//	REQUIRE(owner != null, "MultiMediaWindow owner cannot be null");
 					REQUIRE(base_mc != null, "MultiMediaWindow base_mc cannot be null");
 					snapshotDimensions(base_mc);

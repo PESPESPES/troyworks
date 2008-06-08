@@ -15,48 +15,39 @@ package com.troyworks.framework.ui {
 	*
 	* @author Troy Gardner
 	* @version
-	*/
+	 */
+	import flash.display.Sprite;	
+	import flash.display.DisplayObject;	
+	
+	import com.troyworks.core.cogs.CogEvent;	
+	import com.troyworks.core.cogs.Hsm;	
+	import com.troyworks.core.cogs.CogSignal;	
 	import com.troyworks.framework.IApplication;
-	import com.troyworks.hsmf.AEvent;
-	import com.troyworks.hsmf.Signal;
+
 	
 	//parent chain: HsmfE (statemachine + events)->MovieClip->Object
 	import flash.display.MovieClip;
-	import flash.display.Stage;
-	import flash.text.TextField;
-	public class BaseComponent extends com.troyworks.hsmf.Hsmf implements IHaveChildrenComponents {
+	public class BaseComponent extends Hsm implements IHaveChildrenComponents {
 		//public var app : IApplication;
 		// the base component supports
 		// preloading, transition in, active, transition out to inactive,
 		// those that have status provide it
+		public var view : DisplayObject;
 		public static var EVT_LOADED : String = "EVT_LOADED";
 		public static var EVT_READY : String = "EVT_READY";
 		public static var EVT_TRANSIN : String = "EVT_";
 	
 	
-		public static var ASSETS_LOADED_SIG : Signal = Signal.getNext("ASSETS_LOADED");
-		public static var STAGE_RESIZE_SIG : Signal = Signal.getNext("STAGE_RESIZE_EVT");
+		public static var ASSETS_LOADED_SIG : CogSignal = CogSignal.getNextSignal("ASSETS_LOADED");
+		public static var STAGE_RESIZE_SIG : CogSignal = CogSignal.getNextSignal("STAGE_RESIZE_EVT");
 	
-		public static var ASSETS_LOADED_EVT : AEvent = new AEvent(ASSETS_LOADED_SIG);
-		public static var STAGE_RESIZE_EVT : AEvent = new AEvent(STAGE_RESIZE_SIG);
 	// capture positions
-		public var _ox : Number = null;
-		public var _oy : Number = null;
-		public var _owidth : Number = null;
-		public var _oheight : Number = null;
-		public var _oxscale : Number = null;
-		public var _oyscale : Number = null; 
-		//actual height
-		public var _oawidth : Number = null;
-		public var _oaheight : Number = null;
-	
-		public var _o_wh_asp : Number = null;
-		public var _o_hw_asp : Number = null;
+
 	
 		public var isFullScreenMode : Boolean = false;
 		public var followStage : Boolean = true;
-		public var hAlign : Boolean = null;
-		public var vAlign : Boolean = null;
+		public var hAlign : Boolean = false;
+		public var vAlign : Boolean = false;
 		public var centerMe : Boolean = false;
 		public var mcbuttons : Array = new Array();
 	
@@ -65,11 +56,11 @@ package com.troyworks.framework.ui {
 		public var isLoaded : Boolean;
 		public var isReady : Boolean;
 	
-		public function BaseComponent(initialState : Function, hsmfName : String, aInit : Boolean)
+		public function BaseComponent(initialState : String = "s_initial", hsmfName : String = null, aInit : Boolean = false)
 		{
-			super ((initialState != null)?initialState: s_initial, (hsmfName != null)?hsmfName:name+":BaseComponent");
-			if(aInit == null || aInit == true){
-				init();
+			super (initialState, (hsmfName != null)?hsmfName+":BaseComponent":"BaseComponent");
+			if(aInit){
+				initStateMachine();
 			}
 		}
 		public function onLoad(init : Boolean) : void
@@ -78,39 +69,24 @@ package com.troyworks.framework.ui {
 			//if(codeGen > -1){
 			//	trace("ERROR " + import com.troyworks.util.codeGen.UIHelper.genCode(this, codeGen));
 			//}
-			trace (this.name + " AAAAAAAAAAAAAAAAAAABaseComponent.onLoadAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+		//	trace (this.name + " AAAAAAAAAAAAAAAAAAABaseComponent.onLoadAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			//		trace ("setting owidht " + _root.vid_mc.width + "  height" + _root.vid_mc.height);
-			snapshotDimensions(this);
-			/*if (this.name.indexOf ("Menu") > - 1)
-			{
-			} else if (this.hAlign == null)
-			{
-				this.center ();
-				if (this.isFullScreenMode)
-				{
-					this.scaleToStage ();
-				}
-			}*/
-			//if we've scripted position recapture the info.
-			this._ox = this.x;
-			this._oy = this.y;
-			this._owidth = this.width;
-			this._oheight = this.height;
+		//TODO setup snapshot of dimensions	snapshotDimensions(this);
 			isLoaded = true;
 			
-			if(owner == null){
-				owner = IHaveChildrenComponents(parent);
-			}
+	//		if(owner == null){
+	//			owner = IHaveChildrenComponents(parent);
+	//		}
 	
-			owner.onChildClipLoad(this);
+			//owner.onChildClipLoad(this);
 		/*	if((hasInited == INIT_NOT_INITED) && (init == true || init == null)){
 				//activate the statemachine
 				super.init();	
 			}*/
-			Q_dispatch(ASSETS_LOADED_EVT);
+			dispatchEvent(ASSETS_LOADED_SIG.createPrivateEvent());
 			if (followStage)
 			{
-				Stage.addListener (this);
+				//TODO add listener to state resize				stage.addEventListener (this);
 			}
 		}
 	
@@ -133,7 +109,7 @@ package com.troyworks.framework.ui {
 		public function onChildClipEvent(e : Object) : void{
 			trace("000000000000000000000000000000000000000000000000000000");
 			trace("0000000000000000000000000BaseComponent.onChildClipEvent00000000000000000000000000000");
-			trace(util.Trace.me(e, "evt ", false));
+			//trace(util.Trace.me(e, "evt ", false));
 			trace("000000000000000000000000000000000000000000000000000000");
 			trace("000000000000000000000000000000000000000000000000000000");
 			trace("000000000000000000000000000000000000000000000000000000");
@@ -159,12 +135,12 @@ package com.troyworks.framework.ui {
 			//
 			var viewport : MovieClip = null;
 			if (a_mc.viewport_mc == null) {
-				for (var i in a_mc) {
-					var b = a_mc[i];
+				for (var i:String in a_mc) {
+					var b:Sprite = a_mc[i] as Sprite;
 				//	trace(i+" = "+b);
-					if (b.viewport_mc != null) {
+					if (Object(b).viewport_mc != null) {
 					//	trace("found viewport l1");
-						viewport = b.viewport_mc;
+						viewport = Object(b).viewport_mc;
 						break;
 					}
 				}
@@ -213,23 +189,23 @@ package com.troyworks.framework.ui {
 	
 			to_mc._o_wh_asp = s_mc.width/s_mc.height;
 			to_mc._o_hw_asp = s_mc.height/s_mc.width;
-			trace( util.Trace.me(to_mc, "ERROR SNAPSHOT DIMENSIONS ", true));
+			//trace( util.Trace.me(to_mc, "ERROR SNAPSHOT DIMENSIONS ", true));
 			trace(" captureOriginalAspect "+to_mc._url+" "+to_mc.width);
 		}
-		public function center() : void {
+	/*	public function center() : void {
 			//Center
 			//	trace(this.name + "BaseComponent.center()" + stage.stageWidth + " " + stage.stageHeight  + " " + this.width + " " + this.height);
 			this.x = (stage.stageWidth - this.width) / 2;
 			this.y = (stage.stageHeight - this.height) / 2;
 			//	trace("setting to x " + this.x + " y " + this.y);
 			
-		}
+		}*/
 		public static function centerClipTo(still_mc : MovieClip, moving_mc : MovieClip, override_width : Number, override_height : Number, scaleW : Number, scaleH : Number) : void
 		{
 			//Center
 			//	trace(this.name + "BaseComponent.center()" + stage.stageWidth + " " + stage.stageHeight  + " " + this.width + " " + this.height);
-			var dw : Number = (override_width == null)? still_mc.width:override_width;
-			var dh : Number = (override_height == null)? still_mc.height:override_height;
+			var dw : Number = (isNaN(override_width))? still_mc.width:override_width;
+			var dh : Number = (isNaN(override_height))? still_mc.height:override_height;
 			var iw : Number = moving_mc.width /scaleW;
 			var ih : Number = moving_mc.height/scaleH;
 			
@@ -302,7 +278,7 @@ package com.troyworks.framework.ui {
 				return r;
 			}
 		}
-		public static function scaleTo(still_mc : MovieClip, moving_mc : MovieClip , override_width : Number, override_height : Number, viewport_width : Number, viewport_height : Number) : void {
+	/*	public static function scaleTo(still_mc : MovieClip, moving_mc : MovieClip , override_width : Number, override_height : Number, viewport_width : Number, viewport_height : Number) : void {
 			trace("HIGHLIGHT scaleTo");
 			trace ("stage.stageWidth " + stage.stageWidth + " still  mc " + still_mc.width + " moving  mc " + moving_mc.width + " override " + override_width);
 			trace ("stage.stageHeight " + stage.stageHeight + " still  mc " + still_mc.height+ " moving  mc " + moving_mc.height+ " override " + override_height);
@@ -441,7 +417,7 @@ package com.troyworks.framework.ui {
 				trace("NOT resizing");
 			}
 		}*/
-		public function scaleToStage(override_width : Number, override_height : Number) : void {
+		/*public function scaleToStage(override_width : Number, override_height : Number) : void {
 			trace ("stage.stageWidth " + stage.stageWidth + " mc " + this.width);
 			trace ("stage.stageHeight " + stage.stageHeight + " mc " + this.height);
 			//Scale
@@ -486,98 +462,100 @@ package com.troyworks.framework.ui {
 			this.y = this._oy;
 			this.width = this._owidth;
 			this.height = this._oheight;
-		}
+		}*/
 		//Stage Resize
 		public function onResize() : void {
 			trace("*********** STAGE_RESIZE A ***********");
-			Q_dispatch(STAGE_RESIZE_EVT);
+			dispatchEvent(STAGE_RESIZE_SIG.createPrivateEvent());
 			trace("*********** STAGE_RESIZE B ***********");
-			if(centerMe){
-				trace("________CENTERING?++++++++");
-				this.center ();
-			}
+//TODO			if(centerMe){
+//				trace("________CENTERING?++++++++");
+//				this.center ();
+	//		}
 		}
 		//similar to a hittest but doesn't consider clips blocking the view of the mouse
 		// and allows for padding (both positive and negative)d, for proximity purposes.
-		public function mouseIsOverMe(padding : Number) : Boolean
+		public function mouseIsOverMe(padding : Number = 0) : Boolean
 		{
-			padding = (padding == null) ?0 : padding;
-			return ((0 - padding) < this.mouseX && this.mouseX < (this.width + padding)) && ((0 - padding) < this.mouseY &&this.mouseY < (this.height + padding));
+			return ((0 - padding) < this.view.mouseX && this.view.mouseX < (this.view.width + padding)) && ((0 - padding) < this.view.mouseY &&this.view.mouseY < (this.view.height + padding));
 		}
 		/////////////////////// LEVEL 0 STATES////////////////////////////
 		
 		/*..PSEUDOSTATE...............................................................*/
-		public function s_initial(e : AEvent) : void
+		public function s_initial(e : CogEvent) : Function
 		{
 			//trace("************************* s_initial " + util.Trace.me(e)+" ******************");
-			onFunctionEnter ("s_initial-", e, []);
-			if(e.sig != Q_TRACE_SIG){
-				Q_INIT(s0_viewAssetsUnLoaded);
+	//		onFunctionEnter ("s_initial-", e, []);
+			switch(e.sig)
+			{
+				case SIG_INIT :
+				{
+					return s0_viewAssetsUnLoaded;
+				}
 			}
+			return s_root;
 		}
 		/*.................................................................*/
-		public function s0_viewAssetsUnLoaded(e : AEvent) : Function
+		public function s0_viewAssetsUnLoaded(e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s0_viewAssetsUnLoaded-", e, []);
+			//this.onFunctionEnter ("s0_viewAssetsUnLoaded-", e, []);
 			switch(e.sig)
 			{
 				case ASSETS_LOADED_SIG:{
-					Q_TRAN(s0_viewAssetsLoaded);
+					requestTran(s0_viewAssetsLoaded);
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 		/*.................................................................*/
-		public function s0_viewAssetsLoaded(e : AEvent) : Function
+		public function s0_viewAssetsLoaded(e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s0_viewAssetsLoaded-", e, []);
+			//this.onFunctionEnter ("s0_viewAssetsLoaded-", e, []);
 			switch(e.sig)
 			{
-				case Q_EXIT_SIG :
+				case SIG_EXIT :
 				{
-					Q_TRAN(s0_viewAssetsUnLoaded);
+					requestTran(s0_viewAssetsUnLoaded);
 					return null;
 				}
-				case Q_INIT_SIG :
+				case SIG_INIT :
 				{
-					Q_TRAN(s1_creatingView);
-					return null;
+					return s1_creatingView;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 		//////////////////////// LEVEL 1 STATES////////////////////////////
 		/*.................................................................*/
-		public function s1_viewNotCreated(e : AEvent) : Function
+		public function s1_viewNotCreated(e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_viewNotCreated-", e, []);
+		//	this.onFunctionEnter ("s1_viewNotCreated-", e, []);
 		/*	switch(e.sig)
 			{
 	
 			}*/
 			return s0_viewAssetsLoaded;
 		}	/*.................................................................*/
-		public function s1_creatingView(e : AEvent) : Function
+		public function s1_creatingView(e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_creatingView-", e, []);
+		//	this.onFunctionEnter ("s1_creatingView-", e, []);
 			switch(e.sig)
 			{
-				case Q_INIT_SIG :
+				case SIG_INIT :
 				{
-					Q_INIT(s1_viewCreated);
-					return null;
+					return s1_viewCreated;
 				}
 			}
 			return s0_viewAssetsLoaded;
 		}
 		/*.................................................................*/
-		public function s1_viewCreated(e : AEvent) : Function
+		public function s1_viewCreated(e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_creatingView-", e, []);
+		//	this.onFunctionEnter ("s1_creatingView-", e, []);
 			switch(e.sig)
 			{
-				case Q_ENTRY_SIG :
+				case SIG_ENTRY :
 				{
 					isReady = true;
 					return null;
@@ -586,17 +564,13 @@ package com.troyworks.framework.ui {
 			return s0_viewAssetsLoaded;
 		}
 		/*.................................................................*/
-		public function s1_destroyingView(e : AEvent) : Function
+		public function s1_destroyingView(e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_destroyingView-", e, []);
+		//	this.onFunctionEnter ("s1_destroyingView-", e, []);
 		/*	switch(e.sig)
 			{
 			}*/ 
 			return s0_viewAssetsLoaded;
 		}
-		
-	
-	
+		}
 	}
-	
-}

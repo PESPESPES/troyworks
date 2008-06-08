@@ -1,5 +1,9 @@
 package com.troyworks.ui { 
 	/**
+	 * 
+	 * Layout Anchors are useful guide for working in the FlashIDE 
+	 * to help put layout relative things.
+	 * 
 	 * @author Troy Gardner
 	 */
 	import flash.display.MovieClip;
@@ -8,14 +12,14 @@ package com.troyworks.ui {
 		public var depth2:Number;
 		public function LayoutAnchor() {
 			super();
+			addFrameScript(0, onLoad);
 		}
 		public function onLoad():void{
-		
 			visible = false;
 			setDepth();
 		}
 		public function setDepth():Number{
-					var a:Number = String(this.name).indexOf("ph");
+			var a:Number = String(this.name).indexOf("ph");
 			var b:Number = String(this.name).indexOf("_");
 			depth2 = parseInt(String(this.name).substring(a+2, a+2+b))+ 24;
 			trace("LayoutAnchor " +depth2);

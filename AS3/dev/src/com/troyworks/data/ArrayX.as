@@ -118,7 +118,7 @@ package com.troyworks.data {
 			r.appendArray(ary);
 			return r;
 		}
-	    public function slice(startIndex:int = 0, endIndex:int = 16777215):Array
+	     AS3 override function slice(startIndex:* = 0, endIndex:* = 16777215):Array
 		{
 			var r : ArrayX = new ArrayX();
 			var ary : Array = (super.slice.call(this, startIndex, endIndex));
@@ -255,12 +255,12 @@ package com.troyworks.data {
 			super.splice.apply (this, args);
 			return this;
 		};
-		public function removeAt(pos : Number, positions:Number = 1) : ArrayX
+		public function deleteAt(pos : Number, positions:Number = 1) : ArrayX
 		{
 			super.splice (pos, positions);
 			return this;
 		};
-		public function removeAll() : void
+		public function deleteAll() : void
 		{
 			super.splice (0, this.length );
 		} 

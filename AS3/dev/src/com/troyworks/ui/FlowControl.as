@@ -100,16 +100,19 @@ package com.troyworks.ui {
 		public var lastFrameNumber : Number;
 		public var view : MovieClip;
 		
+		///////// OPTIONS ///////////////////
 		public var preloadingRequired:Boolean = true;
 		public var autoPlay:Boolean = false;
+		public var watchAddedAndRemovedEvents:Boolean = true;
+		public var showDebugUI:Boolean = false;
 
 		
 		public function FlowControl() {
 			super();
-			trace("ClickThrough");
+			trace("FlowControl");
 			addFrameScript(0, onFrame1);
 			
-			view = this;
+			
 			
 			frameLabelToNumberIdx = new Object();
 			initFrameScripts = new Object();
@@ -117,31 +120,19 @@ package com.troyworks.ui {
 			debuggerUI_mc = new MovieClip();
 			debuggerUI_mc.name = "debuggerUI_mc";
 		}
-
+		/* view should have frame1 completely loaded by then */
 		public function onFrame1() : void {
-			QA = new Sprite();
-			parent.addChild(QA);
-			
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
+			trace("FlowControl.onFrame1");
 			//stage.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
-			onFrameChanged();
-			setView(this, true);
-			if(preloadingRequired){
-				stop();
-				///////////////////////////////
-				// load list of engines / services
-				///////////////////////////////
-			}else{
-				stop();
-				nextFrame();
-			}
+			//setView(this);
+
 		}
 
 		/* set the actual MovieClip/Sprite we are going to use */
-		public function setView(mc : MovieClip, enableWatch : Boolean = false) : void {
-			
+		public function setView(mc : MovieClip, sender:String = null) : void {
+			trace("FlowControl.setView" + mc + " " + sender);
 			view = mc;
-			if(enableWatch) {
+			if(watchAddedAndRemovedEvents) {
 				trace("enabling watch");
 				view.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
 				view.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
@@ -151,6 +142,22 @@ package com.troyworks.ui {
 			if(view.parent != null) {
 				view.parent.addChild(debuggerUI_mc);
 			}
+			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
+			if(preloadingRequired){
+				view.stop();
+				///////////////////////////////
+				// load list of engines / services
+				///////////////////////////////
+			}else{
+				view.stop();
+				view.nextFrame();
+			}
+			if(showDebugUI){
+				QA = new Sprite();
+				view.parent.addChild(QA);
+			}
+			onFrameChanged();
+			
 		}
 
 		protected function addedToStage(event : Event) : void {
@@ -210,9 +217,9 @@ package com.troyworks.ui {
 			for (;i < n; ++i) {
 				var dO : DisplayObject = getChildAt(i);
 				var isButton : Boolean = dO is SimpleButton;
-				var isRadio : Boolean = false;
+				//var isRadio : Boolean = false;
 				//dO is RadioButton;	
-								trace(i + " " + dO.name + " " + isButton);
+				trace(i + " " + dO.name + " " + isButton);
 				if(isButton && validDo(dO) ) {	
 					setupGoto(dO, dO.name, MouseEvent.CLICK); 
 				}			
@@ -220,39 +227,39 @@ package com.troyworks.ui {
 		}
 
 		public function setupGoto(ie : IEventDispatcher, frame : String, event : String = MouseEvent.CLICK) : void {
-			trace("setting up " + frame + " for " + (ie as DisplayObject).name +":" +ie);
+			trace("setting up " + frame + " for " + view +"."+ (ie as DisplayObject).name +":" +ie);
 			var ary : Array;
 			if(frame.indexOf("play_") == 0 || frame == "_play") {
 				ary = frame.split("_");
-				trace("ary: " + ary.join(","));
+				trace("ary: '" + ary.join("','") +"'");
 				if(!ie.hasEventListener(event)) {
 					if(ary.length == 1) {
-						ie.addEventListener(event, EventAdapter.create(play, [], false));
+						ie.addEventListener(event, EventAdapter.create(view.play, [], false));
 					}else {
-						ie.addEventListener(event, EventAdapter.create(gotoAndPlay, [ary[1]], false));
+						ie.addEventListener(event, EventAdapter.create(view.gotoAndPlay, [ary[1]], false));
 					}
 				}
 			}else if(frame == "next") {
 				if(!ie.hasEventListener(event)) {
-					ie.addEventListener(event, EventAdapter.create(nextFrame, [], false));
+					ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
 				}	 
 			}else {
 				ary = frame.split("_");
-				trace(" gotoAndStop " + frame + "  " + ary);
+				trace(" gotoAndStop " + frame + "  '" + ary.join("','") +"'");
 				//if(!ie.hasEventListener(event)) {
 			
 
 				if(ary.length > 0) {
 					if(ary[0] == "gotoAndStop") {
 						trace("adding gotoAndStop");
-						ie.addEventListener(event, EventAdapter.create(gotoAndStop, [ary[1]], false));
+						ie.addEventListener(event, EventAdapter.create(view.gotoAndStop, [ary[1]], false));
 					}else if(ary[0] == "gotoAndPlay") {
 						trace("adding gotoAndPlay");
-						ie.addEventListener(event, EventAdapter.create(gotoAndPlay, [ary[1]], false));
+						ie.addEventListener(event, EventAdapter.create(view.gotoAndPlay, [ary[1]], false));
 					}
 				}else {
 					trace("adding gotoAndStop2");
-					ie.addEventListener(event, EventAdapter.create(gotoAndStop, [frame], false));
+					ie.addEventListener(event, EventAdapter.create(view.gotoAndStop, [frame], false));
 				}
                 
 			//	}
@@ -264,18 +271,18 @@ package com.troyworks.ui {
 				var ary : Array = frame.split("_");				
 				if(!ie.hasEventListener(event)) {
 					if(ary.length == 1) {
-						ie.removeEventListener(event, EventAdapter.create(play, [], false));
+						ie.removeEventListener(event, EventAdapter.create(view.play, [], false));
 					}else {
-						ie.removeEventListener(event, EventAdapter.create(gotoAndPlay, [ary[1]], false));
+						ie.removeEventListener(event, EventAdapter.create(view.gotoAndPlay, [ary[1]], false));
 					}
 				}
 			}else if(frame == "next") {
 				if(ie.hasEventListener(event)) {
-					ie.removeEventListener(event, EventAdapter.create(nextFrame, [], false));
+					ie.removeEventListener(event, EventAdapter.create(view.nextFrame, [], false));
 				}
 			}else {
 				if(ie.hasEventListener(event)) {
-					ie.removeEventListener(event, EventAdapter.create(gotoAndStop, [frame], false));
+					ie.removeEventListener(event, EventAdapter.create(view.gotoAndStop, [frame], false));
 				}
 			}
 		}

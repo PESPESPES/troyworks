@@ -1,4 +1,4 @@
-package com.troyworks.mediaplayer.model { 
+package com.troyworks.controls.tmediaplayer.model { 
 	import com.troyworks.geom.d1.Line1D;
 	import flash.xml.XMLDocument;
 	import flash.xml.XMLNode;
@@ -18,28 +18,28 @@ package com.troyworks.mediaplayer.model {
 			super (o, type, start, length, end);
 			this.ID = Track.IDz ++;
 		}
-		public function init (name : String, type : Number, start : Number, length : Number, end : Number, volume : Number) : void
+		override public function init (name : String, type : Number, start : Number, length : Number, end : Number, volume : Number) : void
 		{
 		//	trace("Track.init vol: ");
 			super.init (name, type, start, length, end);
 			//this init of hte child array is necessary for some reason else they share a reference to the same one?!
 			this.children = new Array ();
 			this.calc ();
-			this.volume = (volume != null) ? volume : 100;
+			this.volume = (volume != XML) ? volume : 100;
 		}
-		///////////////////////////////////////////////////////////////////////
+	/*	///////////////////////////////////////////////////////////////////////
 		/// This is used to deserialize from disk
-		public function initFromXML (tree : XMLDocument, aType : Number, aStart : Number, aLength : Number, aEnd : Number) : Track
+		override public function initFromXML (tree : XMLDocument, aType : Number, aStart : Number, aLength : Number, aEnd : Number) : Track
 		{
 		//		trace ("Track.initFromXML start " + start + " len " + length + " end " + end);
 			var res : XMLNode = tree;
-			var name = (res.attributes.name != null) ?res.attributes.name + "" : "Unnamed Track";
-			var type = (res.attributes.type != null) ?parseInt (res.attributes.type) : aType;
-			var volume = (res.attributes.volume != null) ?parseInt (res.attributes.volume) : volume;
-			var start = (res.attributes.start != null) ?parseFloat (res.attributes.start) : aStart;
+			var name = (res.attributes.name != XML) ?res.attributes.name + "" : "Unnamed Track";
+			var type = (res.attributes.type != XML) ?parseInt (res.attributes.type) : aType;
+			var volume = (res.attributes.volume != XML) ?parseInt (res.attributes.volume) : volume;
+			var start = (res.attributes.start != XML) ?parseFloat (res.attributes.start) : aStart;
 	
-			var length = (res.attributes.length != null) ?parseFloat (res.attributes.length) : aLength;
-			var end = (res.attributes.end != null) ?parseFloat (res.attributes.end ) : aEnd;
+			var length = (res.attributes.length != XML) ?parseFloat (res.attributes.length) : aLength;
+			var end = (res.attributes.end != XML) ?parseFloat (res.attributes.end ) : aEnd;
 			this.init (name, type, start, length, end, volume);
 			var len = tree.childNodes.length;
 			for (var i = 0; i < len; i ++)
@@ -57,14 +57,14 @@ package com.troyworks.mediaplayer.model {
 			}
 			return this;
 		}
-		public function parseClipXML (tree : XMLNode) : void {
+		public function parseClipXML (tree : XML) : void {
 			var res : XMLNode = tree;
 			//	trace("res" + res);
 			//this.name = res.attributes.name+"";
 			//this.type = parseInt(res.attributes.type);
 			//this.volume = parseInt(res.attributes.volume);
 			var lelen = parseFloat (res.attributes.length);
-			if (lelen == null || isNaN (lelen))
+			if (lelen == XML || isNaN (lelen))
 			{
 				lelen = this.length;
 			}
@@ -98,7 +98,7 @@ package com.troyworks.mediaplayer.model {
 			var desc = res.attributes.description + "";
 			//trace ("parsing Shot " + desc);
 			var lelen = parseFloat (res.attributes.length);
-			if (lelen == null || isNaN(lelen))
+			if (lelen == XML || isNaN(lelen))
 			{
 				lelen = this.length;
 			}
@@ -155,7 +155,7 @@ package com.troyworks.mediaplayer.model {
 						break;
 						case "video" :
 						{
-							var l = new Line1D (desc, Track.VIDEO, ref, lelen, null);
+							var l = new Line1D (desc, Track.VIDEO, ref, lelen, XML);
 							data = new Object();
 							data.path = node.attributes.path+"";
 							data.size =  parseInt(node.attributes.size);
@@ -167,7 +167,7 @@ package com.troyworks.mediaplayer.model {
 						break;
 						case "text" :
 						{
-							var l = new Line1D (desc,  Track.OVERLAY, ref, lelen, null);
+							var l = new Line1D (desc,  Track.OVERLAY, ref, lelen, xml);
 							data = new Object();
 							data.text = node.firstChild.nodeValue+"";
 							trace("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
@@ -185,7 +185,7 @@ package com.troyworks.mediaplayer.model {
 					}
 				}
 				if(a){
-						var l = new Line1D (desc, trk, ref, lelen, null);
+						var l = new Line1D (desc, trk, ref, lelen, xml);
 						l.data = data;
 						//trace(util.Trace.me(l.data, " DATA ", true));
 						this.addChild (l);
@@ -193,7 +193,7 @@ package com.troyworks.mediaplayer.model {
 			} else
 			{
 				//trace ("parsingShot BBB ");
-				var l = new Line1D (desc, - 1, ref, lelen, null);
+				var l = new Line1D (desc, - 1, ref, lelen, xml);
 				this.addChild (l);
 			}
 		}
@@ -204,19 +204,19 @@ package com.troyworks.mediaplayer.model {
 			if (node.attributes.type == "silence")
 			{
 				//	trace ("found silentAudio clip " + length);
-				var l = new Line1D ("SILENCE",  Track.AUDIO, ref, length, null);
+				var l = new Line1D ("SILENCE",  Track.AUDIO, ref, length, node);
 				this.addChild (l);
 			} else
 			{
 				//	trace ("found real Audio clip " + length + " " + node.attributes.path);
-				var l = new Line1D (node.attributes.path, Track.AUDIO, ref, length, null);
+				var l = new Line1D (node.attributes.path, Track.AUDIO, ref, length, node);
 				var data = new Object();
 				data.size =  parseInt(node.attributes.size);
 				l.data = data;
 				this.size +=  parseInt(node.attributes.size);
 				this.addChild (l);
 			}
-		}
+		}*/
 		public function toString () : String
 		{
 			return " Track" + this.ID + " " + super.toString ();

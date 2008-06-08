@@ -9,7 +9,7 @@
 	import flash.events.IOErrorEvent;
 	import flash.events.HTTPStatusEvent;
 	import flash.events.SecurityErrorEvent;
-	
+	/* Translates Loader events into CogEvents for use in state transitions */
 	public class LoaderProxy
 	{	
 		private var ldr:Loader;

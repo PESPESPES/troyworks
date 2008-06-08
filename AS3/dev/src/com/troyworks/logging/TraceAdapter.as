@@ -17,21 +17,14 @@ package com.troyworks.logging {
 		public static var sosL:SOSLogger = null;
 		public static const HIGHLIGHT:String = "HIGHLIGHT";
 		public static var promptOnFatal:Boolean = true;
+		public static var NormalTracer:Function = trace;
+		public static var SOSTracer:Function = TraceAdapter.traceToSOS;
+				
 		
-		public static function setTraceOutputToSOS():void{
-			Object.prototype.trace = TraceToSOS;
+		public static function traceNormal(obj : Object ="") : void{
+				trace(obj);
 		}
-		public static function setTraceOutputToFlashTrace():void{
-			Object.prototype.trace =trace;
-		}
-		public static function setTraceOutputToNull():void{
-			Object.prototype.trace = new Function();
-		}
-		public static function getNormalTracer():Function{
-			return trace;
-		}
-		
-		public static function TraceToSOS(obj : Object ="") : void{
+		public static function traceToSOS(obj : Object ="") : void{
 			if(TraceAdapter.sosL == null || !TraceAdapter.sosL.isConnected()){
 				var ss:SOSLogger = new SOSLogger("TraceAdapter");
 				TraceAdapter.sosL = ss;

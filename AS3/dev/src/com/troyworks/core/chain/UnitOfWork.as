@@ -1,6 +1,9 @@
-package com.troyworks.core.chain
-{
-	import com.troyworks.core.cogs.Fsm;
+package com.troyworks.core.chain {
+	
+	
+	import com.troyworks.core.cogs.CogEvent;	
+	import com.troyworks.core.cogs.Hsm;	
+	import flash.events.IEventDispatcher;	
 	import com.troyworks.core.chain.IUnit;
 
 	/***************************************
@@ -8,8 +11,12 @@ package com.troyworks.core.chain
 	 * which may be parallel or sequential
 	 * providing progress along the way
 	 ***************************************/
-	public class UnitOfWork extends Fsm implements IUnit
+	public class UnitOfWork extends Hsm implements IUnit
 	{
+		
+		public static const EVT_COMPLETED:String  = "EVT_WORK_COMPLETED";
+		public static const EVT_PROGRESS:String  = "EVT_WORK_UPDATED_PROGRESS";
+		public static const EVT_ERROR:String  = "EVT_WORK_ERROR";
 		
 		public static const SEQUENTIAL_MODE:Boolean = true;
 		public static const PARALLEL_MODE:Boolean = false;
@@ -27,8 +34,8 @@ package com.troyworks.core.chain
 		protected var mode:Boolean = SEQUENTIAL_MODE;
 		public var checkInterval:Number = 1000/12;
 		
-		public function UnitOfWork(aMode:Boolean = SEQUENTIAL_MODE) {
-			super();
+		public function UnitOfWork(initState:String = "s__haventStarted", aMode:Boolean = SEQUENTIAL_MODE) {
+			super(initState, "Chain");
 			mode = aMode;
 			_smName = (mode == SEQUENTIAL_MODE)?SEQUENTIAL_WORKER:PARALLEL_WORKER;
 			trace("smName  " + _smName);  
@@ -42,22 +49,25 @@ package com.troyworks.core.chain
 		public function getWorkPerformed() : Number{
 			return totalPerformed;
 		}
-		function getTotalWorkToPerform() : Number{
+		public function getTotalWorkToPerform() : Number{
 	
 			return totalWork;
 		}
-		function calcStats() : void{
+		// Top down query and summary of status //
+		public function calcStats() : void{
 			totalPerformed = 0;
 			totalWork = 0;
 			for( var i:String in children){
-				 var c : ILoader = ILoader(children[i]);
-				totalWork += c.getAmountLoaded();
-				totalPerformed += c.getTotalSize();		
+				 var c : IUnit = IUnit(children[i]);
+				totalWork += c.getWorkPerformed();
+				totalPerformed += c.getTotalWorkToPerform();		
 			}
 		}
-		function addChild(c : ILoader) : void {
+		public function addChild(c : IUnit) : void {
 			children.push(c);
-			IEventDispatcher(c).addEventListener(EVT_FINISHED_LOADING, createCallback(PULSE_EVT));
+			IEventDispatcher(c).addEventListener(EVT_COMPLETED, calcStats);
+			IEventDispatcher(c).addEventListener(EVT_PROGRESS, calcStats);
+			IEventDispatcher(c).addEventListener(EVT_ERROR, calcStats);
 			calcStats();
 		}
 		
@@ -66,5 +76,32 @@ package com.troyworks.core.chain
 		
 		public function execute() : void {
 		}
+		public function bottomUpNotification():void{
+		}
+		///////////////////// STATES /////////////////////////
+
+		public function s_notDone(e : CogEvent) : Function
+		{
+			return s_root;
+		}
+		public function s__haventStarted(e : CogEvent) : Function
+		{
+			return s_notDone;
+		}
+		public function s__notDoneWithErrors(e : CogEvent) : Function
+		{
+			return s_notDone;
+		}
+		
+		public function s__doing(e : CogEvent) : Function
+		{
+			return s_notDone;
+		}
+		public function s_done(e : CogEvent) : Function
+		{
+			return s_root;
+		}
+		
+		
 	}
 }

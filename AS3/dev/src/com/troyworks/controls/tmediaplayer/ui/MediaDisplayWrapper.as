@@ -1,20 +1,14 @@
-package com.troyworks.mediaplayer.ui { 
-	 //import util.SWFUtilBasic;
-	//import util.BasicLoader;
-	import com.troyworks.hsmf.AEvent;
-	import com.troyworks.hsmf.Signal;
-	import com.troyworks.hsmf.Hsmf;
-	//import com.troyworks.spring.Factory;
-	//import com.troyworks.framework.IApplication;
-	//import util.TEventDispatcher.troyworks.framework.ui.BaseComponent ;
-	//import com.kidthing. *;
-	//import com.troyworks.util.director.DirectorUtils;
+package com.troyworks.controls.tmediaplayer.ui { 
+
 	//http://livedocs.macromedia.com/flex/1/asdocs/mx/controls/MediaDisplay.html
+	
+	import com.troyworks.core.cogs.CogEvent;	
+	
 	import flash.display.MovieClip;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
-	import flash.media.Video;
-	public class MediaDisplayWrapper extends com.troyworks.mediaplayer.AMediaPlayer {
+	//import flash.media.Video;
+	public class MediaDisplayWrapper extends com.troyworks.controls.tmediaplayer.AMediaPlayer {
 		//public static var PLAY_SIG : Signal = new Signal (USER_SIG.value + 0, "PLAY_SIG");
 		//public static var PAUSE_SIG : Signal = new Signal (USER_SIG.value + 1, "PAUSE_SIG");
 		//public static var STOP_SIG : Signal = new Signal (USER_SIG.value + 2, "STOP_SIG");
@@ -23,7 +17,7 @@ package com.troyworks.mediaplayer.ui {
 		////Static Events
 		//public static var PLAY_EVT : Event = new Event (PLAY_SIG);
 		//public static var PAUSE_EVT : Event = new Event (PAUSE_SIG);
-		//public static var STOP_EVT : Event = new Event (STOP_SIG);
+		//public static var SIG_STOP : Event = new Event (STOP_SIG);
 		//public static var NEXTCLIP_EVT : Event = new Event (NEXTCLIP_SIG);
 		//public static var PREVCLIP_EVT : Event = new Event (PREVCLIP_SIG);
 		public var netConn : NetConnection;
@@ -34,48 +28,48 @@ package com.troyworks.mediaplayer.ui {
 		//	public var __cname:String = "MPB";
 		public function MediaDisplayWrapper ()
 		{
-			super (s_initial,"MDW");
-			trace ("AAAAAAAAAAAAAAAA MediaDisplayWrapper " + 	this.mediaDisplay);
-			 this.hAlign = false;
+			super ("s_initial","MDW");
+			trace ("AAAAAAAAAAAAAAAA MediaDisplayWrapper " + 	mediaDisplay);
+//TODO			 hAlign = false;
 		}
 		public function onLoad() : void {
-			super.onLoad();
+			//super.onLoad();
 			trace ("BBBBBBBBBBBBBBBBBBBBB MediaDisplayWrapper.onLoad");
-			this.init();
+			initStateMachine();
 		}
 		public function onNetStreamStatus (infoObject : Object) : void
 		{
 			trace (" onNetStreamStatus " + infoObject.level + " " + infoObject.code);
 			trace (util.Trace.me (infoObject, "infoObject", true));
-			//this.canvas.debug_mc.status_txt.text += "Status (NetStream)"+newline;
-			//this.canvas.debug_mc.status_txt.text += "Level: "+infoObject.level+newline;
-			//this.canvas.debug_mc.status_txt.text += "Code: "+infoObject.code+newline;
+			//canvas.debug_mc.status_txt.text += "Status (NetStream)"+newline;
+			//canvas.debug_mc.status_txt.text += "Level: "+infoObject.level+newline;
+			//canvas.debug_mc.status_txt.text += "Code: "+infoObject.code+newline;
 			if (infoObject.level == "status")
 			{
 				switch (infoObject.code)
 				{
 					case "NetStream.Play.Start" :
 					{
-						this.Q_TRAN (this.s11_playing);
-						//this.currentMediaItem.updateCurrentTimeSegment (this.netStream.time);
+						requestTran(s11_playing);
+						//currentMediaItem.updateCurrentTimeSegment (netStream.time);
 	
 					}
 					break;
 					case "NetStream.Play.Stop" :
 					{
-						//this.ui_state = "STOPPED";
-						this.Q_TRAN (this.s12_stopped);
-						//	this.handleEvent = this.playing_Handler;
-						//	this.currentMediaItem.updateCurrentTimeSegment (this.netStream.time);
+						//ui_state = "STOPPED";
+						requestTran (s12_stopped);
+						//	handleEvent = playing_Handler;
+						//	currentMediaItem.updateCurrentTimeSegment (netStream.time);
 	
 					}
 					break;
 					case "NetStream.Buffer.Full" :
 					{
-						//this.handleEvent = this.playing_Handler;
-						this.Q_TRAN (this.s11_playing);
-						//	this.currentMediaItem.updateCurrentTimeSegment (this.netStream.time);
-						//	this.canvas.debug_mc.status_txt.text = "finished";
+						//handleEvent = playing_Handler;
+						requestTran (s11_playing);
+						//	currentMediaItem.updateCurrentTimeSegment (netStream.time);
+						//	canvas.debug_mc.status_txt.text = "finished";
 	
 					}
 					break;
@@ -83,106 +77,107 @@ package com.troyworks.mediaplayer.ui {
 			}
 		};
 		public function setMedia(path:String):void{
-			this.mediaDisplay.setMedia(path, "FLV");
-			this.Q_TRAN (s1_active);
+			mediaDisplay.setMedia(path, "FLV");
+			requestTran (s1_active);
 		}
 		public function move(x:Number, y:Number) : void {
-		//	this.mediaDisplay.move(x,y);
+		//	mediaDisplay.move(x,y);
 		}
 	
 		public function setSize(w:Number, h:Number) : void {
-			trace ("__________MDW.setSize " + w + " h " + h + " " + this.background_mc);
-	       this.mediaDisplay.setSize(w,h);
-		   this.background_mc.height = h;
-		   this.background_mc.width = w;
+			trace ("__________MDW.setSize " + w + " h " + h + " " + background_mc);
+	       mediaDisplay.setSize(w,h);
+		   background_mc.height = h;
+		   background_mc.width = w;
 		}
 	
 		/*.................................................................*/
-		function s_initial (e : AEvent) : void {
+		function s_initial (e : CogEvent) : Function {
 			trace ("MediaDisplayWrapper.onInitXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			// Create a NetConnection object
-			//	this.netConn = new NetConnection ();
+			//	netConn = new NetConnection ();
 			// Create a local streaming connection
-			//	this.netConn.connect (null);
+			//	netConn.connect (null);
 			// Create a NetStream object and define an onStatus() function
-			//this.netStream = new NetStream (this.netConn);
-			//this.netStream = netStream;
-			///this.netStream.onStatus = Delegate.create (this, this.onNetStreamStatus);
+			//netStream = new NetStream (netConn);
+			//netStream = netStream;
+			///netStream.onStatus = Delegate.create (this, onNetStreamStatus);
 			// Attach the NetStream video feed to the Video object
-			///this.canvas.mediaDisplay.attachVideo (netStream);
+			///canvas.mediaDisplay.attachVideo (netStream);
 			// Set the buffer time
-			//this.netStream.setBufferTime (5);.
-			//this.handleEvent = this.pausedAtBeginningHandler;
-			this.Q_INIT (s1_active );
+			//netStream.setBufferTime (5);.
+			//handleEvent = pausedAtBeginningHandler;
+			//Q_INIT (s1_active );
+			return s1_active;
 		}
-		function s1_active (e : AEvent) : Function
+		function s1_active (e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_active-", e, []);
+			//onFunctionEnter ("s1_active-", e, []);
 			switch (e)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
-					//	this.swf.ui_preload.visible = false;
-					//	this.skin_mc.visible = true;
-					//	this.skin_mc.gotoAndPlay ("active");
+					//	swf.ui_preload.visible = false;
+					//	skin_mc.visible = true;
+					//	skin_mc.gotoAndPlay ("active");
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					return null;
 				}
-				case INIT_EVT :
+				case SIG_INIT :
 				{
-					//	this.modalDialogC_mc = this.skin_mc.modalDialogC_mc;
-					//	this.modalShield_mc = this.skin_mc.modalShield_mc;
-					//	this.scanForm (this.background_mc);
+					//	modalDialogC_mc = skin_mc.modalDialogC_mc;
+					//	modalShield_mc = skin_mc.modalShield_mc;
+					//	scanForm (background_mc);
 						var highBandwidth : Boolean = true;
-						this.mediaDisplay.autoSize = false;
-						//this.mediaDisplay.aspectRatio = false;
+						mediaDisplay.autoSize = false;
+						//mediaDisplay.aspectRatio = false;
 						if (highBandwidth)
 						{
-						//	this.mediaDisplay.setMedia ("testvideo0.flv", "FLV");
+						//	mediaDisplay.setMedia ("testvideo0.flv", "FLV");
 							trace ("highBandwidth= " + highBandwidth);
 						} else
 						{
-						//	this.mediaDisplay.setMedia ("testvideo0.flv", "FLV");
+						//	mediaDisplay.setMedia ("testvideo0.flv", "FLV");
 							trace ("lowbandwidth = " + highBandwidth);
 						}
-					if (this.autoPlay)
+					if (autoPlay)
 					{
 						//	var media = "alexander.flv";
-						trace ("******MediaDisplayWrapper.AUTOPLAY****** " + this.mediaDisplay + " " + this.mediaDisplay.visible );
+						trace ("******MediaDisplayWrapper.AUTOPLAY****** " + mediaDisplay + " " + mediaDisplay.visible );
 						// + media);
-						//this.netStream.play (media);
+						//netStream.play (media);
 	
-						this.Q_TRAN (s11_playing);
+						requestTran (s11_playing);
 					} else
 					{
 						trace ("*****awaiting key stroke*******");
-						this.Q_INIT (this.s10_pausedAtBeginning);
+						requestTran (s10_pausedAtBeginning);
 					}
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
-		function s10_pausedAtBeginning (e : AEvent) : Function
+		function s10_pausedAtBeginning (e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s10_pausedAtBeginning-", e, []);
+			//onFunctionEnter ("s10_pausedAtBeginning-", e, []);
 			switch (e)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					return null;
 				}
-				case PLAY_EVT :
+				case SIG_PLAY :
 				{
-					this.mediaDisplay.play ();
-					this.Q_TRAN (this.s11_playing);
+					mediaDisplay.play ();
+					requestTran (s11_playing);
 					return null;
 				}
 				//	case INIT_EVT :
@@ -191,33 +186,33 @@ package com.troyworks.mediaplayer.ui {
 				//}
 	
 			}
-			return this.s1_active ;
+			return s1_active ;
 		}
-		function s11_playing (e : AEvent) : Function
+		function s11_playing (e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s11_playing-", e, []);
+		//	onFunctionEnter ("s11_playing-", e, []);
 			switch (e)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
-					this.mediaDisplay.play ();
+					mediaDisplay.play ();
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					return null;
 				}
-				case GOTOANDSTOP_EVT :
+				case SIG_GOTOANDSTOP :
 				{
-					this.mediaDisplay.play (0);
-					this.mediaDisplay.stop ();
-					this.Q_TRAN (this.s10_pausedAtBeginning);
+						mediaDisplay.gotoAndPlay(1);
+					mediaDisplay.stop ();
+					requestTran (s10_pausedAtBeginning);
 					return null;
 				}
-				case STOP_EVT :
+				case SIG_STOP :
 				{
-					this.mediaDisplay.pause ();
-					this.Q_TRAN (this.s13_pausedInMiddle);
+					mediaDisplay.pause ();
+					requestTran (s13_pausedInMiddle);
 					return null;
 				}
 				//	case INIT_EVT :
@@ -226,80 +221,77 @@ package com.troyworks.mediaplayer.ui {
 				//	}
 	
 			}
-			return this.s1_active ;
+			return s1_active ;
 		}
-		function s12_stopped (e : AEvent) : Function
+		function s12_stopped (e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s12_stopped-", e, []);
+		//	onFunctionEnter ("s12_stopped-", e, []);
 			switch (e)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					return null;
 				}
-				case STOP_EVT :
+				case SIG_STOP :
 				{
-					this.mediaDisplay.play (0);
-					this.mediaDisplay.stop ();
-					this.Q_TRAN (this.s10_pausedAtBeginning);
+					mediaDisplay.gotoAndPlay(1);
+					mediaDisplay.stop ();
+					requestTran (s10_pausedAtBeginning);
 					return null;
 				}
-				case GOTOANDSTOP_EVT :
+				case SIG_GOTOANDSTOP :
 				{
-					this.mediaDisplay.play (0);
-					this.mediaDisplay.stop ();
-					this.Q_TRAN (this.s10_pausedAtBeginning);
+					mediaDisplay.gotoAndPlay(1);
+					mediaDisplay.stop ();
+					requestTran (s10_pausedAtBeginning);
 					return null;
 				}
-				case PLAY_EVT :
+				case SIG_PLAY :
 				{
-					this.mediaDisplay.play ();
-					this.Q_TRAN (this.s11_playing);
+					mediaDisplay.play ();
+					requestTran (s11_playing);
 					return null;
 				}
-					case GOTOANDSTOP_EVT:
-				{
-					return null;
-				}
+
 	
 			}
-			return this.s1_active ;
+			return s1_active ;
 		}
-		function s13_pausedInMiddle (e : AEvent) : Function
+		function s13_pausedInMiddle (e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s13_pausedInMiddle-", e, []);
+			//onFunctionEnter ("s13_pausedInMiddle-", e, []);
 			switch (e)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					return null;
 				}
-				case STOP_EVT :
+				case SIG_STOP :
 				{
-					this.mediaDisplay.play (0);
-					this.mediaDisplay.stop ();
-					this.Q_TRAN (this.s10_pausedAtBeginning);
+						mediaDisplay.gotoAndPlay(1);
+					mediaDisplay.stop ();
+					requestTran (s10_pausedAtBeginning);
 					return null;
 				}
-				case GOTOANDSTOP_EVT :
-				{
-					this.mediaDisplay.play (0);
-					this.mediaDisplay.stop ();
-					this.Q_TRAN (this.s10_pausedAtBeginning);
+				case SIG_GOTOANDSTOP :
+					{
+						mediaDisplay.gotoAndPlay(1);
+					mediaDisplay.stop ();
+					requestTran (s10_pausedAtBeginning);
 					return null;
 				}
-				case PLAY_EVT :
+				case SIG_PLAY :
 				{
-					this.mediaDisplay.play ();
-					this.Q_TRAN (this.s11_playing);
+					mediaDisplay.play ();
+					requestTran (s11_playing);
 					return null;
 				}
 				//	case INIT_EVT :
@@ -308,7 +300,7 @@ package com.troyworks.mediaplayer.ui {
 				//}
 	
 			}
-			return this.s1_active ;
+			return s1_active ;
 		}
 	}
 	

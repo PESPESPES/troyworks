@@ -9,15 +9,11 @@
  * 
  * C++" ISBN 1-57820-110-1
  * ****************************************/
-package com.troyworks.cogs{
-
-	import com.troyworks.cogs.CogEvent;
-	import com.troyworks.cogs.CogSignal;
-	import com.troyworks.cogs.Hsm;
-	import com.troyworks.cogs.EightStateMachineSignal;
-	import com.troyworks.cogs.EightStateMachineEvent;
+package com.troyworks.core.cogs {
+	import com.troyworks.core.cogs.Hsm;	
+	import com.troyworks.core.cogs.EightStateMachineSignal;
+	import com.troyworks.core.cogs.EightStateMachineEvent;
 	import flash.display.MovieClip;
-	import flash.utils.describeType;
 
 
 	public class EightStateMachine extends Hsm {
@@ -186,7 +182,7 @@ package com.troyworks.cogs{
 		}
 		//////////////
 		public function get s_initial_isInState():Boolean{
-			return isInState(COG::s_initial);
+			return isInState(s_initial);
 		}
 		public function get s_0_isInState():Boolean{
 			return isInState(s_0 );

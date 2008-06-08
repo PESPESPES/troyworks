@@ -1,16 +1,14 @@
 ﻿/**
-* ...
+* Translates Keyboard events into CogEvents for use in state transitions
 * @author Default
 * @version 0.1
 */
 
 package com.troyworks.core.cogs.proxies {
+	import com.troyworks.core.cogs.IStateMachine;	
 	import flash.events.KeyboardEvent;
 	import flash.events.IEventDispatcher;
-	import com.troyworks.ui.KeyCode;
-	import com.troyworks.framework.ui.KeyBoardEvent;
-	import com.troyworks.core.cogs.IStateMachine;
-	import com.troyworks.core.cogs.CogEvent;
+
 	
 	public class KeyBoardProxy {
 		

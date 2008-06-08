@@ -5,7 +5,7 @@
 */
 
 package  com.troyworks.snippets.reflection {
-	import introspectable;
+	import  com.troyworks.snippets.reflection.introspectable;
 
 	public dynamic class IntrospectableObj extends Object{
 		

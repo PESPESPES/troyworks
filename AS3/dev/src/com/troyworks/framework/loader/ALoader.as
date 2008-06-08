@@ -1,6 +1,7 @@
-package com.troyworks.framework.loader { 
+package com.troyworks.framework.loader {
+	import com.troyworks.core.cogs.CogEvent; 
 	import com.troyworks.data.ArrayX;
-	import com.troyworks.hsmf.AEvent;
+	import com.troyworks.hsmf.CogEvent;
 	import com.troyworks.events.TEventDispatcher;
 	/**************************
 	 * @author Troy Gardner
@@ -51,7 +52,7 @@ package com.troyworks.framework.loader {
 		}
 		function addChild(c : ILoader) : void {
 			children.push(c);
-			TEventDispatcher(c).addEventListener(EVT_FINISHED_LOADING, createCallback(PULSE_EVT));
+			TEventDispatcher(c).addEventListener(EVT_FINISHED_LOADING, createCallback(SIG_PULSE));
 			calcStats();
 		}
 		public function startLoading(path : String) : void{
@@ -64,7 +65,7 @@ package com.troyworks.framework.loader {
 				Q_TRAN(s0_isCompletelyLoaded);
 			}
 			if(mode == PARALLEL_MODE){
-				//PARRALLEL
+				//PARALLEL
 				while(toLoad.length >0){
 					var c : ILoader = ILoader(toLoad.shift());
 					c.startLoading();
@@ -77,32 +78,32 @@ package com.troyworks.framework.loader {
 				c.startLoading();
 				loading.push(c);
 				if(!pulseHasStarted()){
-					Q_dispatch(ENTRY_EVT);
+					Q_dispatch(SIG_ENTRY);
 				}
 			}
 		}
 			/*.................................................................*/
-		function s0_notLoaded(e : AEvent) : Function
+		function s0_notLoaded(e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("[[[[s_notLoaded-", e, []);
-			switch (e)
+		//	this.onFunctionEnter ("[[[[s_notLoaded-", e, []);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
 					trace("NOT LOADED[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[");
 					startPulse(1000/3);
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					stopPulse();
 					return null;
 				}
-				case INIT_EVT :
+				case SIG_INIT :
 				{
 					return null;
 				}
-				case PULSE_EVT:
+				case SIG_PULSE:
 				{
 					trace("[[[[ -- pulse ---]]");
 					calcStats();
@@ -110,42 +111,42 @@ package com.troyworks.framework.loader {
 						trace("target.totalFrames " + totalLoaded);
 						dispatchEvent("STARTED_GETTING_DATA");
 	
-						Q_TRAN(s0_isPartiallyLoaded);
+						requestTran(s0_isPartiallyLoaded);
 					}else {
 						trace("target.totalFrames " + totalLoaded);
 					}
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 		
 		/*.................................................................*/
-		function s0_isPartiallyLoaded(e : AEvent) : Function
+		override function s0_isPartiallyLoaded(e : CogEvent) : Function
 		{
 	
-			this.onFunctionEnter ("[[[[s0_isPartiallyLoaded-", e, []);
-			switch (e)
+			//this.onFunctionEnter ("[[[[s0_isPartiallyLoaded-", e, []);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
 					trace("[[[[[[[Partial enter\\\\\\\\\\\\\\\\\\");
 					gotoAndPlay("loading");
 					startPulse(1000/12);
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					trace("[[[[[[[Partial exit////////////////////");
 					stopPulse();
 					return null;
 				}
-				case INIT_EVT :
+				case SIG_INIT :
 				{
 					trace("[[[[[[[Partial init|||||||||||||||||");
 					return null;
 				}
-				case PULSE_EVT:
+				case SIG_PULSE:
 				{
 					trace("[[[[[[[----pulse-----");
 					calcStats();
@@ -155,7 +156,7 @@ package com.troyworks.framework.loader {
 						loading.removeAll();
 						if(loading.length == 0 && toLoad.length == 0){
 							//FINISHED LOADING LIST
-							Q_TRAN(s0_isCompletelyLoaded);
+							requestTran(s0_isCompletelyLoaded);
 						}else if (toLoad.length >= 0){
 							//FINISHED LOADING A CHILD
 							startLoading();
@@ -164,15 +165,15 @@ package com.troyworks.framework.loader {
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 			/*.................................................................*/
-		function s0_isCompletelyLoaded (e : AEvent) : Function
+		override function s0_isCompletelyLoaded (e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s0_isCompletelyLoaded-", e, []);
-			switch (e)
+			//this.onFunctionEnter ("s0_isCompletelyLoaded-", e, []);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :
+				case SIG_ENTRY :
 				{
 							trace("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 			trace("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
@@ -186,16 +187,16 @@ package com.troyworks.framework.loader {
 					dispatchEvent({type:EVT_FINISHED_LOADING});
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					return null;
 				}
-				case INIT_EVT :
+				case SIG_INIT :
 				{
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 	}
 }

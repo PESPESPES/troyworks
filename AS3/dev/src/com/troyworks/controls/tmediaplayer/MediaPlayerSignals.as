@@ -6,7 +6,6 @@
 
 package com.troyworks.controls.tmediaplayer {
 	import com.troyworks.core.cogs.CogSignal;
-	import com.troyworks.framework.QSignal;
 	
 	public class MediaPlayerSignals extends CogSignal {
 		

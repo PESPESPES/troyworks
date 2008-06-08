@@ -1,11 +1,9 @@
-﻿package com.troyworks.util{
-
-
+﻿package com.troyworks.util {
+	import com.troyworks.apps.tester.TestSuite;	
 	import com.troyworks.util.DesignByContract;
 	import com.troyworks.util.DesignByContractEvent;
-	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
-	import com.troyworks.tester.TestSuite;
+
 
 	/**
 	 * This is somewhat of an odd duck, bootstrapping wise 

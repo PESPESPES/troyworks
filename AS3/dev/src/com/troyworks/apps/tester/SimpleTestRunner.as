@@ -1,13 +1,12 @@
 ﻿
-package com.troyworks.apps.tester{
-	import com.troyworks.logging.TraceAdapter;
-	import flash.xml.XMLDocument;
+package com.troyworks.apps.tester {
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.utils.describeType;
-	import com.troyworks.apps.tester.SynchronousTestSuite;
+	
 	import com.troyworks.apps.tester.TestEvent;
-	import flash.events.TextEvent;
-	import flash.events.Event;
+	import com.troyworks.logging.TraceAdapter;	
+
 	/********************************************
 	 * This is passed a worklist of tests and outputs the results in a synchrounous fashion
 	 * for asynchrous tests use the statemachine version.
@@ -23,7 +22,7 @@ package com.troyworks.apps.tester{
 		public var passedAll:Boolean = true;
 		public var passedN:Number = 0;
 		public var totalN:Number = 0;
-		public var trace:Function = TraceAdapter.getNormalTracer();
+		public var trace:Function = TraceAdapter.NormalTracer();
 
 		public function SimpleTestRunner() {
 			super();

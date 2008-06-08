@@ -1,7 +1,11 @@
-import com.troyworks.framework.logging.SOSLogger;
-import com.troyworks.framework.logging.LogLevel;
-/**
- * This is a very simple program designed to demostrate that MTASC is building
+
+package com.troyworks.logging {
+	import com.troyworks.util.Trace;	
+	
+	import flash.net.XMLSocket;
+	
+	/**
+	 * This is a very simple program designed to demostrate that MTASC is building
  * correctly.
  * http://www.mtasc.org/
  * 
@@ -23,9 +27,9 @@ import com.troyworks.framework.logging.LogLevel;
   TestSOSLogger.main(this);
  * @author Troy Gardner
  */
-class com.troyworks.framework.logging.TestSOSLogger {
-	public static var _libSOS : Function = SOSLogger;
-	static var app : TestSOSLogger;
+class TestSOSLogger {
+	public static var _libSOS : Function;
+		static var app : TestSOSLogger;
 
 	private var csock : XMLSocket;
 
@@ -39,7 +43,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 	}
 
 	// entry point
-	static function main(mc : MovieClip) : Void {
+	static function main(mc : MovieClip) : void {
 
 		trace("main-----------------"); ///note should be output with the MTASC - trace on.
 		_root.testSOSLogger = new TestSOSLogger();
@@ -52,7 +56,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 		mc.tf2.text += "\r\r\r check the SOS output you should see something like \r\t sos connected Fri Jan 5 23:55:48 GMT-0800 2007";
 
 	}
-	public function runTests() : Void{
+	public function runTests() : void{
 		//testShow();
 		//Note that this demonstrates the collapisble messages
 		//testSOS_CommandIdentify();
@@ -87,7 +91,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 	//	testSOSLoggerMessageColoring2();
 	//	testSOSLoggerMessageColoring3();
 	}
-	public function traceOutputTests():Void{
+	public function traceOutputTests():void{
 		trace("number " + 1);
 		trace("string" +  new String("HelloWorld"));
 		trace("error " +  "error message"); //won't work
@@ -102,7 +106,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 		trace("////////////////// " +  "end section message");
 		
 	}
-	public function testSOSLogger_BasicData() : Void{
+	public function testSOSLogger_BasicData() : void{
 		_root.logger = SOSLogger.getInstance("TestSOSLogger");
 		_root.logger.log("Hello From SOSLogger");
 		_root.logger.logBreak();
@@ -128,7 +132,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
     * something: undefined
 	 */
 
-	public function testFlashDebugIntegration() : Void{
+	public function testFlashDebugIntegration() : void{
 		trace("attempting to load a bogus movie");
 
 		trace("hello world");
@@ -169,7 +173,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//                   TEST SECTION BEGINS 
 	////////////////////////////////////////////////////////////////////////////////////
-	public function testSOSLoggerMessageColoring() : Void{
+	public function testSOSLoggerMessageColoring() : void{
 		trace("testing message coloring");
 		SOSLogger.getInstance("testSOSLoggerMessageColoring");
 		var 	msock : XMLSocket = getCommandSocket();
@@ -211,14 +215,14 @@ class com.troyworks.framework.logging.TestSOSLogger {
 		csock.send("<showMessage key='HILIGHT_LIME'>HILIGHT_LIME!</showMessage>\n");
 		csock.send("<showMessage key='HILIGHT_TURQUOISE'>HILIGHT_TURQUOISE!</showMessage>\n");
    }
-	public function testSOSLoggerMessageColoring2() : Void{
+	public function testSOSLoggerMessageColoring2() : void{
 		trace("testing message coloring");
 		var sos : SOSLogger = SOSLogger.getInstance("testSOSLoggerMessageColoring");
 
 		sos.fatal("My Fatal");
 		sos.severe("My Severe");
 		sos.flash_error("My Error");
-		sos.warning("My Warning");
+		sos.warn("My Warning");
 
 		sos.info("My Info");
 
@@ -230,7 +234,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 		sos.logLevel(LogLevel.HILIGHT_GRAPE,"Custom Highlight"  );
 		sos.highlight("Highlight Plain");
     }
-   	public function testSOSLoggerMessageColoring3() : Void{
+   	public function testSOSLoggerMessageColoring3() : void{
 		trace("testing message coloring");
 		var sos : SOSLogger = SOSLogger.getInstance("testSOSLoggerMessageColoring");
 	var _ary : Array = ["A","B","C","D"];
@@ -249,7 +253,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 		sos.highlight("Highlight Plain"+ s);
     }
 	//Note that this demonstrates the collapisble messages
-	public function testSOS_CommandIdentify() : Void{
+	public function testSOS_CommandIdentify() : void{
 		var csock : XMLSocket = getCommandSocket();
 
 		csock.send("<commands>"
@@ -260,7 +264,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 			+ "</commands>\n"
 		);
 	}
-	public function testSOS_Command2() : Void{
+	public function testSOS_Command2() : void{
 		var csock : XMLSocket = getCommandSocket();
 		csock.send("sos connected " + (new Date()).toString());
 		csock.send("<appName>Some Name</appName>\n");
@@ -269,20 +273,20 @@ class com.troyworks.framework.logging.TestSOSLogger {
 		csock.send("<showMessage>Test</showMessage>\n");
 
 	}
-	public function testSOS_addCommand() : Void{
+	public function testSOS_addCommand() : void{
 		var csock : XMLSocket = getCommandSocket();
 		csock.send("<commands>"+
 		'<addCommand menu="My MenuName" item="My MenuItemName" mask="0" key="116">[command]</addCommand>'
 		+"</commands>\n");
 	}
-	public function testSOS_removeCommand_MenuItem() : Void{
+	public function testSOS_removeCommand_MenuItem() : void{
 		var csock : XMLSocket = getCommandSocket();
 		csock.send("<commands>"+
 		'<removeCommand menu="My MenuName" item="My MenuItemName" mask="0" key="116">[command]</removeCommand>'
 		+"</commands>\n");
 	
 	}
-	public function testSOS_removeCommand_Menu() : Void{
+	public function testSOS_removeCommand_Menu() : void{
 		var csock : XMLSocket = getCommandSocket();
 		csock.send("<commands>"+
 		'<removeCommand menu="root" item="My MenuName" mask="0" key="116">[command]</removeCommand>'
@@ -293,7 +297,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 	/*****************************************************
 	 *  Note multi levels nesting doesn't work
 	 */
-	public function testSOS_foldedMessage() : Void{
+	public function testSOS_foldedMessage() : void{
 		var 	msock : XMLSocket = getCommandSocket();
 		msock.send("<setKey><name>MyFirstKey</name><color>"+0xffcccc+"</color></setKey>\n");
 
@@ -313,7 +317,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 	/*****************************************************
 	 *  Note multi levels nesting doesn't work
 	 */
-	public function testSOS_foldedMessage2() : Void{
+	public function testSOS_foldedMessage2() : void{
 		var 	csock : XMLSocket = getCommandSocket();
 		csock.send("<setKey><name>MyFirstKey</name><color>"+0xffcccc+"</color></setKey>\n");
 
@@ -332,21 +336,21 @@ class com.troyworks.framework.logging.TestSOSLogger {
 	 * if the user clicked on the X button instead of minimize this will
 	 * restore the SOS window
 	 */
-	public function testShow() : Void{
+	public function testShow() : void{
 		var 	msock : XMLSocket = getCommandSocket();
 		msock.send("<commands>"+ "<show/>" + "</commands>\n");
 	}
 	/**************************************
 	 * this will hide the SOS window as if the user clicked on the X button (instead of minimize) 
 	 */
-	public function testHide() : Void{
+	public function testHide() : void{
 		var 	msock : XMLSocket = getCommandSocket();
 		msock.send("<commands>"+ "<hide/>" + "</commands>\n");				
 	}
 	/*********************************************
 	 *  this will exit the SOSClient all together.
 	 */
-	public function testExit() : Void{
+	public function testExit() : void{
 		var 	msock : XMLSocket = getCommandSocket();
 		msock.send("<commands>"+ "<exit/>" + "</commands>\n");
 	}
@@ -354,7 +358,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 	/*********************************************
 	 *  this pops up a dialog for  user name and password
 	 */
-	public function testLoginDialogBox() : Void{
+	public function testLoginDialogBox() : void{
 		var 	msock : XMLSocket = getCommandSocket();
 		msock.send("<commands>"+
 		 "<showDialog>"+
@@ -376,7 +380,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 	 *  this pops up a dialog with a combo box with 3 elements in it
 	 *  once selected sends the command
 	 */
-	public function testDialogWithComboBox() : Void{
+	public function testDialogWithComboBox() : void{
 		var 	msock : XMLSocket = getCommandSocket();
 		msock.send("<commands>"+
 		 "<showDialog>"+
@@ -399,7 +403,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 	 *  this pops up an error dialog box
 	 */
 
-	public function testErrorDialog() : Void{
+	public function testErrorDialog() : void{
 		var 	csock : XMLSocket = getCommandSocket();
 		csock.send("<commands>"+
 			"<showError title='mytitle' msg='somemessage'>"+
@@ -408,7 +412,7 @@ class com.troyworks.framework.logging.TestSOSLogger {
 			"</showError>" +
  		     "</commands>\n");
 	}
-	public function testErrorMessage() : Void{
+	public function testErrorMessage() : void{
 		var 	csock : XMLSocket = getCommandSocket();
 		////////////////////////////////
 		//built in these are done in red
@@ -422,20 +426,20 @@ class com.troyworks.framework.logging.TestSOSLogger {
 		1 Clients connected
 	 */
 
-	public function testShowLogClients() : Void{
+	public function testShowLogClients() : void{
 		var 	msock : XMLSocket = getCommandSocket();
 		msock.send("<commands>"+
 			"<showLogClients/>"+
  		     "</commands>\n");
 	}
-	public function testSection_________________________________Break() : Void{
+	public function testSection_________________________________Break() : void{
 		var 	msock : XMLSocket = getMessageSocket();
 		////////////////////////////////
 		//these are done in pink
 		msock.send("<setKey><name>SectionBreak</name><color>"+0xcccccc+"</color></setKey>\n");
 		msock.send("<showMessage key='SectionBreak'>====================================================================================================</showMessage>\n");
 	}
-	public function testMessageColoring() : Void{
+	public function testMessageColoring() : void{
 		var 	msock : XMLSocket = getMessageSocket();
 		////////////////////////////////
 		//these are done in pink
@@ -452,5 +456,5 @@ class com.troyworks.framework.logging.TestSOSLogger {
         // these are done in plain (or rather whatever the connection was colored in)
 		msock.send("<showMessage>No Key Here! ... uses Connection Color!</showMessage>\n");
 	}
-	
+}
 }
