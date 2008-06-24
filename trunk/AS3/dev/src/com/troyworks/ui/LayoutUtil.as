@@ -23,7 +23,7 @@ package com.troyworks.ui {
 		 * When being used with a viewport.
 		 */
 		public static function snapshotDimensions(a_mc : DisplayObject, to_mc : IDisplayObjectSnapShot = null, override_width : Number = NaN, override_height : Number = NaN) : IDisplayObjectSnapShot {
-			
+			trace("-----------------------------------------------------");
 			trace("CALL snapshotDimensions");
 			var s_mc : DisplayObject = a_mc;
 			if(to_mc == null) {
@@ -63,17 +63,25 @@ package com.troyworks.ui {
 				trace(" offset vcx " + to_mc.vp_ocx_offset + " vcy " + to_mc.vp_ocy_offset);
 				//scale factor between viewport and actual (masked) movie dimensions (as mask shows all stuff on stage)
 
-				to_mc.vp_owscale = (viewport.width / a_mc.width);
-				to_mc.vp_ohscale = (viewport.height / a_mc.height);
-				trace("vp_owscale " + to_mc.vp_owscale + "  " + viewport.width + "/" + a_mc.width + " ?= " + (viewport.width / a_mc.width)); 
-				trace("vp_ohscale " + to_mc.vp_ohscale + "  " + viewport.height + "/" + a_mc.height + " ?= " + (viewport.height / a_mc.height)); 
-				
 				//Added by Ksenia
 				if (wholeObject != null)
 				{
+					trace("wholeObject");
 					to_mc.owidth = wholeObject.width;
 					to_mc.oheight = wholeObject.height;
 				}
+				else 
+				{
+					to_mc.owidth = a_mc.width;
+					to_mc.oheight = a_mc.height;
+				}
+				
+				to_mc.vp_owscale = (viewport.width / to_mc.owidth);
+				to_mc.vp_ohscale = (viewport.height / to_mc.oheight);
+				trace("vp_owscale " + to_mc.vp_owscale + "  " + viewport.width + "/" + to_mc.owidth + " ?= " + (viewport.width / to_mc.owidth)); 
+				trace("vp_ohscale " + to_mc.vp_ohscale + "  " + viewport.height + "/" + to_mc.oheight + " ?= " + (viewport.height / to_mc.oheight)); 
+				
+				
 				
 				//to_mc.owidth = s_mc.width;
 				//to_mc.oheight = s_mc.height;
@@ -94,8 +102,23 @@ package com.troyworks.ui {
 				to_mc.vp_oy_offset = 0;
 				to_mc.vp_owscale = 1;
 				to_mc.vp_ohscale = 1;
-				to_mc.vp_owidth = s_mc.width;
-				to_mc.vp_oheight = s_mc.height;
+				
+				//Added by Ksenia
+				if (wholeObject != null)
+				{
+					trace("wholeObject");
+					to_mc.owidth = wholeObject.width;
+					to_mc.oheight = wholeObject.height;
+					to_mc.vp_owidth = wholeObject.width;
+					to_mc.vp_oheight = wholeObject.height;
+				}
+				else 
+				{
+					to_mc.owidth = s_mc.width;
+					to_mc.oheight = s_mc.height;
+					to_mc.vp_owidth = s_mc.width;
+					to_mc.vp_oheight = s_mc.height;
+				}
 			}
 			to_mc.ox = s_mc.x;
 			to_mc.oy = s_mc.y;
@@ -113,6 +136,9 @@ package com.troyworks.ui {
 			to_mc.o_hw_asp = s_mc.height / s_mc.width;
 			//	trace( util.Trace.me(to_mc, "ERROR SNAPSHOT DIMENSIONS ", true));
 			//	trace(" captureOriginalAspect "+to_mc._url+" "+to_mc.width);
+			
+			trace("-----------------------------------------------------");
+			
 			return to_mc;
 		}
 
@@ -232,8 +258,10 @@ package com.troyworks.ui {
 			}
 		}
 
-		public static function scaleTo(still_mc : DisplayObject, moving_mc : DisplayObject , movingSnapShot : IDisplayObjectSnapShot = null, scaleType : String = "CENTER", override_width : Number = NaN, override_height : Number = NaN) : void {
-			trace("HIGHLIGHT SCALETO_AR_CENTER");
+		public static function scaleTo(still_mc : DisplayObject, moving_mc : DisplayObject , movingSnapShot : IDisplayObjectSnapShot = null, 
+			scaleType : String = "CENTER", override_width : Number = NaN, override_height : Number = NaN) : void 
+		{
+			trace("HIGHLIGHT SCALETO "+scaleType);
 			if(moving_mc.stage != null) {
 				trace("clip.stage.stageWidth " + moving_mc.stage.stageWidth + " still  mc " + still_mc.width + " moving  mc " + moving_mc.width + " override " + override_width);
 				trace("clip.stage.stageHeight " + moving_mc.stage.stageHeight + " still  mc " + still_mc.height + " moving  mc " + moving_mc.height + " override " + override_height);
@@ -274,6 +302,188 @@ package com.troyworks.ui {
 			////////////////////////////////////
 			var dw : Number = (isNaN(override_width)) ? still_mc.width : override_width;
 			var dh : Number = (isNaN(override_height)) ? still_mc.height : override_height;
+			var scaleW : Number = (!movingSnapShot.hasViewport) ? 1 : movingSnapShot.vp_owscale;
+			var scaleH : Number = (!movingSnapShot.hasViewport) ? 1 : movingSnapShot.vp_ohscale;
+	
+			trace("  scaling W " + scaleW + "  H " + scaleH);
+			var still_asp : Number = dw / dh;
+			//o_wh_asp and o_hw_asp are the original captured aspect ratio,
+			//this is as captured from the IDE, and NOT the actionscript,
+			//in order to get accurate onscreen representation.
+			//scale  the largest photo to smallest desired dimension based
+			// on the relative aspect ratio
+			
+			//Added by Ksenia
+			t_w = moving_mc.width * scaleW;
+			t_h = moving_mc.height * scaleH;
+			
+			trace("CUR DIMENSIONS w:"+moving_mc.width +" h:"+moving_mc.height);
+			trace("PHOTO DIMENSIONS w:" + t_w + " h:" + t_h + " asp " + p_asp);
+			trace("DESIRED DIMENTSION w:" + dw + " h: " + dh + " asp " + still_asp);
+			
+			var asRatios : Number = (p_asp / still_asp);
+			trace("aspect ratio " + asRatios + "  " + still_asp);
+			
+			var m_asp : Number = moving_mc.width / moving_mc.height;
+			var v_asp : Number = movingSnapShot.vp_owidth / movingSnapShot.vp_oheight;
+			
+			trace ("mc width "+moving_mc.width+" height "+ moving_mc.height);
+			trace("original width "+movingSnapShot.vp_owidth+" height "+movingSnapShot.vp_oheight);
+			
+			trace("MASP " + m_asp + " " + v_asp + " " + m_asp / v_asp);
+			var p_asp : Number = t_w / t_h;
+			var p2_asp : Number = t_h / t_w;
+	
+			
+			var resizeAnyWay : Boolean = (asRatios == 1) && t_w != dw;
+			trace("resizeAnyWay "+resizeAnyWay);
+			var ww : Number = t_w / dw;
+			var hh : Number = t_h / dh;
+		
+			
+			trace("ww= "+ww+" hh= "+hh);
+			
+			var resize : String;
+			//if (scaleType == "CENTER")
+			switch (scaleType) 
+			{
+				case "CENTER":
+					if(ww > hh) {
+						resize = "W";
+					}else if (ww < hh) {
+						resize = "H";
+					}else if(ww == hh) {
+						resize = "F";
+					}
+					break;
+				case "CROP":
+					if(ww > hh) {
+						resize = "H";
+					}else if (ww < hh) {
+						resize = "W";
+					}else if(ww == hh) {
+						resize = "F";
+					}
+					break;
+				default:
+					resize = "F";
+					break;
+			}
+			
+			var sn : IDisplayObjectSnapShot;
+			if(resize == "W") {
+				//if (asRatios > 1 || resizeAnyWay ) {
+				trace("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+				trace("resizing width first to:" + dw);
+				if(false){//if(m_asp / v_asp != 1) {
+					var tmp : Number = p_asp;
+					p_asp = p2_asp;
+					p2_asp = tmp;
+				}
+				trace("scaleW = "+scaleW+" "+" dw "+dw+" dh "+dh+" p_asp "+p_asp);
+				moving_mc.width = moving_mc.width / ww;
+				moving_mc.height = moving_mc.height / ww;
+				
+				//moving_mc.width = dw / scaleW;
+				//moving_mc.height = dw / scaleW / p_asp;
+				//moving_mc.height = dw / scaleW / p2_asp ;
+				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
+				
+				sn = new DisplayObjectSnapShot();
+				sn.width = dw;
+				sn.height = dh;
+				sn.x = still_mc.x;
+				sn.y = still_mc.y;
+				moving_mc.x = getAlignH(sn, moving_mc);
+				moving_mc.y = getAlignV(sn, moving_mc);
+			} else if (resize == "H") {
+				//asRatios < 1) {
+				trace("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+				trace("resizing height first to:" + dh);
+				if(m_asp / v_asp != 1) {
+					var tmp2 : Number = p_asp;
+					p_asp = p2_asp;
+					p2_asp = tmp2;
+				}
+				
+				//moving_mc.height = dh / scaleH;
+				//moving_mc.width = dh / scaleH / p2_asp;
+				
+				trace("BEFORE " + moving_mc.width + " " + moving_mc.height);
+				//Added by Ksenia
+				moving_mc.width = moving_mc.width / hh;
+				moving_mc.height = moving_mc.height / hh;
+				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
+				
+				sn = new DisplayObjectSnapShot();
+				sn.width = dw;
+				sn.height = dh;
+				sn.x = still_mc.x;
+				sn.y = still_mc.y;
+				moving_mc.x = getAlignH(sn, moving_mc);
+				moving_mc.y = getAlignV(sn, moving_mc);
+			} else {
+				trace("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+				trace("resizing width: " + dh+" and height: "+dw);
+				
+				moving_mc.width = moving_mc.width / ww;
+				moving_mc.height = moving_mc.height / hh;
+				
+				sn = new DisplayObjectSnapShot();
+				sn.width = dw;
+				sn.height = dh;
+				sn.x = still_mc.x;
+				sn.y = still_mc.y;
+				moving_mc.x = getAlignH(sn, moving_mc);
+				moving_mc.y = getAlignV(sn, moving_mc);
+			}
+			trace("HIGHLIGHTO SCALETO "+scaleType+" res:  " + moving_mc.width + "  " + moving_mc.height);
+				//this.playerNav_mc.x = ((t_w - (this.playerNav_mc.width + this.playerNav_mc.logo_mc.width )) / 2) + this.playerNav_mc.logo_mc.width + 30 ;
+				//			this.playerNav_mc.y = (t_h - this.playerNav_mc.height) / 2;
+		}
+		
+		public static function scaleToWH(targetWidth : Number, targetHeight:Number, moving_mc : DisplayObject , movingSnapShot : IDisplayObjectSnapShot = null, scaleType : String = "CENTER", override_width : Number = NaN, override_height : Number = NaN) : void {
+			trace("HIGHLIGHT SCALETO_AR_CENTER");
+			if(moving_mc.stage != null) {
+				trace("clip.stage.stageWidth " + moving_mc.stage.stageWidth + " targetWidth " + targetWidth + " moving  mc " + moving_mc.width);
+				trace("clip.stage.stageHeight " + moving_mc.stage.stageHeight + " targetHeight " + targetHeight + " moving  mc " + moving_mc.height);
+			}
+			if(movingSnapShot == null) {
+				movingSnapShot = snapshotDimensions(moving_mc);
+			}
+			////////////////////////////////////
+			//  target to scalee's actual height 
+			////////////////////////////////////
+			var	t_w : Number = NaN;
+			var t_h : Number = NaN;
+			
+			if(movingSnapShot.hasViewport) {
+				trace("using viewport");
+				t_w = movingSnapShot.vp_owidth;
+				t_h = movingSnapShot.vp_oheight;				
+			}else {
+				trace(" not using viewport");
+				if(!movingSnapShot.oawidth) {
+					trace("using current actual width");
+					t_w = moving_mc.width;
+				}else {
+					trace("using original actual width");
+					t_w = movingSnapShot.oawidth;
+				}
+				if(!movingSnapShot.oaheight) {
+					trace("using current actual height");
+					t_h = moving_mc.height;
+				}else {
+					trace("using original actual height");
+					t_h = movingSnapShot.oaheight;
+				}				
+			}
+			
+			////////////////////////////////////
+			//   desired height 
+			////////////////////////////////////
+			var dw : Number = (isNaN(override_width)) ? targetWidth : override_width;
+			var dh : Number = (isNaN(override_height)) ? targetHeight : override_height;
 			var scaleW : Number = (!movingSnapShot.hasViewport) ? 1 : movingSnapShot.vp_owscale;
 			var scaleH : Number = (!movingSnapShot.hasViewport) ? 1 : movingSnapShot.vp_ohscale;
 	
@@ -360,13 +570,13 @@ package com.troyworks.ui {
 				//moving_mc.height = dw / scaleW / p2_asp ;
 				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
 				
-				sn = new DisplayObjectSnapShot();
-				sn.width = dw;
-				sn.height = dh;
-				sn.x = still_mc.x;
-				sn.y = still_mc.y;
-				moving_mc.x = getAlignH(sn, moving_mc);
-				moving_mc.y = getAlignV(sn, moving_mc);
+//				sn = new DisplayObjectSnapShot();
+//				sn.width = dw;
+//				sn.height = dh;
+//				sn.x = still_mc.x;
+//				sn.y = still_mc.y;
+//				moving_mc.x = getAlignH(sn, moving_mc);
+//				moving_mc.y = getAlignV(sn, moving_mc);
 			} else if (resize == "H") {
 				//asRatios < 1) {
 				trace("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
@@ -384,13 +594,13 @@ package com.troyworks.ui {
 				moving_mc.width = moving_mc.width / hh;
 				moving_mc.height = moving_mc.height / hh;
 				
-				sn = new DisplayObjectSnapShot();
-				sn.width = dw;
-				sn.height = dh;
-				sn.x = still_mc.x;
-				sn.y = still_mc.y;
-				moving_mc.x = getAlignH(sn, moving_mc);
-				moving_mc.y = getAlignV(sn, moving_mc);
+//				sn = new DisplayObjectSnapShot();
+//				sn.width = dw;
+//				sn.height = dh;
+//				sn.x = still_mc.x;
+//				sn.y = still_mc.y;
+//				moving_mc.x = getAlignH(sn, moving_mc);
+//				moving_mc.y = getAlignV(sn, moving_mc);
 			} else {
 				trace("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 				trace("resizing width: " + dh+" and height: "+dw);
@@ -398,13 +608,13 @@ package com.troyworks.ui {
 				moving_mc.width = moving_mc.width / ww;
 				moving_mc.height = moving_mc.height / hh;
 				
-				sn = new DisplayObjectSnapShot();
-				sn.width = dw;
-				sn.height = dh;
-				sn.x = still_mc.x;
-				sn.y = still_mc.y;
-				moving_mc.x = getAlignH(sn, moving_mc);
-				moving_mc.y = getAlignV(sn, moving_mc);
+//				sn = new DisplayObjectSnapShot();
+//				sn.width = dw;
+//				sn.height = dh;
+//				sn.x = still_mc.x;
+//				sn.y = still_mc.y;
+//				moving_mc.x = getAlignH(sn, moving_mc);
+//				moving_mc.y = getAlignV(sn, moving_mc);
 			}
 			trace("HIGHLIGHTO SCALETO "+scaleType+" res:  " + moving_mc.width + "  " + moving_mc.height);
 				//this.playerNav_mc.x = ((t_w - (this.playerNav_mc.width + this.playerNav_mc.logo_mc.width )) / 2) + this.playerNav_mc.logo_mc.width + 30 ;
