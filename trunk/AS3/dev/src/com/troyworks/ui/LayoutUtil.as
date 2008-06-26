@@ -554,7 +554,7 @@ package com.troyworks.ui {
 				yOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
 				xOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
 				
-				rect = new Rectangle(sO.vp_ox_offset-xOffset, sO.vp_oy_offset-yOffset, 
+				rect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, 
 													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);		
 		        pj.addPage(Sprite(view), rect, pjo);
 		        pj.send();
