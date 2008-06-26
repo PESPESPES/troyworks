@@ -485,7 +485,7 @@ package com.troyworks.ui {
 				yOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
 				xOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
 				
-				rect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, 
+				rect = new Rectangle(sO.vp_ox_offset-xOffset, sO.vp_oy_offset, 
 													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);		
 		        pj.addPage(Sprite(view), rect, pjo);
 		        pj.send();
@@ -530,6 +530,10 @@ package com.troyworks.ui {
 				xOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
 				yOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
 		
+				trace("Landscape");
+				trace("xOffset "+xOffset+" yOffset "+yOffset);
+				trace("position x,y = "+[sO.vp_ox_offset, sO.vp_oy_offset]);
+				
 				rect = new Rectangle(sO.vp_ox_offset-xOffset, sO.vp_oy_offset-yOffset, 
 													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
 				pj.addPage(Sprite(view), rect, pjo);                             
@@ -554,7 +558,11 @@ package com.troyworks.ui {
 				yOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
 				xOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
 				
-				rect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, 
+				trace("Portrait");
+				trace("xOffset "+xOffset+" yOffset "+yOffset);
+				trace("position x,y = "+[sO.vp_ox_offset, sO.vp_oy_offset]);
+				
+				rect = new Rectangle(sO.vp_ox_offset-xOffset, sO.vp_oy_offset, 
 													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);		
 		        pj.addPage(Sprite(view), rect, pjo);
 		        pj.send();
