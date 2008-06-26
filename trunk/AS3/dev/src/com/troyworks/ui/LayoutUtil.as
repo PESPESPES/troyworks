@@ -7,6 +7,10 @@
 package com.troyworks.ui {
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.MovieClip;
+	import flash.display.Sprite;
+	import flash.geom.Rectangle;
+	import flash.printing.*;	
 
 	public class LayoutUtil {
 
@@ -332,7 +336,6 @@ package com.troyworks.ui {
 			trace("ww= "+ww+" hh= "+hh);
 			
 			var resize : String;
-			//if (scaleType == "CENTER")
 			switch (scaleType) 
 			{
 				case "CENTER":
@@ -360,21 +363,23 @@ package com.troyworks.ui {
 			
 			var sn : IDisplayObjectSnapShot;
 			if(resize == "W") {
-				//if (asRatios > 1 || resizeAnyWay ) {
 				trace("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
 				trace("resizing width first to:" + dw);
-				if(false){//if(m_asp / v_asp != 1) {
+				if(false){
 					var tmp : Number = p_asp;
 					p_asp = p2_asp;
 					p2_asp = tmp;
 				}
-				trace("scaleW = "+scaleW+" "+" dw "+dw+" dh "+dh+" p_asp "+p_asp);
-				moving_mc.width = moving_mc.width / ww;
-				moving_mc.height = moving_mc.height / ww;
+				trace("scaleW = "+scaleW+" "+" dw "+dw+" dh "+dh+" ww "+ww);
+				trace ("mc width "+moving_mc.width+" height "+ moving_mc.height);
+				var newWidth:Number = moving_mc.width/ww;
+				var newHeight:Number = moving_mc.height/ww;
+				trace("width "+moving_mc.width+" / "+ww+" = "+newWidth);
+				trace("height "+moving_mc.height+" / "+ww+" = "+newHeight);
 				
-				//moving_mc.width = dw / scaleW;
-				//moving_mc.height = dw / scaleW / p_asp;
-				//moving_mc.height = dw / scaleW / p2_asp ;
+				moving_mc.width = newWidth;
+				moving_mc.height = newHeight;
+				
 				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
 				
 				sn = new DisplayObjectSnapShot();
@@ -385,7 +390,6 @@ package com.troyworks.ui {
 				moving_mc.x = getAlignH(sn, moving_mc);
 				moving_mc.y = getAlignV(sn, moving_mc);
 			} else if (resize == "H") {
-				//asRatios < 1) {
 				trace("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
 				trace("resizing height first to:" + dh);
 				if(m_asp / v_asp != 1) {
@@ -393,9 +397,6 @@ package com.troyworks.ui {
 					p_asp = p2_asp;
 					p2_asp = tmp2;
 				}
-				
-				//moving_mc.height = dh / scaleH;
-				//moving_mc.width = dh / scaleH / p2_asp;
 				
 				trace("BEFORE " + moving_mc.width + " " + moving_mc.height);
 				//Added by Ksenia
@@ -426,8 +427,144 @@ package com.troyworks.ui {
 				moving_mc.y = getAlignV(sn, moving_mc);
 			}
 			trace("HIGHLIGHTO SCALETO "+scaleType+" res:  " + moving_mc.width + "  " + moving_mc.height);
-				//this.playerNav_mc.x = ((t_w - (this.playerNav_mc.width + this.playerNav_mc.logo_mc.width )) / 2) + this.playerNav_mc.logo_mc.width + 30 ;
-				//			this.playerNav_mc.y = (t_h - this.playerNav_mc.height) / 2;
+		}
+		
+		public static function printImagePortrait(view:MovieClip, sO : IDisplayObjectSnapShot, background_mc:MovieClip):void
+		{
+			if (view == null) return;
+		    var pj:PrintJob = new PrintJob();
+		    pj.start();
+		    var rect : Rectangle;
+		    var pjo:PrintJobOptions;
+		    
+		    var initW:Number = view.width;
+			var initH:Number = view.height;
+			var initX:Number = view.x;
+			var initY:Number = view.y;
+			var xOffset:int = 0;
+			var yOffset:int = 0;
+			var vp_curWidth:Number = 0;
+			var vp_curHeight:Number = 0;
+			var curScale:Number = 1;
+				
+		    if(pj.orientation == PrintJobOrientation.PORTRAIT)
+			{
+				pjo = new PrintJobOptions();
+				pjo.printAsBitmap = true;
+				
+				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageWidth, pj.pageHeight);
+				curScale = view.width/sO.owidth;
+					  
+				vp_curWidth = view.width * sO.vp_owscale;
+				vp_curHeight = view.height * sO.vp_ohscale;
+				
+				xOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
+				yOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
+				
+				rect = new Rectangle(sO.vp_ox_offset-xOffset, sO.vp_oy_offset-yOffset, 
+													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
+				pj.addPage(Sprite(view), rect, pjo);                             
+				pj.send();
+		    }
+			else
+			{
+		    	pjo = new PrintJobOptions();
+				pjo.printAsBitmap = true;
+				
+				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageHeight, pj.pageWidth);
+				curScale = view.width/sO.owidth;
+
+				view.rotation = 90;
+				
+				view.x = initX;
+		    	view.y = initY;
+		    	
+		    	vp_curWidth = view.width * sO.vp_ohscale;
+				vp_curHeight = view.height * sO.vp_owscale;
+				
+				yOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
+				xOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
+				
+				rect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, 
+													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);		
+		        pj.addPage(Sprite(view), rect, pjo);
+		        pj.send();
+		        
+		        view.rotation = 0;
+		    }
+		    view.width = initW;
+			view.height = initH;	
+		    view.x = initX;
+		    view.y = initY;
+		}
+		
+		public static function printImageLandscape(view:MovieClip, sO : IDisplayObjectSnapShot, background_mc:MovieClip):void
+		{
+			if (view == null) return;
+		    var pj:PrintJob = new PrintJob();
+		    pj.start();
+		    var rect : Rectangle;
+		    var pjo:PrintJobOptions;
+		    
+		    var initW:Number = view.width;
+			var initH:Number = view.height;
+			var initX:Number = view.x;
+			var initY:Number = view.y;
+			var xOffset:int = 0;
+			var yOffset:int = 0;
+			var vp_curWidth:Number = 0;
+			var vp_curHeight:Number = 0;
+			var curScale:Number = 1;
+				
+		    if(pj.orientation == PrintJobOrientation.LANDSCAPE)
+			{
+				pjo = new PrintJobOptions();
+				pjo.printAsBitmap = true;
+				
+				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageWidth, pj.pageHeight);
+				curScale = view.width/sO.owidth;
+					  
+				vp_curWidth = view.width * sO.vp_owscale;
+				vp_curHeight = view.height * sO.vp_ohscale;
+				
+				xOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
+				yOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
+		
+				rect = new Rectangle(sO.vp_ox_offset-xOffset, sO.vp_oy_offset-yOffset, 
+													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
+				pj.addPage(Sprite(view), rect, pjo);                             
+				pj.send();
+		    }
+			else
+			{
+		    	pjo = new PrintJobOptions();
+				pjo.printAsBitmap = true;
+				
+				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageHeight, pj.pageWidth);
+				curScale = view.width/sO.owidth;
+
+				view.rotation = 90;
+				
+				view.x = initX;
+		    	view.y = initY;
+				  		    	
+		    	vp_curWidth = view.width * sO.vp_ohscale;
+				vp_curHeight = view.height * sO.vp_owscale;
+				
+				yOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
+				xOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
+				
+				rect = new Rectangle(sO.vp_ox_offset-xOffset, sO.vp_oy_offset-yOffset, 
+													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);		
+		        pj.addPage(Sprite(view), rect, pjo);
+		        pj.send();
+		        
+		        view.rotation = 0;
+		    }
+		    view.width = initW;
+			view.height = initH;	
+		    view.x = initX;
+		    view.y = initY;
 		}
 		
 		public static function center2( back_mc : Object, _mc : DisplayObject, mcSnapShot : IDisplayObjectSnapShot = null) : void {
