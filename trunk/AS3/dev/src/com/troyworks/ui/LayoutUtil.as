@@ -446,32 +446,40 @@ package com.troyworks.ui {
 			var vp_curWidth:Number = 0;
 			var vp_curHeight:Number = 0;
 			var curScale:Number = 1;
+			var initScrRect:Rectangle;
 				
 		    if(pj.orientation == PrintJobOrientation.PORTRAIT)
 			{
 				pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageWidth, pj.pageHeight);
+				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageWidth-80, pj.pageHeight-80);
+			
 				curScale = view.width/sO.owidth;
-					  
+				
 				vp_curWidth = view.width * sO.vp_owscale;
 				vp_curHeight = view.height * sO.vp_ohscale;
 				
 				xOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
 				yOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
 				
-				rect = new Rectangle(sO.vp_ox_offset-xOffset, sO.vp_oy_offset-yOffset, 
-													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
+				rect = new Rectangle(-xOffset, -yOffset, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
+
+				initScrRect = new Rectangle(0,0, view.width, view.height);	
+				
+				if (sO.hasViewport) view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
+					  
 				pj.addPage(Sprite(view), rect, pjo);                             
 				pj.send();
+				
+				if (sO.hasViewport) view.scrollRect = initScrRect;
 		    }
 			else
 			{
 		    	pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageHeight, pj.pageWidth);
+				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageHeight-80, pj.pageWidth-80);
 				curScale = view.width/sO.owidth;
 
 				view.rotation = 90;
@@ -485,17 +493,21 @@ package com.troyworks.ui {
 				yOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
 				xOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
 				
-				rect = new Rectangle(sO.vp_ox_offset-xOffset, sO.vp_oy_offset, 
-													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);		
-		        pj.addPage(Sprite(view), rect, pjo);
+				rect = new Rectangle(-xOffset, 0, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
+													 
+				initScrRect = new Rectangle(0,0,view.width, view.height);
+				if (sO.hasViewport) view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
+								
+		        pj.addPage(Sprite(view), rect, pjo);		        
 		        pj.send();
 		        
+		        if (sO.hasViewport) view.scrollRect = initScrRect;
 		        view.rotation = 0;
 		    }
-		    view.width = initW;
-			view.height = initH;	
-		    view.x = initX;
-		    view.y = initY;
+		    view.width = initW * sO.vp_owscale;
+			view.height = initH * sO.vp_ohscale;
+			view.x = initX;
+		    view.y = initY;	
 		}
 		
 		public static function printImageLandscape(view:MovieClip, sO : IDisplayObjectSnapShot, background_mc:MovieClip):void
@@ -515,13 +527,14 @@ package com.troyworks.ui {
 			var vp_curWidth:Number = 0;
 			var vp_curHeight:Number = 0;
 			var curScale:Number = 1;
+			var initScrRect:Rectangle;
 				
 		    if(pj.orientation == PrintJobOrientation.LANDSCAPE)
 			{
 				pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageWidth, pj.pageHeight);
+				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageWidth-80, pj.pageHeight-80);
 				curScale = view.width/sO.owidth;
 					  
 				vp_curWidth = view.width * sO.vp_owscale;
@@ -532,19 +545,23 @@ package com.troyworks.ui {
 		
 				trace("Landscape");
 				trace("xOffset "+xOffset+" yOffset "+yOffset);
-				trace("position x,y = "+[sO.vp_ox_offset, sO.vp_oy_offset]);
 				
-				rect = new Rectangle(sO.vp_ox_offset-xOffset, sO.vp_oy_offset-yOffset, 
-													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
+				rect = new Rectangle(-xOffset, -yOffset, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
+				
+				initScrRect = new Rectangle(0,0,view.width, view.height);				
+				if (sO.hasViewport) view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
+				
 				pj.addPage(Sprite(view), rect, pjo);                             
 				pj.send();
+				
+				if (sO.hasViewport) view.scrollRect = initScrRect;
 		    }
 			else
 			{
 		    	pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageHeight, pj.pageWidth);
+				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageHeight-80, pj.pageWidth-80);
 				curScale = view.width/sO.owidth;
 
 				view.rotation = 90;
@@ -560,19 +577,23 @@ package com.troyworks.ui {
 				
 				trace("Portrait");
 				trace("xOffset "+xOffset+" yOffset "+yOffset);
-				trace("position x,y = "+[sO.vp_ox_offset, sO.vp_oy_offset]);
 				
-				rect = new Rectangle(sO.vp_ox_offset-xOffset, sO.vp_oy_offset, 
-													 sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);		
+				rect = new Rectangle(-xOffset, 0, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
+
+				initScrRect = new Rectangle(0,0,view.width, view.height);				
+				if (sO.hasViewport) view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
+								
 		        pj.addPage(Sprite(view), rect, pjo);
 		        pj.send();
 		        
+		        if (sO.hasViewport) view.scrollRect = initScrRect;
 		        view.rotation = 0;
 		    }
-		    view.width = initW;
-			view.height = initH;	
-		    view.x = initX;
-		    view.y = initY;
+		   
+		    view.width = initW * sO.vp_owscale;
+			view.height = initH * sO.vp_ohscale;
+			view.x = initX;
+		    view.y = initY;	
 		}
 		
 		public static function center2( back_mc : Object, _mc : DisplayObject, mcSnapShot : IDisplayObjectSnapShot = null) : void {
