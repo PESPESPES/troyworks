@@ -143,7 +143,7 @@ package com.troyworks.ui {
 		 * find the highest color component, ratchet up and down
 		 * from white to black keeping the same color balance.
 		 * */
-		public static function getHues(rgb:uint):Array{
+		public static function getHues(rgb:uint, len:int = 10):Array{
 			var res:Array = new Array();
 			var cR:uint;
 			var cG:uint;
@@ -151,22 +151,23 @@ package com.troyworks.ui {
 			cR = rgb >>16;
 			cG = rgb >>8 & 0xFF;
 			cB = rgb & 0xFF;
+			trace("IN r " + cR + " g " + cG + " b " + cB);
 			
 			
-			var sRGB:uint;
 			var nRGB:uint;
-			var lR:uint;
-			var lG:uint;
-			var lB:uint;
 			var hR:uint;
 			var hG:uint;
 			var hB:uint;
-			var len:int = 10;
+			var p:Number;
 			for (var i:int = 0; i < len; i++){
-				hR = Math.min(0, (255 - (cR * i/len)));
-				hG = Math.min(0, (255 - (cG * i/len)));
-				hB = Math.min(0, (255 - (cB * i/len)));
-				nRGB = (hR << 16 |  hG << 8 | hB)
+				p =  i/len;
+				hR = cR * p;
+				hG = cG * p;
+				hB = cB *p;
+				trace("r " + hR + " g " + hG + " b " + hB);
+				
+				nRGB = (hR << 16 |  hG << 8 | hB);
+				trace("adding new Hue" + nRGB);
 				res.push(nRGB);
 			}
 			return res;
@@ -205,7 +206,7 @@ package com.troyworks.ui {
 				hR = (cR + lR)/2;
 				hG = (cG + lG)/2;
 				hB = (cB + lB)/2;
-				nRGB = (hR << 16 |  hG << 8 | hB)
+				nRGB = (hR << 16 |  hG << 8 | hB);
 				res.push(nRGB);
 			}
 			return res;
@@ -260,7 +261,7 @@ package com.troyworks.ui {
 		*/
 		public static function posterize(bitmap:*, posterizeValue:int):BitmapData{
 			//thisImage, thisW, thisH, thisValue
-			var res:BitmapData
+			var res:BitmapData;
 			
 			 if (posterizeValue == 0 ||  posterizeValue < 2 || posterizeValue > 255){
 				 throw new Error("posterize value must be between 2 and 255");
@@ -276,7 +277,7 @@ package com.troyworks.ui {
 			res = new BitmapData(bd.width, bd.height);
 			var i:int = bd.width;
 			var j:int = 0;
-			var k:String ="";
+
 			var rgb:uint;
 			trace(" indexingBitmap w " + bd.width + " h " + bd.height);
 			var currentRed :uint;
@@ -341,7 +342,7 @@ package com.troyworks.ui {
 					  if( newBlue > newBlueFloat ){ newBlue = newBlue - 1;}
 
 					  // Set the pixel to the new color.
-					  res.setPixel(i, j, (newRed << 16 |  newGreen << 8 | newBlue))
+					  res.setPixel(i, j, (newRed << 16 |  newGreen << 8 | newBlue));
 					
 				}
 			}

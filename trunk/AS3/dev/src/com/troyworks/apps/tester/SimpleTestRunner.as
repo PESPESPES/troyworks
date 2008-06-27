@@ -1,5 +1,7 @@
 ﻿
 package com.troyworks.apps.tester {
+	import flash.display.Sprite;	
+	import flash.display.Stage;	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.utils.describeType;
@@ -23,13 +25,21 @@ package com.troyworks.apps.tester {
 		public var passedN:Number = 0;
 		public var totalN:Number = 0;
 		public var trace:Function = TraceAdapter.NormalTracer();
-
+		
+		public var stage : Stage;
+		public var view : Sprite;
+		
+		
 		public function SimpleTestRunner() {
 			super();
 			tests = new Array();
 		}
 		public function setDefaultTracer(fn:Function):void{
 			trace = fn;
+		}
+		
+		public function get hasTests():Boolean{
+		 return tests.length > 0;	
 		}
 		public function addTest(c:Class):void {
 			trace("addingTest " + c + " " + typeof(c));

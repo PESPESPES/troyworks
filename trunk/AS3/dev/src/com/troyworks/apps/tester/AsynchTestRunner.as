@@ -1,5 +1,7 @@
-package com.troyworks.apps.tester
-{
+package com.troyworks.apps.tester {
+	import flash.display.Sprite;	
+	import flash.display.Stage;	
+	
 	import com.troyworks.core.cogs.CogSignal;
 	import com.troyworks.core.cogs.Fsm;
 	import com.troyworks.core.cogs.CogEvent;
@@ -47,10 +49,14 @@ package com.troyworks.apps.tester
 		
 		public static const TIMEOUT:CogSignal = CogSignal.CALLBACK;
 		public var haltOnErrors:Boolean = true;
+	  
+	  	public var stage : Stage;
+		public var view : Sprite;
 
-		
 		public function AsynchTestRunner() {
-			super();
+			super("s_initial","AsynchTestRunner", false);
+			
+			trace = TraceAdapter.CurrentTracer;
 			trace("new AsynchronousTestSuite");
 			DesignByContract.initialize(this);
 			DesignByContract.HALT_ON_ERRORS = false;
@@ -62,9 +68,7 @@ package com.troyworks.apps.tester
             timeOutTmer.addEventListener("timer", onTimeOutCallback);
 
 		}
-		public function setDefaultTracer(fn:Function):void{
-			trace = fn;
-		}
+
 
 		
 		public function setTimeOut(ms:Number = 45):void{
@@ -100,7 +104,7 @@ package com.troyworks.apps.tester
 
 		}
 			/////////////////////////////TESTS BEGIN //////////////////////////////////////////
-		public static function getTestList(aClass:Class):Array{
+		public static function getTestList(aClass:Class, view:Sprite=null, stage:Stage = null):Array{
 			var typeDesc : XML = describeType(aClass);
 			var typeN:String = typeDesc.type.@name;
 			var methodList:XMLList = typeDesc.factory.method;
@@ -116,6 +120,10 @@ package com.troyworks.apps.tester
 				if (sn.indexOf("test_") == 0 || sn.indexOf("atest_") == 0) {
 				  
 					var tt:TestTask = new TestTask(aClass, sn);
+					
+					tt.view= view;
+					
+					tt.stage= stage;
 					tests.push(tt);
 					trace("discovered Test " + tt);
 				}
@@ -146,7 +154,7 @@ package com.troyworks.apps.tester
 			switch (e.sig) {
 				case SIG_INIT:
 					trace("*****************************************");
-					trace("*       STARTING ATESTS               *");
+					trace("*       STARTING " + allTests.length + " ATESTS               *");
 					trace("*****************************************");
 					testsLeft = allTests.concat();
 					results = <testResults/>;
@@ -206,7 +214,8 @@ package com.troyworks.apps.tester
 			trace("s_runningTest " + e);
 			switch (e.sig) {
 				case SIG_ENTRY :
-				
+					curTest.view = view;
+					curTest.stage = stage;
 					if(curTest.asynch){
 						trace("================================================");
 						trace("running aTest------------- " + curTest);

@@ -12,6 +12,8 @@ package com.troyworks.logging {
 	* 
 	* basically use is overriding Object.prototype.trace (which doesn't exist)
 	* and referecning it by this.trace.
+	* 
+	* public static var trace : Function = TraceAdapter.CurrentTracer;
 	*/
 	public class TraceAdapter {
 		public static var sosL:SOSLogger = null;
@@ -19,7 +21,7 @@ package com.troyworks.logging {
 		public static var promptOnFatal:Boolean = true;
 		public static var NormalTracer:Function = trace;
 		public static var SOSTracer:Function = TraceAdapter.traceToSOS;
-				
+		public static var CurrentTracer:Function = trace;		
 		
 		public static function traceNormal(obj : Object ="") : void{
 				trace(obj);

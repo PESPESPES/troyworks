@@ -1,4 +1,5 @@
 package com.troyworks.ui {
+	import flash.text.TextField;	
 	import flash.display.Sprite;	
 	import flash.display.MovieClip;
 
@@ -15,44 +16,53 @@ package com.troyworks.ui {
 		import flash.events.*;
 		import flash.text.TextFieldType;
 
-		var init : Boolean;
-		var lastFrameNumber : Number;
-		var activeFrames : Object;
+		private var init : Boolean;
+		private var lastFrameNumber : Number;
+		private var activeFrames : Object;
+		private var scope:MovieClip;
+		public var view:MovieClip; 
 
-		public function FlowControlNavigator() {
+		public function FlowControlNavigator(view:MovieClip, scope:MovieClip){
 			super();
+			this.scope = scope;
+			if(this.scope.stage != null){
+				createChildren();
+			} 
 		}
 
 		function onAddedToStage():void{
-		if (!init) {
+	
+		}
+		public function createChildren():void{
+			if (!init) {
 			addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 			activeFrames = new Object();
 			var labelDepth : Number = 0;
 			trace("Inventorying FrameLabels----------------------");
-			for (var i : int = 0;i < currentLabels.length; i++) {
-				trace(i + " " + currentLabels[i].name + " " + currentLabels[i].frame);
-				if (lastFrameNumber == currentLabels[i].frame) {
+			for (var i : int = 0;i < scope.currentLabels.length; i++) {
+				trace(i + " " + scope.currentLabels[i].name + " " + scope.currentLabels[i].frame);
+				if (lastFrameNumber == scope.currentLabels[i].frame) {
 					labelDepth++;
 				} else {
 					labelDepth = 0;
-					lastFrameNumber = currentLabels[i].frame;
+					lastFrameNumber = scope.currentLabels[i].frame;
 				}
 
-				activeFrames[currentLabels[i].name] = false;
+				activeFrames[scope.currentLabels[i].name] = false;
 				//////// CREATE DEBUGGING VISUALIZER //////////
 				var sp : Sprite = new Sprite();
-				sp.name = currentLabels[i].name + "_mc";
+				sp.name = scope.currentLabels[i].name + "_mc";
 				sp.graphics.beginFill(0xCCCCCC, 1);
 				sp.graphics.drawRect(0, 0, 50, 20);
 				var txt : TextField = new TextField();
 				txt.name = "txt";
-				txt.text = currentLabels[i].name;
+				txt.text = scope.currentLabels[i].name;
 				txt.type = TextFieldType.DYNAMIC;
 				txt.selectable = false;
 				txt.mouseEnabled = false;
 				//txt.embedFonts = true;
 				sp.alpha = .2;
-				sp.x = (currentLabels[i].frame * 40) + 20;
+				sp.x = (scope.currentLabels[i].frame * 40) + 20;
 				sp.y = labelDepth * 20;
 				sp.addChild(txt);
 				sp.buttonMode = true;
@@ -63,7 +73,7 @@ package com.troyworks.ui {
 			//already on frame so call.
 			onEnterFrameHandler(null);
 		}
-	}
+		}
 
 		function onFrameRequest(event : Event) : void {
 			trace("onFrameRequest !!!! " + event.target.name + " !!!!!!!!!!");

@@ -1,12 +1,13 @@
-package  { 
-	class util.SWFUtil
+package com.troyworks.util  { 
 	import flash.display.MovieClip;
 	import flash.system.System;
 	import flash.net.navigateToURL;
 	import flash.net.URLRequest;
+	class SWFUtil
+
 	{
 		public static var currentOS : String = null;
-		var request:URLRequest = new URLRequest(ath : String = null;
+//		var request:URLRequest = new URLRequest(ath : String = null;
 				public static function isFullyLoaded (clipPath : String):Boolean
 				{
 					var _mc = eval (clipPath);
@@ -180,7 +181,7 @@ package  {
 					var a = Math.max (path.lastIndexOf ("/", path.length - 2) , path.lastIndexOf ("\\", path.length - 2));
 					return path.substring (0, a + 1);
 				}
-				public static function get pathSeparator () : String
+				public static function getPathSeparator () : String
 				{
 					var sSep : String;
 					var osN = SWFUtil.getOSName ();

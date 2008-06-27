@@ -73,7 +73,7 @@ package com.troyworks.logging {
 				}catch(err:Error){
 					//ignore
 					
-					trace(err);
+					trace("SOS.setupStyles " + err);
 				}
 			}
 		}
