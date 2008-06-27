@@ -1,5 +1,5 @@
-package  { 
-	class com.troyworks.framework.assets.AssetCreatorCategory extends Number{
+package com.troyworks.framework.assets { 
+	class AssetCreatorCategory extends Number{
 	
 	
 		public static var USER:AssetCreatorCategory =  new AssetCreatorCategory(0, "USER");

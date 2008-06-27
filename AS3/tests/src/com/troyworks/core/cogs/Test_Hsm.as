@@ -24,7 +24,7 @@
 	{
 		protected var GearBox:EightStateMachine;
 		protected var myTimer:Timer;
-		protected var trace:Function = TraceAdapter.TraceToSOS;
+		protected var trace:Function = TraceAdapter.SOSTracer;
 		protected var cogHasInited:Boolean = false;
 		protected var timeOutInMS:Number = 200;
 		public var timeOutTmer:Timer;

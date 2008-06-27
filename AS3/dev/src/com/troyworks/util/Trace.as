@@ -390,7 +390,7 @@ var cnm2:String;
 			return 'number';
 			if (typeof (pObj) == 'movieclip'){
 				var _mc:MovieClip = MovieClip(pObj);
-				return 'movieclip' + " " + _mc.currentframe +"/"+_mc.totalframes + "@"+ _mc.parent.getChildIndex() + " x "+ _mc.x + "," +_mc.y + " w" + _mc.width + " h" +_mc.height;
+				return 'movieclip' + " " + _mc.currentframe +"/"+_mc.totalframes + "@"+ _mc.parent.getChildIndex(_mc) + " x "+ _mc.x + "," +_mc.y + " w" + _mc.width + " h" +_mc.height;
 			}
 			if (typeof (pObj) == 'boolean')
 			return 'boolean';

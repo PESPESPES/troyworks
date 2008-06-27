@@ -68,7 +68,9 @@ package com.troyworks.logging {
 			}
 			if(sMessage.indexOf("</")>-1){
 				///if xml send normal.
-				_msock.send(sMessage);
+				if(_msock.connected){
+					_msock.send(sMessage);
+				}
 			}else if((sMessage is String) &&( String(sMessage).indexOf("\r") > -1)){
 			//	trace("folded");
 				 ////////// Show a Folded message when caridge returnrs are detected  ///////
@@ -101,12 +103,18 @@ package com.troyworks.logging {
 					}
 					res.push( "</message>");
 					res.push( "</showFoldMessage>");
-					res.push( "\n");						
-					_csock.send(res.join(""));
+					res.push( "\n");
+					if(_csock.connected){						
+						_csock.send(res.join(""));
+					}
 				}else{
 				//	trace("normal");
 					//////////// Show a normal message /////////////////
+					if(_csock.connected){
 					_csock.send("<showMessage key='"+key + "'>"+replaceXML(sMessage.toString())+"</showMessage>\n");
+					}else{
+						trace("can't send to SOS, perhaps not running?");
+					}
 				}
 		}
 		public function replaceXML(s:String):String{

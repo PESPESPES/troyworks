@@ -1,6 +1,5 @@
-package com.troyworks.apps.tester
-{
-	
+package com.troyworks.apps.tester {
+	import flash.events.Event;	
 
 	/***************************************
 	    * This is a lightweight class automates testing of methods (generaly
@@ -22,6 +21,13 @@ package com.troyworks.apps.tester
 	{
 		public function AsynchronousTestSuite() {
 			super();
+		}
+		
+		
+		public function dispatchTestComplete(passed:Boolean = false):void{
+			var evt:TestEvent = new TestEvent(Event.COMPLETE,true);
+				dispatchEvent(evt);
+				
 		}
 
 	}

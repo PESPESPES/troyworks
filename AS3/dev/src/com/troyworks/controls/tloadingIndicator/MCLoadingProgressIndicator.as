@@ -1,11 +1,12 @@
 package com.troyworks.controls.tloadingIndicator { 
-	import com.troyworks.events.TProxy;
+
 	
 	/**
 	 * @author Troy Gardner
 	 */
+	import flash.events.Event;	
 	import flash.display.MovieClip;
-	public class MCLoadingProgressIndicator extends BaseComponent {
+	public class MCLoadingProgressIndicator extends MovieClip {
 	
 		protected var error_mc : MovieClip;
 	
@@ -14,8 +15,8 @@ package com.troyworks.controls.tloadingIndicator {
 		protected var percent_total_mc : MovieClip;
 		
 		public function MCLoadingProgressIndicator(clip : MovieClip) {
-			super(null, "MCLoadingProgressIndicator");
-					trace("new MCLoadingProgressIndicator " + clip + " " + this);
+			super();
+			trace("new MCLoadingProgressIndicator " + clip + " " + this);
 		}
 		public function onLoad():void{
 			trace("MCLoadingProgressIndicator.onLoad" + this + " " + this.gotoLoadingPercent);
@@ -30,7 +31,7 @@ package com.troyworks.controls.tloadingIndicator {
 				error_mc.visible = true;
 			}else if(p>= 100){
 		//		gotoAndPlay("loadingComplete");
-				onEnterFrame = TProxy.create(this, onEnterFrameHandler);
+				addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 			}else{
 				percent_loaded_mc.visible = true;
 				percent_total_mc.visible = true;
@@ -40,7 +41,7 @@ package com.troyworks.controls.tloadingIndicator {
 		public function onEnterFrameHandler() : void {
 			this.alpha -= 2;
 			if(this.alpha <= 0){
-				delete onEnterFrame;
+				removeEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 			}
 		}
 	}

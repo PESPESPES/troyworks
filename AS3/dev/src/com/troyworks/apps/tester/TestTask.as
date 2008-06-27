@@ -1,5 +1,6 @@
-package com.troyworks.apps.tester
-{
+package com.troyworks.apps.tester {
+	import flash.display.Sprite;	
+	import flash.display.Stage;	
 	import flash.events.IEventDispatcher;
 	import flash.events.Event;
 	import com.troyworks.apps.tester.TestSuite;
@@ -13,6 +14,9 @@ package com.troyworks.apps.tester
 		public var methodName:String;
 		public var asynch:Boolean = false;
 		
+		public var stage : Stage;
+		public var view : Sprite;
+		
 		public function TestTask(clas:Class, methodName:String){
 			trace("HIGHLIGHT new TestTask(" + clas + "," + methodName+")");
 			this.cls = clas;
@@ -25,7 +29,10 @@ package com.troyworks.apps.tester
 			var inst:Object =  new cls();
 			if(inst is TestSuite){
 				trace("found a TestSuite");
-				suite = TestSuite(inst)
+				suite = inst as TestSuite;
+				suite.stage = stage;
+				suite.view = view;
+				
 			}
 			if(asynch && listener != null){
 				IEventDispatcher(inst).addEventListener(Event.COMPLETE,listener);

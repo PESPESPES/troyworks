@@ -423,8 +423,8 @@
 				////// HAND TO PARENT ///////////
 				return true;
 			} else {
-				trace("dispatchEvent normal");
-				return super.dispatchEvent.apply(this,arguments);
+			//	trace("dispatchEvent normal " + super.dispatchEvent);
+				return super.dispatchEvent.apply(this, arguments);
 			}
 		}
 		/*public function Q_dispatch(e : AEvent) : void{

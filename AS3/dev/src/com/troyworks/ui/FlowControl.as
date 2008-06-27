@@ -1,4 +1,14 @@
 package com.troyworks.ui {
+	import com.troyworks.logging.TraceAdapter;	
+
+	import flash.geom.Rectangle;	
+	import flash.display.Shape;	
+	import flash.display.Bitmap;	
+
+	import com.troyworks.controls.ttooltip.OBO_ToolTip;	
+
+	import flash.text.TextFormat;	
+	import flash.text.TextFieldAutoSize;	
 	import flash.display.DisplayObjectContainer;	
 	import flash.text.TextFieldType;	
 
@@ -67,15 +77,15 @@ package com.troyworks.ui {
 	 * 1) in your FLA extend FlowControl.
 	 * 2) copy this into a class and have your Document level class use the following
 	 *
-	  package {
-		import com.troyworks.ui.*;
-			public dynamic class UI extends FlowControl{
-			public function UI(){
-				super();
-				setView(this,true);
-			}
-		}
-	  }
+	package {
+	import com.troyworks.ui.*;
+	public dynamic class UI extends FlowControl{
+	public function UI(){
+	super();
+	setView(this,true);
+	}
+	}
+	}
 	 * 
 	 * @author Troy Gardner (troy@troyworks.com)
 	 */
@@ -83,6 +93,7 @@ package com.troyworks.ui {
 		public var output_txt : TextField;
 		public var lastFrame : int = -1;
 		public var errorFilter : GlowFilter = new GlowFilter(0xFF0000, 80);
+
 		public var QA : Sprite;
 		public var timers : Dictionary = new Dictionary();
 
@@ -99,14 +110,20 @@ package com.troyworks.ui {
 		public var frameLabelToNumberIdx : Object;
 		public var lastFrameNumber : Number;
 		public var view : MovieClip;
-		
-		///////// OPTIONS ///////////////////
-		public var preloadingRequired:Boolean = true;
-		public var autoPlay:Boolean = false;
-		public var watchAddedAndRemovedEvents:Boolean = true;
-		public var showDebugUI:Boolean = false;
 
-		
+		///////// OPTIONS ///////////////////
+		public var preloadingRequired : Boolean = true;
+		public var autoPlay : Boolean = false;
+		public var watchAddedAndRemovedEvents : Boolean = true;
+		public var showDebugUI : Boolean = false;
+		public var debugShowChildAdded : Boolean = false;
+		public var debugShowChildRemoved : Boolean = false;
+
+		private var currentToolTip : TextField;
+		private var _toolTip : OBO_ToolTip;
+
+		//	public static var trace : Function = TraceAdapter.SOSTracer;
+
 		public function FlowControl() {
 			super();
 			trace("FlowControl");
@@ -120,16 +137,29 @@ package com.troyworks.ui {
 			debuggerUI_mc = new MovieClip();
 			debuggerUI_mc.name = "debuggerUI_mc";
 		}
+
 		/* view should have frame1 completely loaded by then */
 		public function onFrame1() : void {
 			trace("FlowControl.onFrame1");
 			//stage.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
-			//setView(this);
-
+			setView(this);
+			try {
+				if(this["frame1"] != null ) {
+					//call up whatever config
+					this["frame1"]();
+				}else {
+					trace(" using defaults");
+				}
+			}catch(er : Error) {
+				trace("couldn't init frame1");
+			}
+			
+			//new ArialFontBold()
+			_toolTip = OBO_ToolTip.createToolTip(this, null, 0x000000, .8, OBO_ToolTip.ROUND_TIP, 0xFFFFFF, 8, false);
 		}
 
 		/* set the actual MovieClip/Sprite we are going to use */
-		public function setView(mc : MovieClip, sender:String = null) : void {
+		public function setView(mc : MovieClip, sender : String = null) : void {
 			trace("FlowControl.setView" + mc + " " + sender);
 			view = mc;
 			if(watchAddedAndRemovedEvents) {
@@ -143,21 +173,20 @@ package com.troyworks.ui {
 				view.parent.addChild(debuggerUI_mc);
 			}
 			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
-			if(preloadingRequired){
+			if(preloadingRequired) {
 				view.stop();
 				///////////////////////////////
 				// load list of engines / services
 				///////////////////////////////
-			}else{
+			}else {
 				view.stop();
 				view.nextFrame();
 			}
-			if(showDebugUI){
+			if(showDebugUI) {
 				QA = new Sprite();
 				view.parent.addChild(QA);
 			}
 			onFrameChanged();
-			
 		}
 
 		protected function addedToStage(event : Event) : void {
@@ -172,7 +201,9 @@ package com.troyworks.ui {
 			var dO : DisplayObject = DisplayObject(event.target);
 			var isButton : Boolean = dO is SimpleButton;
 			// || dO is RadioButton;
-			trace("Sketch.onChildAdded " + dO.name + " " + isButton);
+			if(debugShowChildAdded) {
+				trace("Sketch.onChildAdded " + dO.name + " " + isButton);
+			}
 			if(isButton && validDo(dO)) {
 				setupGoto(dO, dO.name);
 			}
@@ -180,12 +211,15 @@ package com.troyworks.ui {
 
 		public function validDo(dO : DisplayObject) : Boolean {
 
-			if( dO.name.indexOf("instance") == 0) {
-				trace("found a bum clip " + dO.name);
+			if(!( dO is Bitmap || dO is Shape) && dO.name.indexOf("instance") == 0) {
+				trace("found a bum clip " + dO.name + " " + dO);
 				//dO.filters = [errorFilter];
-				QA.graphics.beginFill(0xFF0000, .6);
-				QA.graphics.drawRect(dO.x, dO.y, dO.width, dO.height);
-				QA.graphics.endFill();
+				if(QA != null) {
+					QA.graphics.beginFill(0xFF0000, .6);
+					var bnd : Rectangle = dO.getBounds(view.stage);
+					QA.graphics.drawRect(bnd.x, bnd.y, bnd.width, bnd.height);
+					QA.graphics.endFill();
+				}
 				return false;
 			}
 			return true;
@@ -195,7 +229,10 @@ package com.troyworks.ui {
 			var dO : DisplayObject = DisplayObject(event.target);
 			var isButton : Boolean = dO is SimpleButton;
 			// || dO is RadioButton;
-			trace("Sketch.onChildRemoved " + dO.name + " " + isButton);
+			if(debugShowChildAdded) {
+				trace("Sketch.onChildRemoved " + dO.name + " " + isButton);
+			}
+			
 			if(isButton) {	
 				takedownGoto(dO, dO.name); 
 			}
@@ -227,11 +264,11 @@ package com.troyworks.ui {
 		}
 
 		public function setupGoto(ie : IEventDispatcher, frame : String, event : String = MouseEvent.CLICK) : void {
-			trace("setting up " + frame + " for " + view +"."+ (ie as DisplayObject).name +":" +ie);
+			trace("setting up " + frame + " for " + view + "." + (ie as DisplayObject).name + ":" + ie);
 			var ary : Array;
 			if(frame.indexOf("play_") == 0 || frame == "_play") {
 				ary = frame.split("_");
-				trace("ary: '" + ary.join("','") +"'");
+				trace("ary: '" + ary.join("','") + "'");
 				if(!ie.hasEventListener(event)) {
 					if(ary.length == 1) {
 						ie.addEventListener(event, EventAdapter.create(view.play, [], false));
@@ -245,10 +282,10 @@ package com.troyworks.ui {
 				}	 
 			}else {
 				ary = frame.split("_");
-				trace(" gotoAndStop " + frame + "  '" + ary.join("','") +"'");
+				trace(" gotoAndStop " + frame + "  '" + ary.join("','") + "'");
 				//if(!ie.hasEventListener(event)) {
-			
 
+				
 				if(ary.length > 0) {
 					if(ary[0] == "gotoAndStop") {
 						trace("adding gotoAndStop");
@@ -264,6 +301,8 @@ package com.troyworks.ui {
                 
 			//	}
 			}
+			ie.addEventListener(MouseEvent.ROLL_OVER, toolTipHover);
+			ie.addEventListener(MouseEvent.ROLL_OUT, removetoolTipHover);
 		}
 
 		public function takedownGoto(ie : IEventDispatcher, frame : String, event : String = MouseEvent.CLICK) : void {
@@ -287,10 +326,66 @@ package com.troyworks.ui {
 			}
 		}
 
-		function reportKeyDown(event : KeyboardEvent) : void {
+		public function toolTipHover(evt : MouseEvent) : void {
+			
+			var txt : TextField = new TextField();
+			var str : String = evt.target.name;
+			var res : String;
+			if(str.indexOf("gotoAnd") == 0) {
+				res = str.split("_")[1];
+			}else {
+				res = str;
+			}
+			
+			if(_toolTip != null) {
+				_toolTip.addTip(res);
+			}
+			
+			var tf : TextFormat = new TextFormat();
+			txt.width = 50;
+			txt.height = 50;
+			tf.size = 50;
+			tf.color = 0x000000;
+			txt.textColor = 0x000000;
+			txt.setTextFormat(tf);
+			//txt.autoSize = TextFieldAutoSize.CENTER;
+
+			txt.text = "XXXXXXXXXXXXXXXXXXX";
+			// res;
+			txt.border = true;
+			
+			txt.x = evt.target.stage.mouseX;
+			txt.y = evt.target.stage.mouseY;
+		
+			trace("toolTipHover! " + res + " at " + txt.x + " " + txt.y);
+			trace("view " + view);
+			currentToolTip = txt;
+			//view.addChild(txt);
+		//	view.addEventListener(Event.ENTER_FRAME, moveToolTip);
+		}
+
+		public function moveToolTip(evt : Event) : void {
+			
+			if(currentToolTip != null) {
+				trace("moveToolTip" + currentToolTip.stage.mouseX + " " + currentToolTip.stage.mouseY);
+				currentToolTip.x = view.mouseX;
+				currentToolTip.y = view.mouseY;
+			}
+		}
+
+		public function removetoolTipHover(evt : MouseEvent) : void {
+			
+			if(_toolTip != null) {
+				_toolTip.removeTip();
+			}
+		//	view.removeChild(currentToolTip);
+		//				view.removeEventListener(Event.ENTER_FRAME, moveToolTip);
+		}
+
+		protected function reportKeyDown(event : KeyboardEvent) : void {
 			//	trace("Key Pressed: " + String.fromCharCode(event.charCode) +         " (character code: " + event.charCode + ")");
 			trace("Key Pressed:character code: " + event.charCode + ", " + event.keyCode + ")");
-			output_txt.text = String(event.charCode);
+			//output_txt.text = String(event.charCode);
 			if (event.keyCode == 37 || event.charCode == 97 ) {
 				//LEFT
 				requestPrevScreen();
@@ -304,14 +399,19 @@ package com.troyworks.ui {
 			}
 		}
 
-		function requestNextScreen(evt : Event = null) : void {
+		protected function requestNextScreen(evt : Event = null) : void {
 			nextFrame();
 		}
 
-		function requestPrevScreen(evt : Event = null) : void {
+		protected  function requestPrevScreen(evt : Event = null) : void {
 			prevFrame();
 		}
 
+		/*********************************************
+		 * Stack based visibility management, as an alternative
+		 * to adding/removing from displayList or frame based management
+		 * 
+		 */
 		public static function hideExcept(disObjCon : DisplayObjectContainer, except : Array = null, dontProcess : Array = null) : void {
 			var i : int = 0;
 			var  n : int = disObjCon.numChildren;
@@ -362,7 +462,7 @@ package com.troyworks.ui {
 			}
 		}
 
-		public function inventoryFrames(enableFrameDebugger : Boolean = false) {
+		public function inventoryFrames(enableFrameDebugger : Boolean = false) : void {
 			activeFrames = new Object();
 			frameLabelToNumberIdx = new Object();
 			var labelDepth : Number = 0;

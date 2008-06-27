@@ -5,6 +5,10 @@
 */
 
 package com.troyworks.apps.tester {
+	import flash.display.Sprite;	
+	import flash.display.Stage;	
+	
+	import com.troyworks.logging.TraceAdapter;	
 	import com.troyworks.core.cogs.Fsm;
 	import com.troyworks.core.cogs.CogEvent;
 	import flash.events.EventDispatcher;
@@ -20,6 +24,12 @@ package com.troyworks.apps.tester {
 		public var assertRes:String;
 		public var lastEvent:DesignByContractEvent;
 		public var defaultTimeOutInMS:Number = 2000;
+		public static var trace:Function = TraceAdapter.CurrentTracer;
+
+
+	  	public var stage : Stage;
+		public var view : Sprite;
+		
 		
 		public function TestSuite() {
 			DesignByContract.initialize(this);

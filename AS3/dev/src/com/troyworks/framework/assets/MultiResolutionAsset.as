@@ -1,10 +1,11 @@
-package com.troyworks.framework.assets { 
-	
+package com.troyworks.framework.assets {
+	import com.troyworks.framework.assets.AssetCreatorCategory;	
+
+
 	import flash.xml.XMLDocument;
 	import flash.xml.XMLNode;
 	public class MultiResolutionAsset extends Asset
 	{
-		public static var Class:Function = com.troyworks.framework.assets.MultiResolutionAsset;
 		//the thumbnail equivalent for display in the media gallery
 		protected var _thumbnail : ImageAsset;
 		protected var _fullScreen : Asset;
@@ -14,15 +15,10 @@ package com.troyworks.framework.assets {
 			if (arguments.length > 0)
 			{
 				var arg1:Object = arguments [0];
-				if (arg1 is XMLNode)
+				if (arg1 is XMLNode || arg1 is XMLDocument)
 				{
 					var x:XMLNode = XMLNode (arg1);
 					//	//trace("XMLNode" + x);
-					this.initFromDiskXML (x);
-				} else if (arg1 is XMLDocument)
-				{
-					var x:XMLNode = XML (arg1);
-					//	//trace("XMLDocument" + x);
 					this.initFromDiskXML (x);
 				}else
 				{
@@ -31,11 +27,11 @@ package com.troyworks.framework.assets {
 				}
 			}
 		}
-		public function init (path : String, mediaType : MediaType, mediaCategory : MediaGalleryCategory, companyOrUser : AssetCreatorCategory) : void
+		override public function init (path : String, mediaType : MediaType, mediaCategory : MediaGalleryCategory, companyOrUser : AssetCreatorCategory) : void
 		{
 			super.init (path, mediaType, mediaCategory, companyOrUser);
-			this.setFullScreenAsset (this);
-			this.setThumbnailAsset (this);
+			this.setFullScreenAsset (this, mediaType, mediaCategory, companyOrUser);
+			this.setThumbnailAsset (this, mediaType, mediaCategory, companyOrUser);
 		}
 		public function get thumbnail () : ImageAsset
 		{

@@ -18,6 +18,8 @@
 	import com.troyworks.core.cogs.Test_Hsm;
 	import com.troyworks.logging.*;
 	import com.troyworks.data.Test_ArrayX;
+	import com.troyworks.core.cogs.StateMachine;
+	import com.troyworks.framework.loader.Test_SWFLoaderUnit;
 
 	/*************************************************
 	 *  This is the 'main' TestRunner extends Sprite so it
@@ -38,8 +40,9 @@
 		
 		public function TroyWorks_Test() {
 			super();
+			TraceAdapter.CurrentTracer = TraceAdapter.SOSTracer;
+			StateMachine.DEFAULT_TRACE = TraceAdapter.CurrentTracer;
 			trace("TroyWorks_Test()");
-			trace("OnLoaded******************");
 			eventSprite = new Sprite();
 			addChild(eventSprite);
 
@@ -47,14 +50,41 @@
 			addEventListener(Event.ENTER_FRAME, onProgress);	
 
 			onProgress(null);
-//			startSynchronousTests();
+			startSynchronousTests();
+
+			//	startAsynchTests();
 		}
 
-	
+		
+		public function onProgress(event : Event = null) : void {
+			
+			eventSprite.graphics.clear();
+			
+			if(curStatusSize == 10) {
+				eventSprite.graphics.beginFill(0x000000);	
+			}else {
+				eventSprite.graphics.beginFill(0x666666);
+			}
+			curStatusSize += 5;
+			eventSprite.graphics.drawCircle(0, 0, curStatusSize);
+			
+			//trace("onResize stage.stageWidth " + stage.stageWidth);
+			eventSprite.x = stage.stageWidth / 2 - (eventSprite.width / 2);
+			eventSprite.y = stage.stageHeight / 2 - (eventSprite.height / 2);
+			
+			if(stage.stageWidth != 0 && stage.stageHeight != 0  ) {
+				removeEventListener(Event.ENTER_FRAME, onProgress);	
+			}
+		}
 
 		public function startSynchronousTests() : void {
+			
+			trace("startSynchronousTests");
 			try {
 				testRunner = new SimpleTestRunner();
+				testRunner.view = this;
+				testRunner.stage = testRunner.view.stage; 
+				
 				testRunner.addEventListener(Event.COMPLETE, onSychronousTestComplete);
 				testRunner.addEventListener(Event.CHANGE, onProgress);
 				///////////////////////////////////////////
@@ -69,50 +99,52 @@
 				//testRunner.addTest(Test_AsynchronousTestSuite);
 				//testRunner.addTest(Test_Indexer);
 				////////RUN TEST //////////////
-				testRunner.startTest();
+
+				if(testRunner.hasTests){
+					testRunner.startTest();
+				}else{
+					onSychronousTestComplete(null);
+				}
+				
+				
 			} catch(e : Error) {
+				
+				trace("ERROR in startSynchronousTests ");
 				var evt : TestEvent = new TestEvent(Event.COMPLETE, false);
 				onAllTestComplete(evt);
 			}
 		}
 
-		public function onProgress(event : Event = null) : void {
-			
-			eventSprite.graphics.clear();
-			
-			if(curStatusSize == 10) {
-				eventSprite.graphics.beginFill(0x000000);	
-			}else {
-				eventSprite.graphics.beginFill(0x666666);
-			}
-			curStatusSize += 5;
-			eventSprite.graphics.drawCircle(0, 0, curStatusSize);
-			
-			trace("onResize stage.stageWidth " + stage.stageWidth);
-			eventSprite.x = stage.stageWidth / 2 - (eventSprite.width / 2);
-			eventSprite.y = stage.stageHeight / 2 - (eventSprite.height / 2);
-			
-			if(stage.stageWidth != 0 && stage.stageHeight != 0  ) {
-				removeEventListener(Event.ENTER_FRAME, onProgress);	
-			}
-		}
-
+		
 		public function onSychronousTestComplete(event : TestEvent) : void {
 			startAsynchTests();
 		}
 
 		public function startAsynchTests() : void {
+			
+			trace("startAsynchTests");
 			try {
 				testRunner2 = new AsynchTestRunner();
+				testRunner2.view = this;
+				testRunner2.stage = testRunner2.view.stage; 
+				
+				trace("new atestRunner1" + testRunner2);
 				testRunner2.addEventListener(Event.COMPLETE, onAllTestComplete);
 				testRunner2.addEventListener(Event.CHANGE, onProgress);
 				///////////////////////////////////////////
 				//testRunner2.addTest(Test_Hsm);
-				testRunner2.addTest(Test_PlaceHolderUnitOfWork);
+			//	testRunner2.addTest(Test_PlaceHolderUnitOfWork);
+			
+					testRunner2.addTest(Test_SWFLoaderUnit);
 						
 				////////RUN TEST //////////////
+				
+				trace("running tests");
 				testRunner2.initStateMachine();
 			} catch(e : Error) {
+				
+				trace("ERROR in startAsynchTests ");
+				
 				var evt : TestEvent = new TestEvent(Event.COMPLETE, false);
 				onAllTestComplete(evt);
 			}
