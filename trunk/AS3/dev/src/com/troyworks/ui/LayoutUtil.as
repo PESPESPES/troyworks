@@ -464,10 +464,10 @@ package com.troyworks.ui {
 				yOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
 				
 				rect = new Rectangle(-xOffset, -yOffset, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
-
-				initScrRect = new Rectangle(0,0, view.width, view.height);	
+				initScrRect = new Rectangle(0,0,sO.owidth,sO.oheight);
 				
-				if (sO.hasViewport) view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
+				if (sO.hasViewport) 
+					view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
 					  
 				pj.addPage(Sprite(view), rect, pjo);                             
 				pj.send();
@@ -495,7 +495,7 @@ package com.troyworks.ui {
 				
 				rect = new Rectangle(-xOffset, 0, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
 													 
-				initScrRect = new Rectangle(0,0,view.width, view.height);
+				initScrRect = new Rectangle(0,0,sO.owidth,sO.oheight);
 				if (sO.hasViewport) view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
 								
 		        pj.addPage(Sprite(view), rect, pjo);		        
@@ -513,6 +513,7 @@ package com.troyworks.ui {
 		public static function printImageLandscape(view:MovieClip, sO : IDisplayObjectSnapShot, background_mc:MovieClip):void
 		{
 			if (view == null) return;
+			trace("PRINTING...");
 		    var pj:PrintJob = new PrintJob();
 		    pj.start();
 		    var rect : Rectangle;
@@ -543,18 +544,17 @@ package com.troyworks.ui {
 				xOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
 				yOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
 		
-				trace("Landscape");
-				trace("xOffset "+xOffset+" yOffset "+yOffset);
-				
 				rect = new Rectangle(-xOffset, -yOffset, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
 				
-				initScrRect = new Rectangle(0,0,view.width, view.height);				
-				if (sO.hasViewport) view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
+				initScrRect = new Rectangle(0,0,sO.owidth,sO.oheight);	
+				if (sO.hasViewport) 
+					view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
 				
 				pj.addPage(Sprite(view), rect, pjo);                             
 				pj.send();
 				
-				if (sO.hasViewport) view.scrollRect = initScrRect;
+				if (sO.hasViewport) 
+					view.scrollRect = initScrRect;
 		    }
 			else
 			{
@@ -575,18 +575,17 @@ package com.troyworks.ui {
 				yOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
 				xOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
 				
-				trace("Portrait");
-				trace("xOffset "+xOffset+" yOffset "+yOffset);
-				
 				rect = new Rectangle(-xOffset, 0, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
 
-				initScrRect = new Rectangle(0,0,view.width, view.height);				
-				if (sO.hasViewport) view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
+				initScrRect = new Rectangle(0,0,sO.owidth,sO.oheight);	
+				if (sO.hasViewport) 
+					view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
 								
 		        pj.addPage(Sprite(view), rect, pjo);
 		        pj.send();
 		        
-		        if (sO.hasViewport) view.scrollRect = initScrRect;
+		        if (sO.hasViewport) 
+		        	view.scrollRect = initScrRect;
 		        view.rotation = 0;
 		    }
 		   
