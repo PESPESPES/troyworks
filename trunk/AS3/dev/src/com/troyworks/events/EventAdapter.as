@@ -4,7 +4,7 @@
  * @version 0.1
  */
 
-package com.troyworks.core {
+package com.troyworks.events {
 	import flash.events.Event;
 
 	public class EventAdapter {
@@ -28,6 +28,7 @@ package com.troyworks.core {
 			if(includeEvent) {
 				return res.relayEvent;
 			}else {
+				
 				return res.callFunction;
 			}
 		}
@@ -39,12 +40,18 @@ package com.troyworks.core {
 //			 _args = [arg];
 //		  }
 		}
-
+		/*
+		* for a given event, call a function with the arguments
+		* this was constructed with.
+		*/
 		public function callFunction(evt : Event = null) : * {
 				//trace("EventAdapter.callFunction");
 			return _fn.apply(null, _args);
 		}
-
+		/* for a given event, pass that event 
+		 * to the cached function, appending the extra arguments
+		 * to it.
+		 */
 		public function relayEvent(evt : Event) : * {
 			//	trace("EventAdapter.relayingEvent");
 			var args : Array = _args.concat();

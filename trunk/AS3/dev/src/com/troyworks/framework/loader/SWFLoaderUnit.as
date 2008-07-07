@@ -1,4 +1,6 @@
 package com.troyworks.framework.loader {
+	import flash.events.IOErrorEvent;	
+	import flash.errors.IOError;	
 	import flash.system.ApplicationDomain;	
 	import flash.system.LoaderContext;	
 	
@@ -67,7 +69,7 @@ package com.troyworks.framework.loader {
 					/////////////////////////////////////
 					s_loader = new Loader();
 					s_loaderUtil = new LoaderUtil(s_loader.contentLoaderInfo);
-		
+					s_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onChildErrored);
 					s_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, completeSWFLoadHandler);
 					var request : URLRequest = new URLRequest(mediaURL);
 					

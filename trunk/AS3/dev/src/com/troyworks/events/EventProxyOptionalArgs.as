@@ -1,8 +1,16 @@
 /**
 * ...
 * 
-* Takes an event, and calls back the with additional parameters, useful when a single loader is being
-* used for many different things and 
+* Takes an event, and calls back the with additional parameters, 
+* useful when a single loader is being
+* used for many different things and each listener needs 
+* slightly different information
+*
+* Here we have a function onSoundLoaded we are passing it the original swfURL
+* so that it can identify what has loaded.
+* 
+* TODO merge with EVentAdapater
+*   
 *   s.addEventListener(Event.COMPLETE, EventProxyOptionalArgs.create(onSoundLoaded, optionalAudioSwfURL,));
 * 
 * Later:
@@ -18,8 +26,7 @@
 * @version 0.1
 */
 
-package com.troyworks.core {
-
+package com.troyworks.events {
 	import com.troyworks.core.persistance.CacheEvent;
 	import flash.events.Event;
 	

@@ -34,7 +34,7 @@
 */
 
 package com.troyworks.core.tweeny {
-	
+	import flash.display.MovieClip;	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.geom.ColorTransform;
@@ -48,6 +48,7 @@ package com.troyworks.core.tweeny {
 		/* the clip to affect */
 		var trg:DisplayObject;
 		var isSprite:Boolean = false;
+		var isMovieClip:Boolean = false;
 		/* the frames per second of the movie */
 		var fps:Number;
 
@@ -75,6 +76,10 @@ package com.troyworks.core.tweeny {
 		var _am:Matrix = new Matrix();
 		var _ac:ColorTransform = new ColorTransform();
 		var _as:SoundTransform = new SoundTransform();
+		//currentFrame
+		var _aF:Object;
+		var _cF:Object;
+		var _cFset:Boolean = false;
 		/* current calc time*/
 		var tt:Number = 0;
 		/* current time in percent */
@@ -124,7 +129,7 @@ package com.troyworks.core.tweeny {
 		public var onComplete:Function; //The function that should be triggered when this tween has completed
 		public var onCompleteParams:Array; //An array containing the parameters that should be passed to the this.onComplete when this tween has finished.
 		public var colorTransform:ColorTransform = new ColorTransform();
-		
+		protected var _currentFrame:Number;
 		
 		public function Tny(targetD:DisplayObject = null) {
 			
@@ -135,6 +140,7 @@ package com.troyworks.core.tweeny {
 				addVarsOf(new SoundTransform());
 				addVarsOf(new ColorTransform());
 				addVarsOf( new Matrix());
+			
 			//	trace("------------------");
 			//	trace("p " + p.join("\r"));
 			}
@@ -191,6 +197,11 @@ package com.troyworks.core.tweeny {
 					trg.stage.addEventListener("enterFrame", onPulse);//, false, 0, true);
 					fps = trg.stage.frameRate;
 				}
+				if(trg is MovieClip){
+	//				trace("attempting to add vars of MovieClip")
+					//addVarsOf(new MovieClip());
+					isMovieClip = true;
+				}
 			//	trace("setting target " + v.name + " " + v);
 			    transform.matrix = trg.transform.matrix.clone();
 				colorTransform = new ColorTransform();
@@ -205,6 +216,16 @@ package com.troyworks.core.tweeny {
 		}
 		public function get target():DisplayObject{
 			return trg;
+		}
+		public function set currentFrame(cf:Number):void{
+			if(!_cFset){
+				p.push("currentFrame");
+				_cFset =true;
+			}
+			_currentFrame = cf;
+		}
+		public function get currentFrame():Number{
+			return _currentFrame;
 		}
 		public function set delay(del:Number):void{
 		/*	if(isNaN(del)){
@@ -246,10 +267,17 @@ package com.troyworks.core.tweeny {
 				st = getTimer() + dl;
 				t = -dl ;//+ (Math.random() * fd); // if we have a delay, setup the delay as a percentage of the time (as we increment in percent)
 			}
-		//	trace("t " + t + " " + dl + " " + d + " dur " + dur);
+			trace("t " + t + " " + dl + " " + d + " dur " + dur);
 	
 //			trace("ts " + ts);
 		}
+	//	public function setDuration(val:Number):void{
+	//		trace("setting Duration");
+	//		duration = val;
+	//	}
+	//	public function get duration():Number{
+	//		return d;
+	//	}
 		protected function addVarsOf(o:Object):void{
 			var x:XMLList =  describeType(o)..variable;
 			var item:XML;
@@ -304,6 +332,10 @@ package com.troyworks.core.tweeny {
 					var stf:SoundTransform = Sprite(trg).soundTransform;
 					_as = new SoundTransform(stf.volume, stf.pan);
 				}
+				if(isMovieClip){
+					_aF = {currentFrame:MovieClip(trg).currentFrame};
+					_cF = {currentFrame:1};
+				}
 				hasStarted = true;
 				
 			//	fc =0;
@@ -336,9 +368,14 @@ package com.troyworks.core.tweeny {
 			//	trace(trg.name +" active2 "+ pc+ "% " + t +"/" + d +"=  " + tt );	
 			while(--j > -1){
 				k = p[j];
+				///////////////TRACE///////////////////
 				//trace(j + " = " + k);
 				/////////// SETUP /////////////
-				if(j == 19){
+				if(j == 20){
+					c = _cF;
+					z = this;
+					a = _aF;
+				}else if(j == 19){
 			//		trace("setting up Matrix");
 					c = _lm;
 					a = _am;
@@ -363,14 +400,19 @@ package com.troyworks.core.tweeny {
 				}
 				/////////// CALC //////////////
 				//C = A + (D*t);
+			//	trace(c[k] + " " + a[k] + " " + z[k]);
 				c[k] = a[k] + ((z[k] - a[k])*tt);
 				/////////// FINISH ////////////
-				if(j == 14){
+					/////////// FINISH ////////////
+				if(j == 20){
+			//		trace("finishing currentFrame " + c[k] );
+					(trg as MovieClip).gotoAndStop(int(c[k]));
+				}else if(j == 14){
 				//	trace("finishing Matrix");
 					_lm = trg.transform.matrix;
 					trg.transform.matrix = c as Matrix;
 				}else if(j ==6){
-				trace("finishing ColorTransform----------" + trg.transform.colorTransform.alphaMultiplier );
+				//trace("finishing ColorTransform----------" + trg.transform.colorTransform.alphaMultiplier );
 					_lc = trg.transform.colorTransform;
 					trg.transform.colorTransform = c as ColorTransform;
 					trg.visible = trg.transform.colorTransform.alphaMultiplier > .15;

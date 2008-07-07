@@ -4,7 +4,7 @@
 * @version 0.1
 */
 
-package com.troyworks.core {
+package com.troyworks.core.events {
 	import com.troyworks.core.cogs.CogEvent;
 	import com.troyworks.core.cogs.CogSignal;
 

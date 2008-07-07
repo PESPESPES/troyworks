@@ -1,4 +1,4 @@
-package  { 
+package  com.troyworks.core.events{ 
 	import com.troyworks.hsmf.AEvent;
 	/**
 	 * @author Troy Gardner
