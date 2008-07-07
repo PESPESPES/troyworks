@@ -1,4 +1,5 @@
 package com.troyworks.framework.loader {
+	import flash.events.IOErrorEvent;	
 	import flash.net.URLLoaderDataFormat;	
 
 	import com.troyworks.core.events.PlayheadEvent;	
@@ -59,14 +60,16 @@ package com.troyworks.framework.loader {
 				return s_loader.bytesTotal;
 			}
 		}
-
+		
 		override public function s__doing(e : CogEvent) : Function {
 			switch (e.sig) {
 				//case SIG_INIT:
 				//	return (totalPerformed > 0 && totalWork > 0 )? s___partiallyDone:null;
 				case SIG_ENTRY :
 					/////////////////////////////////////
+					try{
 					s_loader = new URLLoader();
+					s_loader.addEventListener(IOErrorEvent.IO_ERROR, onChildErrored);
 					
 					s_loader.dataFormat = URLLoaderDataFormat.TEXT;
 					//s_loaderUtil = new LoaderUtil(s_loader);
@@ -76,6 +79,9 @@ package com.troyworks.framework.loader {
 					
 					trace("HIGHLIGHTO starting to load SWF/IMG '" + mediaURL + "'");
 					s_loader.load(request);
+					}catch(err:Error){
+						trace("ERROR " + err.toString());
+					}
 					break;	
 			}
 			return super.s__doing(e);

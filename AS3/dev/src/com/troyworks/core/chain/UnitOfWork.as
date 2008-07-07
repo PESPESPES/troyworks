@@ -193,7 +193,10 @@ package com.troyworks.core.chain {
 			trace(smID + ".HIGHLIGHTG onChildCompleted" + active.length);
 			dispatchEvent(SIG_CALLBACK.createPrivateEvent());
 		}
-
+		public function onChildErrored(evt:Event = null):void{
+			trace("a child errored out");
+			dispatchEvent(new PlayheadEvent(EVT_COMPLETE));
+		}
 		public function execute() : void {
 		}
 

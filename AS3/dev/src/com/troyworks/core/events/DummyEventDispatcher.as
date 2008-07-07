@@ -1,4 +1,4 @@
-package com.troyworks.framework.events { 
+package com.troyworks.core.events { 
 	import com.troyworks.hsmf.AEvent;
 	import util.Trace;
 	/**
