@@ -257,8 +257,8 @@ package com.troyworks.ui {
 		{
 			trace("HIGHLIGHT SCALETO "+scaleType);
 			if(moving_mc.stage != null) {
-				trace("clip.stage.stageWidth " + moving_mc.stage.stageWidth + " still  mc " + still_mc.width + " moving  mc " + moving_mc.width + " override " + override_width);
-				trace("clip.stage.stageHeight " + moving_mc.stage.stageHeight + " still  mc " + still_mc.height + " moving  mc " + moving_mc.height + " override " + override_height);
+//				trace("clip.stage.stageWidth " + moving_mc.stage.stageWidth + " still  mc " + still_mc.width + " moving  mc " + moving_mc.width + " override " + override_width);
+//				trace("clip.stage.stageHeight " + moving_mc.stage.stageHeight + " still  mc " + still_mc.height + " moving  mc " + moving_mc.height + " override " + override_height);
 			}
 			if(movingSnapShot == null) {
 				movingSnapShot = snapshotDimensions(moving_mc);
@@ -429,7 +429,7 @@ package com.troyworks.ui {
 			trace("HIGHLIGHTO SCALETO "+scaleType+" res:  " + moving_mc.width + "  " + moving_mc.height);
 		}
 		
-		public static function printImagePortrait(view:MovieClip, sO : IDisplayObjectSnapShot, background_mc:MovieClip):void
+		public static function printImagePortrait(view:MovieClip, sO : IDisplayObjectSnapShot):void
 		{
 			if (view == null) return;
 		    var pj:PrintJob = new PrintJob();
@@ -453,7 +453,7 @@ package com.troyworks.ui {
 				pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageWidth-80, pj.pageHeight-80);
+				LayoutUtil.scaleTo(new MovieClip(), view, sO, "CENTER", pj.pageWidth-80, pj.pageHeight-80);
 			
 				curScale = view.width/sO.owidth;
 				
@@ -479,7 +479,7 @@ package com.troyworks.ui {
 		    	pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageHeight-80, pj.pageWidth-80);
+				LayoutUtil.scaleTo(new MovieClip(), view, sO, "CENTER", pj.pageHeight-80, pj.pageWidth-80);
 				curScale = view.width/sO.owidth;
 
 				view.rotation = 90;
@@ -510,7 +510,7 @@ package com.troyworks.ui {
 		    view.y = initY;	
 		}
 		
-		public static function printImageLandscape(view:MovieClip, sO : IDisplayObjectSnapShot, background_mc:MovieClip):void
+		public static function printImageLandscape(view:MovieClip, sO : IDisplayObjectSnapShot):void
 		{
 			if (view == null) return;
 			trace("PRINTING...");
@@ -535,7 +535,7 @@ package com.troyworks.ui {
 				pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageWidth-80, pj.pageHeight-80);
+				LayoutUtil.scaleTo(new MovieClip(), view, sO, "CENTER", pj.pageWidth-80, pj.pageHeight-80);
 				curScale = view.width/sO.owidth;
 					  
 				vp_curWidth = view.width * sO.vp_owscale;
@@ -561,7 +561,7 @@ package com.troyworks.ui {
 		    	pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(background_mc, view, sO, "CENTER", pj.pageHeight-80, pj.pageWidth-80);
+				LayoutUtil.scaleTo(new MovieClip(), view, sO, "CENTER", pj.pageHeight-80, pj.pageWidth-80);
 				curScale = view.width/sO.owidth;
 
 				view.rotation = 90;
