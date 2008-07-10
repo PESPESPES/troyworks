@@ -9,7 +9,8 @@ selection_cb.addItem({data:"800wx600h slug.swf", label:"800wx600h slug.swf"});
 selection_cb.addItem({data:"600wx800h slug.swf", label:"600wx800h slug.swf"});
 selection_cb.addItem({data:"320wx240h slug.swf", label:"320wx240h slug.swf"});
 selection_cb.addItem({data:"240wx320h slug.swf", label:"240wx320h slug.swf"});
-selection_cb.addItem({data:"100x100 slug.swf", label:"100x100 slug.swf"});
+selection_cb.addItem({data:"http://code.google.com/p/troyworks/source/browse/trunk/AS3/examples/src/LayoutUtil/build/slugs/100x100%20slug.swf", label:"100x100 slug.swf"});
+//selection_cb.addItem({data:"100x100 slug.swf", label:"100x100 slug.swf"});
 selection_cb.addItem({label:"-------------viewported --------------"});
 selection_cb.addItem({data:"hortonColor.swf", label:"hortonColor.swf"});
 
@@ -24,8 +25,10 @@ selection_cb.addItem({label:"-------------new viewports --------------"});
 selection_cb.addItem({data:"viewported 240hx320w h slug.swf", label:"viewported 240hx320w h slug.swf"});
 selection_cb.addItem({data:"viewported 600hx400w r slug.swf", label:"viewported 600hx400w r slug.swf"});
 selection_cb.addItem({data:"viewported 400hx600w slug.swf", label:"viewported 400hx600w slug.swf"});
-selection_cb.addItem({data:"viewported 500wx500h slug.swf", label:"viewported 500wx500h slug.swf"});
-selection_cb.addItem({data:"viewported 210wx315h slug.swf", label:"viewported 210wx315h slug.swf"});
+//selection_cb.addItem({data:"viewported 500wx500h slug.swf", label:"viewported 500wx500h slug.swf"});
+selection_cb.addItem({data:"http://troyworks.com/xml_proxy.php?url=http://troyworks.googlecode.com/svn-history/r21/trunk/AS3/examples/src/LayoutUtil/build/slugs/viewported%20500wx500h%20slug.swf", label:"viewported 500wx500h slug.swf"});
+selection_cb.addItem({data:"http://troyworks.com/xml_proxy.php?url=http://troyworks.googlecode.com/svn-history/r21/trunk/AS3/examples/src/LayoutUtil/build/slugs/viewported%20210wx315h%20slug.swf", label:"viewported 210wx315h slug.swf"});
+//selection_cb.addItem({data:"viewported 210wx315h slug.swf", label:"viewported 210wx315h slug.swf"});
 
 selection_cb.addEventListener(Event.CHANGE, selectionChange);
 
@@ -231,7 +234,8 @@ function loadA_SWF(swf:String) {
 	/////////////////////////////////////
 	A_loader = new Loader();
 	A_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, A_completeSWFLoadHandler);
-	var Arequest:URLRequest = new URLRequest(slugsPath +swf);
+//	var Arequest:URLRequest = new URLRequest(slugsPath +swf);	
+	var Arequest:URLRequest = new URLRequest(swf);
 	A_loader.load(Arequest);
 }
 
@@ -249,7 +253,8 @@ function loadB_SWF(swf:String) {
 	/////////////////////////////////////
 	B_loader = new Loader();
 	B_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, B_completeSWFLoadHandler);
-	var Brequest:URLRequest = new URLRequest(slugsPath +swf);
+//	var Brequest:URLRequest = new URLRequest(slugsPath +swf);
+	var Brequest:URLRequest = new URLRequest(swf);
 	B_loader.load(Brequest);
 }
 function C_completeSWFLoadHandler(event:Event):void {
@@ -265,7 +270,8 @@ function loadC_SWF(swf:String) {
 	/////////////////////////////////////
 	C_loader = new Loader();
 	C_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, C_completeSWFLoadHandler);
-	var Crequest:URLRequest = new URLRequest(slugsPath +swf);
+	var Crequest:URLRequest = new URLRequest(swf);
+//	var Crequest:URLRequest = new URLRequest(slugsPath +swf);	
 	C_loader.load(Crequest);
 }
 
@@ -297,6 +303,6 @@ function updateBackgrounds(evt){
 
 function printDrawing(event:Event = null):void
 {
-	if (placeA_chb.selected) LayoutUtil.printImagePortrait(A_mc,A_snap,backgroundV_mc);
-	if (placeC_chb.selected) LayoutUtil.printImageLandscape(C_mc,C_snap,backgroundW_mc);
+	if (placeA_chb.selected) LayoutUtil.printImagePortrait(A_mc,A_snap);
+	if (placeC_chb.selected) LayoutUtil.printImageLandscape(C_mc,C_snap);
 }

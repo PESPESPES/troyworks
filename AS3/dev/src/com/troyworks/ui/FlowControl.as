@@ -129,7 +129,7 @@ package com.troyworks.ui {
 		private var fadeClipTny : Tny;
 		public var fadeClipColor : Number = 0xFFFFFF; 
 		public var nextAction : Function;
-		public var enableToolTips : Boolean = true;
+		public var enableToolTips : String = true;
 		
 		public var classMap:Dictionary = new Dictionary(true);
 
