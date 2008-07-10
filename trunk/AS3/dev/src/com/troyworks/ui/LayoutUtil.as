@@ -532,6 +532,7 @@ package com.troyworks.ui {
 				
 		    if(pj.orientation == PrintJobOrientation.LANDSCAPE)
 			{
+				trace("Printing Landscape ");
 				pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
@@ -558,6 +559,7 @@ package com.troyworks.ui {
 		    }
 			else
 			{
+				trace("Printing Portrait ");
 		    	pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
