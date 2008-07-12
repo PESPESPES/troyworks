@@ -3,7 +3,7 @@
 	import flash.display.DisplayObjectContainer;
 	import flash.display.MovieClip;
 	import flash.text.TextField;
-	import com.troyworks.framework.ui.UIFsmComponent;
+	//import com.troyworks.framework.ui.UIFsmComponent;
 	import flash.events.Event;
 	import flash.utils.describeType;
 	/******************************************
@@ -21,7 +21,7 @@
 
 	 * 
 	 * ***************************************/
-	public class BootStrapper extends UIFsmComponent
+	public class BootStrapper extends MovieClip
 	{
 		public var view:MovieClip;
 		public function BootStrapper():void{
