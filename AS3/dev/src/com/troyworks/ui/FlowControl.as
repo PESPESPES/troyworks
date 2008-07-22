@@ -1,5 +1,7 @@
 package com.troyworks.ui {
-	import com.troyworks.events.GenericEvent;	
+	import flash.media.SoundMixer;	
+	
+	import com.troyworks.events.EventWithArgs;	
 	import com.troyworks.events.EventTranslator;	
 	import com.troyworks.core.tweeny.Tny;	
 	import com.troyworks.logging.TraceAdapter;	
@@ -62,6 +64,18 @@ package com.troyworks.ui {
 	 *  next
 	 *  prev
 	 *  home
+	 *  
+	 *  next
+		nextFrame_
+		prev
+		prevFrame_
+		nextScene_ 
+		prevScene_
+		play_  
+		stop_
+		gotoAndStop_XXX
+		gotoAndPlay_XXX 
+		XXX_autoBtn
 	 * 
 	 * KEYSTROKES
 	 *   ESC- goto first frame
@@ -94,7 +108,7 @@ package com.troyworks.ui {
 	 * @author Troy Gardner (troy@troyworks.com)
 	 */
 	dynamic public class FlowControl extends MovieClip {
-		public var output_txt : TextField;
+		//public var output_txt : TextField;
 		public var lastFrame : int = -1;
 		public var errorFilter : GlowFilter = new GlowFilter(0xFF0000, 80);
 
@@ -129,7 +143,8 @@ package com.troyworks.ui {
 		private var fadeClipTny : Tny;
 		public var fadeClipColor : Number = 0xFFFFFF; 
 		public var nextAction : Function;
-		public var enableToolTips : String = true;
+		public var enableToolTips : Boolean = true;
+		public var stopAllSoundsBetweenNav:Boolean = false;
 		
 		public var classMap:Dictionary = new Dictionary(true);
 
@@ -142,6 +157,7 @@ package com.troyworks.ui {
 				trace("setting up as solo");
 				view = this;
 				view.stop();
+				preloadingRequired = false;
 				//note addFrameScript doesn't pick up configuration options
 				// on frame1
 				addEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
@@ -259,14 +275,20 @@ package com.troyworks.ui {
 			 *  prev
 			 *  home 
 			 *  */
+			 	view.addEventListener("play", requestPlay);
+			view.addEventListener("stop", requestStop);
+			
 			view.addEventListener("gotoAndPlay", requestGotoAndPlay);
 			view.addEventListener("gotoAndStop", requestGotoAndStop);
 	
-			view.addEventListener("next", requestNextFrame);
+			//view.addEventListener("next", requestNextFrame);
 			view.addEventListener("nextFrame", requestNextFrame);
 	
-			view.addEventListener("prev", requestPrevFrame);
+			//view.addEventListener("prev", requestPrevFrame);
 			view.addEventListener("prevFrame", requestPrevFrame);
+			
+			view.addEventListener("nextScene", requestNextScene);
+			view.addEventListener("prevScene", requestPrevScene);
 
 		//	onFrameChanged();
 		}
@@ -276,16 +298,20 @@ package com.troyworks.ui {
 		
 		//////////////////////FADE /////////////////////////////////
 		protected function startFadeUP(event : Event = null) : void {
-			trace("startFadeUP");
+			trace("FlowControl.startFadeUP");
 			fadeClipTny.alpha = 1;
 			fadeClipTny.onComplete = onFadedUP;
 			fadeClipTny.duration = .5;
 		}
 
 		protected function onFadedUP(event : Event = null) : void {
-			trace("onFadedUP");
+			trace("FlowControl.onFadedUP");
 			if(nextAction != null && nextAction is Function) {
 				nextAction();
+			}
+			if(stopAllSoundsBetweenNav) {
+				trace("STOPPING ALL SOUNDS");
+				SoundMixer.stopAll();
 			}
 			startFadeDown();
 		}
@@ -315,17 +341,17 @@ package com.troyworks.ui {
 		protected function onChildAdded(event : Event) : void {
 			var dO : DisplayObject = DisplayObject(event.target);
 			var isButton : Boolean = dO is SimpleButton;
+			var isMC : Boolean = dO is MovieClip;
 			//var isButton : Boolean = getdO; 
 			 
 			// || dO is RadioButton;
 			if(debugShowChildAdded) {
 				trace("Sketch.onChildAdded " + dO.name + " " + isButton);
 			}
-			if(isButton && validDo(dO)) {
+			if((isButton || isMC )&& validDo(dO)) {
 				setupGoto(dO, dO.name);
 			}
 		}
-
 		public function validDo(dO : DisplayObject) : Boolean {
 
 			if(!( dO is Bitmap || dO is Shape) && dO.name.indexOf("instance") == 0) {
@@ -353,6 +379,9 @@ package com.troyworks.ui {
 			if(isButton) {	
 				takedownGoto(dO, dO.name); 
 			}
+			if(dO is MovieClip){
+				(dO as MovieClip).stop();
+			}
 		}
 
 		/*	public function onEnterFrameHandler(evt : Event) : void {
@@ -372,7 +401,7 @@ package com.troyworks.ui {
 			for (;i < n; ++i) {
 				var dO : DisplayObject = getChildAt(i);
 				var isButton : Boolean = dO is SimpleButton;
-				//var isRadio : Boolean = false;
+ 				//var isRadio : Boolean = false;
 				//dO is RadioButton;	
 				trace(i + " " + dO.name + " " + isButton);
 				if(isButton && validDo(dO) ) {	
@@ -403,18 +432,31 @@ package com.troyworks.ui {
 			trace("setting up " + frame + " for " + view + "." + (ie as DisplayObject).name + ":" + ie);
 			var ary : Array;
 			var evtTr : EventTranslator;
-			if(frame.indexOf("play_") == 0 || frame == "_play") {
+			if(frame.indexOf("autoBtn")  != -1 ) {
+			
+					evtTr = new EventTranslator();
+						evtTr.scope = view;
+						ary = frame.split("_");
+							trace("FOUND AUTOBUTTON '" + ary[0] +"'");
+						evtTr.evtType =ary[0];
+						if(ary.length ==3){
+							evtTr.args = [ary[2]];
+						}
+						ie.addEventListener(event, evtTr.dispatchEvent);
+			}else if(frame.indexOf("play_") == 0) {
 				ary = frame.split("_");
 				trace("ary: '" + ary.join("','") + "'");
-				if(!ie.hasEventListener(event)) {
-					if(ary.length == 1) {
+				//if(!ie.hasEventListener(event)) {
+					if(ary.length == 1 || (ary.length ==2 && ary[1] =="")) {
+						trace(" standard play()");
 						//	ie.addEventListener(event, EventAdapter.create(view.play, [], false));
 						evtTr = new EventTranslator();
-						evtTr.scope = this;
+						evtTr.scope = view;
 						evtTr.evtType = "play";
 					
 						ie.addEventListener(event, evtTr.dispatchEvent);
 					}else {
+						trace(" gotoAndPlay()");
 						//ie.addEventListener(event, EventAdapter.create(view.gotoAndPlay, [ary[1]], false));
 						evtTr = new EventTranslator();
 						evtTr.scope = this;
@@ -423,16 +465,49 @@ package com.troyworks.ui {
 					
 						ie.addEventListener(event, evtTr.dispatchEvent);
 					}
-				}
-			}else if(frame == "next") {
-				if(!ie.hasEventListener(event)) {
-					//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
+				//}
+			}else if(frame == "stop_") {
 					evtTr = new EventTranslator();
-					evtTr.scope = this;
-					evtTr.evtType = "next";
+					evtTr.scope = view;
+					evtTr.evtType = "stop";
 					
 					ie.addEventListener(event, evtTr.dispatchEvent);
-				}	 
+			}else if(frame == "next" || frame == "nextFrame_") {
+			//	if(!ie.hasEventListener(event)) {
+					//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
+					evtTr = new EventTranslator();
+					evtTr.scope = view;
+					evtTr.evtType = "nextFrame";
+					
+					ie.addEventListener(event, evtTr.dispatchEvent);
+			//	}	 
+			}else if(frame == "prev" || frame == "prevFrame_") {
+			//	if(!ie.hasEventListener(event)) {
+					//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
+					evtTr = new EventTranslator();
+					evtTr.scope = view;
+					evtTr.evtType = "prevFrame";
+					
+					ie.addEventListener(event, evtTr.dispatchEvent);
+			//	}	 
+			}else if(frame == "prevScene_" ) {
+				//if(!ie.hasEventListener(event)) {
+					//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
+					evtTr = new EventTranslator();
+					evtTr.scope = view;
+					evtTr.evtType = "prevScene";
+					
+					ie.addEventListener(event, evtTr.dispatchEvent);
+			//	}
+			}else if(frame == "nextScene_" ) {
+			//	if(!ie.hasEventListener(event)) {
+					//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
+					evtTr = new EventTranslator();
+					evtTr.scope = view;
+					evtTr.evtType = "nextScene";
+					
+					ie.addEventListener(event, evtTr.dispatchEvent);
+			//	}			 				 
 			}else {
 				ary = frame.split("_");
 				trace(" gotoAndStop " + frame + "  '" + ary.join("','") + "'");
@@ -444,7 +519,7 @@ package com.troyworks.ui {
 						trace("adding gotoAndStop");
 						//ie.addEventListener(event, EventAdapter.create(view.gotoAndStop, [ary[1]], false));
 						evtTr = new EventTranslator();
-						evtTr.scope = this;
+						evtTr.scope = view;
 						evtTr.evtType = "gotoAndStop";
 						evtTr.args = [ary[1]];
 					
@@ -453,7 +528,7 @@ package com.troyworks.ui {
 						trace("adding gotoAndPlay");
 						//						ie.addEventListener(event, EventAdapter.create(view.gotoAndPlay, [ary[1]], false));
 						evtTr = new EventTranslator();
-						evtTr.scope = this;
+						evtTr.scope = view;
 						evtTr.evtType = "gotoAndPlay";
 						evtTr.args = [ary[1]];
 					
@@ -463,7 +538,7 @@ package com.troyworks.ui {
 					trace("adding gotoAndStop2");
 					//ie.addEventListener(event, EventAdapter.create(view.gotoAndStop, [frame], false));
 					evtTr = new EventTranslator();
-					evtTr.scope = this;
+					evtTr.scope = view;
 					evtTr.evtType = "gotoAndPlay";
 					evtTr.args = [frame];
 					
@@ -484,18 +559,22 @@ package com.troyworks.ui {
 				var ary : Array = frame.split("_");				
 				if(!ie.hasEventListener(event)) {
 					if(ary.length == 1) {
-						ie.removeEventListener(event, EventAdapter.create(view.play, [], false));
+				//		ie.removeEventListener(event, EventAdapter.create(view.play, [], false));
 					}else {
-						ie.removeEventListener(event, EventAdapter.create(view.gotoAndPlay, [ary[1]], false));
+				//		ie.removeEventListener(event, EventAdapter.create(view.gotoAndPlay, [ary[1]], false));
 					}
 				}
-			}else if(frame == "next") {
+			}else if(frame == "next" || frame == "nextFrame") {
 				if(ie.hasEventListener(event)) {
-					ie.removeEventListener(event, EventAdapter.create(view.nextFrame, [], false));
+			//		ie.removeEventListener(event, EventAdapter.create(view.nextFrame, [], false));
 				}
+			}else if(frame == "prev" || frame == "prevFrame") {
+			}else if(frame == "prevScene") {
+				//TODO Remove
+			}else if(frame == "nextScene") {			
 			}else {
 				if(ie.hasEventListener(event)) {
-					ie.removeEventListener(event, EventAdapter.create(view.gotoAndStop, [frame], false));
+			//		ie.removeEventListener(event, EventAdapter.create(view.gotoAndStop, [frame], false));
 				}
 			}
 		}
@@ -560,14 +639,24 @@ package com.troyworks.ui {
 			//	trace("Key Pressed: " + String.fromCharCode(event.charCode) +         " (character code: " + event.charCode + ")");
 			trace("Key Pressed:character code: " + event.charCode + ", " + event.keyCode + ")");
 			//output_txt.text = String(event.charCode);
+			var evt : EventWithArgs;
 			if (event.keyCode == 37 || event.charCode == 97 ) {
 				//LEFT
-				requestPrevFrame();
+				//requestPrevFrame();
+				evt= new EventWithArgs("prevFrame");
+				evt.args =[0];
+				view.dispatchEvent(evt);
 			} else if (event.keyCode == 39 || event.charCode == 115 || event.charCode == 32) {
 				//RIGHT
-				requestNextFrame();
+				//requestNextFrame();
+				evt  = new EventWithArgs("nextFrame");
+				evt.args =[0];
+				view.dispatchEvent(evt);
 			}else if(event.charCode == 27) {
-				gotoAndStop(1);
+				//gotoAndStop(1);
+			 	evt  = new EventWithArgs("gotoAndStop");
+				evt.args =[0];
+				view.dispatchEvent(evt); 
 			} else {
 			//		requestScreenByName(String.fromCharCode(event.charCode));
 			}
@@ -579,7 +668,7 @@ package com.troyworks.ui {
 
 		protected function requestNextFrame(event : Event = null) : void {
 			//nextFrame();
-			trace("requested Next Frame");
+			trace("requestNextFrame");
 			nextAction = EventAdapter.create(view.nextFrame, [], false);
 			startFadeUP();
 			if(event != null) {
@@ -589,19 +678,38 @@ package com.troyworks.ui {
 
 		protected function requestPrevFrame(event : Event = null) : void {
 			//	prevFrame();
-			trace("requested Next Frame");
+			trace("requestPrevFrame");
 			nextAction = EventAdapter.create(view.prevFrame, [], false);
 			startFadeUP();
 			if(event != null) {
 				event.stopImmediatePropagation(); // consumed
 			}
 		}
+		protected function requestNextScene(event : Event = null) : void {
+			//nextFrame();
+			trace("requestNextScene");
+			nextAction = EventAdapter.create(view.nextScene, [], false);
+			startFadeUP();
+			if(event != null) {
+				event.stopImmediatePropagation(); // consumed
+			}
+		}
 
+		protected function requestPrevScene(event : Event = null) : void {
+			//	prevFrame();
+			trace("requestPrevScene");
+			nextAction = EventAdapter.create(view.prevScene, [], false);
+			startFadeUP();
+			if(event != null) {
+				event.stopImmediatePropagation(); // consumed
+			}
+		}
 		protected  function requestStop(event : Event = null) : void {
 			//	prevFrame();
-			trace("requested Next Frame");
-			//nextAction = EventAdapter.create(view.stop, [], false);
-			view.stop();
+			trace("requestStop");
+			nextAction = EventAdapter.create(view.stop, [], false);
+			//view.stop();
+			startFadeUP();
 			if(event != null) {
 				event.stopImmediatePropagation(); // consumed
 			}
@@ -609,18 +717,19 @@ package com.troyworks.ui {
 
 		protected  function requestPlay(event : Event = null) : void {
 			//	prevFrame();
-			trace("requested Next Frame");
-			//nextAction = EventAdapter.create(view.stop, [], false);
-			view.play();
+			trace("requestPlay");
+			nextAction = EventAdapter.create(view.play, [], false);
+			//view.play();
 			//startFadeUP();
+			startFadeUP();
 			if(event != null) {
 				event.stopImmediatePropagation(); // consumed
 			}
 		}
 
-		protected  function requestGotoAndPlay(event : GenericEvent = null) : void {
+		protected  function requestGotoAndPlay(event : EventWithArgs = null) : void {
 			//	prevFrame();
-			trace("requested Next Frame");
+			trace("requestGotoAndPlay");
 			nextAction = EventAdapter.create(view.gotoAndPlay, event.args, false);
 			startFadeUP();
 			if(event != null) {
@@ -628,9 +737,9 @@ package com.troyworks.ui {
 			}
 		}
 
-		protected  function requestGotoAndStop(event : GenericEvent = null) : void {
+		protected  function requestGotoAndStop(event : EventWithArgs = null) : void {
 			//	prevFrame();
-			trace("requested Next Frame");
+			trace("requestGotoAndStop");
 			nextAction = EventAdapter.create(view.gotoAndStop, event.args, false);
 			startFadeUP();
 			if(event != null) {

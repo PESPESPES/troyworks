@@ -106,7 +106,9 @@ package com.troyworks.ui {
 		public function set vp_owidth (val:Number): void{ _vp_owidth = val;}
 		public function get vp_oheight (): Number{ return _vp_oheight;}
 		public function set vp_oheight (val:Number): void{ _vp_oheight = val;}
-		
+		public function toString():String{
+			return "DisplayObjectSnapshot " + x +","+y+","+width+","+height;
+		} 
 	}
 	
 }

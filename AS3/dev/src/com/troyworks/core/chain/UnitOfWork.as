@@ -142,12 +142,13 @@ package com.troyworks.core.chain {
 		}
 
 		public function startWork() : void {
-			trace("HIGHLIGHTO startWork");
-	
-			if(toDo != null  &&  ( totalWork == 0 || totalPerformed == totalWork) ) {
+			trace("HIGHLIGHTO " + _smName + ".startWork +++++++++++++++++++++++++++++++++++++++" + toDo);
+			///////////////////// COMPOSITE ////////////////////////////
+			if((toDo != null  &&  ( totalWork == 0 || totalPerformed == totalWork) )) {
 				///nothing to load!//////////////
 				trace("WARNING startWork() called with nothing to load");
-				requestTran(s_done);
+				_initState =s_done;
+				initStateMachine();
 				return;
 			}
 			if(toDo != null && toDo.length > 0) {
@@ -171,9 +172,19 @@ package com.troyworks.core.chain {
 				//	Q_dispatch(SIG_ENTRY);
 				//}
 				}
+				//_initState =s__doing;
+				initStateMachine();
+			trace("333333333333333333333333333333333333333333333333333333");
+			trace("333333333333333333333333333333333333333333333333333333");
+			trace("333333333333333333333333333333333333333333333333333333");
+			trace("333333333333333333333333333333333333333333333333333333");
+			trace("333333333333333333333333333333333333333333333333333333");
+				requestTran(s__doing);
+				return;				
 			}
-			initStateMachine();
-			requestTran(s__doing);
+			//////////// LEAF/SOLO /////////////////////
+				initStateMachine();
+				requestTran(s__doing);
 		}
 
 		public function onChildCompleted(evt : Event = null) : void {
