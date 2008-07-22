@@ -14,7 +14,7 @@ package com.troyworks.events {
 	 */
 	public class EventTranslator {
 		
-		public var evtClass:Class = GenericEvent;
+		public var evtClass:Class = EventWithArgs;
 		public var evtType:String;
 		public var scope : IEventDispatcher;
 		public var bubbles:Boolean = true;
@@ -24,10 +24,10 @@ package com.troyworks.events {
 			
 		}
 		public function dispatchEvent(evt:Event = null):void{
-			trace("TranslateEvent " + evt);
+			//trace("TranslateEvent " + evt);
 			var revt:Event = new evtClass(evtType, bubbles, cancelable) as Event;
-			if(revt is GenericEvent && args!= null){
-				(revt as GenericEvent).args = args;
+			if(revt is EventWithArgs && args!= null){
+				(revt as EventWithArgs).args = args;
 			}
 			scope.dispatchEvent(revt);
 		}

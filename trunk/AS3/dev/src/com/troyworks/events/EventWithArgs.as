@@ -11,16 +11,16 @@
 	 * DESCRIPTION ::
 	 *
 	 */
-	public class GenericEvent extends Event {
+	public class EventWithArgs extends Event {
 		public var args:Array;
-		public function GenericEvent(type : String, bubbles : Boolean = false, cancelable : Boolean = false) {
+		public function EventWithArgs(type : String, bubbles : Boolean = false, cancelable : Boolean = false) {
 			super(type, bubbles, cancelable);
 		}
 
 
         // override clone so the event can be redispatched
         public override function clone():Event {
-           var res:GenericEvent = new GenericEvent(type, bubbles, cancelable);
+           var res:EventWithArgs = new EventWithArgs(type, bubbles, cancelable);
 			res.args = args.concat();
             return res;
         }

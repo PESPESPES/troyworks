@@ -113,7 +113,15 @@ package com.troyworks.ui {
 					to_mc.vp_owidth = s_mc.width;
 					to_mc.vp_oheight = s_mc.height;
 				}
+				to_mc.o_wh_asp = s_mc.width / s_mc.height;
+				to_mc.o_hw_asp = s_mc.height / s_mc.width;
+				to_mc.width = s_mc.width;
+				to_mc.height = s_mc.height;
+				to_mc.scaleX = s_mc.scaleX;
+				to_mc.scaleY = s_mc.scaleY;
 			}
+			to_mc.x = s_mc.x;
+			to_mc.y = s_mc.y;
 			to_mc.ox = s_mc.x;
 			to_mc.oy = s_mc.y;
 			to_mc.owidth = s_mc.width;
@@ -385,8 +393,8 @@ package com.troyworks.ui {
 				sn = new DisplayObjectSnapShot();
 				sn.width = dw;
 				sn.height = dh;
-				sn.x = still_mc.x;
-				sn.y = still_mc.y;
+				sn.x = (still_mc  == null)?0: still_mc.x;
+				sn.y = (still_mc  == null)?0: still_mc.y;
 				moving_mc.x = getAlignH(sn, moving_mc);
 				moving_mc.y = getAlignV(sn, moving_mc);
 			} else if (resize == "H") {
@@ -407,8 +415,8 @@ package com.troyworks.ui {
 				sn = new DisplayObjectSnapShot();
 				sn.width = dw;
 				sn.height = dh;
-				sn.x = still_mc.x;
-				sn.y = still_mc.y;
+				sn.x = (still_mc  == null)?0:still_mc.x;
+				sn.y =  (still_mc  == null)?0:still_mc.y;
 				moving_mc.x = getAlignH(sn, moving_mc);
 				moving_mc.y = getAlignV(sn, moving_mc);
 			} else {
@@ -421,8 +429,8 @@ package com.troyworks.ui {
 				sn = new DisplayObjectSnapShot();
 				sn.width = dw;
 				sn.height = dh;
-				sn.x = still_mc.x;
-				sn.y = still_mc.y;
+				sn.x =  (still_mc  == null)?0:still_mc.x;
+				sn.y =  (still_mc  == null)?0:still_mc.y;
 				moving_mc.x = getAlignH(sn, moving_mc);
 				moving_mc.y = getAlignV(sn, moving_mc);
 			}

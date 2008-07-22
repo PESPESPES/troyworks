@@ -27,7 +27,7 @@ package com.troyworks.core.cogs {
 				////////////////////////////////////////////////////////////////
 		//the name for this stateengine (for Debugging purposes)
 		protected var _smID:uint;
-		protected var _smName : String = "sm";		
+		public var _smName : String = "sm";		
 		/* if we are stackable */
 		protected var _parentState:IStateMachine;
 		protected var _childState:IStateMachine;

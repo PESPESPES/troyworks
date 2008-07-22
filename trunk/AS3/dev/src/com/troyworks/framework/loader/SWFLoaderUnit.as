@@ -1,4 +1,5 @@
 package com.troyworks.framework.loader {
+	import flash.display.MovieClip;	
 	import flash.events.IOErrorEvent;	
 	import flash.errors.IOError;	
 	import flash.system.ApplicationDomain;	
@@ -89,9 +90,12 @@ package com.troyworks.framework.loader {
 			trace("completeHandler: " + event);
 			clip = DisplayObject(Loader(event.target.loader).content);
 			////////// TODO LAYOUT //////////////////
-			clip.x = Math.random() * 50;
-			clip.y = Math.random() * 50;
-			clip.alpha = .3;
+			//clip.x = Math.random() * 50;
+			//clip.y = Math.random() * 50;
+			//clip.alpha = .3;
+			if(clip is MovieClip){
+				(clip as MovieClip).stop();
+			}
 			
 			if(targetClip != null){
 					targetClip.addChild(clip);

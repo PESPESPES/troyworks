@@ -124,7 +124,9 @@ package com.troyworks.controls.ttooltip {
 		 */
 		public function addTip(words : String) : void {
 			_root.addChild(this);
+			if(_tipText == null){
 			_tipText = new TextField();
+			}
 			_tipText.mouseEnabled = false;
 			_tipText.selectable = false;
 			_tipText.defaultTextFormat = _format;
@@ -175,7 +177,7 @@ package com.troyworks.controls.ttooltip {
 			_orgY = _tipText.y;
 			this.addChild(_tipText);
 
-			stage.addEventListener(MouseEvent.MOUSE_MOVE, onTipMove);
+			stage.addEventListener(MouseEvent.MOUSE_MOVE, onTipMove,false, 0, true);
 		}
 
 		private function onTipMove(me : MouseEvent) : void {
@@ -210,7 +212,9 @@ package com.troyworks.controls.ttooltip {
 		 * @return
 		 */
 		public function removeTip() : void {
+			if(stage != null){
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, onTipMove);
+			}
 			this.removeChild(_tipText);
 			this.graphics.clear();
 			_root.removeChild(this);
