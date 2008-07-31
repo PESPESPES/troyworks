@@ -15,14 +15,15 @@ package com.troyworks.controls.menu {
 		private var _name : String;
 		public var target : String;
 		public var href : String;
+		public var mcStyle:String;
 		public var deeplink : String;
-		private var _isSelected:Boolean = false;
+		private var _isSelected : Boolean = false;
 		private var _parent : IMenuDataItem;
-		public var selectedBullet:String = "<img src='selectedIcon' width='10' height='10'>";
+		public var selectedBullet : String = "<img src='selectedIcon' width='10' height='10'>";
 
 		public function MenuSystemItem() {
 			super();
-		//	trace('MenuSystemItem');
+			//	trace('MenuSystemItem');
 			_ALL[id] = this;
 		}
 
@@ -39,13 +40,15 @@ package com.troyworks.controls.menu {
 		public function getName() : String {
 			return _name;
 		}
-		public function set isSelected(val:Boolean):void{
+
+		public function set isSelected(val : Boolean) : void {
 			_isSelected = val;
 		}
-		public function get isSelected():Boolean{
+
+		public function get isSelected() : Boolean {
 			return _isSelected;
 		}
-		
+
 		public function setName(name : String) : void {
 			_name = name;
 		}
@@ -55,15 +58,17 @@ package com.troyworks.controls.menu {
 		}
 
 		public function setAnchor(a : XMLList) : void {
+		//	trace("MenuSystemItem.setAnchor " + a.toXMLString());
 			href = a.@href;
 			target = a.@target;
 			deeplink = a.@name;
-			if(_ALLDEEPLINKS[deeplink] == null){
-			_ALLDEEPLINKS[deeplink] = this;
+			mcStyle = a.@mcStyle;
+			if(_ALLDEEPLINKS[deeplink] == null) {
+				_ALLDEEPLINKS[deeplink] = this;
 			}
-			if(a.text().length() >0 ){
-			_name = a.text()[0];
-			}else{
+			if(a.text().length() > 0 ) {
+				_name = a.text()[0];
+			}else {
 				_name = "";
 			}
 		}
@@ -79,14 +84,17 @@ package com.troyworks.controls.menu {
 		public function getHyperLink() : String {
 			var lnk : String = "event:" + deeplink;
 			
-			return (isSelected)?_name: (<a name={deeplink} href={lnk} target="mainFrame">{_name}</a>).toXMLString();
+			return (isSelected) ? _name : (<a name={deeplink} href={lnk} target="mainFrame">{_name}</a>).toXMLString();
 		}
-		public function getHref():String{
+
+		public function getHref() : String {
 			return String(href);
 		}
-		public function getTarget():String{
+
+		public function getTarget() : String {
 			return String(target);
 		}
+
 		public function getMenuLinks() : Array {
 			var curNav : Array = new Array();
 			var iter : IIterator = iterator();
@@ -101,6 +109,10 @@ package com.troyworks.controls.menu {
 			}else {
 				return [];
 			}
+		}
+
+		public function getMovieClipName() : String {
+			return mcStyle;
 		}
 	}
 }

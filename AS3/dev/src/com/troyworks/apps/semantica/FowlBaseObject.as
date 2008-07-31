@@ -1,4 +1,4 @@
-package com.troyworks.fowl { 
+package com.troyworks.apps.semantica { 
 	import com.troyworks.framework.BaseObject;
 	
 	/**

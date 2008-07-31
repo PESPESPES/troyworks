@@ -1,5 +1,6 @@
-package com.troyworks.framework.internationalization { 
-	import com.troyworks.framework.CollectionManager;
+package com.troyworks.framework.internationalization {
+	import com.troyworks.framework.controller.CollectionManager;	
+
 	
 	/**
 	 * @author Troy Gardner

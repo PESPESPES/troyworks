@@ -62,7 +62,8 @@ package com.troyworks.framework.ui {
 		protected static var instance : FontManager;
 		public static var DEBUG:Boolean = false;
 		protected static var count : Number = 0;
-	
+		public static var default_fmt : TextFormat;
+
 		protected function FontManager() {
 			fontsAvailable = new ArrayX();	
 		}
@@ -73,13 +74,12 @@ package com.troyworks.framework.ui {
 		public static function getInstance() : FontManager {
 			if (instance == null){
 				instance = new FontManager();
-				_global.fontManager = instance;
 			}
 			return instance;
 		}
 		public function styleMe(clip:MovieClip, label_txt:TextField):void{
-			label_txt.setTextFormat(_global.default_fmt);
-			label_txt.setNewTextFormat(_global.default_fmt);
+			label_txt.setTextFormat(default_fmt);
+			label_txt.defaultTextFormat = default_fmt;
 		//	label_txt.input = true;
 			label_txt.embedFonts = true;
 			if(DEBUG){
@@ -133,7 +133,7 @@ package com.troyworks.framework.ui {
 			}	
 			if(!DEBUG){
 			dynfonts_mc.visible = false;
-			dynfonts_mc.x = stage.stageWidth;
+			dynfonts_mc.x = base_mc.stage.stageWidth;
 			}
 			return dynfonts_mc;
 		}
@@ -147,7 +147,7 @@ package com.troyworks.framework.ui {
 			
 			//////////////////////////////////
 	// Create the text fields
-			var _ary = new Array();
+			var _ary:Array = new Array();
 			_ary.push(_mc.testNormal_txt = new TextField();
 			_ary.push(_mc.addChildAt(_ary.push(_mc.testNormal_txt, _mc.getNextHighestDepth());
 			_ary.push(_mc.testNormal_txt.x = 110;

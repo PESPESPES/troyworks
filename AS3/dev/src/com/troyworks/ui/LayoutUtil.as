@@ -300,6 +300,7 @@ package com.troyworks.ui {
 			////////////////////////////////////
 			//   desired height 
 			////////////////////////////////////
+
 			if (still_mc == null && override_width != NaN && override_height != NaN)
 			{
 				still_mc = new Sprite();
@@ -308,7 +309,6 @@ package com.troyworks.ui {
 				Sprite(still_mc).graphics.lineStyle();
 				Sprite(still_mc).graphics.drawRect(0,0, override_width,override_height);
 			}
-			
 			var dw : Number = (isNaN(override_width)) ? still_mc.width : override_width;
 			var dh : Number = (isNaN(override_height)) ? still_mc.height : override_height;
 			var scaleW : Number = (!movingSnapShot.hasViewport) ? 1 : movingSnapShot.vp_owscale;

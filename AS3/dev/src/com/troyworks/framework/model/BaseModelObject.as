@@ -1,5 +1,6 @@
-package com.troyworks.framework.model { 
+﻿package com.troyworks.framework.model { 
 	import com.troyworks.framework.BaseObject;
+	import com.troyworks.util.*;
 	
 	/**
 	 * Model Objects are designed to be data only with getters and setter
@@ -11,20 +12,20 @@ package com.troyworks.framework.model {
 		public var _id_:Number =NaN;
 		public static var IDz:Number = 0;
 		public var _extendedToString:Boolean = false;
-		protected static var _className : String = "com.troyworks.framework.model.BaseModelObject";
+
 		public static var EVTD_MODEL_CHANGED:String = "EVTD_MODEL_CHANGED";
-		
+		public static var _className:String = "BaseModelbject";
 		public function BaseModelObject() {
 			super();
 			_id_ = BaseModelObject.IDz++;
 			
 		}
-		public function toString():String{
+		override public function toString():String{
 			
 			var res:String = null;
 			//util.Trace.engageLoopCheck();
 			if(_extendedToString){
-				res =util.Trace.me(this, _className);
+				res =_className;//Trace.me(this, _className);
 			}else{
 				res = ("BaseModelObject _id_ " + _id_);
 			}

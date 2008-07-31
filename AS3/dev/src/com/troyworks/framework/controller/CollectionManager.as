@@ -82,7 +82,7 @@ package com.troyworks.framework.controller {
 			d["c"]= c;
 			output.writeObject(d);
 		}*/
-		public function get length(){
+		public function get length():Number{
 			return c.length;
 		}
 		//////////////////EVENTS ///////////////////////////
@@ -130,23 +130,23 @@ package com.troyworks.framework.controller {
 			return r;	
 		}
 	
-		public function removeAt(pos : Number, positions : Number) : ArrayX {
+		public function removeFromCollectionAt(pos : Number, positions : Number) : ArrayX {
 			startSizeChangeTransaction();
-			var r : ArrayX = c.removeAt.apply(c,arguments);//(pos,positions);
+			var r : ArrayX = c.removeFromCollectionAt.apply(c,arguments);//(pos,positions);
 			endSizeChangeTransaction();
 			dispatchSizeChanged();
 			return r;
 		}
-		public function removeAll() : void {
+		public function removeFromCollectionAll() : void {
 			startSizeChangeTransaction();
 			c.removeAll.apply(c, arguments);//();
 			endSizeChangeTransaction();
 			dispatchSizeChanged();
 		}
 	
-		public function remove(aValue_obj : Object) : Number {
+		public function removeFromCollectionItem(aValue_obj : Object) : Number {
 			startSizeChangeTransaction();
-			var r : Number = c.remove.apply(c, arguments);//aValue_obj);
+			var r : Number = c.removeFromCollectionAt.apply(c, arguments);//aValue_obj);
 			endSizeChangeTransaction();
 			dispatchSizeChanged();
 			return r;
@@ -160,8 +160,13 @@ package com.troyworks.framework.controller {
 		}
 	
 		public function push(value : Object) : Number {
+			
+			trace("aaaa");
 			startSizeChangeTransaction();
+			trace("bbb");
 			var r : Number = c.push.apply(c, arguments);//(value);
+			
+			trace("ccc");
 	//		trace("push " + this.toString());
 			endSizeChangeTransaction();
 			dispatchSizeChanged();
@@ -369,7 +374,7 @@ package com.troyworks.framework.controller {
 			n.attributes.label = name+ " " + this.length;
 			/////////////////////////////
 			for(var i : Number = 0; i < this.length; i++){
-				var tm = this.getElementAt(i);
+				var tm:Object = this.getElementAt(i);
 				var n1 : XMLNode = tm.toXML(tree);
 				n.appendChild(n1);
 			}

@@ -1,5 +1,5 @@
-package com.troyworks.apps.mnemosyne
-{
+package com.troyworks.apps.mnemosyne {
+	import com.troyworks.data.IArray;	
 	import com.troyworks.data.ArrayX;
 	
 	public class Mnemosyne
@@ -389,7 +389,7 @@ package com.troyworks.apps.mnemosyne
 				if (item.grade == 0 && newGrade > 1 && newGrade < 6) {
 					for each (var item0:Item in this.revisionQueue) {
 						if (item0.id == item.id) {
-							this.revisionQueue.remove(item0);
+							(this.revisionQueue as IArray).removeFromCollectionItem(item0);
 							break;
 						}
 					}
@@ -411,7 +411,7 @@ package com.troyworks.apps.mnemosyne
 				if (item.grade == 0) {
 					for each (var item1:Item in this.revisionQueue) {
 						if (item1.id == item.id) {
-							this.revisionQueue.remove(item1);
+							(this.revisionQueue as IArray).removeFromCollectionItem(item1);
 							break;
 						}
 					}
@@ -427,7 +427,7 @@ package com.troyworks.apps.mnemosyne
 				
 				// Move this item to the front of the list, to have precedence over
 				// items which are still being learned for the first time.
-				this.items.remove(item);
+				(this.revisionQueue as IArray).removeFromCollectionItem(item);
 				//this.items.unshift(item);
 			} else if (item.grade > 1 && item.grade < 6 && newGrade > 1 && newGrade < 6) {
 				// In the retention phase and staying there.
@@ -466,7 +466,7 @@ package com.troyworks.apps.mnemosyne
 				
 					if (newGrade == 5) {
 						if (actualInterval < scheduledInterval) {
-							newInterval = scheduledInterval // Avoid spacing.
+							newInterval = scheduledInterval; // Avoid spacing.
 						} else {
 							newInterval = actualInterval * item.easiness;
 						}

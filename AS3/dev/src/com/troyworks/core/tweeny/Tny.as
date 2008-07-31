@@ -1,4 +1,4 @@
-
+﻿
 /**
 * Tny, the smallest tweening engine with Sound, Color and delay support 
 * I could figure out how to build. Currently 1871 bytes- 2186 bytes depending on what's commented on/off
@@ -46,11 +46,11 @@ package com.troyworks.core.tweeny {
 	public class Tny extends Sprite{
 		
 		/* the clip to affect */
-		var trg:DisplayObject;
-		var isSprite:Boolean = false;
-		var isMovieClip:Boolean = false;
+		protected var trg:DisplayObject;
+		protected var isSprite:Boolean = false;
+		protected var isMovieClip:Boolean = false;
 		/* the frames per second of the movie */
-		var fps:Number;
+		protected var fps:Number;
 
 		/* easing function */
 		public var ease:Function = Linear.easeIn;
@@ -58,44 +58,44 @@ package com.troyworks.core.tweeny {
 		static var p:Array;
 		
 		/* loop iterators */
-		var i:int = 0;
-		var j:int = 0;
-		var k:String;
+		protected var i:int = 0;
+		protected var j:int = 0;
+		protected var k:String;
 		
 		/* begin */
-		var a:Object;
+		protected var a:Object;
 		/* current */
-		var c:Object;
+		protected var c:Object;
 		/* end */
-		var z:Object;
+		protected var z:Object;
 		
-		var _lm:Matrix = new Matrix();
-		var _lc:ColorTransform = new ColorTransform();
-		var _ls:SoundTransform= new SoundTransform();
+		protected var _lm:Matrix = new Matrix();
+		protected var _lc:ColorTransform = new ColorTransform();
+		protected var _ls:SoundTransform= new SoundTransform();
 
-		var _am:Matrix = new Matrix();
-		var _ac:ColorTransform = new ColorTransform();
-		var _as:SoundTransform = new SoundTransform();
+		protected var _am:Matrix = new Matrix();
+		protected var _ac:ColorTransform = new ColorTransform();
+		protected var _as:SoundTransform = new SoundTransform();
 		//currentFrame
-		var _aF:Object;
-		var _cF:Object;
-		var _cFset:Boolean = false;
+		protected var _aF:Object;
+		protected var _cF:Object;
+		protected var _cFset:Boolean = false;
 		/* current calc time*/
-		var tt:Number = 0;
+		protected var tt:Number = 0;
 		/* current time in percent */
 		public var t:Number = 0;
 		/* time step */
-		var ts:Number =0;
+		protected var ts:Number =0;
 		/* duration */
-		var d:Number = 0;
+		protected var d:Number = 0;
 		/* delay */
-		var dl:Number = 0;
+		protected var dl:Number = 0;
 		// getTimer Start
-		var st:Number;
-		var dd:Number;
-		var fc:Number =0;
+		protected var st:Number;
+		protected var dd:Number;
+		protected var fc:Number =0;
 		//frame duration in millisecondes
-		var fd:Number =0;
+		protected var fd:Number =0;
 		/* 
 		 * ensure that 0 and 1 are hit, but nothing below or above 
 		 * sometimes important for logging and collision detection 

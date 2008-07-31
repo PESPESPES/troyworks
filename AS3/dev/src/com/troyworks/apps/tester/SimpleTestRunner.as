@@ -20,12 +20,13 @@ package com.troyworks.apps.tester {
 	 *********************************************/
 	public class SimpleTestRunner extends EventDispatcher {
 		protected var tests:Array;
-		public var results:XML = <testResults/>;
+		//public var results:XML = <testResults/>;
 		public var passedAll:Boolean = true;
 		public var passedN:Number = 0;
 		public var totalN:Number = 0;
-		public var trace:Function = TraceAdapter.NormalTracer();
+		//WARNING this causes issues
 		
+	//	public var trace:Function = TraceAdapter.NormalTracer(); 
 		public var stage : Stage;
 		public var view : Sprite;
 		
@@ -35,16 +36,26 @@ package com.troyworks.apps.tester {
 			tests = new Array();
 		}
 		public function setDefaultTracer(fn:Function):void{
-			trace = fn;
+			
+		//	trace = fn;
 		}
 		
 		public function get hasTests():Boolean{
 		 return tests.length > 0;	
 		}
 		public function addTest(c:Class):void {
-			trace("addingTest " + c + " " + typeof(c));
+			/////////// NO TRACES INSIDE HERE ELSE
+			// WARNING WARNING WARNING
+//			TypeError: Error #1006: value is not a function.
+//	at com.troyworks.apps.tester::SimpleTestRunner/addTest()
+//	at Untitled_fla::MainTimeline/frame1()
+			//trace.apply(this,["addTest"]);
+			//trace("addingTest " + c + " " + typeof(c));
 			tests.push(c);
+		//	trace.apply(this);		
 		}
+		
+		
 		public function startTest():XML {
 			var results:XML = <testRunnerResults/>;
 			var passedAll:Boolean = true;

@@ -265,7 +265,7 @@ package com.troyworks.data.bit {
 				// shift temp right one binary digit
 	
 			}
-			var res = new Object ();
+			var res:Object = new Object ();
 			if (bincount > 0)
 			{
 				res.score = hitcount / bincount;
@@ -303,7 +303,7 @@ package com.troyworks.data.bit {
 				a &= b;
 			}
 			//see if they match
-			var res = a & b;
+			var res:Number = a & b;
 			trace ("partial match " + res);
 			return (res > 0);
 		};
@@ -319,7 +319,7 @@ package com.troyworks.data.bit {
 				a &= b;
 			}
 			//see if they match
-			var res = a & b;
+			var res:Number = a & b;
 			trace ("partial match " + res);
 			return (res);
 		};

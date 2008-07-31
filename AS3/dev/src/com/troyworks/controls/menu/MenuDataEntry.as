@@ -8,7 +8,7 @@ package com.troyworks.controls.menu {
 	public class MenuDataEntry extends MenuSystemItem {
 		public function MenuDataEntry() {
 			super();
-			trace("MenuDataEntry href " + href);
+			//trace("MenuDataEntry href " + href);
 		}
 		override public function iterator():IIterator {
 			return new NullIterator();
