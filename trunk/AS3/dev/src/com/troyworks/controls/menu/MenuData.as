@@ -11,7 +11,7 @@ package com.troyworks.controls.menu {
 
 		public function MenuData() {
 			super();
-			trace("MenuData href " + href);
+		//	trace("MenuData href " + href);
 			items = new ArrayX();
 		}
 

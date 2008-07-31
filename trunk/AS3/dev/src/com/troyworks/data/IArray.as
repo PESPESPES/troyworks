@@ -27,9 +27,9 @@ package com.troyworks.data {
 		 function shiftTowardsStart(idxFrom : Number, positions : Number) : ArrayX;
 		 function shiftTowardsEnd(idxFrom : Number, positions : Number) : ArrayX;
 		 function insertAt(idx : Number, values : Object) : ArrayX;
-		 function removeAt(pos : Number, positions:Number) : ArrayX;
-		 function removeAll():void;
-		 function remove(aValue_obj : Object) : Number;
+		 function removeFromCollectionAt(pos : Number, positions:Number) : ArrayX;
+		 function removeFromCollectionAll():void;
+		 function removeFromCollectionItem(aValue_obj : Object) : Number;
 		 function getFilteredSet(from : Number, to : Number, aThatsNot : Array, aThatsIsOneOf : Array) : ArrayX;
 		 function getFilteredRandomElement(from : Number, to : Number, aThatsNot : Array, aThatsIsOneOf : Array) : Object;
 		 function getRandomElement(from : Number, to : Number, aThatsNot : Array, aThatsIsOneOf : Array) : Object;

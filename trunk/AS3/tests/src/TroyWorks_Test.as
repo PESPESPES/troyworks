@@ -1,4 +1,6 @@
 ﻿package {
+	import com.troyworks.apps.tester.SampleTest;	
+	
 	import flash.display.MovieClip;	
 
 	import com.troyworks.core.chain.Test_PlaceHolderUnitOfWork;	
@@ -34,7 +36,7 @@
 
 		private var testRunner : SimpleTestRunner;
 		private var testRunner2 : AsynchTestRunner;
-		public static var trace : Function = TraceAdapter.SOSTracer;
+		//public static var trace : Function = TraceAdapter.SOSTracer;
 		public var curStatusSize : Number = 10;
 
 		
@@ -94,7 +96,7 @@
 				//				testRunner.addTest(Test_SOS);
 				//		testRunner.addTest(Test_SwitchPerformance);
 				//				var nE:Test_NumberExtention = new Test_NumberExtention();
-
+				//testRunner.addTest(SampleTest);
 				//testRunner.addTest(Test_Hsm);		
 				//testRunner.addTest(Test_AsynchronousTestSuite);
 				//testRunner.addTest(Test_Indexer);
@@ -109,7 +111,7 @@
 				
 			} catch(e : Error) {
 				
-				trace("ERROR in startSynchronousTests ");
+				trace("ERROR in startSynchronousTests " + e.toString());
 				var evt : TestEvent = new TestEvent(Event.COMPLETE, false);
 				onAllTestComplete(evt);
 			}
@@ -134,8 +136,8 @@
 				///////////////////////////////////////////
 				//testRunner2.addTest(Test_Hsm);
 			//	testRunner2.addTest(Test_PlaceHolderUnitOfWork);
-			
-					testRunner2.addTest(Test_SWFLoaderUnit);
+			//testRunner2.addTest(SampleTest);
+				//	testRunner2.addTest(Test_SWFLoaderUnit);
 						
 				////////RUN TEST //////////////
 				
@@ -155,6 +157,11 @@
 
 			var clr : Number = 0xff0000;
 			var testResults : XML = event.resultsXML;		
+			if(testResults == null){
+				
+				trace("////////// NO TEST RESULTS!!! ///////////////");
+				clr = 0x440000;
+			}else{		
 			trace("//////////// TEST RESULTS///////////////////" + testResults.@passedAll);
 			if (testResults.@passedAll == "true") {
 				// draw a green circle for passed
@@ -164,6 +171,7 @@
 				clr = 0xcc0000;
 			}
 			
+			}
 			eventSprite.graphics.clear();
 			eventSprite.graphics.beginFill(clr);
 			eventSprite.graphics.drawCircle(0, 0, curStatusSize);

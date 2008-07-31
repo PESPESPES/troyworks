@@ -1,12 +1,12 @@
-package com.troyworks.ui {
+﻿package com.troyworks.ui {
 	import flash.media.SoundMixer;	
-	
+
 	import com.troyworks.events.EventWithArgs;	
 	import com.troyworks.events.EventTranslator;	
 	import com.troyworks.core.tweeny.Tny;	
 	import com.troyworks.logging.TraceAdapter;	
+
 	import flash.utils.Dictionary;
-	
 	import flash.geom.Rectangle;	
 	import flash.display.Shape;	
 	import flash.display.Bitmap;	
@@ -35,7 +35,8 @@ package com.troyworks.ui {
 
 	import flash.events.Event;
 	import flash.display.DisplayObject;
-	import flash.display.SimpleButton;import flash.utils.setTimeout;	
+	import flash.display.SimpleButton;
+	import flash.utils.setTimeout;	
 
 	/**
 	 * FlowControl is a 3 part utility to help create fast prototypes 
@@ -66,16 +67,16 @@ package com.troyworks.ui {
 	 *  home
 	 *  
 	 *  next
-		nextFrame_
-		prev
-		prevFrame_
-		nextScene_ 
-		prevScene_
-		play_  
-		stop_
-		gotoAndStop_XXX
-		gotoAndPlay_XXX 
-		XXX_autoBtn
+	nextFrame_
+	prev
+	prevFrame_
+	nextScene_ 
+	prevScene_
+	play_  
+	stop_
+	gotoAndStop_XXX
+	gotoAndPlay_XXX 
+	XXX_autoBtn
 	 * 
 	 * KEYSTROKES
 	 *   ESC- goto first frame
@@ -124,7 +125,7 @@ package com.troyworks.ui {
 		public var labelledFrameInitScripts : Object;
 		public var labelledFrameUnLoadedScripts : Object;
 
-		public var activeFrames : Object;
+		public var activeFrames : Object = new Object();
 		public var frameLabelToNumberIdx : Object;
 		public var lastFrameNumber : Number;
 		public var view : MovieClip;
@@ -144,16 +145,16 @@ package com.troyworks.ui {
 		public var fadeClipColor : Number = 0xFFFFFF; 
 		public var nextAction : Function;
 		public var enableToolTips : Boolean = true;
-		public var stopAllSoundsBetweenNav:Boolean = false;
-		
-		public var classMap:Dictionary = new Dictionary(true);
+		public var stopAllSoundsBetweenNav : Boolean = false;
+
+		public var classMap : Dictionary = new Dictionary(true);
 
 		//	public static var trace : Function = TraceAdapter.SOSTracer;
 
 		public function FlowControl() {
 			super();
 			trace("FlowControl****************************************************");
-			if(loaderInfo  != null && loaderInfo.url != null){
+			if(loaderInfo != null && loaderInfo.url != null) {
 				trace("setting up as solo");
 				view = this;
 				view.stop();
@@ -162,34 +163,33 @@ package com.troyworks.ui {
 				// on frame1
 				addEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
 				addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			}else{
+			}else {
 				trace("waiting on UI");				
 			}
 			
 			
-		//	trace(hasOwnProperty("config") + "  config " + hasOwnProperty("config2") );
-			
+			//	trace(hasOwnProperty("config") + "  config " + hasOwnProperty("config2") );
+
 			frameLabelToNumberIdx = new Object();
 			initFrameScripts = new Object();
-			
-		
 		}
 
 		/* view should have frame1 completely loaded by then */
-		function onAddedToStage(evt:Event):void{
-   			trace("FlowControl.onAddedToStage ***********************"  + this);
-   			trace("parent " +this.parent + " stage  " + this.stage);
-   			setView(this);
+		function onAddedToStage(evt : Event) : void {
+			trace("FlowControl.onAddedToStage ***********************" + this);
+			trace("parent " + this.parent + " stage  " + this.stage);
+			setView(this);
 		}
-   		public function onRenderFirstFrame(evt:Event = null):void{
-   			trace("FlowControl.onRenderFirstFrame ***********************" + view.currentFrame);
-   			removeEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
-   			try {
-			//	trace(hasOwnProperty("config") + "  config " + this["config"])			
+
+		public function onRenderFirstFrame(evt : Event = null) : void {
+			trace("FlowControl.onRenderFirstFrame ***********************" + view.currentFrame);
+			removeEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
+			try {
+				//	trace(hasOwnProperty("config") + "  config " + this["config"])			
 				if(this.config != null ) {
 					//call up whatever config is on frame1;
-					for(var c:String in this.config){
-						trace("initObj "+ c + " = " + this.config[c]);
+					for(var c:String in this.config) {
+						trace("initObj " + c + " = " + this.config[c]);
 						this[c] = this.config[c];
 					}
 				}else {
@@ -202,8 +202,8 @@ package com.troyworks.ui {
 			///////////////// SETUP THE DEBUGGING UI ///////////////////////
 			//TODO fix the navigator
 			if(view.parent == null) { 
-					debuggerUI_mc = new MovieClip();
-			debuggerUI_mc.name = "debuggerUI_mc";
+				debuggerUI_mc = new MovieClip();
+				debuggerUI_mc.name = "debuggerUI_mc";
 				view.parent.addChild(debuggerUI_mc);
 			}
 			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
@@ -212,20 +212,21 @@ package com.troyworks.ui {
 				QA = new Sprite();
 				view.parent.addChild(QA);
 			}
-			if(fadeClip == null){
+			if(fadeClip == null) {
 				fadeClip = new Sprite();
 				fadeClip.graphics.beginFill(fadeClipColor);
 				fadeClip.graphics.drawRect(0, 0, view.stage.stageWidth, view.stage.stageHeight);
 				fadeClip.graphics.endFill();
 				trace("add FadeClip");
 				view.parent.addChild(fadeClip);
-				fadeClipTny = new Tny(fadeClip);
+				
 			}
+			fadeClipTny = new Tny(fadeClip);
 			if(enableToolTips) {
 				_toolTip = OBO_ToolTip.createToolTip(this, null, 0x000000, .8, OBO_ToolTip.ROUND_TIP, 0xFFFFFF, 8, false);
 			}
-   			/////////////////////////////////////////////////////////////
-   			if(preloadingRequired) {
+			/////////////////////////////////////////////////////////////
+			if(preloadingRequired) {
 				view.stop();
 				trace("waiting for engines to load");
 				///////////////////////////////
@@ -238,18 +239,18 @@ package com.troyworks.ui {
 				view.nextFrame();
 				startFadeDown();
 			}
-			
-   		}
+		}
+
 		/* set the actual MovieClip/Sprite we are going to use */
 		public function setView(mc : MovieClip, sender : String = null) : void {
 			trace("FlowControl.setView" + mc + " " + sender);
 			view = mc;
-			   			try {
-			//	trace(hasOwnProperty("config") + "  config " + this["config"])			
+			try {
+				//	trace(hasOwnProperty("config") + "  config " + this["config"])			
 				if(view.config != null ) {
 					//call up whatever config is on frame1;
-					for(var c:String in view.config){
-						trace("initObj2 "+ c + " = " + view.config[c]);
+					for(var c:String in view.config) {
+						trace("initObj2 " + c + " = " + view.config[c]);
 						this[c] = view.config[c];
 					}
 				}else {
@@ -267,7 +268,7 @@ package com.troyworks.ui {
 				view.addEventListener(Event.REMOVED, onChildRemoved);
 			}
 			////////// LISTEN DEEP INSIDE FOR EVENTS TO HAPPEN /////////////
-		//	view.addEventListener(Event.ENTER_FRAME, traceCurrentFrame);
+			//	view.addEventListener(Event.ENTER_FRAME, traceCurrentFrame);
 			/*
 			 *  goto_XXX   | gotoAndPlay_  | gotoAndStop_]
 			 *  play_ |  play_in_mS )
@@ -275,7 +276,7 @@ package com.troyworks.ui {
 			 *  prev
 			 *  home 
 			 *  */
-			 	view.addEventListener("play", requestPlay);
+			view.addEventListener("play", requestPlay);
 			view.addEventListener("stop", requestStop);
 			
 			view.addEventListener("gotoAndPlay", requestGotoAndPlay);
@@ -348,10 +349,11 @@ package com.troyworks.ui {
 			if(debugShowChildAdded) {
 				trace("Sketch.onChildAdded " + dO.name + " " + isButton);
 			}
-			if((isButton || isMC )&& validDo(dO)) {
+			if((isButton || isMC ) && validDo(dO)) {
 				setupGoto(dO, dO.name);
 			}
 		}
+
 		public function validDo(dO : DisplayObject) : Boolean {
 
 			if(!( dO is Bitmap || dO is Shape) && dO.name.indexOf("instance") == 0) {
@@ -379,18 +381,10 @@ package com.troyworks.ui {
 			if(isButton) {	
 				takedownGoto(dO, dO.name); 
 			}
-			if(dO is MovieClip){
+			if(dO is MovieClip) {
 				(dO as MovieClip).stop();
 			}
 		}
-
-		/*	public function onEnterFrameHandler(evt : Event) : void {
-		if(lastFrame != currentFrame) {
-		onFrameChanged();
-		}
-		lastFrame = currentFrame;
-		}
-		 */
 		public function onFrameChanged() : void {
 			trace("============ onFrameChanged =============" + currentFrame + " " + lastFrame);
 	
@@ -401,7 +395,7 @@ package com.troyworks.ui {
 			for (;i < n; ++i) {
 				var dO : DisplayObject = getChildAt(i);
 				var isButton : Boolean = dO is SimpleButton;
- 				//var isRadio : Boolean = false;
+				//var isRadio : Boolean = false;
 				//dO is RadioButton;	
 				trace(i + " " + dO.name + " " + isButton);
 				if(isButton && validDo(dO) ) {	
@@ -432,81 +426,81 @@ package com.troyworks.ui {
 			trace("setting up " + frame + " for " + view + "." + (ie as DisplayObject).name + ":" + ie);
 			var ary : Array;
 			var evtTr : EventTranslator;
-			if(frame.indexOf("autoBtn")  != -1 ) {
+			if(frame.indexOf("autoBtn") != -1 ) {
 			
-					evtTr = new EventTranslator();
-						evtTr.scope = view;
-						ary = frame.split("_");
-							trace("FOUND AUTOBUTTON '" + ary[0] +"'");
-						evtTr.evtType =ary[0];
-						if(ary.length ==3){
-							evtTr.args = [ary[2]];
-						}
-						ie.addEventListener(event, evtTr.dispatchEvent);
+				evtTr = new EventTranslator();
+				evtTr.scope = view;
+				ary = frame.split("_");
+				trace("FOUND AUTOBUTTON '" + ary[0] + "'");
+				evtTr.evtType = ary[0];
+				if(ary.length == 3) {
+					evtTr.args = [ary[2]];
+				}
+				ie.addEventListener(event, evtTr.dispatchEvent);
 			}else if(frame.indexOf("play_") == 0) {
 				ary = frame.split("_");
 				trace("ary: '" + ary.join("','") + "'");
 				//if(!ie.hasEventListener(event)) {
-					if(ary.length == 1 || (ary.length ==2 && ary[1] =="")) {
-						trace(" standard play()");
-						//	ie.addEventListener(event, EventAdapter.create(view.play, [], false));
-						evtTr = new EventTranslator();
-						evtTr.scope = view;
-						evtTr.evtType = "play";
+				if(ary.length == 1 || (ary.length == 2 && ary[1] == "")) {
+					trace(" standard play()");
+					//	ie.addEventListener(event, EventAdapter.create(view.play, [], false));
+					evtTr = new EventTranslator();
+					evtTr.scope = view;
+					evtTr.evtType = "play";
 					
-						ie.addEventListener(event, evtTr.dispatchEvent);
-					}else {
-						trace(" gotoAndPlay()");
-						//ie.addEventListener(event, EventAdapter.create(view.gotoAndPlay, [ary[1]], false));
-						evtTr = new EventTranslator();
-						evtTr.scope = this;
-						evtTr.evtType = "gotoAndPlay";
-						evtTr.args = [ary[1]];
+					ie.addEventListener(event, evtTr.dispatchEvent);
+				}else {
+					trace(" gotoAndPlay()");
+					//ie.addEventListener(event, EventAdapter.create(view.gotoAndPlay, [ary[1]], false));
+					evtTr = new EventTranslator();
+					evtTr.scope = this;
+					evtTr.evtType = "gotoAndPlay";
+					evtTr.args = [ary[1]];
 					
-						ie.addEventListener(event, evtTr.dispatchEvent);
-					}
+					ie.addEventListener(event, evtTr.dispatchEvent);
+				}
 				//}
 			}else if(frame == "stop_") {
-					evtTr = new EventTranslator();
-					evtTr.scope = view;
-					evtTr.evtType = "stop";
+				evtTr = new EventTranslator();
+				evtTr.scope = view;
+				evtTr.evtType = "stop";
 					
-					ie.addEventListener(event, evtTr.dispatchEvent);
+				ie.addEventListener(event, evtTr.dispatchEvent);
 			}else if(frame == "next" || frame == "nextFrame_") {
-			//	if(!ie.hasEventListener(event)) {
-					//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
-					evtTr = new EventTranslator();
-					evtTr.scope = view;
-					evtTr.evtType = "nextFrame";
+				//	if(!ie.hasEventListener(event)) {
+				//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
+				evtTr = new EventTranslator();
+				evtTr.scope = view;
+				evtTr.evtType = "nextFrame";
 					
-					ie.addEventListener(event, evtTr.dispatchEvent);
+				ie.addEventListener(event, evtTr.dispatchEvent);
 			//	}	 
 			}else if(frame == "prev" || frame == "prevFrame_") {
-			//	if(!ie.hasEventListener(event)) {
-					//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
-					evtTr = new EventTranslator();
-					evtTr.scope = view;
-					evtTr.evtType = "prevFrame";
+				//	if(!ie.hasEventListener(event)) {
+				//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
+				evtTr = new EventTranslator();
+				evtTr.scope = view;
+				evtTr.evtType = "prevFrame";
 					
-					ie.addEventListener(event, evtTr.dispatchEvent);
+				ie.addEventListener(event, evtTr.dispatchEvent);
 			//	}	 
 			}else if(frame == "prevScene_" ) {
 				//if(!ie.hasEventListener(event)) {
-					//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
-					evtTr = new EventTranslator();
-					evtTr.scope = view;
-					evtTr.evtType = "prevScene";
+				//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
+				evtTr = new EventTranslator();
+				evtTr.scope = view;
+				evtTr.evtType = "prevScene";
 					
-					ie.addEventListener(event, evtTr.dispatchEvent);
+				ie.addEventListener(event, evtTr.dispatchEvent);
 			//	}
 			}else if(frame == "nextScene_" ) {
-			//	if(!ie.hasEventListener(event)) {
-					//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
-					evtTr = new EventTranslator();
-					evtTr.scope = view;
-					evtTr.evtType = "nextScene";
+				//	if(!ie.hasEventListener(event)) {
+				//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
+				evtTr = new EventTranslator();
+				evtTr.scope = view;
+				evtTr.evtType = "nextScene";
 					
-					ie.addEventListener(event, evtTr.dispatchEvent);
+				ie.addEventListener(event, evtTr.dispatchEvent);
 			//	}			 				 
 			}else {
 				ary = frame.split("_");
@@ -643,19 +637,19 @@ package com.troyworks.ui {
 			if (event.keyCode == 37 || event.charCode == 97 ) {
 				//LEFT
 				//requestPrevFrame();
-				evt= new EventWithArgs("prevFrame");
-				evt.args =[0];
+				evt = new EventWithArgs("prevFrame");
+				evt.args = [0];
 				view.dispatchEvent(evt);
 			} else if (event.keyCode == 39 || event.charCode == 115 || event.charCode == 32) {
 				//RIGHT
 				//requestNextFrame();
-				evt  = new EventWithArgs("nextFrame");
-				evt.args =[0];
+				evt = new EventWithArgs("nextFrame");
+				evt.args = [0];
 				view.dispatchEvent(evt);
 			}else if(event.charCode == 27) {
 				//gotoAndStop(1);
-			 	evt  = new EventWithArgs("gotoAndStop");
-				evt.args =[0];
+				evt = new EventWithArgs("gotoAndStop");
+				evt.args = [0];
 				view.dispatchEvent(evt); 
 			} else {
 			//		requestScreenByName(String.fromCharCode(event.charCode));
@@ -685,6 +679,7 @@ package com.troyworks.ui {
 				event.stopImmediatePropagation(); // consumed
 			}
 		}
+
 		protected function requestNextScene(event : Event = null) : void {
 			//nextFrame();
 			trace("requestNextScene");
@@ -704,6 +699,7 @@ package com.troyworks.ui {
 				event.stopImmediatePropagation(); // consumed
 			}
 		}
+
 		protected  function requestStop(event : Event = null) : void {
 			//	prevFrame();
 			trace("requestStop");

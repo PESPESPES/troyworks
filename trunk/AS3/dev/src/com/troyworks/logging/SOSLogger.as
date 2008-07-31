@@ -67,9 +67,15 @@ package com.troyworks.logging {
 			var logL:LogLevel;
 			for each (var name:String in xml..@name){
 				try{
-					logL = LogLevel(LogLevel[name]);
+					
+					//trace("name" + name);
+					logL = LogLevel[name] as LogLevel;
+					
+					if(logL != null){
 				//	trace("LogLevel " + logL.name + " " + logL.color);
 					csock.send("<setKey><name>"+_appKeyName+"_"+logL.name+"</name><color>"+logL.color+"</color></setKey>\n");
+					
+					}
 				}catch(err:Error){
 					//ignore
 					

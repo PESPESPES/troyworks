@@ -28,13 +28,13 @@ package com.troyworks.data {
 		public function Combinator(d1 : Array, d2 : Array, d3 : Array = null) {
 			possibilities = new ArrayX();
 			for (var i : Number = 0;i < d1.length; i++) {
-				var cx = d1[i];
+				var cx:Object = d1[i];
 				if(d2 != null) {
 					for (var j : Number = 0;j < d2.length; j++) {
-						var cy = d2[j];
+						var cy:Object = d2[j];
 						if(d3 != null) {
 							for (var k : Number = 0;k < d3.length; k++) {
-								var cz = d3[k];
+								var cz:Object = d3[k];
 								trace(" " + i + "," + j + "," + k + " : " + cx + " + " + cy + " + " + cz);
 								possibilities.push(new ArrayX(cx, cy, cz));
 							}

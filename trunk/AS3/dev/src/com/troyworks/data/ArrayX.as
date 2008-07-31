@@ -255,21 +255,21 @@ package com.troyworks.data {
 			super.splice.apply (this, args);
 			return this;
 		};
-		public function deleteAt(pos : Number, positions:Number = 1) : ArrayX
+		public function removeFromCollectionAt(pos : Number, positions:Number = 1) : ArrayX
 		{
 			super.splice (pos, positions);
 			return this;
 		};
-		public function deleteAll() : void
+		public function removeFromCollectionAll() : void
 		{
 			super.splice (0, this.length );
 		} 
 		//look for a reference and splice from array
-		public function remove(aValue_obj : Object) : Number
+		public function removeFromCollectionItem(aValue_obj : Object) : Number
 		{
 			var tIndexOfMatch_num : Number = getLastIndexOf(aValue_obj);
 			if(tIndexOfMatch_num != -1){
-				splice (tIndexOfMatch_num, 1);
+				super.splice(tIndexOfMatch_num, 1);
 			}
 			return tIndexOfMatch_num;
 		}

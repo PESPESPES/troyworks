@@ -5,7 +5,11 @@ package com.troyworks.logging {
 	* 
 	 * @author Troy Gardner (troy@troyworks.com)
 	 */
-
+	import flash.events.SecurityErrorEvent;	
+	import flash.events.ProgressEvent;	
+	import flash.events.DataEvent;	
+	import flash.events.Event;	
+	import flash.events.IEventDispatcher;	
 	import flash.events.IOErrorEvent;
 	import flash.net.XMLSocket;
 	public class SOS extends Object{
@@ -13,7 +17,6 @@ package com.troyworks.logging {
 		protected static var _csock : XMLSocket;
 		protected static var _msock : XMLSocket;
 		public var id:int;
-		public var isConnected:Boolean = false;
 		
 		protected static const clearConsoleCommand:String = "<clear/>\n";
 		public static var IDz:int =0;
@@ -28,7 +31,10 @@ package com.troyworks.logging {
 			if(SOS._csock == null){
                 trace("SOS" +id+".creatingCommandSocket");
 				SOS._csock = new XMLSocket();
-				SOS._csock.addEventListener(IOErrorEvent.IO_ERROR, onIOErrorEvent);
+				configureListeners(SOS._csock);
+				
+				 SOS._csock.addEventListener(Event.CONNECT, connectCommandHandler);
+								
 				SOS._csock.connect("localhost",4445);
 			}else{
 				trace("SOS"+id+"BBBBBBBBBBBBBBBBBBBB COMMAND SOCKET ALREADY CONNECTED BBBBBBBBBBBBBBBBBBBBBBBBB");
@@ -37,17 +43,51 @@ package com.troyworks.logging {
 			if(SOS._msock == null){
 				trace("SOS" +id+".creatingMessageSocket");
 				SOS._msock = new XMLSocket();
-				SOS._msock.addEventListener(IOErrorEvent.IO_ERROR, onIOErrorEvent);
+				 SOS._msock.addEventListener(Event.CONNECT, connectMessageHandler);
+				configureListeners(SOS._msock);
 				SOS._msock.connect("localhost",4444);
 			}else{
 				trace("SOS"+id+"BBBBBBBBBBBBBBBBBBBB MESSAGE SOCKET ALREADY CONNECTED BBBBBBBBBBBBBBBBBBBBBBBBB");				
 			
 			}
-			isConnected = true;
+			
 			return res;
 		}
+		
+		 private function configureListeners(dispatcher:IEventDispatcher):void {
+            dispatcher.addEventListener(Event.CLOSE, closeHandler);
+           
+        //    dispatcher.addEventListener(DataEvent.DATA, dataHandler);
+            dispatcher.addEventListener(IOErrorEvent.IO_ERROR, onIOErrorEvent);
+       //     dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+            dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+        }
+		public function get isConnected():Boolean{
+			return (_csock != null) && _csock.connected && (_msock != null) && _msock.connected;
+		}
+        private function closeHandler(event:Event):void {
+            trace("closeHandler: " + event);
+        }
+		
+        private function connectCommandHandler(event:Event):void {
+            trace("connectCommandHandler: " + event);
+        }
+		private function connectMessageHandler(event:Event):void {
+            trace("connectMessageHandler: " + event);
+        }
+
+        private function dataHandler(event:DataEvent):void {
+            trace("dataHandler: " + event);
+        }
+        private function progressHandler(event:ProgressEvent):void {
+            trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
+        }
+
+        private function securityErrorHandler(event:SecurityErrorEvent):void {
+            trace("securityErrorHandler: " + event);
+        }
 		public function onIOErrorEvent(event:IOErrorEvent):void{
-			trace("SOS" + id + "onIOErrorEvent" + event.text + " " + getStatus());
+			trace("ERROR SOS" + id + "onIOErrorEvent" + event.text + " " + getStatus());
 		}
 		public function getStatus():String{
 			var _csockConnected:Boolean = (_csock != null) && _csock.connected;
@@ -63,7 +103,7 @@ package com.troyworks.logging {
 		}
 		
 		public function showMessage(key : String ="com.troyworks.logging.sos", sMessage : Object = "") : void{
-			if(!isConnected){
+			if(!_csock.connected && !_msock.connected){
 				return;
 			}
 			if(sMessage.indexOf("</")>-1){
@@ -113,7 +153,7 @@ package com.troyworks.logging {
 					if(_csock.connected){
 					_csock.send("<showMessage key='"+key + "'>"+replaceXML(sMessage.toString())+"</showMessage>\n");
 					}else{
-						trace("can't send to SOS, perhaps not running?");
+						trace("can't send to SOS, perhaps not running? "  + sMessage.toString());
 					}
 				}
 		}
@@ -128,7 +168,7 @@ package com.troyworks.logging {
 		//////////////////////////// COMMANDS /////////////////////////////////////
 		/* pops up a dialog with given title and message */
 		public function createDialog(title : String="SOS.createDialog", message : String="Popup!") : void{
-			if(!isConnected){
+			if(!_csock.connected && !_msock.connected){
 				return;
 			}
 	
@@ -138,7 +178,7 @@ package com.troyworks.logging {
 		}
 		/* clears all the output on the console */
 		public function clearConsole() : void {
-			if(!isConnected){
+			if(!_csock.connected && !_msock.connected){
 				return;
 			}
 	
