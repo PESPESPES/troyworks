@@ -1,4 +1,4 @@
-package com.troyworks.util { 
+﻿package com.troyworks.util { 
 	//////////////////////////////////////////////////////////////
 	//Generic stopwatch class used for evaluating performance
 	// used like
@@ -18,10 +18,10 @@ package com.troyworks.util {
 		public var endTime:Date;
 		public var elapsedTime:Number;
 		public var persistent:Boolean;
-		public function StopWatch(persist:Boolean) {
+		public function StopWatch(persist:Boolean = false) {
 			trace("StopWatch");
 			this.zero();
-			this.persistent = (persist == null)? false: true;
+			this.persistent = persist;
 		}
 		public function start():void {
 			if(!this.persistent){
