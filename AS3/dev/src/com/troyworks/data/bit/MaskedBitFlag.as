@@ -7,12 +7,12 @@ package com.troyworks.data.bit {
 	 */
 	public class MaskedBitFlag extends Object {
 		protected var __name : String;
-		/* mask */
-		public var m:uint;
+		/* mask needs to be nullable*/
+		public var m:Number;
 		/* bits */
 		public var b:uint;
 		
-		public function MaskedBitFlag(val : uint = NaN, mask:uint = NaN, name: String = "") {
+		public function MaskedBitFlag(val : Number= NaN, mask:Number= NaN, name: String = "") {
 		//	super(val);
 			super();
 			b = isNaN(val)? BitFlag.ALLBITSOFF: val;

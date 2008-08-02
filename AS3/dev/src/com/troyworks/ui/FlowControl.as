@@ -352,6 +352,7 @@
 			if((isButton || isMC ) && validDo(dO)) {
 				setupGoto(dO, dO.name);
 			}
+			
 		}
 
 		public function validDo(dO : DisplayObject) : Boolean {
@@ -477,7 +478,6 @@
 			//	}	 
 			}else if(frame == "prev" || frame == "prevFrame_") {
 				//	if(!ie.hasEventListener(event)) {
-				//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
 				evtTr = new EventTranslator();
 				evtTr.scope = view;
 				evtTr.evtType = "prevFrame";
@@ -486,7 +486,6 @@
 			//	}	 
 			}else if(frame == "prevScene_" ) {
 				//if(!ie.hasEventListener(event)) {
-				//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
 				evtTr = new EventTranslator();
 				evtTr.scope = view;
 				evtTr.evtType = "prevScene";
@@ -495,7 +494,6 @@
 			//	}
 			}else if(frame == "nextScene_" ) {
 				//	if(!ie.hasEventListener(event)) {
-				//ie.addEventListener(event, EventAdapter.create(view.nextFrame, [], false));
 				evtTr = new EventTranslator();
 				evtTr.scope = view;
 				evtTr.evtType = "nextScene";
@@ -511,7 +509,6 @@
 				if(ary.length > 0) {
 					if(ary[0] == "gotoAndStop") {
 						trace("adding gotoAndStop");
-						//ie.addEventListener(event, EventAdapter.create(view.gotoAndStop, [ary[1]], false));
 						evtTr = new EventTranslator();
 						evtTr.scope = view;
 						evtTr.evtType = "gotoAndStop";
@@ -520,7 +517,6 @@
 						ie.addEventListener(event, evtTr.dispatchEvent);
 					}else if(ary[0] == "gotoAndPlay") {
 						trace("adding gotoAndPlay");
-						//						ie.addEventListener(event, EventAdapter.create(view.gotoAndPlay, [ary[1]], false));
 						evtTr = new EventTranslator();
 						evtTr.scope = view;
 						evtTr.evtType = "gotoAndPlay";

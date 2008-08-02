@@ -66,9 +66,13 @@ package com.troyworks.controls.menu {
 			if(_ALLDEEPLINKS[deeplink] == null) {
 				_ALLDEEPLINKS[deeplink] = this;
 			}
-			if(a.text().length() > 0 ) {
-				_name = a.text()[0];
+			var children:XMLList =a.children(); 
+			if(children.length() > 0 ) {
+				//trace(" menu name is " + children[0].toXMLString());
+				_name = children[0].toXMLString();//a.text()[0];
 			}else {
+			//trace(" menu name is blank " + a.text().length());
+				
 				_name = "";
 			}
 		}
@@ -82,9 +86,22 @@ package com.troyworks.controls.menu {
 		}
 
 		public function getHyperLink() : String {
-			var lnk : String = "event:" + deeplink;
-			
-			return (isSelected) ? _name : (<a name={deeplink} href={lnk} target="mainFrame">{_name}</a>).toXMLString();
+			var lnkr:Array = new Array();
+			var hasDeeplink:Boolean = deeplink != null && deeplink != "";
+			if(hasDeeplink){
+			lnkr.push("<a name='");
+			lnkr.push(deeplink);
+			lnkr.push("' href='event:");
+			lnkr.push(deeplink);
+			lnkr.push("' target='mainFrame'>");
+			}
+			lnkr.push(_name);
+			if(hasDeeplink){
+				lnkr.push("</a>");
+			}
+			var res:String = (isSelected) ? _name : lnkr.join('');
+			//trace("getHyperLink " + _name + " == " + res);
+			return res;
 		}
 
 		public function getHref() : String {
@@ -102,8 +119,8 @@ package com.troyworks.controls.menu {
 				var mI : MenuSystemItem;
 				while(iter.hasNext()) {
 					mI = MenuSystemItem(iter.next());
-					trace(XML(mI.getHyperLink()).toXMLString());
-					curNav.push(XML(mI.getHyperLink()).toXMLString());
+					trace(mI.getHyperLink());
+					curNav.push(mI.getHyperLink());
 				} 
 				return curNav;
 			}else {
