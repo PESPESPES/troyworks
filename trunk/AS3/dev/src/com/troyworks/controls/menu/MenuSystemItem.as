@@ -12,6 +12,7 @@ package com.troyworks.controls.menu {
 		public var id : Number = MenuSystemItem.IDz++;
 		public static var _ALL : Dictionary = new Dictionary();
 		public static var _ALLDEEPLINKS : Dictionary = new Dictionary();
+		public static var _ALLHREFLINKS : Dictionary = new Dictionary();
 		private var _name : String;
 		public var target : String;
 		public var href : String;
@@ -65,6 +66,10 @@ package com.troyworks.controls.menu {
 			mcStyle = a.@mcStyle;
 			if(_ALLDEEPLINKS[deeplink] == null) {
 				_ALLDEEPLINKS[deeplink] = this;
+			}
+			if(_ALLHREFLINKS[href] == null){
+				trace("adding anchor for href " + href);
+				_ALLHREFLINKS[href] = this;
 			}
 			var children:XMLList =a.children(); 
 			if(children.length() > 0 ) {

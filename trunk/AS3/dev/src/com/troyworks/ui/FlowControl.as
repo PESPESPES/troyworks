@@ -59,14 +59,8 @@
 	 * but don't require any actionscript.
 	 * 
 	 * AUTOBUTTONS:
-	 * 
-	 *  goto_XXX   | gotoAndPlay_  | gotoAndStop_]
-	 *  play_ |  play_in_mS )
-	 *  next
-	 *  prev
-	 *  home
-	 *  
-	 *  next
+	home
+	next
 	nextFrame_
 	prev
 	prevFrame_
@@ -91,6 +85,7 @@
 	 * //TODO (optional) ignore buttons who's parent isn't this scope
 	 * //TODO support other clickable types besides buttons.
 	 * //TODO Heatmap/visited links (count, breadcrumbs)
+	 * //TODO play_in_mS
 	 * 
 	 * TO USE,
 	 * 1) in your FLA extend FlowControl.
@@ -111,6 +106,7 @@
 	dynamic public class FlowControl extends MovieClip {
 		//public var output_txt : TextField;
 		public var lastFrame : int = -1;
+		public var framesRendered : int = 0;
 		public var errorFilter : GlowFilter = new GlowFilter(0xFF0000, 80);
 
 		public var QA : Sprite;
@@ -148,13 +144,15 @@
 		public var stopAllSoundsBetweenNav : Boolean = false;
 
 		public var classMap : Dictionary = new Dictionary(true);
+		public var isEmbedded : Boolean = false;
 
 		//	public static var trace : Function = TraceAdapter.SOSTracer;
 
 		public function FlowControl() {
 			super();
 			trace("FlowControl****************************************************");
-			if(loaderInfo != null && loaderInfo.url != null) {
+			isEmbedded = loaderInfo != null && loaderInfo.url != null;
+			if(isEmbedded) {
 				trace("setting up as solo");
 				view = this;
 				view.stop();
@@ -162,6 +160,7 @@
 				//note addFrameScript doesn't pick up configuration options
 				// on frame1
 				addEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
+				//addEventListener(Event.ENTER_FRAME,onEF);
 				addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			}else {
 				trace("waiting on UI");				
@@ -179,11 +178,21 @@
 			trace("FlowControl.onAddedToStage ***********************" + this);
 			trace("parent " + this.parent + " stage  " + this.stage);
 			setView(this);
+			onEF();
 		}
 
-		public function onRenderFirstFrame(evt : Event = null) : void {
-			trace("FlowControl.onRenderFirstFrame ***********************" + view.currentFrame);
-			removeEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
+		public function onEF(evt : Event = null) : void {
+			if(view.getChildByName("debug_txt") != null) {
+				view.debug_txt.text += "STAGE " + view.stage.stageWidth + " " + view.stage.stageHeight + " " + +view.stage.width + " " + view.stage.height;
+			}
+		}
+
+		public function onRenderFirstFrame(evt : Event = null) : Boolean {
+			trace("FlowControl.onRenderFirstFrame ***********************" + view.currentFrame + " try " + (framesRendered + 1));
+			framesRendered++;
+			if(isEmbedded && framesRendered >= 2) {
+				removeEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
+			}
 			try {
 				//	trace(hasOwnProperty("config") + "  config " + this["config"])			
 				if(this.config != null ) {
@@ -192,13 +201,18 @@
 						trace("initObj " + c + " = " + this.config[c]);
 						this[c] = this.config[c];
 					}
+					framesRendered = 2 ;
 				}else {
 					trace(" FlowControl using default configuration ");
 				}
 			}catch(er : Error) {
 				trace(" FlowControl couldn't init frame1");
 			}
-				
+			if(isEmbedded && framesRendered < 2) {
+				view.stop();
+				return false;
+			}
+			trace("===================== SETUP from FirstFrame ==============================");
 			///////////////// SETUP THE DEBUGGING UI ///////////////////////
 			//TODO fix the navigator
 			if(view.parent == null) { 
@@ -206,20 +220,25 @@
 				debuggerUI_mc.name = "debuggerUI_mc";
 				view.parent.addChild(debuggerUI_mc);
 			}
-			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
+			enableFlowControlKeyboardNavigation();
 	
 			if(showDebugUI) {
 				QA = new Sprite();
 				view.parent.addChild(QA);
 			}
-			if(fadeClip == null) {
+			if(view.fadeClip == null) {
 				fadeClip = new Sprite();
 				fadeClip.graphics.beginFill(fadeClipColor);
-				fadeClip.graphics.drawRect(0, 0, view.stage.stageWidth, view.stage.stageHeight);
+				if(view.getChildByName("debug_txt") != null) {
+					view.debug_txt.text += view.stage.scaleMode + " SETUP STAGE " + view.stage.stageWidth + " " + view.stage.stageHeight + " loaderInfo.width" + loaderInfo.width + " " + loaderInfo.height;
+				}
+				fadeClip.graphics.drawRect(0, 0, view.loaderInfo.width, view.loaderInfo.height);
+				//view.stage.stageWidth, view.stage.stageHeight);
 				fadeClip.graphics.endFill();
 				trace("add FadeClip");
 				view.parent.addChild(fadeClip);
-				
+			}else {
+				fadeClip = view.fadeClip;
 			}
 			fadeClipTny = new Tny(fadeClip);
 			if(enableToolTips) {
@@ -239,14 +258,16 @@
 				view.nextFrame();
 				startFadeDown();
 			}
+			return true;
 		}
 
 		/* set the actual MovieClip/Sprite we are going to use */
-		public function setView(mc : MovieClip, sender : String = null) : void {
-			trace("FlowControl.setView" + mc + " " + sender);
+		public function setView(mc : MovieClip, sender : String = null, initObj : Object = null) : void {
+			trace("FlowControl.setView" + mc + " " + sender + " " + initObj);
 			view = mc;
 			try {
-				//	trace(hasOwnProperty("config") + "  config " + this["config"])			
+				//	trace(hasOwnProperty("config") + "  config " + this["config"])		
+				////////////// STAGE CONFIG //////////////////////	
 				if(view.config != null ) {
 					//call up whatever config is on frame1;
 					for(var c:String in view.config) {
@@ -259,6 +280,7 @@
 			}catch(er : Error) {
 				trace(" FlowControl couldn't init frame1");
 			}
+			
 			onRenderFirstFrame();
 			if(watchAddedAndRemovedEvents) {
 				trace("enabling watch");
@@ -290,11 +312,19 @@
 			
 			view.addEventListener("nextScene", requestNextScene);
 			view.addEventListener("prevScene", requestPrevScene);
-
+			view.addEventListener("FlowControlEnableKeyboardNavigation", enableFlowControlKeyboardNavigation);
+			view.addEventListener("FlowControlDisableKeyboardNavigation", disableFlowControlKeyboardNavigation);
+			
 		//	onFrameChanged();
 		}
 
-		
+		public function enableFlowControlKeyboardNavigation(evt : Event = null) : void {
+			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
+		}
+
+		public function disableFlowControlKeyboardNavigation(evt : Event = null) : void {
+			view.stage.removeEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
+		}
 		
 		
 		//////////////////////FADE /////////////////////////////////
@@ -352,7 +382,6 @@
 			if((isButton || isMC ) && validDo(dO)) {
 				setupGoto(dO, dO.name);
 			}
-			
 		}
 
 		public function validDo(dO : DisplayObject) : Boolean {
@@ -386,6 +415,7 @@
 				(dO as MovieClip).stop();
 			}
 		}
+
 		public function onFrameChanged() : void {
 			trace("============ onFrameChanged =============" + currentFrame + " " + lastFrame);
 	

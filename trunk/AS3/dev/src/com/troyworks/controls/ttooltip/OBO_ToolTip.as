@@ -215,9 +215,13 @@ package com.troyworks.controls.ttooltip {
 			if(stage != null){
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, onTipMove);
 			}
-			this.removeChild(_tipText);
+			trace("_tipText1 " + _tipText);
+			//_tipText.parent.removeChild(_tipText);
 			this.graphics.clear();
-			_root.removeChild(this);
+			trace("parent " + parent);
+			if(parent != null){
+			parent.removeChild(this);
+			}
 		}
 
 		/**
