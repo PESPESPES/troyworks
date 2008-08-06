@@ -319,10 +319,12 @@
 		}
 
 		public function enableFlowControlKeyboardNavigation(evt : Event = null) : void {
+			trace("**---enableFlowControlKeyboardNavigation --**");
 			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
 		}
 
 		public function disableFlowControlKeyboardNavigation(evt : Event = null) : void {
+			trace("**---disableFlowControlKeyboardNavigation --**");
 			view.stage.removeEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
 		}
 		
