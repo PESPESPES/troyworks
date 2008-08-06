@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ...
  * @author Default
  * @version 0.1
@@ -301,7 +301,7 @@ package com.troyworks.ui {
 			//   desired height 
 			////////////////////////////////////
 
-			if (still_mc == null && override_width != NaN && override_height != NaN)
+			if (still_mc == null && !isNaN(override_width) && !isNaN(override_height))
 			{
 				still_mc = new Sprite();
 				still_mc.x = moving_mc.x;
