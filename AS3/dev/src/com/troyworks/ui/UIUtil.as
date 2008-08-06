@@ -29,6 +29,12 @@ package com.troyworks.ui {
 			}
 			return -1;
 		}
+		public static function addFrameScriptForLabel(mc:MovieClip, lblName:String, fn:Function ):int{
+			var frameNum : int = UIUtil.getNumberOfFrameLabel(mc, lblName);
+			mc.addFrameScript(frameNum, fn);
+			return frameNum;
+			
+		}
 		public static function setInputShieldBehavior(sprite : Sprite, ON : Boolean = true):void
 		{
 			if(ON){
