@@ -23,16 +23,16 @@
 		public var angleZ : Number = 0;
 		public var distFromCamera : Number = 0;
 
-		public static const HOVER_COLOR:Number = 0xFFFF00;
-		public static const SELECTED_FIRST_COLOR:Number = 0x00FF00;
-		public static const SELECTED_SECOND_POSSIBLE_COLOR:Number =0xFF0000 ;
-		public static const SELECTED_SECOND_COLOR:Number = 0xFF00FF;
-		public static const RESULT_COLOR:Number = 0x0000FF;
+		public static const HOVER_COLOR:Number = 0xFFCC33;
+		public static const SELECTED_FIRST_COLOR:Number = 0xFFFF00;
+		public static const SELECTED_SECOND_POSSIBLE_COLOR:Number =0x66FFFF ;
+		public static const SELECTED_SECOND_COLOR:Number = 0x333399;
+		public static const RESULT_COLOR:Number = 0x66FF66;
 		
 		public const HOVER_FILTER : GlowFilter = new GlowFilter(HOVER_COLOR, .6, 10, 10, 4, 1, true);
 		public const SELECTED_FIRST_FILTER : GlowFilter = new GlowFilter(SELECTED_FIRST_COLOR, 1, 20, 20, 4);
 		public const SELECTED_SECOND_POSSIBLE_FILTER : GlowFilter = new GlowFilter(SELECTED_SECOND_POSSIBLE_COLOR, 1, 10, 10, 4);
-		public const SELECTED_SECOND_FILTER : GlowFilter = new GlowFilter(SELECTED_SECOND_COLOR, 1, 10, 10, 4);
+		public const SELECTED_SECOND_FILTER : GlowFilter = new GlowFilter(SELECTED_SECOND_COLOR, 1, 20, 20, 4);
 		public const RESULT_FILTER : GlowFilter = new GlowFilter(RESULT_COLOR, 1, 10, 10, 4);
 
 		public var isFocused : Boolean = false;
@@ -49,6 +49,7 @@
 		public var coords : Array = new Array();
 		public var curCoordsIdx : int = 0;
 		public var curCoords : EightDimensionParticleLabelledCoordinates;
+
 
 		
 		public function EightDimensionParticle(d1 : Number = 0,d2 : Number = 0,d3 : Number = 0,d4 : Number = 0,d5 : Number = 0,d6 : Number = 0,d7 : Number = 0,d8 : Number = 0,sym : String = "mcir", color : String = "mgray", name : String = "unnamed", description : String = "", isStandardModel : Boolean = false) : void {
@@ -182,7 +183,7 @@
 			//		<p id="0" name="w^L" coordlbl="{1/2,SQRT,3/2},1,0,0,0,0,0,0"
 			//	coord="1,1,0,0,0,0,0,0" color="mgree" symbol="mcir"
 			//	label="spin connection" />
-			var res : EightDimensionParticle = new EightDimensionParticle(0, 0, 0, 0, 0, 0, 0, 0, xml.@symbol, xml.@color, xml.@name, xml.@label, Boolean(xml.@sm));
+			var res : EightDimensionParticle = new EightDimensionParticle(0, 0, 0, 0, 0, 0, 0, 0, xml.@symbol, xml.@color, xml.@name, xml.@label, xml.@sm =="1");
 			
 			//			res.name = String();
 			//			res.color = Colors.parse().rgb;
@@ -534,6 +535,10 @@
 		public function toString() : String {
 			//			return this.d1 + " " + this.d2 + " " + this.d3;
 			return  "P" + name;
+		}
+		public function toXMLString():String{
+			var res:String = '<p id="1" name="1" e8coordlbl="1,1,0,0,0,0,0,0" e8coord="1,1,0,0,0,0,0,0" color="lgree" symbol="mcir" label="spin connection" sm="1" />';
+			return res;
 		}
 	}
 }

@@ -53,11 +53,12 @@ package mdl {
 			 dispatchEvent(new Event(ROTATIONS_CHANGED));
 			
 		}
-		public function transformE8CoordsToPhyCoords() : void {
+		public function transformE8CoordsToPhyCoords( H : EightDimensionVector ,V : EightDimensionVector  ) : Array {
+			trace("H "+ H + " V" + V);
 			// transformations of H and H during coordinate cHange
 			// from e8coords to pHyscoords
-			var V : EightDimensionVector = camera.V;
-			var H : EightDimensionVector = camera.H;
+		//	var V : EightDimensionVector = camera.V;
+		//	var H : EightDimensionVector = camera.H;
 			var V1 : EightDimensionVector = new EightDimensionVector();
 			var H1 : EightDimensionVector = new EightDimensionVector();
 			
@@ -78,14 +79,17 @@ package mdl {
 			V1.d6 = -0.5774 * V.d6 - 0.5774 * V.d7 - 0.5774 * V.d8;
 			V1.d7 = -0.7071 * V.d6 + 0.7071 * V.d7;
 			V1.d8 = -0.4082 * V.d6 - 0.4082 * V.d7 + 0.8165 * V.d8;
-			camera.H = H1;
-			camera.V = V1;
+			//camera.H = H1;
+			//camera.V = V1;
+			trace("H1 "+ H1 + " V1" + V1);
+			return [H1, V1];
 		}
 
-		public function transformPhyCoordsToE8Coords() : void {
+		public function transformPhyCoordsToE8Coords(H : EightDimensionVector ,V : EightDimensionVector  ) : Array {
+			trace("H "+ H + " V" + V);
 			// from physcoords to e8coords
-			var V : EightDimensionVector = camera.V;
-			var H : EightDimensionVector = camera.H;
+//			var V : EightDimensionVector = camera.V;
+//			var H : EightDimensionVector = camera.H;
 			var V1 : EightDimensionVector = new EightDimensionVector();
 			var H1 : EightDimensionVector = new EightDimensionVector();
 			H1.d1 = 0.7071 * H.d1 - 0.7071 * H.d2;
@@ -105,15 +109,17 @@ package mdl {
 			V1.d6 = -0.5774 * V.d6 - 0.7072 * V.d7 - 0.4082 * V.d8;
 			V1.d7 = -0.5774 * V.d6 + 0.7071 * V.d7 - 0.4082 * V.d8;
 			V1.d8 = -0.5774 * V.d6 + 0.8165 * V.d8;
-			camera.H = H1;
-			camera.V = V1;
+//			camera.H = H1;
+//			camera.V = V1;
+			trace("H1 "+ H1 + " V1" + V1);
+			return [H1, V1];
 		}
 		public function initFromXML(xml : XML) : void {
 			pointSystems = new Array();
 				
 			//	trace("XML " + example);
 			var psys : XMLList = xml..pointSystem;
-			trace("psys " + psys);
+			//trace("psys " + psys);
 				
 			var i : int = 0;
 			var n : int = psys.length();
@@ -126,6 +132,21 @@ package mdl {
 				curPointSystem.addEventListener(Model.ROTATIONS_CHANGED, redispatchEvent);
 				pointSystems.push(curPointSystem); 
 			}
+			var smPointSystem:PointSystem = new PointSystem();
+			smPointSystem.name  = "Standard Points";
+			smPointSystem.axises = curPointSystem.axises;
+			smPointSystem.curPreset = curPointSystem.curPreset;
+			smPointSystem.coordinates = curPointSystem.coordinates;
+			smPointSystem.axises = curPointSystem.axises;
+			smPointSystem.particles = curPointSystem.particles;
+			smPointSystem.camera_points = curPointSystem.camera_points;
+			smPointSystem.trialities = curPointSystem.trialities;
+			smPointSystem.interactions = curPointSystem.interactions;
+			smPointSystem.axises = curPointSystem.axises;
+			smPointSystem.axises = curPointSystem.axises;
+			smPointSystem.curCoordinate = curPointSystem.curCoordinate;
+			pointSystems.push(smPointSystem);
+
 			curPointSystem = pointSystems[0];
 			trace("CURRENT POINTSYS "+ curPointSystem);
 		}
