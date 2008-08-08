@@ -2,14 +2,15 @@
 <pointSystem name="E8 Points">
    <presets></presets>
    <coordinates>
-       <system name="E8 coords" coordlbl="1/2i:w^3:T,1/2:w^3:S,U^3,V^3,w,x,y,z">								          <rotations>
-             <r name="Home" hv="0,1;1,0;0,0;0,0;0,0;0,0;0,0;0,0" h="0" v="1" />					                                          <r name="Gosset" hv="0,.922;.097,0;-.464,.119;.464,.119;-.67,0;.237,.193;-.237,.193;0,.218" h="0" v="1" />
-             <r name="Hyperchange" hv=".5,.5;.5,.5;.5,.5;.5,.5;.5,.5;.5,.5;.5,.5;.5,.5" h="0" v="1" />
-           </rotations>
-	</system>
-        <system name="Physics coords" coordlbl="1/2:w^3:L,1/2:w^3:R,W^3,:B^3:1,w,:B:2,g^3,g^8">
-           <rotations>
-	      <r name="Home" hv="0,1;1,0;0,0;0,0;0,0;0,0;0,0;0,0"h="0" v="1" />			           
+       <system name="E8 coords" coordlbl="1/2i:w^3:T,1/2:w^3:S,U^3,V^3,w,x,y,z">
+   		<rotations>
+             <r name="Gosset" hv="0,.922;.097,0;-.464,.119;.464,.119;-.67,0;.237,.193;-.237,.193;0,.218" h="0" v="1" isE8="true" />
+             <r name="Home" hv="0,1;1,0;0,0;0,0;0,0;0,0;0,0;0,0" h="0" v="1"  isE8="true" />     
+        </rotations>
+	   </system>
+       <system name="Physics coords" coordlbl="1/2:w^3:L,1/2:w^3:R,W^3,:B^3:1,w,:B:2,g^3,g^8">
+         <rotations>	           
+          <r name="HomeP" hv="0,1;1,0;0,0;0,0;0,0;0,0;0,0;0,0" h="0" v="1"  isE8="false" />
 	    </rotations>
 <coords>
  <pc id="1" lbl="SQRT(2),0,0,0,0,0,0,0" coord="1.41,0,0,0,0,0,0,0" />
@@ -260,261 +261,247 @@
 
 <!-- 240 or 72 -->
 <particles>                                             
-<p id="1" name="\omega _L^{\land }" e8coordlbl="1,1,0,0,0,0,0,0" e8coord="1,1,0,0,0,0,0,0" color="lgree" symbol="mcir" label="spin connection" sm="1" />
-<p id="2" name="\omega _R^{\land }" e8coordlbl="-1,1,0,0,0,0,0,0" e8coord="-1,1,0,0,0,0,0,0" color="lgree" symbol="mcir" label="spin connection" sm="1" />
-<p id="3" name="W^+" e8coordlbl="0,0,1,1,0,0,0,0" e8coord="0,0,1,1,0,0,0,0" color="lyell" symbol="mcir" label="W boson" sm="1" />
-<p id="4" name="B_1^+" e8coordlbl="0,0,-1,1,0,0,0,0" e8coord="0,0,-1,1,0,0,0,0" color="white" symbol="mcir" label="Pati-Salam boson" sm="0" />
-<p id="5" name="e_T^{\land }\phi _+" e8coordlbl="-1,0,0,1,0,0,0,0" e8coord="-1,0,0,1,0,0,0,0" color="dyell" symbol="msqu" label="frame-Higgs" sm="1" />
-<p id="6" name="e_T^{\land }\phi _0" e8coordlbl="-1,0,-1,0,0,0,0,0" e8coord="-1,0,-1,0,0,0,0,0" color="mrora" symbol="msqu" label="frame-Higgs" sm="1" />
-<p id="7" name="e_T^{\lor }\phi _+" e8coordlbl="1,0,0,1,0,0,0,0" e8coord="1,0,0,1,0,0,0,0" color="dyell" symbol="msqu" label="frame-Higgs" sm="1" />
-<p id="8" name="e_T^{\lor }\phi _0" e8coordlbl="1,0,-1,0,0,0,0,0" e8coord="1,0,-1,0,0,0,0,0" color="mrora" symbol="msqu" label="frame-Higgs" sm="1" />
-<p id="9" name="e_S^{\land }\phi _+" e8coordlbl="0,1,0,1,0,0,0,0" e8coord="0,1,0,1,0,0,0,0" color="dyell" symbol="msqu" label="frame-Higgs" sm="1" />
-<p id="10" name="e_S^{\land }\phi _0" e8coordlbl="0,1,-1,0,0,0,0,0" e8coord="0,1,-1,0,0,0,0,0" color="mrora" symbol="msqu" label="frame-Higgs" sm="1" />
-<p id="11" name="e_S^{\lor }\phi _+" e8coordlbl="0,-1,0,1,0,0,0,0" e8coord="0,-1,0,1,0,0,0,0" color="dyell" symbol="msqu" label="frame-Higgs" sm="1" />
-<p id="12" name="e_S^{\lor }\phi _0" e8coordlbl="0,-1,-1,0,0,0,0,0" e8coord="0,-1,-1,0,0,0,0,0" color="mrora" symbol="msqu" label="frame-Higgs" sm="1" />
-<p id="13" name="G^+" e8coordlbl="0,0,0,0,0,-1,1,0" e8coord="0,0,0,0,0,-1,1,0" color="lblue" symbol="mcir" label="gluon" sm="1" />
-<p id="14" name="G^{++}" e8coordlbl="0,0,0,0,0,-1,0,1" e8coord="0,0,0,0,0,-1,0,1" color="lblue" symbol="mcir" label="gluon" sm="1" />
-<p id="15" name="G^{-+}" e8coordlbl="0,0,0,0,0,0,-1,1" e8coord="0,0,0,0,0,0,-1,1" color="lblue" symbol="mcir" label="gluon" sm="1" />
-<p id="16" name="\nu _{eL}^{\land }" e8coordlbl="1/2,1/2,1/2,1/2,-1/2,-1/2,-1/2,-1/2" e8coord="0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5,-0.5" color="dyell" symbol="btri" label="electron neutrino" sm="1" />
-
-<p id="17" name="\nu _{eL}^{\lor }" e8coordlbl="-1/2,-1/2,1/2,1/2,-1/2,-1/2,-1/2,-1/2" e8coord="-0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5,-0.5" color="dyell" symbol="btri" label="electron neutrino" sm="1" />
-<p id="18" name="e_L^{\land }" e8coordlbl="1/2,1/2,-1/2,-1/2,-1/2,-1/2,-1/2,-1/2" e8coord="0.5,0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5" color="myell" symbol="btri" label="electron" sm="1" />
-<p id="19" name="e_L^{\lor }" e8coordlbl="-1/2,-1/2,-1/2,-1/2,-1/2,-1/2,-1/2,-1/2" e8coord="-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5" color="myell" symbol="btri" label="electron" sm="1" />
-<p id="20" name="\nu _{eR}^{\land }" e8coordlbl="-1/2,1/2,-1/2,1/2,-1/2,-1/2,-1/2,-1/2" e8coord="-0.5,0.5,-0.5,0.5,-0.5,-0.5,-0.5,-0.5" color="mgray" symbol="btri" label="electron neutrino" sm="1" />
-<p id="21" name="\nu _{eR}^{\lor }" e8coordlbl="1/2,-1/2,-1/2,1/2,-1/2,-1/2,-1/2,-1/2" e8coord="0.5,-0.5,-0.5,0.5,-0.5,-0.5,-0.5,-0.5" color="mgray" symbol="btri" label="electron neutrino" sm="1" />
-<p id="22" name="e_R^{\land }" e8coordlbl="-1/2,1/2,1/2,-1/2,-1/2,-1/2,-1/2,-1/2" e8coord="-0.5,0.5,0.5,-0.5,-0.5,-0.5,-0.5,-0.5" color="lgray" symbol="btri" label="electron" sm="1" />
-<p id="23" name="e_R^{\lor }" e8coordlbl="1/2,-1/2,1/2,-1/2,-1/2,-1/2,-1/2,-1/2" e8coord="0.5,-0.5,0.5,-0.5,-0.5,-0.5,-0.5,-0.5" color="lgray" symbol="btri" label="electron" sm="1" />
-<p id="24" name="u_L^{\land }" e8coordlbl="1/2,1/2,1/2,1/2,-1/2,-1/2,1/2,1/2" e8coord="0.5,0.5,0.5,0.5,-0.5,-0.5,0.5,0.5" color="drora" symbol="btri" label="up quark" sm="1" />
-<p id="25" name="u_L^{\lor }" e8coordlbl="-1/2,-1/2,1/2,1/2,-1/2,-1/2,1/2,1/2" e8coord="-0.5,-0.5,0.5,0.5,-0.5,-0.5,0.5,0.5" color="drora" symbol="btri" label="up quark" sm="1" />
-<p id="26" name="d_L^{\land }" e8coordlbl="1/2,1/2,-1/2,-1/2,-1/2,-1/2,1/2,1/2" e8coord="0.5,0.5,-0.5,-0.5,-0.5,-0.5,0.5,0.5" color="mrora" symbol="btri" label="down quark" sm="1" />
-<p id="27" name="d_L^{\lor }" e8coordlbl="-1/2,-1/2,-1/2,-1/2,-1/2,-1/2,1/2,1/2" e8coord="-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,0.5,0.5" color="mrora" symbol="btri" label="down quark" sm="1" />
-<p id="28" name="u_R^{\land }" e8coordlbl="-1/2,1/2,-1/2,1/2,-1/2,-1/2,1/2,1/2" e8coord="-0.5,0.5,-0.5,0.5,-0.5,-0.5,0.5,0.5" color="dred" symbol="btri" label="up quark" sm="1" />
-<p id="29" name="u_R^{\lor }" e8coordlbl="1/2,-1/2,-1/2,1/2,-1/2,-1/2,1/2,1/2" e8coord="0.5,-0.5,-0.5,0.5,-0.5,-0.5,0.5,0.5" color="dred" symbol="btri" label="up quark" sm="1" />
-<p id="30" name="d_R^{\land }" e8coordlbl="-1/2,1/2,1/2,-1/2,-1/2,-1/2,1/2,1/2" e8coord="-0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5" color="mred" symbol="btri" label="down quark" sm="1" />
-<p id="31" name="d_R^{\lor }" e8coordlbl="1/2,-1/2,1/2,-1/2,-1/2,-1/2,1/2,1/2" e8coord="0.5,-0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5" color="mred" symbol="btri" label="down quark" sm="1" />
-<p id="32" name="u_L^{\land }" e8coordlbl="1/2,1/2,1/2,1/2,-1/2,1/2,-1/2,1/2" e8coord="0.5,0.5,0.5,0.5,-0.5,0.5,-0.5,0.5" color="dygre" symbol="btri" label="up quark" sm="1" />
-<p id="33" name="u_L^{\lor }" e8coordlbl="-1/2,-1/2,1/2,1/2,-1/2,1/2,-1/2,1/2" e8coord="-0.5,-0.5,0.5,0.5,-0.5,0.5,-0.5,0.5" color="dygre" symbol="btri" label="up quark" sm="1" />
-
-<p id="34" name="d_L^{\land }" e8coordlbl="1/2,1/2,-1/2,-1/2,-1/2,1/2,-1/2,1/2" e8coord="0.5,0.5,-0.5,-0.5,-0.5,0.5,-0.5,0.5" color="mygre" symbol="btri" label="down quark" sm="1" />
-<p id="35" name="d_L^{\lor }" e8coordlbl="-1/2,-1/2,-1/2,-1/2,-1/2,1/2,-1/2,1/2" e8coord="-0.5,-0.5,-0.5,-0.5,-0.5,0.5,-0.5,0.5" color="mygre" symbol="btri" label="down quark" sm="1" />
-<p id="36" name="u_R^{\land }" e8coordlbl="-1/2,1/2,-1/2,1/2,-1/2,1/2,-1/2,1/2" e8coord="-0.5,0.5,-0.5,0.5,-0.5,0.5,-0.5,0.5" color="dgree" symbol="btri" label="up quark" sm="1" />
-<p id="37" name="u_R^{\lor }" e8coordlbl="1/2,-1/2,-1/2,1/2,-1/2,1/2,-1/2,1/2" e8coord="0.5,-0.5,-0.5,0.5,-0.5,0.5,-0.5,0.5" color="dgree" symbol="btri" label="up quark" sm="1" />
-<p id="38" name="d_R^{\land }" e8coordlbl="-1/2,1/2,1/2,-1/2,-1/2,1/2,-1/2,1/2" e8coord="-0.5,0.5,0.5,-0.5,-0.5,0.5,-0.5,0.5" color="mgree" symbol="btri" label="down quark" sm="1" />
-<p id="39" name="d_R^{\lor }" e8coordlbl="1/2,-1/2,1/2,-1/2,-1/2,1/2,-1/2,1/2" e8coord="0.5,-0.5,0.5,-0.5,-0.5,0.5,-0.5,0.5" color="mgree" symbol="btri" label="down quark" sm="1" />
-<p id="40" name="u_L^{\land }" e8coordlbl="1/2,1/2,1/2,1/2,-1/2,1/2,1/2,-1/2" e8coord="0.5,0.5,0.5,0.5,-0.5,0.5,0.5,-0.5" color="dbvio" symbol="btri" label="up quark" sm="1" />
-<p id="41" name="u_L^{\lor }" e8coordlbl="-1/2,-1/2,1/2,1/2,-1/2,1/2,1/2,-1/2" e8coord="-0.5,-0.5,0.5,0.5,-0.5,0.5,0.5,-0.5" color="dbvio" symbol="btri" label="up quark" sm="1" />
-<p id="42" name="d_L^{\land }" e8coordlbl="1/2,1/2,-1/2,-1/2,-1/2,1/2,1/2,-1/2" e8coord="0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,-0.5" color="mbvio" symbol="btri" label="down quark" sm="1" />
-<p id="43" name="d_L^{\lor }" e8coordlbl="-1/2,-1/2,-1/2,-1/2,-1/2,1/2,1/2,-1/2" e8coord="-0.5,-0.5,-0.5,-0.5,-0.5,0.5,0.5,-0.5" color="mbvio" symbol="btri" label="down quark" sm="1" />
-<p id="44" name="u_R^{\land }" e8coordlbl="-1/2,1/2,-1/2,1/2,-1/2,1/2,1/2,-1/2" e8coord="-0.5,0.5,-0.5,0.5,-0.5,0.5,0.5,-0.5" color="dblue" symbol="btri" label="up quark" sm="1" />
-<p id="45" name="u_R^{\lor }" e8coordlbl="1/2,-1/2,-1/2,1/2,-1/2,1/2,1/2,-1/2" e8coord="0.5,-0.5,-0.5,0.5,-0.5,0.5,0.5,-0.5" color="dblue" symbol="btri" label="up quark" sm="1" />
-<p id="46" name="d_R^{\land }" e8coordlbl="-1/2,1/2,1/2,-1/2,-1/2,1/2,1/2,-1/2" e8coord="-0.5,0.5,0.5,-0.5,-0.5,0.5,0.5,-0.5" color="mblue" symbol="btri" label="down quark" sm="1" />
-<p id="47" name="d_R^{\lor }" e8coordlbl="1/2,-1/2,1/2,-1/2,-1/2,1/2,1/2,-1/2" e8coord="0.5,-0.5,0.5,-0.5,-0.5,0.5,0.5,-0.5" color="mblue" symbol="btri" label="down quark" sm="1" />
-<p id="48" name="\nu _{\mu L}^{\land }" e8coordlbl="-1/2,1/2,1/2,1/2,-1/2,1/2,1/2,1/2" e8coord="-0.5,0.5,0.5,0.5,-0.5,0.5,0.5,0.5" color="dyell" symbol="mtri" label="muon neutrino" sm="0" />
-<p id="49" name="\nu _{\mu L}^{\lor }" e8coordlbl="1/2,-1/2,1/2,1/2,-1/2,1/2,1/2,1/2" e8coord="0.5,-0.5,0.5,0.5,-0.5,0.5,0.5,0.5" color="dyell" symbol="mtri" label="muon neutrino" sm="0" />
-<p id="50" name="\mu _L^{\land }" e8coordlbl="-1/2,1/2,-1/2,-1/2,-1/2,1/2,1/2,1/2" e8coord="-0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5" color="myell" symbol="mtri" label="muon" sm="0" />
-
-<p id="51" name="\mu _L^{\lor }" e8coordlbl="1/2,-1/2,-1/2,-1/2,-1/2,1/2,1/2,1/2" e8coord="0.5,-0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5" color="myell" symbol="mtri" label="muon" sm="0" />
-<p id="52" name="\nu _{\mu R}^{\land }" e8coordlbl="1/2,1/2,-1/2,1/2,-1/2,1/2,1/2,1/2" e8coord="0.5,0.5,-0.5,0.5,-0.5,0.5,0.5,0.5" color="mgray" symbol="mtri" label="muon neutrino" sm="0" />
-<p id="53" name="\nu _{\mu R}^{\lor }" e8coordlbl="1/2,1/2,1/2,-1/2,-1/2,1/2,1/2,1/2" e8coord="0.5,0.5,0.5,-0.5,-0.5,0.5,0.5,0.5" color="mgray" symbol="mtri" label="muon neutrino" sm="0" />
-<p id="54" name="\mu _R^{\land }" e8coordlbl="-1/2,-1/2,-1/2,1/2,-1/2,1/2,1/2,1/2" e8coord="-0.5,-0.5,-0.5,0.5,-0.5,0.5,0.5,0.5" color="lgray" symbol="mtri" label="muon" sm="0" />
-<p id="55" name="\mu _R^{\lor }" e8coordlbl="-1/2,-1/2,1/2,-1/2,-1/2,1/2,1/2,1/2" e8coord="-0.5,-0.5,0.5,-0.5,-0.5,0.5,0.5,0.5" color="lgray" symbol="mtri" label="muon" sm="0" />
-<p id="56" name="c_L^{\land }" e8coordlbl="-1/2,1/2,1/2,1/2,1/2,-1/2,1/2,1/2" e8coord="-0.5,0.5,0.5,0.5,0.5,-0.5,0.5,0.5" color="drora" symbol="mtri" label="charm quark" sm="0" />
-<p id="57" name="c_L^{\lor }" e8coordlbl="1/2,-1/2,1/2,1/2,1/2,-1/2,1/2,1/2" e8coord="0.5,-0.5,0.5,0.5,0.5,-0.5,0.5,0.5" color="drora" symbol="mtri" label="charm quark" sm="0" />
-<p id="58" name="s_L^{\land }" e8coordlbl="-1/2,1/2,-1/2,-1/2,1/2,-1/2,1/2,1/2" e8coord="-0.5,0.5,-0.5,-0.5,0.5,-0.5,0.5,0.5" color="mrora" symbol="mtri" label="strange quark" sm="0" />
-<p id="59" name="s_L^{\lor }" e8coordlbl="1/2,-1/2,-1/2,-1/2,1/2,-1/2,1/2,1/2" e8coord="0.5,-0.5,-0.5,-0.5,0.5,-0.5,0.5,0.5" color="mrora" symbol="mtri" label="strange quark" sm="0" />
-<p id="60" name="c_R^{\land }" e8coordlbl="1/2,1/2,-1/2,1/2,1/2,-1/2,1/2,1/2" e8coord="0.5,0.5,-0.5,0.5,0.5,-0.5,0.5,0.5" color="dred" symbol="mtri" label="charm quark" sm="0" />
-<p id="61" name="c_R^{\lor }" e8coordlbl="1/2,1/2,1/2,-1/2,1/2,-1/2,1/2,1/2" e8coord="0.5,0.5,0.5,-0.5,0.5,-0.5,0.5,0.5" color="dred" symbol="mtri" label="charm quark" sm="0" />
-<p id="62" name="s_R^{\land }" e8coordlbl="-1/2,-1/2,-1/2,1/2,1/2,-1/2,1/2,1/2" e8coord="-0.5,-0.5,-0.5,0.5,0.5,-0.5,0.5,0.5" color="mred" symbol="mtri" label="strange quark" sm="0" />
-<p id="63" name="s_R^{\lor }" e8coordlbl="-1/2,-1/2,1/2,-1/2,1/2,-1/2,1/2,1/2" e8coord="-0.5,-0.5,0.5,-0.5,0.5,-0.5,0.5,0.5" color="mred" symbol="mtri" label="strange quark" sm="0" />
-<p id="64" name="c_L^{\land }" e8coordlbl="-1/2,1/2,1/2,1/2,1/2,1/2,-1/2,1/2" e8coord="-0.5,0.5,0.5,0.5,0.5,0.5,-0.5,0.5" color="dygre" symbol="mtri" label="charm quark" sm="0" />
-<p id="65" name="c_L^{\lor }" e8coordlbl="1/2,-1/2,1/2,1/2,1/2,1/2,-1/2,1/2" e8coord="0.5,-0.5,0.5,0.5,0.5,0.5,-0.5,0.5" color="dygre" symbol="mtri" label="charm quark" sm="0" />
-<p id="66" name="s_L^{\land }" e8coordlbl="-1/2,1/2,-1/2,-1/2,1/2,1/2,-1/2,1/2" e8coord="-0.5,0.5,-0.5,-0.5,0.5,0.5,-0.5,0.5" color="mygre" symbol="mtri" label="strange quark" sm="0" />
-
-<p id="67" name="s_L^{\lor }" e8coordlbl="1/2,-1/2,-1/2,-1/2,1/2,1/2,-1/2,1/2" e8coord="0.5,-0.5,-0.5,-0.5,0.5,0.5,-0.5,0.5" color="mygre" symbol="mtri" label="strange quark" sm="0" />
-<p id="68" name="c_R^{\land }" e8coordlbl="1/2,1/2,-1/2,1/2,1/2,1/2,-1/2,1/2" e8coord="0.5,0.5,-0.5,0.5,0.5,0.5,-0.5,0.5" color="dgree" symbol="mtri" label="charm quark" sm="0" />
-<p id="69" name="c_R^{\lor }" e8coordlbl="1/2,1/2,1/2,-1/2,1/2,1/2,-1/2,1/2" e8coord="0.5,0.5,0.5,-0.5,0.5,0.5,-0.5,0.5" color="dgree" symbol="mtri" label="charm quark" sm="0" />
-<p id="70" name="s_R^{\land }" e8coordlbl="-1/2,-1/2,-1/2,1/2,1/2,1/2,-1/2,1/2" e8coord="-0.5,-0.5,-0.5,0.5,0.5,0.5,-0.5,0.5" color="mgree" symbol="mtri" label="strange quark" sm="0" />
-<p id="71" name="s_R^{\lor }" e8coordlbl="-1/2,-1/2,1/2,-1/2,1/2,1/2,-1/2,1/2" e8coord="-0.5,-0.5,0.5,-0.5,0.5,0.5,-0.5,0.5" color="mgree" symbol="mtri" label="strange quark" sm="0" />
-<p id="72" name="c_L^{\land }" e8coordlbl="-1/2,1/2,1/2,1/2,1/2,1/2,1/2,-1/2" e8coord="-0.5,0.5,0.5,0.5,0.5,0.5,0.5,-0.5" color="dbvio" symbol="mtri" label="charm quark" sm="0" />
-<p id="73" name="c_L^{\lor }" e8coordlbl="1/2,-1/2,1/2,1/2,1/2,1/2,1/2,-1/2" e8coord="0.5,-0.5,0.5,0.5,0.5,0.5,0.5,-0.5" color="dbvio" symbol="mtri" label="charm quark" sm="0" />
-<p id="74" name="s_L^{\land }" e8coordlbl="-1/2,1/2,-1/2,-1/2,1/2,1/2,1/2,-1/2" e8coord="-0.5,0.5,-0.5,-0.5,0.5,0.5,0.5,-0.5" color="mbvio" symbol="mtri" label="strange quark" sm="0" />
-<p id="75" name="s_L^{\lor }" e8coordlbl="1/2,-1/2,-1/2,-1/2,1/2,1/2,1/2,-1/2" e8coord="0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5,-0.5" color="mbvio" symbol="mtri" label="strange quark" sm="0" />
-<p id="76" name="c_R^{\land }" e8coordlbl="1/2,1/2,-1/2,1/2,1/2,1/2,1/2,-1/2" e8coord="0.5,0.5,-0.5,0.5,0.5,0.5,0.5,-0.5" color="dblue" symbol="mtri" label="charm quark" sm="0" />
-<p id="77" name="c_R^{\lor }" e8coordlbl="1/2,1/2,1/2,-1/2,1/2,1/2,1/2,-1/2" e8coord="0.5,0.5,0.5,-0.5,0.5,0.5,0.5,-0.5" color="dblue" symbol="mtri" label="charm quark" sm="0" />
-<p id="78" name="s_R^{\land }" e8coordlbl="-1/2,-1/2,-1/2,1/2,1/2,1/2,1/2,-1/2" e8coord="-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5" color="mblue" symbol="mtri" label="strange quark" sm="0" />
-<p id="79" name="s_R^{\lor }" e8coordlbl="-1/2,-1/2,1/2,-1/2,1/2,1/2,1/2,-1/2" e8coord="-0.5,-0.5,0.5,-0.5,0.5,0.5,0.5,-0.5" color="mblue" symbol="mtri" label="strange quark" sm="0" />
-<p id="80" name="\nu _{\tau L}^{\land }" e8coordlbl="0,0,0,1,1,0,0,0" e8coord="0,0,0,1,1,0,0,0" color="dyell" symbol="stri" label="tau neutrino" sm="0" />
-<p id="81" name="\nu _{\tau L}^{\lor }" e8coordlbl="0,0,1,0,1,0,0,0" e8coord="0,0,1,0,1,0,0,0" color="dyell" symbol="stri" label="tau neutrino" sm="0" />
-<p id="82" name="\tau _L^{\land }" e8coordlbl="0,0,-1,0,1,0,0,0" e8coord="0,0,-1,0,1,0,0,0" color="myell" symbol="stri" label="tau" sm="0" />
-<p id="83" name="\tau _L^{\lor }" e8coordlbl="0,0,0,-1,1,0,0,0" e8coord="0,0,0,-1,1,0,0,0" color="myell" symbol="stri" label="tau" sm="0" />
-
-<p id="84" name="\nu _{\tau R}^{\land }" e8coordlbl="0,1,0,0,1,0,0,0" e8coord="0,1,0,0,1,0,0,0" color="mgray" symbol="stri" label="tau neutrino" sm="0" />
-<p id="85" name="\nu _{\tau R}^{\lor }" e8coordlbl="-1,0,0,0,1,0,0,0" e8coord="-1,0,0,0,1,0,0,0" color="mgray" symbol="stri" label="tau neutrino" sm="0" />
-<p id="86" name="\tau _R^{\land }" e8coordlbl="1,0,0,0,1,0,0,0" e8coord="1,0,0,0,1,0,0,0" color="lgray" symbol="stri" label="tau" sm="0" />
-<p id="87" name="\tau _R^{\lor }" e8coordlbl="0,-1,0,0,1,0,0,0" e8coord="0,-1,0,0,1,0,0,0" color="lgray" symbol="stri" label="tau" sm="0" />
-<p id="88" name="t_L^{\land }" e8coordlbl="0,0,0,1,0,-1,0,0" e8coord="0,0,0,1,0,-1,0,0" color="drora" symbol="stri" label="top quark" sm="0" />
-<p id="89" name="t_L^{\lor }" e8coordlbl="0,0,1,0,0,-1,0,0" e8coord="0,0,1,0,0,-1,0,0" color="drora" symbol="stri" label="top quark" sm="0" />
-<p id="90" name="b_L^{\land }" e8coordlbl="0,0,-1,0,0,-1,0,0" e8coord="0,0,-1,0,0,-1,0,0" color="mrora" symbol="stri" label="bottom quark" sm="0" />
-<p id="91" name="b_L^{\lor }" e8coordlbl="0,0,0,-1,0,-1,0,0" e8coord="0,0,0,-1,0,-1,0,0" color="mrora" symbol="stri" label="bottom quark" sm="0" />
-<p id="92" name="t_R^{\land }" e8coordlbl="0,1,0,0,0,-1,0,0" e8coord="0,1,0,0,0,-1,0,0" color="dred" symbol="stri" label="top quark" sm="0" />
-<p id="93" name="t_R^{\lor }" e8coordlbl="-1,0,0,0,0,-1,0,0" e8coord="-1,0,0,0,0,-1,0,0" color="dred" symbol="stri" label="top quark" sm="0" />
-<p id="94" name="b_R^{\land }" e8coordlbl="1,0,0,0,0,-1,0,0" e8coord="1,0,0,0,0,-1,0,0" color="mred" symbol="stri" label="bottom quark" sm="0" />
-<p id="95" name="b_R^{\lor }" e8coordlbl="0,-1,0,0,0,-1,0,0" e8coord="0,-1,0,0,0,-1,0,0" color="mred" symbol="stri" label="bottom quark" sm="0" />
-<p id="96" name="t_L^{\land }" e8coordlbl="0,0,0,1,0,0,-1,0" e8coord="0,0,0,1,0,0,-1,0" color="dygre" symbol="stri" label="top quark" sm="0" />
-<p id="97" name="t_L^{\lor }" e8coordlbl="0,0,1,0,0,0,-1,0" e8coord="0,0,1,0,0,0,-1,0" color="dygre" symbol="stri" label="top quark" sm="0" />
-<p id="98" name="b_L^{\land }" e8coordlbl="0,0,-1,0,0,0,-1,0" e8coord="0,0,-1,0,0,0,-1,0" color="mygre" symbol="stri" label="bottom quark" sm="0" />
-<p id="99" name="b_L^{\lor }" e8coordlbl="0,0,0,-1,0,0,-1,0" e8coord="0,0,0,-1,0,0,-1,0" color="mygre" symbol="stri" label="bottom quark" sm="0" />
-<p id="100" name="t_R^{\land }" e8coordlbl="0,1,0,0,0,0,-1,0" e8coord="0,1,0,0,0,0,-1,0" color="dgree" symbol="stri" label="top quark" sm="0" />
-
-<p id="101" name="t_R^{\lor }" e8coordlbl="-1,0,0,0,0,0,-1,0" e8coord="-1,0,0,0,0,0,-1,0" color="dgree" symbol="stri" label="top quark" sm="0" />
-<p id="102" name="b_R^{\land }" e8coordlbl="1,0,0,0,0,0,-1,0" e8coord="1,0,0,0,0,0,-1,0" color="mgree" symbol="stri" label="bottom quark" sm="0" />
-<p id="103" name="b_R^{\lor }" e8coordlbl="0,-1,0,0,0,0,-1,0" e8coord="0,-1,0,0,0,0,-1,0" color="mgree" symbol="stri" label="bottom quark" sm="0" />
-<p id="104" name="t_L^{\land }" e8coordlbl="0,0,0,1,0,0,0,-1" e8coord="0,0,0,1,0,0,0,-1" color="dbvio" symbol="stri" label="top quark" sm="0" />
-<p id="105" name="t_L^{\lor }" e8coordlbl="0,0,1,0,0,0,0,-1" e8coord="0,0,1,0,0,0,0,-1" color="dbvio" symbol="stri" label="top quark" sm="0" />
-<p id="106" name="b_L^{\land }" e8coordlbl="0,0,-1,0,0,0,0,-1" e8coord="0,0,-1,0,0,0,0,-1" color="mbvio" symbol="stri" label="bottom quark" sm="0" />
-<p id="107" name="b_L^{\lor }" e8coordlbl="0,0,0,-1,0,0,0,-1" e8coord="0,0,0,-1,0,0,0,-1" color="mbvio" symbol="stri" label="bottom quark" sm="0" />
-<p id="108" name="t_R^{\land }" e8coordlbl="0,1,0,0,0,0,0,-1" e8coord="0,1,0,0,0,0,0,-1" color="dblue" symbol="stri" label="top quark" sm="0" />
-<p id="109" name="t_R^{\lor }" e8coordlbl="-1,0,0,0,0,0,0,-1" e8coord="-1,0,0,0,0,0,0,-1" color="dblue" symbol="stri" label="top quark" sm="0" />
-<p id="110" name="b_R^{\land }" e8coordlbl="1,0,0,0,0,0,0,-1" e8coord="1,0,0,0,0,0,0,-1" color="mblue" symbol="stri" label="bottom quark" sm="0" />
-<p id="111" name="b_R^{\lor }" e8coordlbl="0,-1,0,0,0,0,0,-1" e8coord="0,-1,0,0,0,0,0,-1" color="mblue" symbol="stri" label="bottom quark" sm="0" />
-<p id="112" name="x_1\Phi " e8coordlbl="0,0,0,0,-1,1,0,0" e8coord="0,0,0,0,-1,1,0,0" color="mred" symbol="bsqu" label="colored Higgs" sm="0" />
-<p id="113" name="x_1\Phi " e8coordlbl="0,0,0,0,-1,0,1,0" e8coord="0,0,0,0,-1,0,1,0" color="mgree" symbol="bsqu" label="colored Higgs" sm="0" />
-<p id="114" name="x_1\Phi " e8coordlbl="0,0,0,0,-1,0,0,1" e8coord="0,0,0,0,-1,0,0,1" color="mblue" symbol="bsqu" label="colored Higgs" sm="0" />
-<p id="115" name="x_2\Phi " e8coordlbl="0,0,0,0,1,1,0,0" e8coord="0,0,0,0,1,1,0,0" color="mred" symbol="msqu" label="colored Higgs" sm="0" />
-<p id="116" name="x_2\Phi " e8coordlbl="0,0,0,0,1,0,1,0" e8coord="0,0,0,0,1,0,1,0" color="mgree" symbol="msqu" label="colored Higgs" sm="0" />
-<p id="117" name="x_2\Phi " e8coordlbl="0,0,0,0,1,0,0,1" e8coord="0,0,0,0,1,0,0,1" color="mblue" symbol="msqu" label="colored Higgs" sm="0" />
-
-<p id="118" name="x_3\Phi " e8coordlbl="0,0,0,0,0,0,-1,-1" e8coord="0,0,0,0,0,0,-1,-1" color="mred" symbol="ssqu" label="colored Higgs" sm="0" />
-<p id="119" name="x_3\Phi " e8coordlbl="0,0,0,0,0,-1,0,-1" e8coord="0,0,0,0,0,-1,0,-1" color="mgree" symbol="ssqu" label="colored Higgs" sm="0" />
-<p id="120" name="x_3\Phi " e8coordlbl="0,0,0,0,0,-1,-1,0" e8coord="0,0,0,0,0,-1,-1,0" color="mblue" symbol="ssqu" label="colored Higgs" sm="0" />
-<p id="121" name="\omega _L^{\lor }" e8coordlbl="-1,-1,0,0,0,0,0,0" e8coord="-1,-1,0,0,0,0,0,0" color="lgree" symbol="mcir" label="spin connection" sm="1" />
-<p id="122" name="\omega _R^{\lor }" e8coordlbl="1,-1,0,0,0,0,0,0" e8coord="1,-1,0,0,0,0,0,0" color="lgree" symbol="mcir" label="spin connection" sm="1" />
-<p id="123" name="W^-" e8coordlbl="0,0,-1,-1,0,0,0,0" e8coord="0,0,-1,-1,0,0,0,0" color="lyell" symbol="mcir" label="W boson" sm="1" />
-<p id="124" name="B_1^-" e8coordlbl="0,0,1,-1,0,0,0,0" e8coord="0,0,1,-1,0,0,0,0" color="white" symbol="mcir" label="Pati-Salam boson" sm="0" />
-<p id="125" name="e_T^{\lor }\phi _-" e8coordlbl="1,0,0,-1,0,0,0,0" e8coord="1,0,0,-1,0,0,0,0" color="myell" symbol="mdia" label="frame-Higgs" sm="1" />
-<p id="126" name="e_T^{\lor }\phi _1" e8coordlbl="1,0,1,0,0,0,0,0" e8coord="1,0,1,0,0,0,0,0" color="drora" symbol="mdia" label="frame-Higgs" sm="1" />
-<p id="127" name="e_T^{\land }\phi _-" e8coordlbl="-1,0,0,-1,0,0,0,0" e8coord="-1,0,0,-1,0,0,0,0" color="myell" symbol="mdia" label="frame-Higgs" sm="1" />
-<p id="128" name="e_T^{\land }\phi _1" e8coordlbl="-1,0,1,0,0,0,0,0" e8coord="-1,0,1,0,0,0,0,0" color="drora" symbol="mdia" label="frame-Higgs" sm="1" />
-<p id="129" name="e_S^{\lor }\phi _-" e8coordlbl="0,-1,0,-1,0,0,0,0" e8coord="0,-1,0,-1,0,0,0,0" color="myell" symbol="mdia" label="frame-Higgs" sm="1" />
-<p id="130" name="e_S^{\lor }\phi _1" e8coordlbl="0,-1,1,0,0,0,0,0" e8coord="0,-1,1,0,0,0,0,0" color="drora" symbol="mdia" label="frame-Higgs" sm="1" />
-<p id="131" name="e_S^{\land }\phi _-" e8coordlbl="0,1,0,-1,0,0,0,0" e8coord="0,1,0,-1,0,0,0,0" color="myell" symbol="mdia" label="frame-Higgs" sm="1" />
-<p id="132" name="e_S^{\land }\phi _1" e8coordlbl="0,1,1,0,0,0,0,0" e8coord="0,1,1,0,0,0,0,0" color="drora" symbol="mdia" label="frame-Higgs" sm="1" />
-<p id="133" name="G^-" e8coordlbl="0,0,0,0,0,1,-1,0" e8coord="0,0,0,0,0,1,-1,0" color="lblue" symbol="mcir" label="gluon" sm="1" />
-<p id="134" name="G^{--}" e8coordlbl="0,0,0,0,0,1,0,-1" e8coord="0,0,0,0,0,1,0,-1" color="lblue" symbol="mcir" label="gluon" sm="1" />
-
-<p id="135" name="G^{+-}" e8coordlbl="0,0,0,0,0,0,1,-1" e8coord="0,0,0,0,0,0,1,-1" color="lblue" symbol="mcir" label="gluon" sm="1" />
-<p id="136" name="\bar{\nu }_{eL}^{\land }" e8coordlbl="-1/2,-1/2,-1/2,-1/2,1/2,1/2,1/2,1/2" e8coord="-0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5" color="dyell" symbol="butr" label="electron anti-neutrino" sm="1" />
-<p id="137" name="\bar{\nu }_{eL}^{\lor }" e8coordlbl="1/2,1/2,-1/2,-1/2,1/2,1/2,1/2,1/2" e8coord="0.5,0.5,-0.5,-0.5,0.5,0.5,0.5,0.5" color="dyell" symbol="butr" label="electron anti-neutrino" sm="1" />
-<p id="138" name="\bar{e}_L^{\land }" e8coordlbl="-1/2,-1/2,1/2,1/2,1/2,1/2,1/2,1/2" e8coord="-0.5,-0.5,0.5,0.5,0.5,0.5,0.5,0.5" color="myell" symbol="butr" label="positron" sm="1" />
-<p id="139" name="\bar{e}_L^{\lor }" e8coordlbl="1/2,1/2,1/2,1/2,1/2,1/2,1/2,1/2" e8coord="0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5" color="myell" symbol="butr" label="positron" sm="1" />
-<p id="140" name="\bar{\nu }_{eR}^{\land }" e8coordlbl="1/2,-1/2,1/2,-1/2,1/2,1/2,1/2,1/2" e8coord="0.5,-0.5,0.5,-0.5,0.5,0.5,0.5,0.5" color="mgray" symbol="butr" label="electron anti-neutrino" sm="1" />
-<p id="141" name="\bar{\nu }_{eR}^{\lor }" e8coordlbl="-1/2,1/2,1/2,-1/2,1/2,1/2,1/2,1/2" e8coord="-0.5,0.5,0.5,-0.5,0.5,0.5,0.5,0.5" color="mgray" symbol="butr" label="electron anti-neutrino" sm="1" />
-<p id="142" name="\bar{e}_R^{\land }" e8coordlbl="1/2,-1/2,-1/2,1/2,1/2,1/2,1/2,1/2" e8coord="0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,0.5" color="lgray" symbol="butr" label="positron" sm="1" />
-<p id="143" name="\bar{e}_R^{\lor }" e8coordlbl="-1/2,1/2,-1/2,1/2,1/2,1/2,1/2,1/2" e8coord="-0.5,0.5,-0.5,0.5,0.5,0.5,0.5,0.5" color="lgray" symbol="butr" label="positron" sm="1" />
-<p id="144" name="\bar{u}_L^{\land }" e8coordlbl="-1/2,-1/2,-1/2,-1/2,1/2,1/2,-1/2,-1/2" e8coord="-0.5,-0.5,-0.5,-0.5,0.5,0.5,-0.5,-0.5" color="drora" symbol="butr" label="anti-up quark" sm="1" />
-<p id="145" name="\bar{u}_L^{\lor }" e8coordlbl="1/2,1/2,-1/2,-1/2,1/2,1/2,-1/2,-1/2" e8coord="0.5,0.5,-0.5,-0.5,0.5,0.5,-0.5,-0.5" color="drora" symbol="butr" label="anti-up quark" sm="1" />
-<p id="146" name="\bar{d}_L^{\land }" e8coordlbl="-1/2,-1/2,1/2,1/2,1/2,1/2,-1/2,-1/2" e8coord="-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5,-0.5" color="mrora" symbol="butr" label="anti-down quark" sm="1" />
-<p id="147" name="\bar{d}_L^{\lor }" e8coordlbl="1/2,1/2,1/2,1/2,1/2,1/2,-1/2,-1/2" e8coord="0.5,0.5,0.5,0.5,0.5,0.5,-0.5,-0.5" color="mrora" symbol="butr" label="anti-down quark" sm="1" />
-<p id="148" name="\bar{u}_R^{\land }" e8coordlbl="1/2,-1/2,1/2,-1/2,1/2,1/2,-1/2,-1/2" e8coord="0.5,-0.5,0.5,-0.5,0.5,0.5,-0.5,-0.5" color="dred" symbol="butr" label="anti-up quark" sm="1" />
-<p id="149" name="\bar{u}_R^{\lor }" e8coordlbl="-1/2,1/2,1/2,-1/2,1/2,1/2,-1/2,-1/2" e8coord="-0.5,0.5,0.5,-0.5,0.5,0.5,-0.5,-0.5" color="dred" symbol="butr" label="anti-up quark" sm="1" />
-<p id="150" name="\bar{d}_R^{\land }" e8coordlbl="1/2,-1/2,-1/2,1/2,1/2,1/2,-1/2,-1/2" e8coord="0.5,-0.5,-0.5,0.5,0.5,0.5,-0.5,-0.5" color="mred" symbol="butr" label="anti-down quark" sm="1" />
-<p id="151" name="\bar{d}_R^{\lor }" e8coordlbl="-1/2,1/2,-1/2,1/2,1/2,1/2,-1/2,-1/2" e8coord="-0.5,0.5,-0.5,0.5,0.5,0.5,-0.5,-0.5" color="mred" symbol="butr" label="anti-down quark" sm="1" />
-
-<p id="152" name="\bar{u}_L^{\land }" e8coordlbl="-1/2,-1/2,-1/2,-1/2,1/2,-1/2,1/2,-1/2" e8coord="-0.5,-0.5,-0.5,-0.5,0.5,-0.5,0.5,-0.5" color="dygre" symbol="butr" label="anti-up quark" sm="1" />
-<p id="153" name="\bar{u}_L^{\lor }" e8coordlbl="1/2,1/2,-1/2,-1/2,1/2,-1/2,1/2,-1/2" e8coord="0.5,0.5,-0.5,-0.5,0.5,-0.5,0.5,-0.5" color="dygre" symbol="butr" label="anti-up quark" sm="1" />
-<p id="154" name="\bar{d}_L^{\land }" e8coordlbl="-1/2,-1/2,1/2,1/2,1/2,-1/2,1/2,-1/2" e8coord="-0.5,-0.5,0.5,0.5,0.5,-0.5,0.5,-0.5" color="mygre" symbol="butr" label="anti-down quark" sm="1" />
-<p id="155" name="\bar{d}_L^{\lor }" e8coordlbl="1/2,1/2,1/2,1/2,1/2,-1/2,1/2,-1/2" e8coord="0.5,0.5,0.5,0.5,0.5,-0.5,0.5,-0.5" color="mygre" symbol="butr" label="anti-down quark" sm="1" />
-<p id="156" name="\bar{u}_R^{\land }" e8coordlbl="1/2,-1/2,1/2,-1/2,1/2,-1/2,1/2,-1/2" e8coord="0.5,-0.5,0.5,-0.5,0.5,-0.5,0.5,-0.5" color="dgree" symbol="butr" label="anti-up quark" sm="1" />
-<p id="157" name="\bar{u}_R^{\lor }" e8coordlbl="-1/2,1/2,1/2,-1/2,1/2,-1/2,1/2,-1/2" e8coord="-0.5,0.5,0.5,-0.5,0.5,-0.5,0.5,-0.5" color="dgree" symbol="butr" label="anti-up quark" sm="1" />
-<p id="158" name="\bar{d}_R^{\land }" e8coordlbl="1/2,-1/2,-1/2,1/2,1/2,-1/2,1/2,-1/2" e8coord="0.5,-0.5,-0.5,0.5,0.5,-0.5,0.5,-0.5" color="mgree" symbol="butr" label="anti-down quark" sm="1" />
-<p id="159" name="\bar{d}_R^{\lor }" e8coordlbl="-1/2,1/2,-1/2,1/2,1/2,-1/2,1/2,-1/2" e8coord="-0.5,0.5,-0.5,0.5,0.5,-0.5,0.5,-0.5" color="mgree" symbol="butr" label="anti-down quark" sm="1" />
-<p id="160" name="\bar{u}_L^{\land }" e8coordlbl="-1/2,-1/2,-1/2,-1/2,1/2,-1/2,-1/2,1/2" e8coord="-0.5,-0.5,-0.5,-0.5,0.5,-0.5,-0.5,0.5" color="dbvio" symbol="butr" label="anti-up quark" sm="1" />
-<p id="161" name="\bar{u}_L^{\lor }" e8coordlbl="1/2,1/2,-1/2,-1/2,1/2,-1/2,-1/2,1/2" e8coord="0.5,0.5,-0.5,-0.5,0.5,-0.5,-0.5,0.5" color="dbvio" symbol="butr" label="anti-up quark" sm="1" />
-<p id="162" name="\bar{d}_L^{\land }" e8coordlbl="-1/2,-1/2,1/2,1/2,1/2,-1/2,-1/2,1/2" e8coord="-0.5,-0.5,0.5,0.5,0.5,-0.5,-0.5,0.5" color="mbvio" symbol="butr" label="anti-down quark" sm="1" />
-<p id="163" name="\bar{d}_L^{\lor }" e8coordlbl="1/2,1/2,1/2,1/2,1/2,-1/2,-1/2,1/2" e8coord="0.5,0.5,0.5,0.5,0.5,-0.5,-0.5,0.5" color="mbvio" symbol="butr" label="anti-down quark" sm="1" />
-<p id="164" name="\bar{u}_R^{\land }" e8coordlbl="1/2,-1/2,1/2,-1/2,1/2,-1/2,-1/2,1/2" e8coord="0.5,-0.5,0.5,-0.5,0.5,-0.5,-0.5,0.5" color="dblue" symbol="butr" label="anti-up quark" sm="1" />
-<p id="165" name="\bar{u}_R^{\lor }" e8coordlbl="-1/2,1/2,1/2,-1/2,1/2,-1/2,-1/2,1/2" e8coord="-0.5,0.5,0.5,-0.5,0.5,-0.5,-0.5,0.5" color="dblue" symbol="butr" label="anti-up quark" sm="1" />
-<p id="166" name="\bar{d}_R^{\land }" e8coordlbl="1/2,-1/2,-1/2,1/2,1/2,-1/2,-1/2,1/2" e8coord="0.5,-0.5,-0.5,0.5,0.5,-0.5,-0.5,0.5" color="mblue" symbol="butr" label="anti-down quark" sm="1" />
-<p id="167" name="\bar{d}_R^{\lor }" e8coordlbl="-1/2,1/2,-1/2,1/2,1/2,-1/2,-1/2,1/2" e8coord="-0.5,0.5,-0.5,0.5,0.5,-0.5,-0.5,0.5" color="mblue" symbol="butr" label="anti-down quark" sm="1" />
-<p id="168" name="\bar{\nu }_{\mu L}^{\land }" e8coordlbl="1/2,-1/2,-1/2,-1/2,1/2,-1/2,-1/2,-1/2" e8coord="0.5,-0.5,-0.5,-0.5,0.5,-0.5,-0.5,-0.5" color="dyell" symbol="mutr" label="muon anti-neutrino" sm="0" />
-
-<p id="169" name="\bar{\nu }_{\mu L}^{\lor }" e8coordlbl="-1/2,1/2,-1/2,-1/2,1/2,-1/2,-1/2,-1/2" e8coord="-0.5,0.5,-0.5,-0.5,0.5,-0.5,-0.5,-0.5" color="dyell" symbol="mutr" label="muon anti-neutrino" sm="0" />
-<p id="170" name="\bar{\mu }_L^{\land }" e8coordlbl="1/2,-1/2,1/2,1/2,1/2,-1/2,-1/2,-1/2" e8coord="0.5,-0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5" color="myell" symbol="mutr" label="anti-muon" sm="0" />
-<p id="171" name="\bar{\mu }_L^{\lor }" e8coordlbl="-1/2,1/2,1/2,1/2,1/2,-1/2,-1/2,-1/2" e8coord="-0.5,0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5" color="myell" symbol="mutr" label="anti-muon" sm="0" />
-<p id="172" name="\bar{\nu }_{\mu R}^{\land }" e8coordlbl="-1/2,-1/2,1/2,-1/2,1/2,-1/2,-1/2,-1/2" e8coord="-0.5,-0.5,0.5,-0.5,0.5,-0.5,-0.5,-0.5" color="mgray" symbol="mutr" label="muon anti-neutrino" sm="0" />
-<p id="173" name="\bar{\nu }_{\mu R}^{\lor }" e8coordlbl="-1/2,-1/2,-1/2,1/2,1/2,-1/2,-1/2,-1/2" e8coord="-0.5,-0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5" color="mgray" symbol="mutr" label="muon anti-neutrino" sm="0" />
-<p id="174" name="\bar{\mu }_R^{\land }" e8coordlbl="1/2,1/2,1/2,-1/2,1/2,-1/2,-1/2,-1/2" e8coord="0.5,0.5,0.5,-0.5,0.5,-0.5,-0.5,-0.5" color="lgray" symbol="mutr" label="anti-muon" sm="0" />
-<p id="175" name="\bar{\mu }_R^{\lor }" e8coordlbl="1/2,1/2,-1/2,1/2,1/2,-1/2,-1/2,-1/2" e8coord="0.5,0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5" color="lgray" symbol="mutr" label="anti-muon" sm="0" />
-<p id="176" name="\bar{c}_L^{\land }" e8coordlbl="1/2,-1/2,-1/2,-1/2,-1/2,1/2,-1/2,-1/2" e8coord="0.5,-0.5,-0.5,-0.5,-0.5,0.5,-0.5,-0.5" color="drora" symbol="mutr" label="anti-charm quark" sm="0" />
-<p id="177" name="\bar{c}_L^{\lor }" e8coordlbl="-1/2,1/2,-1/2,-1/2,-1/2,1/2,-1/2,-1/2" e8coord="-0.5,0.5,-0.5,-0.5,-0.5,0.5,-0.5,-0.5" color="drora" symbol="mutr" label="anti-charm quark" sm="0" />
-<p id="178" name="\bar{s}_L^{\land }" e8coordlbl="1/2,-1/2,1/2,1/2,-1/2,1/2,-1/2,-1/2" e8coord="0.5,-0.5,0.5,0.5,-0.5,0.5,-0.5,-0.5" color="mrora" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="179" name="\bar{s}_L^{\lor }" e8coordlbl="-1/2,1/2,1/2,1/2,-1/2,1/2,-1/2,-1/2" e8coord="-0.5,0.5,0.5,0.5,-0.5,0.5,-0.5,-0.5" color="mrora" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="180" name="\bar{c}_R^{\land }" e8coordlbl="-1/2,-1/2,1/2,-1/2,-1/2,1/2,-1/2,-1/2" e8coord="-0.5,-0.5,0.5,-0.5,-0.5,0.5,-0.5,-0.5" color="dred" symbol="mutr" label="anti-charm quark" sm="0" />
-<p id="181" name="\bar{c}_R^{\lor }" e8coordlbl="-1/2,-1/2,-1/2,1/2,-1/2,1/2,-1/2,-1/2" e8coord="-0.5,-0.5,-0.5,0.5,-0.5,0.5,-0.5,-0.5" color="dred" symbol="mutr" label="anti-charm quark" sm="0" />
-<p id="182" name="\bar{s}_R^{\land }" e8coordlbl="1/2,1/2,1/2,-1/2,-1/2,1/2,-1/2,-1/2" e8coord="0.5,0.5,0.5,-0.5,-0.5,0.5,-0.5,-0.5" color="mred" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="183" name="\bar{s}_R^{\lor }" e8coordlbl="1/2,1/2,-1/2,1/2,-1/2,1/2,-1/2,-1/2" e8coord="0.5,0.5,-0.5,0.5,-0.5,0.5,-0.5,-0.5" color="mred" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="184" name="\bar{c}_L^{\land }" e8coordlbl="1/2,-1/2,-1/2,-1/2,-1/2,-1/2,1/2,-1/2" e8coord="0.5,-0.5,-0.5,-0.5,-0.5,-0.5,0.5,-0.5" color="dygre" symbol="mutr" label="anti-charm quark" sm="0" />
-<p id="185" name="\bar{c}_L^{\lor }" e8coordlbl="-1/2,1/2,-1/2,-1/2,-1/2,-1/2,1/2,-1/2" e8coord="-0.5,0.5,-0.5,-0.5,-0.5,-0.5,0.5,-0.5" color="dygre" symbol="mutr" label="anti-charm quark" sm="0" />
-
-<p id="186" name="\bar{s}_L^{\land }" e8coordlbl="1/2,-1/2,1/2,1/2,-1/2,-1/2,1/2,-1/2" e8coord="0.5,-0.5,0.5,0.5,-0.5,-0.5,0.5,-0.5" color="mygre" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="187" name="\bar{s}_L^{\lor }" e8coordlbl="-1/2,1/2,1/2,1/2,-1/2,-1/2,1/2,-1/2" e8coord="-0.5,0.5,0.5,0.5,-0.5,-0.5,0.5,-0.5" color="mygre" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="188" name="\bar{c}_R^{\land }" e8coordlbl="-1/2,-1/2,1/2,-1/2,-1/2,-1/2,1/2,-1/2" e8coord="-0.5,-0.5,0.5,-0.5,-0.5,-0.5,0.5,-0.5" color="dgree" symbol="mutr" label="anti-charm quark" sm="0" />
-<p id="189" name="\bar{c}_R^{\lor }" e8coordlbl="-1/2,-1/2,-1/2,1/2,-1/2,-1/2,1/2,-1/2" e8coord="-0.5,-0.5,-0.5,0.5,-0.5,-0.5,0.5,-0.5" color="dgree" symbol="mutr" label="anti-charm quark" sm="0" />
-<p id="190" name="\bar{s}_R^{\land }" e8coordlbl="1/2,1/2,1/2,-1/2,-1/2,-1/2,1/2,-1/2" e8coord="0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5,-0.5" color="mgree" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="191" name="\bar{s}_R^{\lor }" e8coordlbl="1/2,1/2,-1/2,1/2,-1/2,-1/2,1/2,-1/2" e8coord="0.5,0.5,-0.5,0.5,-0.5,-0.5,0.5,-0.5" color="mgree" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="192" name="\bar{c}_L^{\land }" e8coordlbl="1/2,-1/2,-1/2,-1/2,-1/2,-1/2,-1/2,1/2" e8coord="0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,0.5" color="dbvio" symbol="mutr" label="anti-charm quark" sm="0" />
-<p id="193" name="\bar{c}_L^{\lor }" e8coordlbl="-1/2,1/2,-1/2,-1/2,-1/2,-1/2,-1/2,1/2" e8coord="-0.5,0.5,-0.5,-0.5,-0.5,-0.5,-0.5,0.5" color="dbvio" symbol="mutr" label="anti-charm quark" sm="0" />
-<p id="194" name="\bar{s}_L^{\land }" e8coordlbl="1/2,-1/2,1/2,1/2,-1/2,-1/2,-1/2,1/2" e8coord="0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5" color="mbvio" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="195" name="\bar{s}_L^{\lor }" e8coordlbl="-1/2,1/2,1/2,1/2,-1/2,-1/2,-1/2,1/2" e8coord="-0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5" color="mbvio" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="196" name="\bar{c}_R^{\land }" e8coordlbl="-1/2,-1/2,1/2,-1/2,-1/2,-1/2,-1/2,1/2" e8coord="-0.5,-0.5,0.5,-0.5,-0.5,-0.5,-0.5,0.5" color="dblue" symbol="mutr" label="anti-charm quark" sm="0" />
-<p id="197" name="\bar{c}_R^{\lor }" e8coordlbl="-1/2,-1/2,-1/2,1/2,-1/2,-1/2,-1/2,1/2" e8coord="-0.5,-0.5,-0.5,0.5,-0.5,-0.5,-0.5,0.5" color="dblue" symbol="mutr" label="anti-charm quark" sm="0" />
-<p id="198" name="\bar{s}_R^{\land }" e8coordlbl="1/2,1/2,1/2,-1/2,-1/2,-1/2,-1/2,1/2" e8coord="0.5,0.5,0.5,-0.5,-0.5,-0.5,-0.5,0.5" color="mblue" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="199" name="\bar{s}_R^{\lor }" e8coordlbl="1/2,1/2,-1/2,1/2,-1/2,-1/2,-1/2,1/2" e8coord="0.5,0.5,-0.5,0.5,-0.5,-0.5,-0.5,0.5" color="mblue" symbol="mutr" label="anti-strange quark" sm="0" />
-<p id="200" name="\bar{\nu }_{\tau L}^{\land }" e8coordlbl="0,0,0,-1,-1,0,0,0" e8coord="0,0,0,-1,-1,0,0,0" color="dyell" symbol="sutr" label="tau anti-neutrino" sm="0" />
-<p id="201" name="\bar{\nu }_{\tau L}^{\lor }" e8coordlbl="0,0,-1,0,-1,0,0,0" e8coord="0,0,-1,0,-1,0,0,0" color="dyell" symbol="sutr" label="tau anti-neutrino" sm="0" />
-<p id="202" name="\bar{\tau }_L^{\land }" e8coordlbl="0,0,1,0,-1,0,0,0" e8coord="0,0,1,0,-1,0,0,0" color="myell" symbol="sutr" label="anti-tau" sm="0" />
-
-<p id="203" name="\bar{\tau }_L^{\lor }" e8coordlbl="0,0,0,1,-1,0,0,0" e8coord="0,0,0,1,-1,0,0,0" color="myell" symbol="sutr" label="anti-tau" sm="0" />
-<p id="204" name="\bar{\nu }_{\tau R}^{\land }" e8coordlbl="0,-1,0,0,-1,0,0,0" e8coord="0,-1,0,0,-1,0,0,0" color="mgray" symbol="sutr" label="tau anti-neutrino" sm="0" />
-<p id="205" name="\bar{\nu }_{\tau R}^{\lor }" e8coordlbl="1,0,0,0,-1,0,0,0" e8coord="1,0,0,0,-1,0,0,0" color="mgray" symbol="sutr" label="tau anti-neutrino" sm="0" />
-<p id="206" name="\bar{\tau }_R^{\land }" e8coordlbl="-1,0,0,0,-1,0,0,0" e8coord="-1,0,0,0,-1,0,0,0" color="lgray" symbol="sutr" label="anti-tau" sm="0" />
-<p id="207" name="\bar{\tau }_R^{\lor }" e8coordlbl="0,1,0,0,-1,0,0,0" e8coord="0,1,0,0,-1,0,0,0" color="lgray" symbol="sutr" label="anti-tau" sm="0" />
-<p id="208" name="\bar{t}_L^{\land }" e8coordlbl="0,0,0,-1,0,1,0,0" e8coord="0,0,0,-1,0,1,0,0" color="drora" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="209" name="\bar{t}_L^{\lor }" e8coordlbl="0,0,-1,0,0,1,0,0" e8coord="0,0,-1,0,0,1,0,0" color="drora" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="210" name="\bar{b}_L^{\land }" e8coordlbl="0,0,1,0,0,1,0,0" e8coord="0,0,1,0,0,1,0,0" color="mrora" symbol="sutr" label="anti-bottom quark" sm="0" />
-<p id="211" name="\bar{b}_L^{\lor }" e8coordlbl="0,0,0,1,0,1,0,0" e8coord="0,0,0,1,0,1,0,0" color="mrora" symbol="sutr" label="anti-bottom quark" sm="0" />
-<p id="212" name="\bar{t}_R^{\land }" e8coordlbl="0,-1,0,0,0,1,0,0" e8coord="0,-1,0,0,0,1,0,0" color="dred" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="213" name="\bar{t}_R^{\lor }" e8coordlbl="1,0,0,0,0,1,0,0" e8coord="1,0,0,0,0,1,0,0" color="dred" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="214" name="\bar{b}_R^{\land }" e8coordlbl="-1,0,0,0,0,1,0,0" e8coord="-1,0,0,0,0,1,0,0" color="mred" symbol="sutr" label="anti-bottom quark" sm="0" />
-<p id="215" name="\bar{b}_R^{\lor }" e8coordlbl="0,1,0,0,0,1,0,0" e8coord="0,1,0,0,0,1,0,0" color="mred" symbol="sutr" label="anti-bottom quark" sm="0" />
-<p id="216" name="\bar{t}_L^{\land }" e8coordlbl="0,0,0,-1,0,0,1,0" e8coord="0,0,0,-1,0,0,1,0" color="dygre" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="217" name="\bar{t}_L^{\lor }" e8coordlbl="0,0,-1,0,0,0,1,0" e8coord="0,0,-1,0,0,0,1,0" color="dygre" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="218" name="\bar{b}_L^{\land }" e8coordlbl="0,0,1,0,0,0,1,0" e8coord="0,0,1,0,0,0,1,0" color="mygre" symbol="sutr" label="anti-bottom quark" sm="0" />
-<p id="219" name="\bar{b}_L^{\lor }" e8coordlbl="0,0,0,1,0,0,1,0" e8coord="0,0,0,1,0,0,1,0" color="mygre" symbol="sutr" label="anti-bottom quark" sm="0" />
-
-<p id="220" name="\bar{t}_R^{\land }" e8coordlbl="0,-1,0,0,0,0,1,0" e8coord="0,-1,0,0,0,0,1,0" color="dgree" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="221" name="\bar{t}_R^{\lor }" e8coordlbl="1,0,0,0,0,0,1,0" e8coord="1,0,0,0,0,0,1,0" color="dgree" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="222" name="\bar{b}_R^{\land }" e8coordlbl="-1,0,0,0,0,0,1,0" e8coord="-1,0,0,0,0,0,1,0" color="mgree" symbol="sutr" label="anti-bottom quark" sm="0" />
-<p id="223" name="\bar{b}_R^{\lor }" e8coordlbl="0,1,0,0,0,0,1,0" e8coord="0,1,0,0,0,0,1,0" color="mgree" symbol="sutr" label="anti-bottom quark" sm="0" />
-<p id="224" name="\bar{t}_L^{\land }" e8coordlbl="0,0,0,-1,0,0,0,1" e8coord="0,0,0,-1,0,0,0,1" color="dbvio" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="225" name="\bar{t}_L^{\lor }" e8coordlbl="0,0,-1,0,0,0,0,1" e8coord="0,0,-1,0,0,0,0,1" color="dbvio" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="226" name="\bar{b}_L^{\land }" e8coordlbl="0,0,1,0,0,0,0,1" e8coord="0,0,1,0,0,0,0,1" color="mbvio" symbol="sutr" label="anti-bottom quark" sm="0" />
-<p id="227" name="\bar{b}_L^{\lor }" e8coordlbl="0,0,0,1,0,0,0,1" e8coord="0,0,0,1,0,0,0,1" color="mbvio" symbol="sutr" label="anti-bottom quark" sm="0" />
-<p id="228" name="\bar{t}_R^{\land }" e8coordlbl="0,-1,0,0,0,0,0,1" e8coord="0,-1,0,0,0,0,0,1" color="dblue" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="229" name="\bar{t}_R^{\lor }" e8coordlbl="1,0,0,0,0,0,0,1" e8coord="1,0,0,0,0,0,0,1" color="dblue" symbol="sutr" label="anti-top quark" sm="0" />
-<p id="230" name="\bar{b}_R^{\land }" e8coordlbl="-1,0,0,0,0,0,0,1" e8coord="-1,0,0,0,0,0,0,1" color="mblue" symbol="sutr" label="anti-bottom quark" sm="0" />
-<p id="231" name="\bar{b}_R^{\lor }" e8coordlbl="0,1,0,0,0,0,0,1" e8coord="0,1,0,0,0,0,0,1" color="mblue" symbol="sutr" label="anti-bottom quark" sm="0" />
-<p id="232" name="x_1\bar{\Phi }" e8coordlbl="0,0,0,0,1,-1,0,0" e8coord="0,0,0,0,1,-1,0,0" color="mred" symbol="bdia" label="colored anti-Higgs" sm="0" />
-<p id="233" name="x_1\bar{\Phi }" e8coordlbl="0,0,0,0,1,0,-1,0" e8coord="0,0,0,0,1,0,-1,0" color="mgree" symbol="bdia" label="colored anti-Higgs" sm="0" />
-<p id="234" name="x_1\bar{\Phi }" e8coordlbl="0,0,0,0,1,0,0,-1" e8coord="0,0,0,0,1,0,0,-1" color="mblue" symbol="bdia" label="colored anti-Higgs" sm="0" />
-<p id="235" name="x_2\bar{\Phi }" e8coordlbl="0,0,0,0,-1,-1,0,0" e8coord="0,0,0,0,-1,-1,0,0" color="mred" symbol="mdia" label="colored anti-Higgs" sm="0" />
-<p id="236" name="x_2\bar{\Phi }" e8coordlbl="0,0,0,0,-1,0,-1,0" e8coord="0,0,0,0,-1,0,-1,0" color="mgree" symbol="mdia" label="colored anti-Higgs" sm="0" />
-
-<p id="237" name="x_2\bar{\Phi }" e8coordlbl="0,0,0,0,-1,0,0,-1" e8coord="0,0,0,0,-1,0,0,-1" color="mblue" symbol="mdia" label="colored anti-Higgs" sm="0" />
-<p id="238" name="x_3\bar{\Phi }" e8coordlbl="0,0,0,0,0,0,1,1" e8coord="0,0,0,0,0,0,1,1" color="mred" symbol="sdia" label="colored anti-Higgs" sm="0" />
-<p id="239" name="x_3\bar{\Phi }" e8coordlbl="0,0,0,0,0,1,0,1" e8coord="0,0,0,0,0,1,0,1" color="mgree" symbol="sdia" label="colored anti-Higgs" sm="0" />
-<p id="240" name="x_3\bar{\Phi }" e8coordlbl="0,0,0,0,0,1,1,0" e8coord="0,0,0,0,0,1,1,0" color="mblue" symbol="sdia" label="colored anti-Higgs" sm="0" />
-<p id="241" name="C" e8coordlbl="0,0,0,0,0,0,0,0" e8coord="0,0,0,0,0,0,0,0" color="black" symbol="mcir" label="photon, Z boson, .." sm="1" />
+<p id="1" name="1" e8coordlbl="1,1,0,0,0,0,0,0" e8coord="1,1,0,0,0,0,0,0" color="lgree" symbol="mcir" label="spin connection" sm="1"/>
+<p id="2" name="2" e8coordlbl="-1,1,0,0,0,0,0,0" e8coord="-1,1,0,0,0,0,0,0" color="lgree" symbol="mcir" label="spin connection" sm="1"/>
+<p id="3" name="3" e8coordlbl="0,0,1,1,0,0,0,0" e8coord="0,0,1,1,0,0,0,0" color="lyell" symbol="mcir" label="W boson" sm="1"/>
+<p id="4" name="4" e8coordlbl="0,0,-1,1,0,0,0,0" e8coord="0,0,-1,1,0,0,0,0" color="white" symbol="mcir" label="Pati-Salam boson" sm="0"/>
+<p id="5" name="5" e8coordlbl="-1,0,0,1,0,0,0,0" e8coord="-1,0,0,1,0,0,0,0" color="dyell" symbol="msqu" label="frame-Higgs" sm="1"/>
+<p id="6" name="6" e8coordlbl="-1,0,-1,0,0,0,0,0" e8coord="-1,0,-1,0,0,0,0,0" color="mrora" symbol="msqu" label="frame-Higgs" sm="1"/>
+<p id="7" name="7" e8coordlbl="1,0,0,1,0,0,0,0" e8coord="1,0,0,1,0,0,0,0" color="dyell" symbol="msqu" label="frame-Higgs" sm="1"/>
+<p id="8" name="8" e8coordlbl="1,0,-1,0,0,0,0,0" e8coord="1,0,-1,0,0,0,0,0" color="mrora" symbol="msqu" label="frame-Higgs" sm="1"/>
+<p id="9" name="9" e8coordlbl="0,1,0,1,0,0,0,0" e8coord="0,1,0,1,0,0,0,0" color="dyell" symbol="msqu" label="frame-Higgs" sm="1"/>
+<p id="10" name="10" e8coordlbl="0,1,-1,0,0,0,0,0" e8coord="0,1,-1,0,0,0,0,0" color="mrora" symbol="msqu" label="frame-Higgs" sm="1"/>
+<p id="11" name="11" e8coordlbl="0,-1,0,1,0,0,0,0" e8coord="0,-1,0,1,0,0,0,0" color="dyell" symbol="msqu" label="frame-Higgs" sm="1"/>
+<p id="12" name="12" e8coordlbl="0,-1,-1,0,0,0,0,0" e8coord="0,-1,-1,0,0,0,0,0" color="mrora" symbol="msqu" label="frame-Higgs" sm="1"/>
+<p id="13" name="13" e8coordlbl="0,0,0,0,0,-1,1,0" e8coord="0,0,0,0,0,-1,1,0" color="lblue" symbol="mcir" label="gluon" sm="1"/>
+<p id="14" name="14" e8coordlbl="0,0,0,0,0,-1,0,1" e8coord="0,0,0,0,0,-1,0,1" color="lblue" symbol="mcir" label="gluon" sm="1"/>
+<p id="15" name="15" e8coordlbl="0,0,0,0,0,0,-1,1" e8coord="0,0,0,0,0,0,-1,1" color="lblue" symbol="mcir" label="gluon" sm="1"/>
+<p id="16" name="16" e8coordlbl="1/2,1/2,1/2,1/2,-1/2,-1/2,-1/2,-1/2" e8coord="0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5,-0.5" color="dyell" symbol="btri" label="electron neutrino" sm="1"/>
+<p id="17" name="17" e8coordlbl="-1/2,-1/2,1/2,1/2,-1/2,-1/2,-1/2,-1/2" e8coord="-0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5,-0.5" color="dyell" symbol="btri" label="electron neutrino" sm="1"/>
+<p id="18" name="18" e8coordlbl="1/2,1/2,-1/2,-1/2,-1/2,-1/2,-1/2,-1/2" e8coord="0.5,0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5" color="myell" symbol="btri" label="electron" sm="1"/>
+<p id="19" name="19" e8coordlbl="-1/2,-1/2,-1/2,-1/2,-1/2,-1/2,-1/2,-1/2" e8coord="-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5" color="myell" symbol="btri" label="electron" sm="1"/>
+<p id="20" name="20" e8coordlbl="-1/2,1/2,-1/2,1/2,-1/2,-1/2,-1/2,-1/2" e8coord="-0.5,0.5,-0.5,0.5,-0.5,-0.5,-0.5,-0.5" color="mgray" symbol="btri" label="electron neutrino" sm="1"/>
+<p id="21" name="21" e8coordlbl="1/2,-1/2,-1/2,1/2,-1/2,-1/2,-1/2,-1/2" e8coord="0.5,-0.5,-0.5,0.5,-0.5,-0.5,-0.5,-0.5" color="mgray" symbol="btri" label="electron neutrino" sm="1"/>
+<p id="22" name="22" e8coordlbl="-1/2,1/2,1/2,-1/2,-1/2,-1/2,-1/2,-1/2" e8coord="-0.5,0.5,0.5,-0.5,-0.5,-0.5,-0.5,-0.5" color="lgray" symbol="btri" label="electron" sm="1"/>
+<p id="23" name="23" e8coordlbl="1/2,-1/2,1/2,-1/2,-1/2,-1/2,-1/2,-1/2" e8coord="0.5,-0.5,0.5,-0.5,-0.5,-0.5,-0.5,-0.5" color="lgray" symbol="btri" label="electron" sm="1"/>
+<p id="24" name="24" e8coordlbl="1/2,1/2,1/2,1/2,-1/2,-1/2,1/2,1/2" e8coord="0.5,0.5,0.5,0.5,-0.5,-0.5,0.5,0.5" color="drora" symbol="btri" label="up quark" sm="1"/>
+<p id="25" name="25" e8coordlbl="-1/2,-1/2,1/2,1/2,-1/2,-1/2,1/2,1/2" e8coord="-0.5,-0.5,0.5,0.5,-0.5,-0.5,0.5,0.5" color="drora" symbol="btri" label="up quark" sm="1"/>
+<p id="26" name="26" e8coordlbl="1/2,1/2,-1/2,-1/2,-1/2,-1/2,1/2,1/2" e8coord="0.5,0.5,-0.5,-0.5,-0.5,-0.5,0.5,0.5" color="mrora" symbol="btri" label="down quark" sm="1"/>
+<p id="27" name="27" e8coordlbl="-1/2,-1/2,-1/2,-1/2,-1/2,-1/2,1/2,1/2" e8coord="-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,0.5,0.5" color="mrora" symbol="btri" label="down quark" sm="1"/>
+<p id="28" name="28" e8coordlbl="-1/2,1/2,-1/2,1/2,-1/2,-1/2,1/2,1/2" e8coord="-0.5,0.5,-0.5,0.5,-0.5,-0.5,0.5,0.5" color="dred" symbol="btri" label="up quark" sm="1"/>
+<p id="29" name="29" e8coordlbl="1/2,-1/2,-1/2,1/2,-1/2,-1/2,1/2,1/2" e8coord="0.5,-0.5,-0.5,0.5,-0.5,-0.5,0.5,0.5" color="dred" symbol="btri" label="up quark" sm="1"/>
+<p id="30" name="30" e8coordlbl="-1/2,1/2,1/2,-1/2,-1/2,-1/2,1/2,1/2" e8coord="-0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5" color="mred" symbol="btri" label="down quark" sm="1"/>
+<p id="31" name="31" e8coordlbl="1/2,-1/2,1/2,-1/2,-1/2,-1/2,1/2,1/2" e8coord="0.5,-0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5" color="mred" symbol="btri" label="down quark" sm="1"/>
+<p id="32" name="24" e8coordlbl="1/2,1/2,1/2,1/2,-1/2,1/2,-1/2,1/2" e8coord="0.5,0.5,0.5,0.5,-0.5,0.5,-0.5,0.5" color="dygre" symbol="btri" label="up quark" sm="1"/>
+<p id="33" name="25" e8coordlbl="-1/2,-1/2,1/2,1/2,-1/2,1/2,-1/2,1/2" e8coord="-0.5,-0.5,0.5,0.5,-0.5,0.5,-0.5,0.5" color="dygre" symbol="btri" label="up quark" sm="1"/>
+<p id="34" name="26" e8coordlbl="1/2,1/2,-1/2,-1/2,-1/2,1/2,-1/2,1/2" e8coord="0.5,0.5,-0.5,-0.5,-0.5,0.5,-0.5,0.5" color="mygre" symbol="btri" label="down quark" sm="1"/>
+<p id="35" name="27" e8coordlbl="-1/2,-1/2,-1/2,-1/2,-1/2,1/2,-1/2,1/2" e8coord="-0.5,-0.5,-0.5,-0.5,-0.5,0.5,-0.5,0.5" color="mygre" symbol="btri" label="down quark" sm="1"/>
+<p id="36" name="28" e8coordlbl="-1/2,1/2,-1/2,1/2,-1/2,1/2,-1/2,1/2" e8coord="-0.5,0.5,-0.5,0.5,-0.5,0.5,-0.5,0.5" color="dgree" symbol="btri" label="up quark" sm="1"/>
+<p id="37" name="29" e8coordlbl="1/2,-1/2,-1/2,1/2,-1/2,1/2,-1/2,1/2" e8coord="0.5,-0.5,-0.5,0.5,-0.5,0.5,-0.5,0.5" color="dgree" symbol="btri" label="up quark" sm="1"/>
+<p id="38" name="30" e8coordlbl="-1/2,1/2,1/2,-1/2,-1/2,1/2,-1/2,1/2" e8coord="-0.5,0.5,0.5,-0.5,-0.5,0.5,-0.5,0.5" color="mgree" symbol="btri" label="down quark" sm="1"/>
+<p id="39" name="31" e8coordlbl="1/2,-1/2,1/2,-1/2,-1/2,1/2,-1/2,1/2" e8coord="0.5,-0.5,0.5,-0.5,-0.5,0.5,-0.5,0.5" color="mgree" symbol="btri" label="down quark" sm="1"/>
+<p id="40" name="24" e8coordlbl="1/2,1/2,1/2,1/2,-1/2,1/2,1/2,-1/2" e8coord="0.5,0.5,0.5,0.5,-0.5,0.5,0.5,-0.5" color="dbvio" symbol="btri" label="up quark" sm="1"/>
+<p id="41" name="25" e8coordlbl="-1/2,-1/2,1/2,1/2,-1/2,1/2,1/2,-1/2" e8coord="-0.5,-0.5,0.5,0.5,-0.5,0.5,0.5,-0.5" color="dbvio" symbol="btri" label="up quark" sm="1"/>
+<p id="42" name="26" e8coordlbl="1/2,1/2,-1/2,-1/2,-1/2,1/2,1/2,-1/2" e8coord="0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,-0.5" color="mbvio" symbol="btri" label="down quark" sm="1"/>
+<p id="43" name="27" e8coordlbl="-1/2,-1/2,-1/2,-1/2,-1/2,1/2,1/2,-1/2" e8coord="-0.5,-0.5,-0.5,-0.5,-0.5,0.5,0.5,-0.5" color="mbvio" symbol="btri" label="down quark" sm="1"/>
+<p id="44" name="28" e8coordlbl="-1/2,1/2,-1/2,1/2,-1/2,1/2,1/2,-1/2" e8coord="-0.5,0.5,-0.5,0.5,-0.5,0.5,0.5,-0.5" color="dblue" symbol="btri" label="up quark" sm="1"/>
+<p id="45" name="29" e8coordlbl="1/2,-1/2,-1/2,1/2,-1/2,1/2,1/2,-1/2" e8coord="0.5,-0.5,-0.5,0.5,-0.5,0.5,0.5,-0.5" color="dblue" symbol="btri" label="up quark" sm="1"/>
+<p id="46" name="30" e8coordlbl="-1/2,1/2,1/2,-1/2,-1/2,1/2,1/2,-1/2" e8coord="-0.5,0.5,0.5,-0.5,-0.5,0.5,0.5,-0.5" color="mblue" symbol="btri" label="down quark" sm="1"/>
+<p id="47" name="31" e8coordlbl="1/2,-1/2,1/2,-1/2,-1/2,1/2,1/2,-1/2" e8coord="0.5,-0.5,0.5,-0.5,-0.5,0.5,0.5,-0.5" color="mblue" symbol="btri" label="down quark" sm="1"/>
+<p id="48" name="48" e8coordlbl="-1/2,1/2,1/2,1/2,-1/2,1/2,1/2,1/2" e8coord="-0.5,0.5,0.5,0.5,-0.5,0.5,0.5,0.5" color="dyell" symbol="mtri" label="muon neutrino" sm="0"/>
+<p id="49" name="49" e8coordlbl="1/2,-1/2,1/2,1/2,-1/2,1/2,1/2,1/2" e8coord="0.5,-0.5,0.5,0.5,-0.5,0.5,0.5,0.5" color="dyell" symbol="mtri" label="muon neutrino" sm="0"/>
+<p id="50" name="50" e8coordlbl="-1/2,1/2,-1/2,-1/2,-1/2,1/2,1/2,1/2" e8coord="-0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5" color="myell" symbol="mtri" label="muon" sm="0"/>
+<p id="51" name="51" e8coordlbl="1/2,-1/2,-1/2,-1/2,-1/2,1/2,1/2,1/2" e8coord="0.5,-0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5" color="myell" symbol="mtri" label="muon" sm="0"/>
+<p id="52" name="52" e8coordlbl="1/2,1/2,-1/2,1/2,-1/2,1/2,1/2,1/2" e8coord="0.5,0.5,-0.5,0.5,-0.5,0.5,0.5,0.5" color="mgray" symbol="mtri" label="muon neutrino" sm="0"/>
+<p id="53" name="53" e8coordlbl="1/2,1/2,1/2,-1/2,-1/2,1/2,1/2,1/2" e8coord="0.5,0.5,0.5,-0.5,-0.5,0.5,0.5,0.5" color="mgray" symbol="mtri" label="muon neutrino" sm="0"/>
+<p id="54" name="54" e8coordlbl="-1/2,-1/2,-1/2,1/2,-1/2,1/2,1/2,1/2" e8coord="-0.5,-0.5,-0.5,0.5,-0.5,0.5,0.5,0.5" color="lgray" symbol="mtri" label="muon" sm="0"/>
+<p id="55" name="55" e8coordlbl="-1/2,-1/2,1/2,-1/2,-1/2,1/2,1/2,1/2" e8coord="-0.5,-0.5,0.5,-0.5,-0.5,0.5,0.5,0.5" color="lgray" symbol="mtri" label="muon" sm="0"/>
+<p id="56" name="56" e8coordlbl="-1/2,1/2,1/2,1/2,1/2,-1/2,1/2,1/2" e8coord="-0.5,0.5,0.5,0.5,0.5,-0.5,0.5,0.5" color="drora" symbol="mtri" label="charm quark" sm="0"/>
+<p id="57" name="57" e8coordlbl="1/2,-1/2,1/2,1/2,1/2,-1/2,1/2,1/2" e8coord="0.5,-0.5,0.5,0.5,0.5,-0.5,0.5,0.5" color="drora" symbol="mtri" label="charm quark" sm="0"/>
+<p id="58" name="58" e8coordlbl="-1/2,1/2,-1/2,-1/2,1/2,-1/2,1/2,1/2" e8coord="-0.5,0.5,-0.5,-0.5,0.5,-0.5,0.5,0.5" color="mrora" symbol="mtri" label="strange quark" sm="0"/>
+<p id="59" name="59" e8coordlbl="1/2,-1/2,-1/2,-1/2,1/2,-1/2,1/2,1/2" e8coord="0.5,-0.5,-0.5,-0.5,0.5,-0.5,0.5,0.5" color="mrora" symbol="mtri" label="strange quark" sm="0"/>
+<p id="60" name="60" e8coordlbl="1/2,1/2,-1/2,1/2,1/2,-1/2,1/2,1/2" e8coord="0.5,0.5,-0.5,0.5,0.5,-0.5,0.5,0.5" color="dred" symbol="mtri" label="charm quark" sm="0"/>
+<p id="61" name="61" e8coordlbl="1/2,1/2,1/2,-1/2,1/2,-1/2,1/2,1/2" e8coord="0.5,0.5,0.5,-0.5,0.5,-0.5,0.5,0.5" color="dred" symbol="mtri" label="charm quark" sm="0"/>
+<p id="62" name="62" e8coordlbl="-1/2,-1/2,-1/2,1/2,1/2,-1/2,1/2,1/2" e8coord="-0.5,-0.5,-0.5,0.5,0.5,-0.5,0.5,0.5" color="mred" symbol="mtri" label="strange quark" sm="0"/>
+<p id="63" name="63" e8coordlbl="-1/2,-1/2,1/2,-1/2,1/2,-1/2,1/2,1/2" e8coord="-0.5,-0.5,0.5,-0.5,0.5,-0.5,0.5,0.5" color="mred" symbol="mtri" label="strange quark" sm="0"/>
+<p id="64" name="56" e8coordlbl="-1/2,1/2,1/2,1/2,1/2,1/2,-1/2,1/2" e8coord="-0.5,0.5,0.5,0.5,0.5,0.5,-0.5,0.5" color="dygre" symbol="mtri" label="charm quark" sm="0"/>
+<p id="65" name="57" e8coordlbl="1/2,-1/2,1/2,1/2,1/2,1/2,-1/2,1/2" e8coord="0.5,-0.5,0.5,0.5,0.5,0.5,-0.5,0.5" color="dygre" symbol="mtri" label="charm quark" sm="0"/>
+<p id="66" name="58" e8coordlbl="-1/2,1/2,-1/2,-1/2,1/2,1/2,-1/2,1/2" e8coord="-0.5,0.5,-0.5,-0.5,0.5,0.5,-0.5,0.5" color="mygre" symbol="mtri" label="strange quark" sm="0"/>
+<p id="67" name="59" e8coordlbl="1/2,-1/2,-1/2,-1/2,1/2,1/2,-1/2,1/2" e8coord="0.5,-0.5,-0.5,-0.5,0.5,0.5,-0.5,0.5" color="mygre" symbol="mtri" label="strange quark" sm="0"/>
+<p id="68" name="60" e8coordlbl="1/2,1/2,-1/2,1/2,1/2,1/2,-1/2,1/2" e8coord="0.5,0.5,-0.5,0.5,0.5,0.5,-0.5,0.5" color="dgree" symbol="mtri" label="charm quark" sm="0"/>
+<p id="69" name="61" e8coordlbl="1/2,1/2,1/2,-1/2,1/2,1/2,-1/2,1/2" e8coord="0.5,0.5,0.5,-0.5,0.5,0.5,-0.5,0.5" color="dgree" symbol="mtri" label="charm quark" sm="0"/>
+<p id="70" name="62" e8coordlbl="-1/2,-1/2,-1/2,1/2,1/2,1/2,-1/2,1/2" e8coord="-0.5,-0.5,-0.5,0.5,0.5,0.5,-0.5,0.5" color="mgree" symbol="mtri" label="strange quark" sm="0"/>
+<p id="71" name="63" e8coordlbl="-1/2,-1/2,1/2,-1/2,1/2,1/2,-1/2,1/2" e8coord="-0.5,-0.5,0.5,-0.5,0.5,0.5,-0.5,0.5" color="mgree" symbol="mtri" label="strange quark" sm="0"/>
+<p id="72" name="56" e8coordlbl="-1/2,1/2,1/2,1/2,1/2,1/2,1/2,-1/2" e8coord="-0.5,0.5,0.5,0.5,0.5,0.5,0.5,-0.5" color="dbvio" symbol="mtri" label="charm quark" sm="0"/>
+<p id="73" name="57" e8coordlbl="1/2,-1/2,1/2,1/2,1/2,1/2,1/2,-1/2" e8coord="0.5,-0.5,0.5,0.5,0.5,0.5,0.5,-0.5" color="dbvio" symbol="mtri" label="charm quark" sm="0"/>
+<p id="74" name="58" e8coordlbl="-1/2,1/2,-1/2,-1/2,1/2,1/2,1/2,-1/2" e8coord="-0.5,0.5,-0.5,-0.5,0.5,0.5,0.5,-0.5" color="mbvio" symbol="mtri" label="strange quark" sm="0"/>
+<p id="75" name="59" e8coordlbl="1/2,-1/2,-1/2,-1/2,1/2,1/2,1/2,-1/2" e8coord="0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5,-0.5" color="mbvio" symbol="mtri" label="strange quark" sm="0"/>
+<p id="76" name="60" e8coordlbl="1/2,1/2,-1/2,1/2,1/2,1/2,1/2,-1/2" e8coord="0.5,0.5,-0.5,0.5,0.5,0.5,0.5,-0.5" color="dblue" symbol="mtri" label="charm quark" sm="0"/>
+<p id="77" name="61" e8coordlbl="1/2,1/2,1/2,-1/2,1/2,1/2,1/2,-1/2" e8coord="0.5,0.5,0.5,-0.5,0.5,0.5,0.5,-0.5" color="dblue" symbol="mtri" label="charm quark" sm="0"/>
+<p id="78" name="62" e8coordlbl="-1/2,-1/2,-1/2,1/2,1/2,1/2,1/2,-1/2" e8coord="-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5" color="mblue" symbol="mtri" label="strange quark" sm="0"/>
+<p id="79" name="63" e8coordlbl="-1/2,-1/2,1/2,-1/2,1/2,1/2,1/2,-1/2" e8coord="-0.5,-0.5,0.5,-0.5,0.5,0.5,0.5,-0.5" color="mblue" symbol="mtri" label="strange quark" sm="0"/>
+<p id="80" name="80" e8coordlbl="0,0,0,1,1,0,0,0" e8coord="0,0,0,1,1,0,0,0" color="dyell" symbol="stri" label="tau neutrino" sm="0"/>
+<p id="81" name="81" e8coordlbl="0,0,1,0,1,0,0,0" e8coord="0,0,1,0,1,0,0,0" color="dyell" symbol="stri" label="tau neutrino" sm="0"/>
+<p id="82" name="82" e8coordlbl="0,0,-1,0,1,0,0,0" e8coord="0,0,-1,0,1,0,0,0" color="myell" symbol="stri" label="tau" sm="0"/>
+<p id="83" name="83" e8coordlbl="0,0,0,-1,1,0,0,0" e8coord="0,0,0,-1,1,0,0,0" color="myell" symbol="stri" label="tau" sm="0"/>
+<p id="84" name="84" e8coordlbl="0,1,0,0,1,0,0,0" e8coord="0,1,0,0,1,0,0,0" color="mgray" symbol="stri" label="tau neutrino" sm="0"/>
+<p id="85" name="85" e8coordlbl="-1,0,0,0,1,0,0,0" e8coord="-1,0,0,0,1,0,0,0" color="mgray" symbol="stri" label="tau neutrino" sm="0"/>
+<p id="86" name="86" e8coordlbl="1,0,0,0,1,0,0,0" e8coord="1,0,0,0,1,0,0,0" color="lgray" symbol="stri" label="tau" sm="0"/>
+<p id="87" name="87" e8coordlbl="0,-1,0,0,1,0,0,0" e8coord="0,-1,0,0,1,0,0,0" color="lgray" symbol="stri" label="tau" sm="0"/>
+<p id="88" name="88" e8coordlbl="0,0,0,1,0,-1,0,0" e8coord="0,0,0,1,0,-1,0,0" color="drora" symbol="stri" label="top quark" sm="0"/>
+<p id="89" name="89" e8coordlbl="0,0,1,0,0,-1,0,0" e8coord="0,0,1,0,0,-1,0,0" color="drora" symbol="stri" label="top quark" sm="0"/>
+<p id="90" name="90" e8coordlbl="0,0,-1,0,0,-1,0,0" e8coord="0,0,-1,0,0,-1,0,0" color="mrora" symbol="stri" label="bottom quark" sm="0"/>
+<p id="91" name="91" e8coordlbl="0,0,0,-1,0,-1,0,0" e8coord="0,0,0,-1,0,-1,0,0" color="mrora" symbol="stri" label="bottom quark" sm="0"/>
+<p id="92" name="92" e8coordlbl="0,1,0,0,0,-1,0,0" e8coord="0,1,0,0,0,-1,0,0" color="dred" symbol="stri" label="top quark" sm="0"/>
+<p id="93" name="93" e8coordlbl="-1,0,0,0,0,-1,0,0" e8coord="-1,0,0,0,0,-1,0,0" color="dred" symbol="stri" label="top quark" sm="0"/>
+<p id="94" name="94" e8coordlbl="1,0,0,0,0,-1,0,0" e8coord="1,0,0,0,0,-1,0,0" color="mred" symbol="stri" label="bottom quark" sm="0"/>
+<p id="95" name="95" e8coordlbl="0,-1,0,0,0,-1,0,0" e8coord="0,-1,0,0,0,-1,0,0" color="mred" symbol="stri" label="bottom quark" sm="0"/>
+<p id="96" name="88" e8coordlbl="0,0,0,1,0,0,-1,0" e8coord="0,0,0,1,0,0,-1,0" color="dygre" symbol="stri" label="top quark" sm="0"/>
+<p id="97" name="89" e8coordlbl="0,0,1,0,0,0,-1,0" e8coord="0,0,1,0,0,0,-1,0" color="dygre" symbol="stri" label="top quark" sm="0"/>
+<p id="98" name="90" e8coordlbl="0,0,-1,0,0,0,-1,0" e8coord="0,0,-1,0,0,0,-1,0" color="mygre" symbol="stri" label="bottom quark" sm="0"/>
+<p id="99" name="91" e8coordlbl="0,0,0,-1,0,0,-1,0" e8coord="0,0,0,-1,0,0,-1,0" color="mygre" symbol="stri" label="bottom quark" sm="0"/>
+<p id="100" name="92" e8coordlbl="0,1,0,0,0,0,-1,0" e8coord="0,1,0,0,0,0,-1,0" color="dgree" symbol="stri" label="top quark" sm="0"/>
+<p id="101" name="93" e8coordlbl="-1,0,0,0,0,0,-1,0" e8coord="-1,0,0,0,0,0,-1,0" color="dgree" symbol="stri" label="top quark" sm="0"/>
+<p id="102" name="94" e8coordlbl="1,0,0,0,0,0,-1,0" e8coord="1,0,0,0,0,0,-1,0" color="mgree" symbol="stri" label="bottom quark" sm="0"/>
+<p id="103" name="95" e8coordlbl="0,-1,0,0,0,0,-1,0" e8coord="0,-1,0,0,0,0,-1,0" color="mgree" symbol="stri" label="bottom quark" sm="0"/>
+<p id="104" name="88" e8coordlbl="0,0,0,1,0,0,0,-1" e8coord="0,0,0,1,0,0,0,-1" color="dbvio" symbol="stri" label="top quark" sm="0"/>
+<p id="105" name="89" e8coordlbl="0,0,1,0,0,0,0,-1" e8coord="0,0,1,0,0,0,0,-1" color="dbvio" symbol="stri" label="top quark" sm="0"/>
+<p id="106" name="90" e8coordlbl="0,0,-1,0,0,0,0,-1" e8coord="0,0,-1,0,0,0,0,-1" color="mbvio" symbol="stri" label="bottom quark" sm="0"/>
+<p id="107" name="91" e8coordlbl="0,0,0,-1,0,0,0,-1" e8coord="0,0,0,-1,0,0,0,-1" color="mbvio" symbol="stri" label="bottom quark" sm="0"/>
+<p id="108" name="92" e8coordlbl="0,1,0,0,0,0,0,-1" e8coord="0,1,0,0,0,0,0,-1" color="dblue" symbol="stri" label="top quark" sm="0"/>
+<p id="109" name="93" e8coordlbl="-1,0,0,0,0,0,0,-1" e8coord="-1,0,0,0,0,0,0,-1" color="dblue" symbol="stri" label="top quark" sm="0"/>
+<p id="110" name="94" e8coordlbl="1,0,0,0,0,0,0,-1" e8coord="1,0,0,0,0,0,0,-1" color="mblue" symbol="stri" label="bottom quark" sm="0"/>
+<p id="111" name="95" e8coordlbl="0,-1,0,0,0,0,0,-1" e8coord="0,-1,0,0,0,0,0,-1" color="mblue" symbol="stri" label="bottom quark" sm="0"/>
+<p id="112" name="112" e8coordlbl="0,0,0,0,-1,1,0,0" e8coord="0,0,0,0,-1,1,0,0" color="mred" symbol="bsqu" label="colored Higgs" sm="0"/>
+<p id="113" name="112" e8coordlbl="0,0,0,0,-1,0,1,0" e8coord="0,0,0,0,-1,0,1,0" color="mgree" symbol="bsqu" label="colored Higgs" sm="0"/>
+<p id="114" name="112" e8coordlbl="0,0,0,0,-1,0,0,1" e8coord="0,0,0,0,-1,0,0,1" color="mblue" symbol="bsqu" label="colored Higgs" sm="0"/>
+<p id="115" name="115" e8coordlbl="0,0,0,0,1,1,0,0" e8coord="0,0,0,0,1,1,0,0" color="mred" symbol="msqu" label="colored Higgs" sm="0"/>
+<p id="116" name="115" e8coordlbl="0,0,0,0,1,0,1,0" e8coord="0,0,0,0,1,0,1,0" color="mgree" symbol="msqu" label="colored Higgs" sm="0"/>
+<p id="117" name="115" e8coordlbl="0,0,0,0,1,0,0,1" e8coord="0,0,0,0,1,0,0,1" color="mblue" symbol="msqu" label="colored Higgs" sm="0"/>
+<p id="118" name="118" e8coordlbl="0,0,0,0,0,0,-1,-1" e8coord="0,0,0,0,0,0,-1,-1" color="mred" symbol="ssqu" label="colored Higgs" sm="0"/>
+<p id="119" name="118" e8coordlbl="0,0,0,0,0,-1,0,-1" e8coord="0,0,0,0,0,-1,0,-1" color="mgree" symbol="ssqu" label="colored Higgs" sm="0"/>
+<p id="120" name="118" e8coordlbl="0,0,0,0,0,-1,-1,0" e8coord="0,0,0,0,0,-1,-1,0" color="mblue" symbol="ssqu" label="colored Higgs" sm="0"/>
+<p id="121" name="121" e8coordlbl="-1,-1,0,0,0,0,0,0" e8coord="-1,-1,0,0,0,0,0,0" color="lgree" symbol="mcir" label="spin connection" sm="1"/>
+<p id="122" name="122" e8coordlbl="1,-1,0,0,0,0,0,0" e8coord="1,-1,0,0,0,0,0,0" color="lgree" symbol="mcir" label="spin connection" sm="1"/>
+<p id="123" name="123" e8coordlbl="0,0,-1,-1,0,0,0,0" e8coord="0,0,-1,-1,0,0,0,0" color="lyell" symbol="mcir" label="W boson" sm="1"/>
+<p id="124" name="124" e8coordlbl="0,0,1,-1,0,0,0,0" e8coord="0,0,1,-1,0,0,0,0" color="white" symbol="mcir" label="Pati-Salam boson" sm="0"/>
+<p id="125" name="125" e8coordlbl="1,0,0,-1,0,0,0,0" e8coord="1,0,0,-1,0,0,0,0" color="myell" symbol="mdia" label="frame-Higgs" sm="1"/>
+<p id="126" name="126" e8coordlbl="1,0,1,0,0,0,0,0" e8coord="1,0,1,0,0,0,0,0" color="drora" symbol="mdia" label="frame-Higgs" sm="1"/>
+<p id="127" name="127" e8coordlbl="-1,0,0,-1,0,0,0,0" e8coord="-1,0,0,-1,0,0,0,0" color="myell" symbol="mdia" label="frame-Higgs" sm="1"/>
+<p id="128" name="128" e8coordlbl="-1,0,1,0,0,0,0,0" e8coord="-1,0,1,0,0,0,0,0" color="drora" symbol="mdia" label="frame-Higgs" sm="1"/>
+<p id="129" name="129" e8coordlbl="0,-1,0,-1,0,0,0,0" e8coord="0,-1,0,-1,0,0,0,0" color="myell" symbol="mdia" label="frame-Higgs" sm="1"/>
+<p id="130" name="130" e8coordlbl="0,-1,1,0,0,0,0,0" e8coord="0,-1,1,0,0,0,0,0" color="drora" symbol="mdia" label="frame-Higgs" sm="1"/>
+<p id="131" name="131" e8coordlbl="0,1,0,-1,0,0,0,0" e8coord="0,1,0,-1,0,0,0,0" color="myell" symbol="mdia" label="frame-Higgs" sm="1"/>
+<p id="132" name="132" e8coordlbl="0,1,1,0,0,0,0,0" e8coord="0,1,1,0,0,0,0,0" color="drora" symbol="mdia" label="frame-Higgs" sm="1"/>
+<p id="133" name="133" e8coordlbl="0,0,0,0,0,1,-1,0" e8coord="0,0,0,0,0,1,-1,0" color="lblue" symbol="mcir" label="gluon" sm="1"/>
+<p id="134" name="134" e8coordlbl="0,0,0,0,0,1,0,-1" e8coord="0,0,0,0,0,1,0,-1" color="lblue" symbol="mcir" label="gluon" sm="1"/>
+<p id="135" name="135" e8coordlbl="0,0,0,0,0,0,1,-1" e8coord="0,0,0,0,0,0,1,-1" color="lblue" symbol="mcir" label="gluon" sm="1"/>
+<p id="136" name="136" e8coordlbl="-1/2,-1/2,-1/2,-1/2,1/2,1/2,1/2,1/2" e8coord="-0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5" color="dyell" symbol="butr" label="electron anti-neutrino" sm="1"/>
+<p id="137" name="137" e8coordlbl="1/2,1/2,-1/2,-1/2,1/2,1/2,1/2,1/2" e8coord="0.5,0.5,-0.5,-0.5,0.5,0.5,0.5,0.5" color="dyell" symbol="butr" label="electron anti-neutrino" sm="1"/>
+<p id="138" name="138" e8coordlbl="-1/2,-1/2,1/2,1/2,1/2,1/2,1/2,1/2" e8coord="-0.5,-0.5,0.5,0.5,0.5,0.5,0.5,0.5" color="myell" symbol="butr" label="positron" sm="1"/>
+<p id="139" name="139" e8coordlbl="1/2,1/2,1/2,1/2,1/2,1/2,1/2,1/2" e8coord="0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5" color="myell" symbol="butr" label="positron" sm="1"/>
+<p id="140" name="140" e8coordlbl="1/2,-1/2,1/2,-1/2,1/2,1/2,1/2,1/2" e8coord="0.5,-0.5,0.5,-0.5,0.5,0.5,0.5,0.5" color="mgray" symbol="butr" label="electron anti-neutrino" sm="1"/>
+<p id="141" name="141" e8coordlbl="-1/2,1/2,1/2,-1/2,1/2,1/2,1/2,1/2" e8coord="-0.5,0.5,0.5,-0.5,0.5,0.5,0.5,0.5" color="mgray" symbol="butr" label="electron anti-neutrino" sm="1"/>
+<p id="142" name="142" e8coordlbl="1/2,-1/2,-1/2,1/2,1/2,1/2,1/2,1/2" e8coord="0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,0.5" color="lgray" symbol="butr" label="positron" sm="1"/>
+<p id="143" name="143" e8coordlbl="-1/2,1/2,-1/2,1/2,1/2,1/2,1/2,1/2" e8coord="-0.5,0.5,-0.5,0.5,0.5,0.5,0.5,0.5" color="lgray" symbol="butr" label="positron" sm="1"/>
+<p id="144" name="144" e8coordlbl="-1/2,-1/2,-1/2,-1/2,1/2,1/2,-1/2,-1/2" e8coord="-0.5,-0.5,-0.5,-0.5,0.5,0.5,-0.5,-0.5" color="drora" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="145" name="145" e8coordlbl="1/2,1/2,-1/2,-1/2,1/2,1/2,-1/2,-1/2" e8coord="0.5,0.5,-0.5,-0.5,0.5,0.5,-0.5,-0.5" color="drora" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="146" name="146" e8coordlbl="-1/2,-1/2,1/2,1/2,1/2,1/2,-1/2,-1/2" e8coord="-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5,-0.5" color="mrora" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="147" name="147" e8coordlbl="1/2,1/2,1/2,1/2,1/2,1/2,-1/2,-1/2" e8coord="0.5,0.5,0.5,0.5,0.5,0.5,-0.5,-0.5" color="mrora" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="148" name="148" e8coordlbl="1/2,-1/2,1/2,-1/2,1/2,1/2,-1/2,-1/2" e8coord="0.5,-0.5,0.5,-0.5,0.5,0.5,-0.5,-0.5" color="dred" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="149" name="149" e8coordlbl="-1/2,1/2,1/2,-1/2,1/2,1/2,-1/2,-1/2" e8coord="-0.5,0.5,0.5,-0.5,0.5,0.5,-0.5,-0.5" color="dred" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="150" name="150" e8coordlbl="1/2,-1/2,-1/2,1/2,1/2,1/2,-1/2,-1/2" e8coord="0.5,-0.5,-0.5,0.5,0.5,0.5,-0.5,-0.5" color="mred" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="151" name="151" e8coordlbl="-1/2,1/2,-1/2,1/2,1/2,1/2,-1/2,-1/2" e8coord="-0.5,0.5,-0.5,0.5,0.5,0.5,-0.5,-0.5" color="mred" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="152" name="144" e8coordlbl="-1/2,-1/2,-1/2,-1/2,1/2,-1/2,1/2,-1/2" e8coord="-0.5,-0.5,-0.5,-0.5,0.5,-0.5,0.5,-0.5" color="dygre" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="153" name="145" e8coordlbl="1/2,1/2,-1/2,-1/2,1/2,-1/2,1/2,-1/2" e8coord="0.5,0.5,-0.5,-0.5,0.5,-0.5,0.5,-0.5" color="dygre" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="154" name="146" e8coordlbl="-1/2,-1/2,1/2,1/2,1/2,-1/2,1/2,-1/2" e8coord="-0.5,-0.5,0.5,0.5,0.5,-0.5,0.5,-0.5" color="mygre" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="155" name="147" e8coordlbl="1/2,1/2,1/2,1/2,1/2,-1/2,1/2,-1/2" e8coord="0.5,0.5,0.5,0.5,0.5,-0.5,0.5,-0.5" color="mygre" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="156" name="148" e8coordlbl="1/2,-1/2,1/2,-1/2,1/2,-1/2,1/2,-1/2" e8coord="0.5,-0.5,0.5,-0.5,0.5,-0.5,0.5,-0.5" color="dgree" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="157" name="149" e8coordlbl="-1/2,1/2,1/2,-1/2,1/2,-1/2,1/2,-1/2" e8coord="-0.5,0.5,0.5,-0.5,0.5,-0.5,0.5,-0.5" color="dgree" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="158" name="150" e8coordlbl="1/2,-1/2,-1/2,1/2,1/2,-1/2,1/2,-1/2" e8coord="0.5,-0.5,-0.5,0.5,0.5,-0.5,0.5,-0.5" color="mgree" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="159" name="151" e8coordlbl="-1/2,1/2,-1/2,1/2,1/2,-1/2,1/2,-1/2" e8coord="-0.5,0.5,-0.5,0.5,0.5,-0.5,0.5,-0.5" color="mgree" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="160" name="144" e8coordlbl="-1/2,-1/2,-1/2,-1/2,1/2,-1/2,-1/2,1/2" e8coord="-0.5,-0.5,-0.5,-0.5,0.5,-0.5,-0.5,0.5" color="dbvio" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="161" name="145" e8coordlbl="1/2,1/2,-1/2,-1/2,1/2,-1/2,-1/2,1/2" e8coord="0.5,0.5,-0.5,-0.5,0.5,-0.5,-0.5,0.5" color="dbvio" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="162" name="146" e8coordlbl="-1/2,-1/2,1/2,1/2,1/2,-1/2,-1/2,1/2" e8coord="-0.5,-0.5,0.5,0.5,0.5,-0.5,-0.5,0.5" color="mbvio" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="163" name="147" e8coordlbl="1/2,1/2,1/2,1/2,1/2,-1/2,-1/2,1/2" e8coord="0.5,0.5,0.5,0.5,0.5,-0.5,-0.5,0.5" color="mbvio" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="164" name="148" e8coordlbl="1/2,-1/2,1/2,-1/2,1/2,-1/2,-1/2,1/2" e8coord="0.5,-0.5,0.5,-0.5,0.5,-0.5,-0.5,0.5" color="dblue" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="165" name="149" e8coordlbl="-1/2,1/2,1/2,-1/2,1/2,-1/2,-1/2,1/2" e8coord="-0.5,0.5,0.5,-0.5,0.5,-0.5,-0.5,0.5" color="dblue" symbol="butr" label="anti-up quark" sm="1"/>
+<p id="166" name="150" e8coordlbl="1/2,-1/2,-1/2,1/2,1/2,-1/2,-1/2,1/2" e8coord="0.5,-0.5,-0.5,0.5,0.5,-0.5,-0.5,0.5" color="mblue" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="167" name="151" e8coordlbl="-1/2,1/2,-1/2,1/2,1/2,-1/2,-1/2,1/2" e8coord="-0.5,0.5,-0.5,0.5,0.5,-0.5,-0.5,0.5" color="mblue" symbol="butr" label="anti-down quark" sm="1"/>
+<p id="168" name="168" e8coordlbl="1/2,-1/2,-1/2,-1/2,1/2,-1/2,-1/2,-1/2" e8coord="0.5,-0.5,-0.5,-0.5,0.5,-0.5,-0.5,-0.5" color="dyell" symbol="mutr" label="muon anti-neutrino" sm="0"/>
+<p id="169" name="169" e8coordlbl="-1/2,1/2,-1/2,-1/2,1/2,-1/2,-1/2,-1/2" e8coord="-0.5,0.5,-0.5,-0.5,0.5,-0.5,-0.5,-0.5" color="dyell" symbol="mutr" label="muon anti-neutrino" sm="0"/>
+<p id="170" name="170" e8coordlbl="1/2,-1/2,1/2,1/2,1/2,-1/2,-1/2,-1/2" e8coord="0.5,-0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5" color="myell" symbol="mutr" label="anti-muon" sm="0"/>
+<p id="171" name="171" e8coordlbl="-1/2,1/2,1/2,1/2,1/2,-1/2,-1/2,-1/2" e8coord="-0.5,0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5" color="myell" symbol="mutr" label="anti-muon" sm="0"/>
+<p id="172" name="172" e8coordlbl="-1/2,-1/2,1/2,-1/2,1/2,-1/2,-1/2,-1/2" e8coord="-0.5,-0.5,0.5,-0.5,0.5,-0.5,-0.5,-0.5" color="mgray" symbol="mutr" label="muon anti-neutrino" sm="0"/>
+<p id="173" name="173" e8coordlbl="-1/2,-1/2,-1/2,1/2,1/2,-1/2,-1/2,-1/2" e8coord="-0.5,-0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5" color="mgray" symbol="mutr" label="muon anti-neutrino" sm="0"/>
+<p id="174" name="174" e8coordlbl="1/2,1/2,1/2,-1/2,1/2,-1/2,-1/2,-1/2" e8coord="0.5,0.5,0.5,-0.5,0.5,-0.5,-0.5,-0.5" color="lgray" symbol="mutr" label="anti-muon" sm="0"/>
+<p id="175" name="175" e8coordlbl="1/2,1/2,-1/2,1/2,1/2,-1/2,-1/2,-1/2" e8coord="0.5,0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5" color="lgray" symbol="mutr" label="anti-muon" sm="0"/>
+<p id="176" name="176" e8coordlbl="1/2,-1/2,-1/2,-1/2,-1/2,1/2,-1/2,-1/2" e8coord="0.5,-0.5,-0.5,-0.5,-0.5,0.5,-0.5,-0.5" color="drora" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="177" name="177" e8coordlbl="-1/2,1/2,-1/2,-1/2,-1/2,1/2,-1/2,-1/2" e8coord="-0.5,0.5,-0.5,-0.5,-0.5,0.5,-0.5,-0.5" color="drora" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="178" name="178" e8coordlbl="1/2,-1/2,1/2,1/2,-1/2,1/2,-1/2,-1/2" e8coord="0.5,-0.5,0.5,0.5,-0.5,0.5,-0.5,-0.5" color="mrora" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="179" name="179" e8coordlbl="-1/2,1/2,1/2,1/2,-1/2,1/2,-1/2,-1/2" e8coord="-0.5,0.5,0.5,0.5,-0.5,0.5,-0.5,-0.5" color="mrora" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="180" name="180" e8coordlbl="-1/2,-1/2,1/2,-1/2,-1/2,1/2,-1/2,-1/2" e8coord="-0.5,-0.5,0.5,-0.5,-0.5,0.5,-0.5,-0.5" color="dred" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="181" name="181" e8coordlbl="-1/2,-1/2,-1/2,1/2,-1/2,1/2,-1/2,-1/2" e8coord="-0.5,-0.5,-0.5,0.5,-0.5,0.5,-0.5,-0.5" color="dred" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="182" name="182" e8coordlbl="1/2,1/2,1/2,-1/2,-1/2,1/2,-1/2,-1/2" e8coord="0.5,0.5,0.5,-0.5,-0.5,0.5,-0.5,-0.5" color="mred" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="183" name="183" e8coordlbl="1/2,1/2,-1/2,1/2,-1/2,1/2,-1/2,-1/2" e8coord="0.5,0.5,-0.5,0.5,-0.5,0.5,-0.5,-0.5" color="mred" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="184" name="176" e8coordlbl="1/2,-1/2,-1/2,-1/2,-1/2,-1/2,1/2,-1/2" e8coord="0.5,-0.5,-0.5,-0.5,-0.5,-0.5,0.5,-0.5" color="dygre" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="185" name="177" e8coordlbl="-1/2,1/2,-1/2,-1/2,-1/2,-1/2,1/2,-1/2" e8coord="-0.5,0.5,-0.5,-0.5,-0.5,-0.5,0.5,-0.5" color="dygre" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="186" name="178" e8coordlbl="1/2,-1/2,1/2,1/2,-1/2,-1/2,1/2,-1/2" e8coord="0.5,-0.5,0.5,0.5,-0.5,-0.5,0.5,-0.5" color="mygre" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="187" name="179" e8coordlbl="-1/2,1/2,1/2,1/2,-1/2,-1/2,1/2,-1/2" e8coord="-0.5,0.5,0.5,0.5,-0.5,-0.5,0.5,-0.5" color="mygre" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="188" name="180" e8coordlbl="-1/2,-1/2,1/2,-1/2,-1/2,-1/2,1/2,-1/2" e8coord="-0.5,-0.5,0.5,-0.5,-0.5,-0.5,0.5,-0.5" color="dgree" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="189" name="181" e8coordlbl="-1/2,-1/2,-1/2,1/2,-1/2,-1/2,1/2,-1/2" e8coord="-0.5,-0.5,-0.5,0.5,-0.5,-0.5,0.5,-0.5" color="dgree" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="190" name="182" e8coordlbl="1/2,1/2,1/2,-1/2,-1/2,-1/2,1/2,-1/2" e8coord="0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5,-0.5" color="mgree" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="191" name="183" e8coordlbl="1/2,1/2,-1/2,1/2,-1/2,-1/2,1/2,-1/2" e8coord="0.5,0.5,-0.5,0.5,-0.5,-0.5,0.5,-0.5" color="mgree" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="192" name="176" e8coordlbl="1/2,-1/2,-1/2,-1/2,-1/2,-1/2,-1/2,1/2" e8coord="0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,0.5" color="dbvio" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="193" name="177" e8coordlbl="-1/2,1/2,-1/2,-1/2,-1/2,-1/2,-1/2,1/2" e8coord="-0.5,0.5,-0.5,-0.5,-0.5,-0.5,-0.5,0.5" color="dbvio" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="194" name="178" e8coordlbl="1/2,-1/2,1/2,1/2,-1/2,-1/2,-1/2,1/2" e8coord="0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5" color="mbvio" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="195" name="179" e8coordlbl="-1/2,1/2,1/2,1/2,-1/2,-1/2,-1/2,1/2" e8coord="-0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5" color="mbvio" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="196" name="180" e8coordlbl="-1/2,-1/2,1/2,-1/2,-1/2,-1/2,-1/2,1/2" e8coord="-0.5,-0.5,0.5,-0.5,-0.5,-0.5,-0.5,0.5" color="dblue" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="197" name="181" e8coordlbl="-1/2,-1/2,-1/2,1/2,-1/2,-1/2,-1/2,1/2" e8coord="-0.5,-0.5,-0.5,0.5,-0.5,-0.5,-0.5,0.5" color="dblue" symbol="mutr" label="anti-charm quark" sm="0"/>
+<p id="198" name="182" e8coordlbl="1/2,1/2,1/2,-1/2,-1/2,-1/2,-1/2,1/2" e8coord="0.5,0.5,0.5,-0.5,-0.5,-0.5,-0.5,0.5" color="mblue" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="199" name="183" e8coordlbl="1/2,1/2,-1/2,1/2,-1/2,-1/2,-1/2,1/2" e8coord="0.5,0.5,-0.5,0.5,-0.5,-0.5,-0.5,0.5" color="mblue" symbol="mutr" label="anti-strange quark" sm="0"/>
+<p id="200" name="200" e8coordlbl="0,0,0,-1,-1,0,0,0" e8coord="0,0,0,-1,-1,0,0,0" color="dyell" symbol="sutr" label="tau anti-neutrino" sm="0"/>
+<p id="201" name="201" e8coordlbl="0,0,-1,0,-1,0,0,0" e8coord="0,0,-1,0,-1,0,0,0" color="dyell" symbol="sutr" label="tau anti-neutrino" sm="0"/>
+<p id="202" name="202" e8coordlbl="0,0,1,0,-1,0,0,0" e8coord="0,0,1,0,-1,0,0,0" color="myell" symbol="sutr" label="anti-tau" sm="0"/>
+<p id="203" name="203" e8coordlbl="0,0,0,1,-1,0,0,0" e8coord="0,0,0,1,-1,0,0,0" color="myell" symbol="sutr" label="anti-tau" sm="0"/>
+<p id="204" name="204" e8coordlbl="0,-1,0,0,-1,0,0,0" e8coord="0,-1,0,0,-1,0,0,0" color="mgray" symbol="sutr" label="tau anti-neutrino" sm="0"/>
+<p id="205" name="205" e8coordlbl="1,0,0,0,-1,0,0,0" e8coord="1,0,0,0,-1,0,0,0" color="mgray" symbol="sutr" label="tau anti-neutrino" sm="0"/>
+<p id="206" name="206" e8coordlbl="-1,0,0,0,-1,0,0,0" e8coord="-1,0,0,0,-1,0,0,0" color="lgray" symbol="sutr" label="anti-tau" sm="0"/>
+<p id="207" name="207" e8coordlbl="0,1,0,0,-1,0,0,0" e8coord="0,1,0,0,-1,0,0,0" color="lgray" symbol="sutr" label="anti-tau" sm="0"/>
+<p id="208" name="208" e8coordlbl="0,0,0,-1,0,1,0,0" e8coord="0,0,0,-1,0,1,0,0" color="drora" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="209" name="209" e8coordlbl="0,0,-1,0,0,1,0,0" e8coord="0,0,-1,0,0,1,0,0" color="drora" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="210" name="210" e8coordlbl="0,0,1,0,0,1,0,0" e8coord="0,0,1,0,0,1,0,0" color="mrora" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="211" name="211" e8coordlbl="0,0,0,1,0,1,0,0" e8coord="0,0,0,1,0,1,0,0" color="mrora" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="212" name="212" e8coordlbl="0,-1,0,0,0,1,0,0" e8coord="0,-1,0,0,0,1,0,0" color="dred" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="213" name="213" e8coordlbl="1,0,0,0,0,1,0,0" e8coord="1,0,0,0,0,1,0,0" color="dred" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="214" name="214" e8coordlbl="-1,0,0,0,0,1,0,0" e8coord="-1,0,0,0,0,1,0,0" color="mred" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="215" name="215" e8coordlbl="0,1,0,0,0,1,0,0" e8coord="0,1,0,0,0,1,0,0" color="mred" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="216" name="208" e8coordlbl="0,0,0,-1,0,0,1,0" e8coord="0,0,0,-1,0,0,1,0" color="dygre" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="217" name="209" e8coordlbl="0,0,-1,0,0,0,1,0" e8coord="0,0,-1,0,0,0,1,0" color="dygre" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="218" name="210" e8coordlbl="0,0,1,0,0,0,1,0" e8coord="0,0,1,0,0,0,1,0" color="mygre" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="219" name="211" e8coordlbl="0,0,0,1,0,0,1,0" e8coord="0,0,0,1,0,0,1,0" color="mygre" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="220" name="212" e8coordlbl="0,-1,0,0,0,0,1,0" e8coord="0,-1,0,0,0,0,1,0" color="dgree" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="221" name="213" e8coordlbl="1,0,0,0,0,0,1,0" e8coord="1,0,0,0,0,0,1,0" color="dgree" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="222" name="214" e8coordlbl="-1,0,0,0,0,0,1,0" e8coord="-1,0,0,0,0,0,1,0" color="mgree" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="223" name="215" e8coordlbl="0,1,0,0,0,0,1,0" e8coord="0,1,0,0,0,0,1,0" color="mgree" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="224" name="208" e8coordlbl="0,0,0,-1,0,0,0,1" e8coord="0,0,0,-1,0,0,0,1" color="dbvio" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="225" name="209" e8coordlbl="0,0,-1,0,0,0,0,1" e8coord="0,0,-1,0,0,0,0,1" color="dbvio" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="226" name="210" e8coordlbl="0,0,1,0,0,0,0,1" e8coord="0,0,1,0,0,0,0,1" color="mbvio" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="227" name="211" e8coordlbl="0,0,0,1,0,0,0,1" e8coord="0,0,0,1,0,0,0,1" color="mbvio" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="228" name="212" e8coordlbl="0,-1,0,0,0,0,0,1" e8coord="0,-1,0,0,0,0,0,1" color="dblue" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="229" name="213" e8coordlbl="1,0,0,0,0,0,0,1" e8coord="1,0,0,0,0,0,0,1" color="dblue" symbol="sutr" label="anti-top quark" sm="0"/>
+<p id="230" name="214" e8coordlbl="-1,0,0,0,0,0,0,1" e8coord="-1,0,0,0,0,0,0,1" color="mblue" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="231" name="215" e8coordlbl="0,1,0,0,0,0,0,1" e8coord="0,1,0,0,0,0,0,1" color="mblue" symbol="sutr" label="anti-bottom quark" sm="0"/>
+<p id="232" name="232" e8coordlbl="0,0,0,0,1,-1,0,0" e8coord="0,0,0,0,1,-1,0,0" color="mred" symbol="bdia" label="colored anti-Higgs" sm="0"/>
+<p id="233" name="232" e8coordlbl="0,0,0,0,1,0,-1,0" e8coord="0,0,0,0,1,0,-1,0" color="mgree" symbol="bdia" label="colored anti-Higgs" sm="0"/>
+<p id="234" name="232" e8coordlbl="0,0,0,0,1,0,0,-1" e8coord="0,0,0,0,1,0,0,-1" color="mblue" symbol="bdia" label="colored anti-Higgs" sm="0"/>
+<p id="235" name="235" e8coordlbl="0,0,0,0,-1,-1,0,0" e8coord="0,0,0,0,-1,-1,0,0" color="mred" symbol="mdia" label="colored anti-Higgs" sm="0"/>
+<p id="236" name="235" e8coordlbl="0,0,0,0,-1,0,-1,0" e8coord="0,0,0,0,-1,0,-1,0" color="mgree" symbol="mdia" label="colored anti-Higgs" sm="0"/>
+<p id="237" name="235" e8coordlbl="0,0,0,0,-1,0,0,-1" e8coord="0,0,0,0,-1,0,0,-1" color="mblue" symbol="mdia" label="colored anti-Higgs" sm="0"/>
+<p id="238" name="238" e8coordlbl="0,0,0,0,0,0,1,1" e8coord="0,0,0,0,0,0,1,1" color="mred" symbol="sdia" label="colored anti-Higgs" sm="0"/>
+<p id="239" name="238" e8coordlbl="0,0,0,0,0,1,0,1" e8coord="0,0,0,0,0,1,0,1" color="mgree" symbol="sdia" label="colored anti-Higgs" sm="0"/>
+<p id="240" name="238" e8coordlbl="0,0,0,0,0,1,1,0" e8coord="0,0,0,0,0,1,1,0" color="mblue" symbol="sdia" label="colored anti-Higgs" sm="0"/>
+<p id="241" name="241" e8coordlbl="0,0,0,0,0,0,0,0" e8coord="0,0,0,0,0,0,0,0" color="black" symbol="mcir" label="photon, Z boson, .." sm="1"/>
 </particles>
 <trialities>
    <t lnk="1,2,4" />
@@ -609,4 +596,5 @@
 
 			<i lnk="135,15=13,133" />
 </interactions>	</pointSystem>
+
 </rg>

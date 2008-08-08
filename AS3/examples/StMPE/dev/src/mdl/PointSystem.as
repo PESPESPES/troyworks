@@ -21,7 +21,7 @@
 		public var axises : Array;
 		public var particles : Array;
 		public var camera_points : Array;
-		public var edges : Array;
+		public var trialities : Array;
 		public var interactions : Dictionary;
 
 		private var i : int;
@@ -97,10 +97,30 @@
 			//	trace("xml " + xml..p);
 			trace("found PARTICLES " + n + " =========================================");
 			ps.particles = new Array();
+			var idx:Object = new Object();
 			for (;i < n; ++i) {
-				//	trace("Particle " + i + " " + xparticles[i].toXMLString());
+	
 				p = EightDimensionParticle.XMLFactory(xparticles[i]);
 				p.id = i + 1; //1 based
+				/*
+				 * REPARSING IDs................ 
+				 var pstr:String =  xparticles[i].toXMLString();
+				var an:String = 'name="';
+				var bn:String = '" e8coordlbl';
+				var ai:int = pstr.indexOf(an);
+				var bi:int = pstr.indexOf(bn);
+				var pnamA:String = pstr.substring(0, ai + an.length );
+				var pnam:String = pstr.substring(ai + an.length , bi);
+				var pnamB:String = pstr.substring(bi, pstr.length);
+				/////////////////////////////////////////////
+				if(idx[pnam] == null){
+					idx[pnam] = p.id;
+					trace(pnamA +  p.id + pnamB);
+				}else{
+					//trace("found duplicate" + idx[pnam] + " at " + p.id);
+					trace(pnamA +  idx[pnam] + pnamB);
+				}*/
+			//	trace("Particle " + i + " " + pnam);
 				//	trace("Particle obj " + co);
 				//	p.addEventListener(Model.ROTATIONS_CHANGED, ps.redispatchEvent);
 				ps.particles.push(p);				
@@ -160,7 +180,7 @@
 					// given a particle has many outgoing links we need to put them into a single array on the particle
 					pk = Number(keys[0]-1);
 					sk = Number(keys[1]-1);
-					trace();
+					//trace();
 					//trace(" pk " + pk + "pFrom " +ps.particles[pk] +"  "+ " sk " + sk +" "  + ps.particles[sk]);
 //					trace("pFrom " +ps.particles[pk] );
 					ps.particles[pk].outboundParticleLinks.push(ps.particles[sk]);
@@ -169,14 +189,26 @@
 					//					trace("putting 1 interaction" + ky_val[0]);
 					ps.interactions[ky_val[0]] = [ps.particles[Number(lnks[0])-1]];
 				}else if(lnks.length == 2) {
-					//				trace("putting 2 interaction" + ky_val[0]);
-					ps.interactions[ky_val[0]] = [ps.particles[Number(lnks[0])-1], ps.particles[Number(lnks[1])]-1];
+//								trace("putting 2 interaction" + ky_val[0] + "  "+ ps.particles[Number(lnks[0])-1] + " " +  ps.particles[Number(lnks[1])]-1]);
+					ps.interactions[ky_val[0]] = [ps.particles[Number(lnks[0])-1], ps.particles[Number(lnks[1])-1]];
 				}
 		//		p = ParticleInteractions.XMLFactory(xparticles[i]);
 			//	trace("Particle obj " + co);
 			//	p.addEventListener(Model.ROTATIONS_CHANGED, ps.redispatchEvent);
 			//	ps.particles.push(p);				
 			}
+			}
+			/////////////////// CREATE TRIALITIES  ///////////////////////////////
+			ps.trialities = new Array();
+			var tri:XMLList = xml..trialities.t;
+			i = 0;
+			n = tri.length();
+			trace("Found " + n + " trialities ====================================");
+			for (;i < n; ++i) {
+				//trace("PInteraction " + i + " " + xparticlInteractions[i].toXMLString());
+				lnks = String(tri[i].@lnk).split(",");
+			//	trace(" triality " + lnks.join(","));
+				ps.trialities.push([ps.particles[Number(lnks[0])-1], ps.particles[Number(lnks[1])-1],ps.particles[Number(lnks[2])-1]]);
 			}
 			return ps;
 		} 

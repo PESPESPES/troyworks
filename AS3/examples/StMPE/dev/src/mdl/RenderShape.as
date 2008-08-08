@@ -46,7 +46,7 @@ package mdl {
 		//				canvas = view;
 		//	}
 		public static function parse(shapeSizeAndName : String) : RenderShape {
-			trace("parse " + shapeSizeAndName);
+		//	trace("parse " + shapeSizeAndName);
 			switch(shapeSizeAndName) {
 				case "scir":
 					return S_CIRCLE; 
