@@ -2,15 +2,15 @@
 <pointSystem name="E8 Points">
    <presets></presets>
    <coordinates>
-       <system name="E8 coords" coordlbl="1/2i:w^3:T,1/2:w^3:S,U^3,V^3,w,x,y,z">
+       <system name="E8 Coordinates" coordlbl="1/2i:!^3:T,1/2:!^3:S,U^3,V^3,w,x,y,z">
    		<rotations>
              <r name="Gosset" hv="0,.922;.097,0;-.464,.119;.464,.119;-.67,0;.237,.193;-.237,.193;0,.218" h="0" v="1" isE8="true" />
              <r name="Home" hv="0,1;1,0;0,0;0,0;0,0;0,0;0,0;0,0" h="0" v="1"  isE8="true" />     
         </rotations>
 	   </system>
-       <system name="Physics coords" coordlbl="1/2:w^3:L,1/2:w^3:R,W^3,:B^3:1,w,:B:2,g^3,g^8">
+       <system name="Physics Coordinates" coordlbl="1/2:!^3:L,1/2:!^3:R,W^3,:B^3:1,w,:B:2,g^3,g^8">
          <rotations>	           
-          <r name="HomeP" hv="0,1;1,0;0,0;0,0;0,0;0,0;0,0;0,0" h="0" v="1"  isE8="false" />
+        
 	    </rotations>
 <coords>
  <pc id="1" lbl="SQRT(2),0,0,0,0,0,0,0" coord="1.41,0,0,0,0,0,0,0" />

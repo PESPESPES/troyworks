@@ -133,7 +133,7 @@ package mdl {
 				pointSystems.push(curPointSystem); 
 			}
 			var smPointSystem:PointSystem = new PointSystem();
-			smPointSystem.name  = "Standard Points";
+			smPointSystem.name  = "Standard Model";
 			smPointSystem.axises = curPointSystem.axises;
 			smPointSystem.curPreset = curPointSystem.curPreset;
 			smPointSystem.coordinates = curPointSystem.coordinates;

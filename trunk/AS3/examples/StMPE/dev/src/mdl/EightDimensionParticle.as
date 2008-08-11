@@ -33,7 +33,7 @@
 		public const SELECTED_FIRST_FILTER : GlowFilter = new GlowFilter(SELECTED_FIRST_COLOR, 1, 20, 20, 4);
 		public const SELECTED_SECOND_POSSIBLE_FILTER : GlowFilter = new GlowFilter(SELECTED_SECOND_POSSIBLE_COLOR, 1, 10, 10, 4);
 		public const SELECTED_SECOND_FILTER : GlowFilter = new GlowFilter(SELECTED_SECOND_COLOR, 1, 20, 20, 4);
-		public const RESULT_FILTER : GlowFilter = new GlowFilter(RESULT_COLOR, 1, 10, 10, 4);
+		public const RESULT_FILTER : GlowFilter = new GlowFilter(RESULT_COLOR, 1, 20, 20, 4);
 
 		public var isFocused : Boolean = false;
 		public static const NOT_SELECTED : Number = 0;
