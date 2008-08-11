@@ -51,6 +51,7 @@ package mdl {
 			trace("found rotations=========" + rotations.length());
 			var ro : Rotations;
 			for (;i < n; ++i) {
+				//trace("trying rotation " + i);
 				trace("rotation " + rotations[i]);
 				ro = Rotations.XMLFactory(rotations[i]);
 				//	ro.addEventListener(type, listener)
@@ -64,9 +65,10 @@ package mdl {
 			 		//res.rotations.push()	
 			 	}
 			}
-
+			if(res.rotations.length > 0){
 			res.curRotation = res.rotations[0];
 			trace("curRotation " + res.curRotation.name);
+			}
 			///////////////////////////////////////////////////////////
 			//    PARSE COORDINATES
 			//////////////////////////////////////////////////////////

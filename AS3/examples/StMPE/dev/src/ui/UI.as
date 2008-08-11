@@ -121,6 +121,7 @@
 		var lblDef : Object;
 		private var standardPoints : Boolean;
 		private var createdParticles : Boolean;
+		private var rotationsHaveChanged:Boolean = false;
 
 		public function UI() : void {
 			super();
@@ -191,7 +192,7 @@
 		private function pointsChanged(e : Event) : void {
 			trace("CMB settingPointSystem " + points_cmb.selectedItem.name);
 			e.stopImmediatePropagation();
-			if(points_cmb.selectedItem.name == "Standard Points") {
+			if(points_cmb.selectedItem.name == "Standard Model") {
 				trace("STANDARD POINTS");
 				standardPoints = true;
 				updateView();
@@ -220,50 +221,70 @@
 				
 			var desCoord : Coordinates = Coordinates(coords_cmb.selectedItem);
 			var hv : Array;
-			var crhv:Array;
-			var cr:Rotations;
+			var crhv : Array;
+			var cr : Rotations;
 			if(modl.curPointSystem.curCoordinate.id == 0 && desCoord.id == 1) {
-				trace("transformE8CoordsToPhyCoords");
+			
 				hv = modl.transformE8CoordsToPhyCoords(modl.camera.H, modl.camera.V);
 				i = 0;
-				n =modl.curPointSystem.curCoordinate.rotations.length;
-				
-				for(;i < n;++i) {
+				n = modl.curPointSystem.curCoordinate.rotations.length;
+				trace("transformE8CoordsToPhyCoords " + n + " items");
+				//				for(i = 0; i < n;i++) {
+				while( modl.curPointSystem.curCoordinate.rotations.length > 0) {
+					trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+					
+					trace(" adjusting rotation " + i);
 					cr = modl.curPointSystem.curCoordinate.rotations.shift() as Rotations;
 					crhv = modl.transformE8CoordsToPhyCoords(cr.H, cr.V);
-					cr.H =crhv[0];
-					cr.V =crhv[1];
-					cr.isE8 = true;
+					cr.H = crhv[0];
+					cr.V = crhv[1];
+					cr.isE8 = false;
 					desCoord.rotations.push(cr);
-					if(modl.curPointSystem.curCoordinate.curRotation == cr){
-						desCoord.curRotation = cr; 
-					}
+				}
+				
+				cr = modl.curUserRotation;
+				if(cr != null){
+				crhv = modl.transformE8CoordsToPhyCoords(cr.H, cr.V);
+				cr.H = crhv[0];
+				cr.V = crhv[1];
+				cr.isE8 = false;
 				}
 			}else if(modl.curPointSystem.curCoordinate.id == 1 && desCoord.id == 0) {
-				trace("transformE8CoordsToPhyCoords");
+				trace("transformPhyCoordsToE8Coords");
 				hv = modl.transformPhyCoordsToE8Coords(modl.camera.H, modl.camera.V);
 				i = 0;
-				n =modl.curPointSystem.curCoordinate.rotations.length;
-				
-				for(;i < n;++i) {
+				n = modl.curPointSystem.curCoordinate.rotations.length;
+				trace("transformPhyCoordsToE8Coords " + n + " items");
+				//for(i = 0; i < n;i++) {
+				while( modl.curPointSystem.curCoordinate.rotations.length > 0) {
+					trace("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+					trace(" adjusting rotation " + i);
 					cr = modl.curPointSystem.curCoordinate.rotations.shift() as Rotations;
 					crhv = modl.transformPhyCoordsToE8Coords(cr.H, cr.V);
 					cr.isE8 = true;
-					cr.H =crhv[0];
-					cr.V =crhv[1];
+					cr.H = crhv[0];
+					cr.V = crhv[1];
 					desCoord.rotations.push(cr);
-					if(modl.curPointSystem.curCoordinate.curRotation == cr){
+					if(modl.curPointSystem.curCoordinate.curRotation == cr) {
+						trace("Found DESIred rotations");
 						desCoord.curRotation = cr; 
 					}
 				}
-			}else{
+				cr = modl.curUserRotation;
+				if(cr != null){
+				crhv = modl.transformPhyCoordsToE8Coords(cr.H, cr.V);
+				cr.H = crhv[0];
+				cr.V = crhv[1];
+				cr.isE8 = true;
+				}
+			}else {
 				//at desired coords
 				hv = [modl.camera.H, modl.camera.V];
 			}
 			trace("hv " + hv);
 			modl.camera.H = hv[0] as EightDimensionVector;
 			modl.camera.V = hv[1] as EightDimensionVector;
-			
+			desCoord.curRotation = modl.curPointSystem.curCoordinate.curRotation;			
 			
 			trace(modl.curPointSystem.curCoordinate.id + " " + desCoord.id);
 			modl.curPointSystem.curCoordinate = desCoord ;
@@ -422,6 +443,9 @@
 					break;
 				}
 			}
+			if(modl.curUserRotation == rotations_lb.selectedItem){
+				modl.curUserRotation = null;
+			}
 			onModelRotationsChanged();
 		}
 
@@ -434,12 +458,14 @@
 		private function rotationsChanged(e : Event) : void {
 			trace("CMB settingModelRotation to " + rotations_lb.selectedItem.name);
 			e.stopImmediatePropagation();
+						rotationsHaveChanged = true;
 			modl.curPointSystem.curCoordinate.curRotation = Rotations(rotations_lb.selectedItem);
 		}
 
-		private function onModelRotationsChanged(e : Event = null, skip:Boolean = false) : void {
+		private function onModelRotationsChanged(e : Event = null, skip : Boolean = false) : void {
 			trace("onModelRotationsChanged");
 			//return;
+
 			var dp : DataProvider = new DataProvider(modl.curPointSystem.curCoordinate.rotations);
 			//var userRotation : Rotations = new Rotations();
 			//userRotation.name = "My New Rotation";
@@ -450,11 +476,11 @@
 			rotations_lb.enabled = (rotations_lb.dataProvider.length > 0);
 			rotations_lb.selectedIndex = rotations_lb.dataProvider.getItemIndex(modl.curPointSystem.curCoordinate.curRotation); 
 			
-			if(skip){
+			if(skip) {
 				return;
 			}
 			//	var hv : Array = modl.curPointSystem.curCoordinate.curRotation.hv;
-		
+
 			a_btn.indicator_mc.H_btn.addEventListener(MouseEvent.CLICK, onH_Click);
 			a_btn.indicator_mc.V_btn.addEventListener(MouseEvent.CLICK, onV_Click);
 			a_btn.indicator_mc.HV_btn.addEventListener(MouseEvent.CLICK, onHV_Click);
@@ -773,16 +799,22 @@
 		public function onViewportPress(mouseEvent : MouseEvent) : void {
 			clickX = viewport.mouseX;
 			clickY = viewport.mouseY;
-			var dx : Number = viewport.mouseX - center.x;
-			var dy : Number = viewport.mouseY - center.y;
-			var radians : Number = Math.atan2(dy, dx)	;	
-			aRot.rotation = radians * 180 / Math.PI;
-			trace("ON PRESS" + aRot.rotation);
+/*			var dx : Number = (viewport.mouseX - center.x);
+			var dy : Number = (viewport.mouseY - center.y);
+			var radians : Number = Math.atan2(dy, dx)	;	*/
+			aRot.rotation = getHVRotation();
+			trace("ON PRESS " + aRot.rotation);
 	
 			updateView();
 			addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 		}
-
+		public function getHVRotation():Number{
+			var dx : Number = (viewport.mouseX - center.x);
+			var dy : Number = (viewport.mouseY - center.y)*-1;
+			var radians : Number = Math.atan2(dy, dx)	;	
+			var res:Number = radians * 180 / Math.PI;
+			return res;
+		}
 		public function onViewportRelease(mouseEvent : MouseEvent) : void {
 			removeEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 		
@@ -862,8 +894,9 @@
 				}
 			}
 			if(p != null) {
-			
+				
 				if(modl.firstClicked == null || p.selectedState == EightDimensionParticle.NOT_SELECTED) {
+					trace("new first click --------------");
 					if(modl.firstClicked != null) {
 						modl.firstClicked.selectedState = EightDimensionParticle.NOT_SELECTED;
 						i = 0;
@@ -873,15 +906,19 @@
 						}
 					}
 					if(modl.secondClicked != null) {
-						modl.secondClicked.selectedState = EightDimensionParticle.SELECTED_SECOND_POSSIBLE;			
+						modl.secondClicked.selectedState = EightDimensionParticle.NOT_SELECTED;
+						modl.secondClicked = null;
+						bottom_panel.selection2.visible = false;			
 					}
 					if(modl.result1 != null) {
 						modl.result1.selectedState = EightDimensionParticle.NOT_SELECTED;
 						modl.result1 = null;
+						bottom_panel.selection3.visible = false;
 					}
 					if(modl.result2 != null) {
 						modl.result2.selectedState = EightDimensionParticle.NOT_SELECTED;
 						modl.result2 = null;
+						bottom_panel.selection4.visible = false;
 					}
 					modl.firstClicked = p;
 					updateDetails(bottom_panel.selection1, p);
@@ -989,7 +1026,7 @@
 			p.shape.draw(mc.shape_mc, p.color);
 			mc.shape_mc.filters = p.ui.filters;
 				
-			trace("UPDATE DETAILS " + p.curCoords.d1Lbl + " " + p.curCoords.d2Lbl);			
+			//	trace("UPDATE DETAILS " + p.curCoords.d1Lbl + " " + p.curCoords.d2Lbl);			
 			updateDetailCoordinate(p.curCoords.d1Lbl, mc.a_txt, mc.ac_mc);
 			updateDetailCoordinate(p.curCoords.d2Lbl, mc.b_txt, mc.bc_mc);
 			updateDetailCoordinate(p.curCoords.d3Lbl, mc.c_txt, mc.cc_mc);
@@ -1077,7 +1114,7 @@
 				/////////////////////////////////////////////
 				var mul : Number = .005;
 				ax = (viewport.mouseX - clickX) * mul;
-				ay = (viewport.mouseY - clickY) * mul;
+				ay = (viewport.mouseY - clickY) * mul * -1;
 				//trace("----------------------------------");
 				//trace("ax " + ax + " " + ay);			
 				if(ax == 0 && ay == 0) {
@@ -1255,22 +1292,24 @@
 				ax = (  clickX - viewport.mouseX); 
 				ay = ( clickY - viewport.mouseY );
 				//trace("----------------------------------");
-				//trace("ax " + ax + " " + ay);			
+				trace("ax " + ax + " " + ay);			
 				if(ax == 0 && ay == 0) {
 					return;
 				}
 			  
 				var dx : Number = viewport.mouseX - center.x;
-				var dy : Number = viewport.mouseY - center.y;
+				var dy : Number = (viewport.mouseY - center.y );
 	
 				var radians : Number = Math.atan2(dy, dx);
 				
 				
 				
-				bRot.rotation = radians * 180 / Math.PI;
+				bRot.rotation = getHVRotation();//radians * 180 / Math.PI;
 				endRot.rotation = (bRot.rotation - aRot.rotation) + curRotation;
-				trace(bRot.rotation + " " + endRot.rotation);
-				drad = endRot.rotation * Math.PI / 180 ;
+				trace("bRot.rotation  " + bRot.rotation + " endRot.rotation " + endRot.rotation);
+				drad = endRot.rotation * Math.PI / 180;
+				trace("drad " + drad);
+				trace("Hsnap.d1" + Hsnap.d1);
 			
 			
 				//drad = radians ;
@@ -1294,13 +1333,19 @@
 				V1.d7 = (Hsnap.d7 * sinT) + (Vsnap.d7 * cosT);
 				H1.d8 = (Hsnap.d8 * cosT) - (Vsnap.d8 * sinT);
 				V1.d8 = (Hsnap.d8 * sinT) + (Vsnap.d8 * cosT);
+								trace("H1.d1" + H1.d1);
+				
 				modl.camera.H = H1;
 				modl.camera.V = V1;
+				H = H1;
+				V = V1;
 				lastRadians = drad;
 			}
 			/////////////////// ADJUST USER ROTATIONS ////////////////////////
-			if(modl.curUserRotation == null) {
+		//	if(false){
+			if(modl.curUserRotation == null || 			rotationsHaveChanged ) {
 				var userRotation : Rotations = new Rotations();
+				rotationsHaveChanged = false;
 				///////// PASS BY VALUE NOT REFERENCE!!!!////////////
 				userRotation.H.d1 = H.d1;
 				userRotation.V.d1 = V.d1;
@@ -1331,6 +1376,7 @@
 				userRotation.isDirty = true;
 				userRotation.isSaved = false;
 				modl.curUserRotation = userRotation;
+				modl.curPointSystem.curCoordinate.curRotation = userRotation; 
 				onModelRotationsChanged();
 			}else {
 				///////// PASS BY VALUE NOT REFERENCE!!!!////////////
@@ -1357,11 +1403,13 @@
 				
 				modl.curUserRotation.H.d8 = H.d8;
 				modl.curUserRotation.V.d8 = V.d8;
-				
+				//modl.curUserRotation.name = "My " + modl.curPointSystem.curCoordinate.curRotation.name + " *";
 				//modl.curUserRotation.hv = [[H.d1, V.d1],[H.d2, V.d2],[H.d3, V.d3],[H.d4, V.d4],[H.d5, V.d5],[H.d6, V.d6],[H.d7, V.d7],[H.d8, V.d8]];
+				modl.curPointSystem.curCoordinate.curRotation = modl.curUserRotation;
 				modl.curUserRotation.isDirty = true;
 				modl.curUserRotation.isSaved = false;
 			}
+	//		}
 			
 				
 			clickX = viewport.mouseX;
@@ -1372,7 +1420,7 @@
 		}
 
 		function updateView(evt : Event = null) : void {
-					if(!createdParticles){
+			if(!createdParticles) {
 				return;
 			}
 			//////////////////////////////////////////
@@ -1388,7 +1436,7 @@
 				rotateHVMode_Btn.gotoAndStop(2);
 				rotateIntoAxisMode_Btn.visible = true;
 			}
-			trace("modl.camera.H. " + modl.camera.H);
+			//trace("modl.camera.H. " + modl.camera.H);
 			a_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d1, 2);
 			a_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d1, 2);
 			b_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d2, 2);
@@ -1432,7 +1480,7 @@
 
 				
 				x1 = pobj.curCoords.getDotProductFromVector(modl.camera.H, false);
-				y1 = pobj.curCoords.getDotProductFromVector(modl.camera.V, false);
+				y1 = pobj.curCoords.getDotProductFromVector(modl.camera.V, false) * -1;
 				//spobj.setX(x1);
 				//* modl.zoom);
 				//spobj.setY(y1);
@@ -1499,9 +1547,9 @@
 				p2 = pary[1] as EightDimensionParticle;
 				if(bottom_panel.showAxis_cb.selected) { 
 					x1 = vpX + p1.curCoords.getDotProductFromVector(modl.camera.H, false) * scale * 3;
-					y1 = vpY + p1.curCoords.getDotProductFromVector(modl.camera.V, false) * scale * 3;
+					y1 = vpY + p1.curCoords.getDotProductFromVector(modl.camera.V, false) * scale * 3 * -1;
 					x2 = vpX + p2.curCoords.getDotProductFromVector(modl.camera.H, false) * scale * 3;
-					y2 = vpY + p2.curCoords.getDotProductFromVector(modl.camera.V, false) * scale * 3;
+					y2 = vpY + p2.curCoords.getDotProductFromVector(modl.camera.V, false) * scale * 3 * -1;
 					
 					viewport.graphics.moveTo(x1, y1);	
 					viewport.graphics.lineTo(x2, y2);
@@ -1549,12 +1597,12 @@
 				//   VISUALIZE THE RAYS
 				///////////////////////////////////////////////////////////
 				if(modl.secondClicked != null) {
-					viewport.graphics.lineStyle(10, EightDimensionParticle.SELECTED_FIRST_COLOR, .6);
+					viewport.graphics.lineStyle(10, EightDimensionParticle.SELECTED_FIRST_COLOR, .5);
 					viewport.graphics.moveTo(modl.firstClicked.ui.x, modl.firstClicked.ui.y);	
 					viewport.graphics.lineTo(modl.secondClicked.ui.x, modl.secondClicked.ui.y);
 				}
 				if(modl.result1 != null) {
-					viewport.graphics.lineStyle(10, EightDimensionParticle.RESULT_COLOR, .6);
+					viewport.graphics.lineStyle(10, EightDimensionParticle.RESULT_COLOR, .5);
 					
 					viewport.graphics.moveTo(center.x, center.y);		
 					viewport.graphics.lineTo(modl.result1.ui.x, modl.result1.ui.y);
