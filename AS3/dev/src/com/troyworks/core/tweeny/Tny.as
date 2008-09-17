@@ -267,7 +267,7 @@ package com.troyworks.core.tweeny {
 				st = getTimer() + dl;
 				t = -dl ;//+ (Math.random() * fd); // if we have a delay, setup the delay as a percentage of the time (as we increment in percent)
 			}
-			trace("t " + t + " " + dl + " " + d + " dur " + dur);
+			//trace("t " + t + " " + dl + " " + d + " dur " + dur);
 	
 //			trace("ts " + ts);
 		}
