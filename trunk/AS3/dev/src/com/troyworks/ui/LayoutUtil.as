@@ -446,6 +446,11 @@ package com.troyworks.ui {
 		
 		public static function printImagePortrait(view:MovieClip, sO : IDisplayObjectSnapShot):void
 		{
+			printImagePortraitFrames(view, sO, false);
+		}
+		
+		public static function printImagePortraitFrames(view:MovieClip, sO : IDisplayObjectSnapShot, allFrames:Boolean):void
+		{
 			if (view == null) return;
 		    var pj:PrintJob = new PrintJob();
 		    pj.start();
@@ -462,7 +467,7 @@ package com.troyworks.ui {
 			var vp_curHeight:Number = 0;
 			var curScale:Number = 1;
 			var initScrRect:Rectangle;
-				
+			
 		    if(pj.orientation == PrintJobOrientation.PORTRAIT)
 			{
 				pjo = new PrintJobOptions();
@@ -486,8 +491,7 @@ package com.troyworks.ui {
 					  
 				try
 				{
-					pj.addPage(Sprite(view), rect, pjo);
-					pj.send();	
+					printFrames(allFrames,pj,view,rect,pjo);
 				}
 		        catch (e:Error)
 		        {
@@ -525,8 +529,7 @@ package com.troyworks.ui {
 								
 		        try
 				{
-					pj.addPage(Sprite(view), rect, pjo);
-					pj.send();	
+					printFrames(allFrames,pj,view,rect,pjo);
 				}
 		        catch (e:Error)
 		        {
@@ -548,6 +551,11 @@ package com.troyworks.ui {
 		
 		public static function printImageLandscape(view:MovieClip, sO : IDisplayObjectSnapShot):void
 		{
+			printImageLandscapeFrames(view, sO, false);
+		}
+		
+		public static function printImageLandscapeFrames(view:MovieClip, sO : IDisplayObjectSnapShot, allFrames:Boolean):void
+		{
 			if (view == null) return;
 			trace("PRINTING...");
 		    var pj:PrintJob = new PrintJob();
@@ -566,6 +574,7 @@ package com.troyworks.ui {
 			var curScale:Number = 1;
 			var initScrRect:Rectangle;
 			var initSO:IDisplayObjectSnapShot = sO;
+			var i:int;
 				
 		    if(pj.orientation == PrintJobOrientation.LANDSCAPE)
 			{
@@ -590,8 +599,7 @@ package com.troyworks.ui {
 				
 				try
 				{
-					pj.addPage(Sprite(view), rect, pjo);
-					pj.send();	
+					printFrames(allFrames,pj,view,rect,pjo);
 				}
 		        catch (e:Error)
 		        {
@@ -632,8 +640,7 @@ package com.troyworks.ui {
 								
 				try
 				{
-					pj.addPage(Sprite(view), rect, pjo);
-					pj.send();	
+					printFrames(allFrames,pj,view,rect,pjo);
 				}
 		        catch (e:Error)
 		        {
@@ -654,6 +661,26 @@ package com.troyworks.ui {
 			view.x = initX;
 		    view.y = initY;	
 		    trace("initX,Y "+[initX,initY]);
+		}
+		
+		private static function printFrames(allFrames:Boolean, pj:PrintJob, view:MovieClip, rect:Rectangle, pjo:PrintJobOptions)
+		{
+			var i:int;
+			
+			if (allFrames)
+			{
+				for (i = 1; i <= view.totalFrames; i++)
+				{
+					view.gotoAndStop(i);
+					pj.addPage(Sprite(view), rect, pjo);
+				}						
+				view.gotoAndStop(1);
+			}
+			else
+			{
+				pj.addPage(Sprite(view), rect, pjo);
+			}
+			pj.send();	
 		}
 		
 		public static function center2( back_mc : Object, _mc : DisplayObject, mcSnapShot : IDisplayObjectSnapShot = null) : void {
