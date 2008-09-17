@@ -12,7 +12,8 @@ package com.troyworks.ui {
 	import flash.geom.Rectangle;
 	import flash.printing.*;	
 
-	public class LayoutUtil {
+	public class LayoutUtil 
+	{
 
 		/*******************************************************
 		 * for a given movie passed in capture it's x, y, width, height, into 
@@ -48,9 +49,6 @@ package com.troyworks.ui {
 			if (viewport != null) {
 				trace("has a clipping region!!!!!!!!!!!!!!");
 				
-				//Modified by Ksenia
-				//s_mc = viewport;
-				
 				to_mc.hasViewport = true;
 				//offset between viewport and published content.
 				to_mc.vp_ox_offset = viewport.x;
@@ -67,7 +65,6 @@ package com.troyworks.ui {
 				trace(" offset vcx " + to_mc.vp_ocx_offset + " vcy " + to_mc.vp_ocy_offset);
 				//scale factor between viewport and actual (masked) movie dimensions (as mask shows all stuff on stage)
 
-				//Added by Ksenia
 				if (wholeObject != null)
 				{
 					to_mc.owidth = wholeObject.width;
@@ -98,7 +95,6 @@ package com.troyworks.ui {
 				to_mc.vp_owscale = 1;
 				to_mc.vp_ohscale = 1;
 				
-				//Added by Ksenia
 				if (wholeObject != null)
 				{
 					to_mc.owidth = wholeObject.width;
@@ -128,16 +124,11 @@ package com.troyworks.ui {
 			to_mc.oheight = s_mc.height;
 			to_mc.oxscale = s_mc.scaleX;
 			to_mc.oyscale = s_mc.scaleY;
-			//actual height
-			//			to_mc.oawidth = Math.round(to_mc.width / to_mc.scaleX * 100);
-			//			to_mc.oaheight = Math.round(to_mc.height / to_mc.scaleY * 100);
 			to_mc.oawidth = Math.round(to_mc.width / to_mc.scaleX);
 			to_mc.oaheight = Math.round(to_mc.height / to_mc.scaleY);
 			
 			to_mc.o_wh_asp = s_mc.width / s_mc.height;
 			to_mc.o_hw_asp = s_mc.height / s_mc.width;
-			//	trace( util.Trace.me(to_mc, "ERROR SNAPSHOT DIMENSIONS ", true));
-			//	trace(" captureOriginalAspect "+to_mc._url+" "+to_mc.width);
 			
 			trace("-----------------------------------------------------");
 			
@@ -243,12 +234,10 @@ package com.troyworks.ui {
 					//Added by Ksenia
 					var vp_cur_height = moving_mc.height * movingSnapShot.vp_ohscale;
 					r = (still_mc.y + still_mc.height - moving_mc.height) + (moving_mc.height - (vp_cur_yoffset + vp_cur_height));
-					//r = (still_mc.y + still_mc.height - moving_mc.height) + (moving_mc.height - (movingSnapShot.vp_oy_offset + movingSnapShot.vp_oheight));
 					break;
 				case "TOP" :
 					//Added by Ksenia
 					r = still_mc.y - vp_cur_yoffset;
-					//r = still_mc.y - movingSnapShot.vp_oy_offset;
 					break;
 				default :
 					return 0;
@@ -488,7 +477,6 @@ package com.troyworks.ui {
 				
 				if (sO.hasViewport) 
 					view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
-					  
 				try
 				{
 					printFrames(allFrames,pj,view,rect,pjo);
@@ -500,7 +488,6 @@ package com.troyworks.ui {
 				    view.y = initY;	
 				    throw new Error();
 		        }
-				
 				if (sO.hasViewport) view.scrollRect = initScrRect;
 		    }
 			else
@@ -526,7 +513,6 @@ package com.troyworks.ui {
 													 
 				initScrRect = new Rectangle(0,0,sO.owidth,sO.oheight);
 				if (sO.hasViewport) view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
-								
 		        try
 				{
 					printFrames(allFrames,pj,view,rect,pjo);
@@ -539,7 +525,6 @@ package com.troyworks.ui {
 				    view.y = initY;	
 				    throw new Error();
 		        }
-		        
 		        if (sO.hasViewport) view.scrollRect = initScrRect;
 		        view.rotation = 0;
 		    }
@@ -596,7 +581,6 @@ package com.troyworks.ui {
 				initScrRect = new Rectangle(0,0,sO.owidth,sO.oheight);	
 				if (sO.hasViewport) 
 					view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
-				
 				try
 				{
 					printFrames(allFrames,pj,view,rect,pjo);
@@ -608,9 +592,7 @@ package com.troyworks.ui {
 				    view.y = initY;	
 				    throw new Error();
 		        }
-				
-				if (sO.hasViewport) 
-					view.scrollRect = initScrRect;
+				if (sO.hasViewport) view.scrollRect = initScrRect;
 		    }
 			else
 			{
@@ -637,7 +619,6 @@ package com.troyworks.ui {
 				initScrRect = new Rectangle(0,0,sO.owidth,sO.oheight);	
 				if (sO.hasViewport) 
 					view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
-								
 				try
 				{
 					printFrames(allFrames,pj,view,rect,pjo);
@@ -650,9 +631,7 @@ package com.troyworks.ui {
 				    view.y = initY;	
 				    throw new Error();
 		        }
-		        
-		        if (sO.hasViewport) 
-		        	view.scrollRect = initScrRect;
+		        if (sO.hasViewport) view.scrollRect = initScrRect;
 		        view.rotation = 0;
 		    }
 		   
@@ -660,7 +639,6 @@ package com.troyworks.ui {
 			view.height = initH * sO.vp_ohscale;
 			view.x = initX;
 		    view.y = initY;	
-		    trace("initX,Y "+[initX,initY]);
 		}
 		
 		private static function printFrames(allFrames:Boolean, pj:PrintJob, view:MovieClip, rect:Rectangle, pjo:PrintJobOptions)
@@ -708,7 +686,6 @@ package com.troyworks.ui {
 				trace("mc.width " + _mc.width + " ow " + mcSnapShot.owidth);
 				var sxf : Number = _mc.width / mcSnapShot.owidth;
 				var syf : Number = 1;
-				//_mc.height / mcSnapShot.height;
 				trace("sxf " + sxf + " syf " + syf);
 				var x_offset : Number = (sxf * mcSnapShot.vp_ox_offset);
 				var y_offset : Number = (syf * mcSnapShot.vp_oy_offset);
@@ -718,30 +695,27 @@ package com.troyworks.ui {
 				var yy : Number = mcSnapShot.vp_oheight * syf;
 				trace("ww " + ww + " yy " + yy);
 				_mc.x = back_mc.x - x_offset;
-				// + ((w - ww) / 2) - x_offset;
 				_mc.y = back_mc.y;
-				// - y_offset;// + ((h - yy) / 2) - y_offset;
 				trace("resX " + _mc.x + " resY " + _mc.y);
 			}
-			//}
 		}
 
-		public static function scaleToStage(clip : DisplayObject,mcSnapShot : IDisplayObjectSnapShot, override_width : Number, override_height : Number) : void {
+		public static function scaleToStage(clip : DisplayObject,mcSnapShot : IDisplayObjectSnapShot, override_width : Number, override_height : Number) : void 
+		{
 			trace("stage.stageWidth " + clip.stage.stageWidth + " mc " + clip.width);
 			trace("stage.stageHeight " + clip.stage.stageHeight + " mc " + clip.height);
 			//Scale
 			var	sw : Number = (isNaN(override_width)) ? clip.stage.stageWidth : override_width;
 			var sh : Number = (isNaN(override_height)) ? clip.stage.stageHeight : override_height;
 
-			//	if (clip.isFullScreenMode)
-			{
 			//o_wh_asp and o_hw_asp are the original captured aspect ratio,
 			//this is as captured from the IDE, and NOT the actionscript,
 			//in order to get accurate onscreen representation.
 			//scale to smallest dimension based on the relative aspect ratio
 			var asRatios : Number = (sw / sh) / mcSnapShot.o_wh_asp;
 			trace("aspect ratio " + asRatios + "  " + mcSnapShot.o_wh_asp);
-			if (asRatios < 1 ) {
+			if (asRatios < 1 ) 
+			{
 				trace("resizing width first");
 				clip.width = sw;
 				clip.height = sw / mcSnapShot.o_wh_asp;
@@ -754,13 +728,7 @@ package com.troyworks.ui {
 			} else {
 				trace("NOT resizing");
 			}
-				//clip.playerNav_mc.x = ((sw - (clip.playerNav_mc.width + clip.playerNav_mc.logo_mc.width )) / 2) + clip.playerNav_mc.logo_mc.width + 30 ;
-				//			clip.playerNav_mc.y = (sh - clip.playerNav_mc.height) / 2;
-				
-		//	} else
-		//	{
-		//		clip.resetSizeAndPosition ();
-			}
 		}
 	}
 }
+
