@@ -53,19 +53,19 @@ package com.troyworks.util {
 
 			if(r > oneYear){
 				res.a_year = Math.floor(r/TimeDateUtil.oneYear);
-				r = r & TimeDateUtil.oneYear;
+				r = r % TimeDateUtil.oneYear;
 			}else{
 				res.a_year = 0;
 			}
 			if(r > oneMonth){
 				res.a_month = Math.floor(r/TimeDateUtil.oneMonth);
-				r = r & TimeDateUtil.oneMonth;
+				r = r % TimeDateUtil.oneMonth;
 			}else{
 				res.a_month = 0;
 			}
 			if(r > oneDay){	
 				res.a_day = Math.floor(r/TimeDateUtil.oneDay);
-				r = r & TimeDateUtil.oneDay;
+				r = r % TimeDateUtil.oneDay;
 			}else{
 				res.a_day = 0;
 			}
@@ -106,11 +106,12 @@ package com.troyworks.util {
 			return res.join('');
 		}
 		//
-	// PiXELWiT Number Suffix function.
-	// Works with any positive whole number.
-	// e.d. 13 -> 13th
-	// e.g. 2 - 2nd
-		public static function getNumberSuffix(num : Number) : String{
+		// PiXELWiT Number Suffix function.
+		// Works with any positive whole number.
+		// e.d. 13 -> 13th
+		// e.g. 2 - 2nd
+		public static function getNumberSuffix(num : Number) : String
+		{
 			if(num == 0)
 				return "";
 			if(Math.floor(num/10)%10===1)
@@ -124,25 +125,36 @@ package com.troyworks.util {
 					return "nd";
 			//else
 			return "rd";
-	}
+		}
 		public function toStopWatchString() : String{
 			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(_msRelative);
 			return padTo(res.a_minute,2,"0")+":"+ padTo(res.a_seconds,2,"0");
 		}
-
+		
+		public function toDateTimeString() : String{
+			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(_msRelative);
+			return res.a_year+"-"+padTo(res.a_month,2,"0")+"-"+padTo(res.a_day,2,"0")+" "+ 
+			padTo(res.a_hour,2,"0")+":"+padTo(res.a_minute,2,"0")+":"+ padTo(res.a_seconds,2,"0");
+		}
+		
 		public function toClockString() : String{
 			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(_msRelative);
 			return res.a_hour +":"+ res.a_minute+":"+ res.a_seconds;
 		}
+		
 		public function toString() : String{
 			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(_msRelative);
 			return res.a_hour +":"+ res.a_minute+":"+ res.a_seconds+"."+ res.a_milliseconds;
+		}
+		
+		public function getRelativeTimeMs():Number
+		{
+			return _msRelative;
 		}
 	
 		public static function formatToString(val : Number) : String{
 			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(val);
 			return res.a_hour +":"+ res.a_minute+":"+ res.a_seconds+"."+ res.a_milliseconds;
-		}
+		}		
 	}
-	
 }

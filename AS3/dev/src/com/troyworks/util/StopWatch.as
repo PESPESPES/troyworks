@@ -4,10 +4,10 @@
 	// used like
 	// this.watch = new StopWatch();
 	// //in some method...e.g. on sendData
-	// this.watch.Start(); // or reset();
+	// this.watch.start(); // or reset();
 	// //in the same or some other method e.g. OnData
-	// this.watch.Stop();
-	// trace("duration " + this.timer.GetSeconds());
+	// this.watch.stop();
+	// trace("duration " + this.watch.getSeconds());
 	// WHAT of states, e.g. stopped, started, paused etc.
 	// events on state changes
 	// alarm mode, timer mode, reminder mode (check againts an array of times)
