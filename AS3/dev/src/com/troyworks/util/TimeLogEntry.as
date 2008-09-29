@@ -4,14 +4,16 @@ package com.troyworks.util
 	
 	public class TimeLogEntry
 	{
+		private var watch:CountDownTimer;
 		private var date:Date;
 		private var elapsedTime:TimeDateUtil;
 		
-		public function TimeLogEntry(time:Number)
+		public function TimeLogEntry(timer:CountDownTimer)
 		{
 			date = new Date();
-			elapsedTime = new TimeDateUtil(time);
-			trace("TimeLogEntry date: "+date.toString()+" time: "+elapsedTime.toDateTimeString());
+			watch = timer;
+			elapsedTime = new TimeDateUtil(watch.getElapsedTime());			
+//			trace("TimeLogEntry date: "+date.toString()+" time: "+elapsedTime.toDateTimeString());
 		}
 		
 		public function getDate():Date
@@ -26,7 +28,7 @@ package com.troyworks.util
 		
 		public function getDelta(other:TimeLogEntry):TimeDateUtil
 		{
-			var diff:Number = this.elapsedTime.getRelativeTimeMs() - other.elapsedTime.getRelativeTimeMs();
+			var diff:Number = this.date.time - other.date.time;
 			var delta:TimeDateUtil = new TimeDateUtil(diff);
 			return delta;
 		}

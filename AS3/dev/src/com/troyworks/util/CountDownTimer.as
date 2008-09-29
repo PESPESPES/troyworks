@@ -6,19 +6,21 @@ package com.troyworks.util
 		public function CountDownTimer()
 		{
 			super();
-			log = new Array();	
 		}
 		
 		override public function start():void
 		{
+			trace("Start logging");
+			log = new Array();
 			super.start();
-			log["start"] = new TimeLogEntry(getElapsedTime(false));
+			log["start"] = new TimeLogEntry(this);
 		}
 		
 		override public function stop():void
 		{
+			if (log == null) return;
 			super.stop();
-			log["stop"] = new TimeLogEntry(getElapsedTime(true));
+			log["stop"] = new TimeLogEntry(this);
 		}
 		
 		public function getElapsedTimeDate(): String
@@ -30,12 +32,14 @@ package com.troyworks.util
 		
 		public function addLogEntry(name:String)
 		{
-			log[name] = new TimeLogEntry(getElapsedTime(false));
+			if (log == null) return;
+			log[name] = new TimeLogEntry(this);
 		}
 		
 		public function traceLog():void
 		{
 			trace("Log Entries:");
+			if (log == null) trace("Counter has not been started. Log is empty");
 			var entry:TimeLogEntry;
 			for (var obj:Object in log)
 			{
@@ -48,6 +52,7 @@ package com.troyworks.util
 		{
 			var entry1:TimeLogEntry = log[name1];
 			var entry2:TimeLogEntry = log[name2];
+			if (entry1 == null || entry2 == null) return "undefined";
 			var delta:TimeDateUtil = entry2.getDelta(entry1); 
 			return delta.toDateTimeString();			
 		}

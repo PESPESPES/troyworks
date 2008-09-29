@@ -25,7 +25,7 @@
 		}
 		public function start():void {
 			if(!this.persistent){
-				trace("starting" );
+				this.endTime = null;
 				this.startTime =  new Date();
 			}
 		}
@@ -45,11 +45,11 @@
 			this.elapsedTime = 0;
 		}
 		//this updates the elapsed time
-		public function getElapsedTime(total:Boolean=true):Number{
+		public function getElapsedTime():Number{
 			//if stopped
 			//if running
 			if(this.startTime != null){
-				if(total){
+				if(this.endTime != null){
 					this.elapsedTime = this.endTime.getTime() - this.startTime.getTime();
 				}else{
 					this.elapsedTime =  new Date().getTime() - this.startTime.getTime();
@@ -62,6 +62,7 @@
 			var secs = this.elapsedTime/1000;
 			return secs+" Seconds";
 		}
+		
 		public function toString():String{
 			var res:String = "";
 			return "StopWatch " + this.getElapsedTime();
