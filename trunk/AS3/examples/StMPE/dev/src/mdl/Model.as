@@ -148,7 +148,8 @@ package mdl {
 			pointSystems.push(smPointSystem);
 
 			curPointSystem = pointSystems[0];
-			trace("CURRENT POINTSYS "+ curPointSystem);
+			trace("CURRENT POINTSYS "+ curPointSystem.name);
+			// dispatchEvent(new Event(POINTS_CHANGED));
 		}
 	
 		/*public function initializePoints() : void {

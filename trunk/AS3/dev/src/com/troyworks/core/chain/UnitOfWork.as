@@ -53,7 +53,7 @@ package com.troyworks.core.chain {
 		private var _parentUnit:IUnit;
 
 		public function UnitOfWork(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE) {
-			super(initState, "Chain");
+			super(initState, "Chain",false);
 			mode = aMode;
 			_smName = (mode == SEQUENTIAL_MODE) ? SEQUENTIAL_WORKER : PARALLEL_WORKER;
 			trace("smName  " + _smName);  
@@ -90,7 +90,12 @@ package com.troyworks.core.chain {
 		public function isComplete() : Boolean {
 			return isInState(s_done);
 		}
-
+		protected function fireCompletedEvent():void{
+					trace("*dispatching ***Complete***");	
+					var evt : PlayheadEvent = new PlayheadEvent(EVT_COMPLETE);
+					evt.percentageDone = 1;
+					dispatchEvent(evt);
+		}
 		// Top down query and summary of status //
 		public function calcStats(evt : Event = null) : void {
 			
@@ -347,11 +352,8 @@ package com.troyworks.core.chain {
 					notifyProgress();
 				
 					//////////dispatch complete event ////////////
-					trace("*dispatching ***Complete***");	
-					var evt : PlayheadEvent = new PlayheadEvent(EVT_COMPLETE);
-					evt.percentageDone = 1;
-					dispatchEvent(evt);
-					
+			
+					fireCompletedEvent();
 					return null;
 				case SIG_EXIT :
 					return null;

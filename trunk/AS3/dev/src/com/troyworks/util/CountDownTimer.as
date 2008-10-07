@@ -1,5 +1,6 @@
-package com.troyworks.util
-{
+package com.troyworks.util {
+	import com.troyworks.util.TimeLogEntry;	
+	
 	public class CountDownTimer extends StopWatch
 	{
 		private var log:Array;
@@ -30,7 +31,7 @@ package com.troyworks.util
 			return timeDate.toDateTimeString();
 		}
 		
-		public function addLogEntry(name:String)
+		public function addLogEntry(name:String):void
 		{
 			if (log == null) return;
 			log[name] = new TimeLogEntry(this);

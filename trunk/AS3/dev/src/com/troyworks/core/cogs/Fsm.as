@@ -118,6 +118,9 @@
 			if(initStateNameAct != null){
 				_initState = this[initStateNameAct];
 			}
+			if(aInit){
+				initStateMachine();
+			}
 			//trace(_smName+ ":" + _initState + " " + initStateNameAct);
 		}
 	
@@ -165,7 +168,9 @@
 		override public function initStateMachine():void {
 			//Take initial transition
 			//trace("Fsm.init" + CogEvent.EVT_INIT);
-			_initState.call(this,CogEvent.EVT_INIT);
+			//_initState.call(this,CogEvent.EVT_INIT);
+			//_initState.call(this, SIG_ENTRY.createPrivateEvent());
+			tran(_initState);
 			if(_childState!= null){
 				//trace("handing to child");
 				 _childState.initStateMachine();
@@ -188,9 +193,56 @@
 		* 4) set currentState to newState
 		*  dispatch CogExternalEvent.CHANGED event.
 		 * 
-		 * NOTE: the calling function (if the same state) will still
-		 * be on the stack, this is 
+		 * WARNING: this isn't 'safe', the calling function (if the same state) will still
+		 * be on the stack once this completes, so care needs to be taken that no
+		 * actions are past that.
+		 * 
+		 * tranFast is a non-profiling transition, with cached events.
 		*/
+		public function tranFast(targetState:Function, transOptions:TransitionOptions = null, crossAction:Function= null):* {
+			//trace("tran " +targetState);
+			//// GAURDS--------------------------------------------
+			if (targetState == null) {
+				// No state transition taken if invalid target state
+				return;
+			}
+			
+			// if we are here we have a valid state to go to.
+			///////////////// ROUTE TRANSITION //////////////////////////
+			//var initList:Array = new Array();
+			var res:Object;
+			
+			///////////////// PERFORM TRANSTION /////////////////////////
+			//takeSnapShot of current State() in case of rollback.
+			oldState=_currentState;
+			nextState = targetState;
+			//// EXIT CURRENT STATE ---------------------------------
+			var evt:CogEvent;
+			//trace("EXIT_FsmCurrentState ");
+			if (_currentState != null) {		
+				_currentState.call(this,cachedEXIT_EVT);
+				_currentState=null;
+			}
+			// Now we are between states, if necessary fire between state transition events
+			/////CROSS LCA----------------------------------------
+			if(crossAction != null){
+				crossAction();
+			}
+			// enter the new state immediately (still in the calling class enclosure)
+			//trace("ENTER_FsmNewState");
+			//// ENTER NEW STATE --------------------------------------
+			//trace("nextState " + nextState + " " + evt);
+			res = nextState.call(this,cachedENTRY_EVT);
+			_currentState=nextState;
+			nextState = null;
+			// FINISHED - notify the rest of the world of the state change, if there is anybody there
+			if (hasEventListener(CogExternalEvent.CHANGED)) {
+				var cogE:CogExternalEvent=new CogExternalEvent(CogExternalEvent.CHANGED,oldState,_currentState);
+				cogE.result = res;
+				dispatchEvent(cogE);
+			}
+			return res;
+		}
 		override public function tran(targetState:Function, transOptions:TransitionOptions = null, crossAction:Function= null):* {
 			//trace("tran " +targetState);
 			//// GAURDS--------------------------------------------
@@ -241,6 +293,8 @@
 			}
 			return res;
 		}
+		
+		
 		/***************************************************
 		 *  Request transitions is the 'clean' but slower
 		 *  way of making state changes, asynchronously

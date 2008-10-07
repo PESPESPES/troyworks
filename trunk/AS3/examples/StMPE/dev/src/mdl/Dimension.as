@@ -23,9 +23,10 @@ package mdl{
 		public static const D8 : Dimension = new Dimension(8, d8UV);
 
 		//which dimension (by number as an ID)
-		private var d : int;
+		public var d : int;
 		//unit vector 
 		public var uv : EightDimensionVector;
+		public static const DIMS:Array = [D1,D2,D3,D4,D5,D6,D7,D8];
 		public static const EIGHTD:Array = [d1UV, d2UV, d3UV,d4UV, d5UV, d6UV, d7UV, d8UV];
 		public static const SIXD:Array = [d1UV, d2UV, d3UV,d4UV, d5UV, d6UV];
 		public function Dimension(val : int = 0, unitV : EightDimensionVector = null) {

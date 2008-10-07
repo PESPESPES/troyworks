@@ -4,6 +4,7 @@
 	import flash.display.MovieClip;	
 
 	import com.troyworks.core.chain.Test_PlaceHolderUnitOfWork;	
+	import com.troyworks.core.patterns.*
 	import com.troyworks.apps.tester.TestEvent;	
 	import com.troyworks.apps.tester.AsynchTestRunner;	
 	import com.troyworks.apps.tester.SimpleTestRunner;	
@@ -42,8 +43,8 @@
 		
 		public function TroyWorks_Test() {
 			super();
-			TraceAdapter.CurrentTracer = TraceAdapter.SOSTracer;
-			StateMachine.DEFAULT_TRACE = TraceAdapter.CurrentTracer;
+			//TraceAdapter.CurrentTracer = TraceAdapter.SOSTracer;
+			//StateMachine.DEFAULT_TRACE = TraceAdapter.CurrentTracer;
 			trace("TroyWorks_Test()");
 			eventSprite = new Sprite();
 			addChild(eventSprite);
@@ -100,6 +101,7 @@
 				//testRunner.addTest(Test_Hsm);		
 				//testRunner.addTest(Test_AsynchronousTestSuite);
 				//testRunner.addTest(Test_Indexer);
+				testRunner.addTest(Test_DirtyCleanMachine);
 				////////RUN TEST //////////////
 
 				if(testRunner.hasTests){

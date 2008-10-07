@@ -66,11 +66,16 @@
 		public static var USER : CogSignal = new CogSignal (CogSignal.SignalUserIDz, "USER");
 		protected var _name : String;
 		protected var _value:int;
-		
+		public var cachedEvent : CogEvent;
+
 		public function CogSignal (val : int, name : String)
 		{
 			_value = val;
 			_name = name;
+		}
+		
+		public function cacheEvent():void{
+			cachedEvent = new CogEvent(CogEvent.EVTD_COG_PRIVATE_EVENT, this);
 		}
 		public function get name():String{
 			return _name;

@@ -15,6 +15,8 @@ package mdl {
 		public var isDirty:Boolean = false;
 		public var isSaved:Boolean = false;
 		public var isE8:Boolean = false;
+		public var selectedHAxisIdx:int = 0;
+		public var selectedVAxisIdx:int = 0;
 		
 		public function Rotations() {
 			super();
@@ -44,6 +46,8 @@ package mdl {
 				res.V["d"+(i+1)] = hvr[1];
 				trace(res.H.d1 + " "+ res.V.d1); 
 			}
+			res.selectedHAxisIdx = int(xml.@h);
+			res.selectedVAxisIdx = int(xml.@v);
 			res.isE8 = (xml.@isE8== "true");
 					
 			return res;

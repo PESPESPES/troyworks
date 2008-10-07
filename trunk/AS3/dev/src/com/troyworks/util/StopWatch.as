@@ -2,12 +2,12 @@
 	//////////////////////////////////////////////////////////////
 	//Generic stopwatch class used for evaluating performance
 	// used like
-	// this.watch = new StopWatch();
+	// watch = new StopWatch();
 	// //in some method...e.g. on sendData
-	// this.watch.start(); // or reset();
+	// watch.start(); // or reset();
 	// //in the same or some other method e.g. OnData
-	// this.watch.stop();
-	// trace("duration " + this.watch.getSeconds());
+	// watch.stop();
+	// trace("duration " + watch.getSeconds());
 	// WHAT of states, e.g. stopped, started, paused etc.
 	// events on state changes
 	// alarm mode, timer mode, reminder mode (check againts an array of times)
@@ -20,52 +20,52 @@
 		public var persistent:Boolean;
 		public function StopWatch(persist:Boolean = false) {
 			trace("StopWatch");
-			this.zero();
-			this.persistent = persist;
+			zero();
+			persistent = persist;
 		}
 		public function start():void {
-			if(!this.persistent){
-				this.endTime = null;
-				this.startTime =  new Date();
+			if(!persistent){
+				endTime = null;
+				startTime =  new Date();
 			}
 		}
 		
 		public function stop():void  {
-			this.endTime = new Date();
-			this.elapsedTime = this.endTime.getTime()-this.startTime.getTime();
+			endTime = new Date();
+			elapsedTime = endTime.getTime()-startTime.getTime();
 		}
 		public function zero():void  {
-			this.startTime = null;
-			this.endTime = null;
-			this.elapsedTime = 0;
+			startTime = null;
+			endTime = null;
+			elapsedTime = 0;
 		}
 		public function reset():void  {
-			this.startTime =  new Date();
-			this.endTime = new Date();
-			this.elapsedTime = 0;
+			startTime =  new Date();
+			endTime = new Date();
+			elapsedTime = 0;
 		}
 		//this updates the elapsed time
 		public function getElapsedTime():Number{
 			//if stopped
 			//if running
-			if(this.startTime != null){
-				if(this.endTime != null){
-					this.elapsedTime = this.endTime.getTime() - this.startTime.getTime();
+			if(startTime != null){
+				if(endTime != null){
+					elapsedTime = endTime.getTime() - startTime.getTime();
 				}else{
-					this.elapsedTime =  new Date().getTime() - this.startTime.getTime();
+					elapsedTime =  new Date().getTime() - startTime.getTime();
 				}
 			}
-			return this.elapsedTime;
+			return elapsedTime;
 		}
 	
 		public function getSeconds():String {
-			var secs = this.elapsedTime/1000;
+			var secs:Number = elapsedTime/1000;
 			return secs+" Seconds";
 		}
 		
 		public function toString():String{
-			var res:String = "";
-			return "StopWatch " + this.getElapsedTime();
+			var res:String = "StopWatch " + getElapsedTime();
+			return res;
 		}
 	}
 	

@@ -5,6 +5,8 @@
 */
 
 package com.troyworks.core.cogs {
+	import com.troyworks.events.EventTranslator;	
+	
 	import flash.utils.getTimer;	
 	import flash.events.TimerEvent;	
 	import flash.utils.Timer;	
@@ -50,6 +52,10 @@ package com.troyworks.core.cogs {
 		protected var _initState:Function;
 		/* function pointer to current state*/
 		protected var _currentState:Function;
+		protected static var cachedEXIT_EVT:CogEvent = SIG_EXIT.createPrivateEvent();
+		protected static var cachedINIT_EVT:CogEvent = SIG_INIT.createPrivateEvent();
+		protected static var cachedENTRY_EVT:CogEvent = SIG_ENTRY.createPrivateEvent();
+		
 		////////////////////////////////////////////////////
 		public function StateMachine() {
 			super();
@@ -135,7 +141,14 @@ package com.troyworks.core.cogs {
 			return res;
 		}
 		
-	
+		public function createSignalDispatcher(sig : CogSignal):EventTranslator{
+		//essentially 	dispatchEvent(sig.createPrivateEvent()); when the event
+		// this translator is listenign to is hit	
+			var evtl:EventTranslator = new 	EventTranslator(this,null, sig.createPrivateEvent);
+			return evtl;
+		}
+
+		
 		public function get stateMachine_hasInited() : Boolean {
 			return false;
 		}

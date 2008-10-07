@@ -1,6 +1,6 @@
 package com.troyworks.util
 {
-	import com.adobe.utils.DateUtil;
+//	import com.adobe.utils.DateUtil;
 	
 	public class TimeLogEntry
 	{
@@ -8,9 +8,9 @@ package com.troyworks.util
 		private var date:Date;
 		private var elapsedTime:TimeDateUtil;
 		
-		public function TimeLogEntry(timer:CountDownTimer)
+		public function TimeLogEntry(timer:CountDownTimer, dateTime:Date = new Date())
 		{
-			date = new Date();
+			date = dateTime;
 			watch = timer;
 			elapsedTime = new TimeDateUtil(watch.getElapsedTime());			
 //			trace("TimeLogEntry date: "+date.toString()+" time: "+elapsedTime.toDateTimeString());

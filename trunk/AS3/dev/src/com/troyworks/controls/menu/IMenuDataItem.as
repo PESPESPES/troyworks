@@ -19,5 +19,8 @@ package com.troyworks.controls.menu {
         function getTarget():String;
         function set isSelected(val:Boolean):void;
         function get isSelected():Boolean;
-    }
+		
+		function setMenuDepth(menuDepth : int) : void;
+		function getMenuDepth() : int;
+	}
 }

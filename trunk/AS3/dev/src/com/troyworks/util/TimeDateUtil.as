@@ -49,7 +49,7 @@ package com.troyworks.util {
 		}
 		public static function parseRelativeTime(dateTime : Number) : TimeDateUtil{
 			var r : Number = dateTime;
-			var res:TimeDateUtil = new TimeDateUtil();
+			var res:TimeDateUtil = new TimeDateUtil(dateTime);
 
 			if(r > oneYear){
 				res.a_year = Math.floor(r/TimeDateUtil.oneYear);
@@ -96,10 +96,12 @@ package com.troyworks.util {
 			return res;
 			
 		}
-		public static function padTo(number:Number, characters:Number, spacer:String):String{
+		public static  function padTo(number:Number, characters:Number=3, spacer:String = "0"):String{
 			var res:Array = String(number).split('');
 			if(res.length < characters){
-				while(--characters){
+				var dif:int =   characters - res.length;
+			//	trace("dif " + dif)
+				while(dif--){
 					res.unshift(spacer);
 				}
 			}

@@ -43,11 +43,11 @@
 		public function ON_state(event:CogEvent):void {
 			//trace("TwoStateFsm.ON_state " + event);
 			switch(event.sig){
-				case CogSignal.PULSE:
+				case SIG_PULSE:
 				requestTran(OFF_state);
 				
 				break;
-				case CogSignal.CALLBACK:
+				case SIG_CALLBACK:
 				requestTran(OFF_state);
 				break;
 			}
@@ -56,10 +56,10 @@
 		public function OFF_state(event:CogEvent):void {
 			//trace("TwoStateFsm.OFF_state " + event);
 			switch(event.sig){
-				case CogSignal.PULSE:
+				case SIG_PULSE:
 				requestTran(OFF_state);
 				break;
-				case CogSignal.CALLBACK:
+				case SIG_CALLBACK:
 				requestTran(ON_state);
 				break;
 
