@@ -14,6 +14,9 @@ package com.troyworks.core.patterns {
 	public class ToggleSwitchMachine extends Fsm
 	{
 		private var _nextState:Function;
+		public static const  SIG_ON : CogSignal =CogSignal.getNextSignal("ON");
+		public static const  SIG_OFF : CogSignal =CogSignal.getNextSignal("OFF");		
+		public static const  SIG_TOGGLE : CogSignal =CogSignal.getNextSignal("TOGGLE");
 		public function ToggleSwitchMachine(defaultOff:Boolean){
 			super();
 			_initState= s_initial;
@@ -31,8 +34,7 @@ package com.troyworks.core.patterns {
 
 		////////////////// METHODS ///////////////////////
 		public function toggle():void{
-			var evt:Event = ToggleSwitchMachineEvent.getToggleEvent();
-			dispatchEvent(evt);
+			dispatchEvent(SIG_TOGGLE.createPrivateEvent());
 		}
 		public function turnOff():void{
 			if(fsm_hasInited && !isInState(s_OFF)){
@@ -73,13 +75,13 @@ package com.troyworks.core.patterns {
 		}
 
 	}
-	class ToggleSwitchMachineSignal extends CogSignal{
-		public static const  TOGGLE_SIG : CogSignal =CogSignal.getNextSignal("TOGGLE");	
+	/*class ToggleSwitchMachineSignal extends CogSignal{
+			
 	}
 	 class ToggleSwitchMachineEvent extends CogEvent{
 		public static function getToggleEvent():ToggleSwitchMachineEvent{
 		  return new ToggleSwitchMachineEvent(CogEvent.EVTD_COG_PRIVATE_EVENT,ToggleSwitchMachineSignal.TOGGLE_SIG);
 		}
-	}
+	}*/
 	
 }

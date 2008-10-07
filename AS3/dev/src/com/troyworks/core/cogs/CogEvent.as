@@ -8,6 +8,12 @@
 	* which are generally structs which flash doesn't have 
 	*/
 	dynamic public class CogEvent extends Event {
+		
+		
+		public static  const EVTD_COG_PRIVATE_EVENT:String = "EVTD_COG_PRIVATE_EVENT";
+		public static  const EVTD_COG_PROTECTED_EVENT:String = "EVTD_COG_PROTECTED_EVENT";
+		public static  const EVTD_COG_PUBLIC_EVENT:String = "EVTD_COG_PUBLIC_EVENT";
+		
 		private var _sig:CogSignal;
 		private var _startTime:Number;
 		private var _endTime:Number;
@@ -16,10 +22,6 @@
 		private var _isHandled:Boolean = false;
 		private var _continuePropogation:Boolean = true;
 		
-		public static  const EVTD_COG_PRIVATE_EVENT:String = "EVTD_COG_PRIVATE_EVENT";
-		public static  const EVTD_COG_PROTECTED_EVENT:String = "EVTD_COG_PROTECTED_EVENT";
-		public static  const EVTD_COG_PUBLIC_EVENT:String = "EVTD_COG_PUBLIC_EVENT";
-
  		public static const EVT_INIT:CogEvent  =  new CogEvent(EVTD_COG_PROTECTED_EVENT,CogSignal.INIT);
 		public static const EVT_EMPTY:CogEvent =new CogEvent(EVTD_COG_PROTECTED_EVENT,CogSignal.EMPTY);
 		
@@ -65,39 +67,33 @@
 			return "CogEvent." + _sig.toString();
 		}
 		///////////////// FACTORY METHODS  /////////////////////////////////
-		public static function getEvent(signal:CogSignal, optionalArgs:Object = null):CogEvent {
-			switch (signal) {
-				default :
-					{
-						var res:CogEvent = new CogEvent(CogEvent.EVTD_COG_PROTECTED_EVENT,signal);
-						if(optionalArgs != null){
-							decorateEventWithOptionalArgs(res, optionalArgs);
-						}
-						return res;
-					}
-			}
-		}
-		public static function decorateEventWithOptionalArgs(evt:CogEvent, optionalArgs:Object):void{
+		public static function decorateEventWithOptionalArgs(evt:CogEvent, optionalArgs:Object = null):void{
+			if(optionalArgs != null){
 			for(var i:String in optionalArgs){
 				//only works if dynamic class, appends to prototype
 				evt[i] = optionalArgs[i];
 			}
+			}
 		}
 
 		public static function getPulseEvent(optionalArgs:Object= null):CogEvent {
-			var res:CogEvent = getEvent(CogSignal.PULSE, optionalArgs);
+			var res:CogEvent = CogSignal.PULSE.createPrivateEvent();
+			decorateEventWithOptionalArgs(res, optionalArgs );
 			return res;
 		}
 		public static function getEnterEvent(optionalArgs:Object= null):CogEvent {
-			var res:CogEvent = getEvent(CogSignal.ENTRY, optionalArgs);
+			var res:CogEvent = CogSignal.ENTRY.createPrivateEvent();
+			decorateEventWithOptionalArgs(res, optionalArgs );
 			return res;
 		}
 		public static function getExitEvent(optionalArgs:Object= null):CogEvent {
-			var res:CogEvent = getEvent(CogSignal.EXIT, optionalArgs);
+			var res:CogEvent = CogSignal.EXIT.createPrivateEvent();
+			decorateEventWithOptionalArgs(res, optionalArgs );
 			return res;
 		}
 		public static function getCallbackEvent(optionalArgs:Object= null):CogEvent {
-			var res:CogEvent = getEvent(CogSignal.CALLBACK, optionalArgs);
+			var res:CogEvent = CogSignal.CALLBACK.createPrivateEvent();
+			decorateEventWithOptionalArgs(res, optionalArgs );
 			return res;
 		}
 	}

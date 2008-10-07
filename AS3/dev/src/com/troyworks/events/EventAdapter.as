@@ -28,7 +28,6 @@ package com.troyworks.events {
 			if(includeEvent) {
 				return res.relayEvent;
 			}else {
-				
 				return res.callFunction;
 			}
 		}

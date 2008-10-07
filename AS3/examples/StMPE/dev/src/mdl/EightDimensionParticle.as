@@ -1,14 +1,14 @@
 ﻿package mdl {
 	import flash.filters.GlowFilter;	
 	import flash.display.Sprite;	
-
+	import com.troyworks.core.tweeny.*;
 	/**
 	 * @author Troy Gardner
-	 * http://blog.je2050.de/category/flash/experiments/
 	 */
 	public class EightDimensionParticle extends Object {
 
-		public var ui : Sprite;
+		private var _ui : Sprite;
+		public var uiTny:Tny;
 		public var modl : Model;
 		public var pmdl : EightDimensionParticle;
 		public var id : Number;
@@ -64,6 +64,19 @@
 			this.color = this.colorObj.rgb; 
 			//0 if it's not in the standard model. All points are in e8.
 			this.isStandardModel = isStandardModel;
+			
+		}
+		public function get ui ():Sprite{
+			return _ui;
+		}
+		public function set ui (view:Sprite):void{
+			_ui = view;
+			if(uiTny == null){
+				uiTny = new Tny(view);
+			}else{
+				uiTny.target = view;
+			}
+			
 		}
 
 		public function updateUI() : void {

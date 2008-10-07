@@ -1,4 +1,4 @@
-package com.troyworks.controls.menu {
+﻿package com.troyworks.controls.menu {
 	import com.troyworks.data.iterators.IIterator;	
 	import com.troyworks.data.iterators.ArrayIterator;
 	import com.troyworks.data.ArrayX;
@@ -16,6 +16,7 @@ package com.troyworks.controls.menu {
 		}
 
 		override public function addItem(item : IMenuDataItem) : void {
+			item.setMenuDepth(this.getMenuDepth() +1);
 			items.push(item);
 		}
 
@@ -33,6 +34,19 @@ package com.troyworks.controls.menu {
 			trace("returning iterator for " + items.length);
 			return new ArrayIterator(items);
 		}
-	
+		override public function toString():String{
+			var sp:Array = new Array();
+			var l:int = getMenuDepth();
+			while(l--){
+				sp.push(" ");
+			}
+			var spc:String = sp.join(''); 
+			var res:Array = new Array();
+			res.push(spc +getName() );
+			for(var i:int = 0; i < items.length; i++){
+				res.push(spc + "+- " + items[i].toString());
+			}
+			return res.join('\r');
+		}
 	}
 }

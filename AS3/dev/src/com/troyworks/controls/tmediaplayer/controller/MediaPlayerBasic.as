@@ -1,18 +1,12 @@
-package com.troyworks.mediaplayer.controller { 
-	 //import util.SWFUtilBasic;
-	//import util.BasicLoader;
-	import com.troyworks.hsmf.AEvent;
-	import com.troyworks.hsmf.Signal;
-	import com.troyworks.hsmf.Hsmf;
-	//import com.troyworks.spring.Factory;
-	//import com.troyworks.framework.IApplication;
-	//import util.TEventDispatcher.troyworks.framework.ui.BaseComponent ;
-	//import com.kidthing. *;
-	//import com.troyworks.util.director.DirectorUtils;
+package com.troyworks.controls.tmediaplayer.controller { 
+
 	//http://livedocs.macromedia.com/flex/1/asdocs/mx/controls/MediaDisplay.html
-	import com.troyworks.mediaplayer.ui.MediaDisplayWrapper;
-	import util.SWFUtil;
+
 	//TEMP
+	
+	import com.troyworks.util.SWFUtil;	
+	import com.troyworks.core.cogs.CogEvent;	
+	import com.troyworks.controls.tmediaplayer.ui.MediaDisplayWrapper;	
 	import com.troyworks.util.director.DirectorUtils;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
@@ -20,7 +14,9 @@ package com.troyworks.mediaplayer.controller {
 	import flash.media.Video;
 	import flash.net.navigateToURL;
 	import flash.net.URLRequest;
-	public class MediaPlayerBasic extends com.troyworks.mediaplayer.AMediaPlayer
+	
+	
+	public class MediaPlayerBasic extends com.troyworks.controls.tmediaplayer.AMediaPlayer
 	{
 		//These elements are on stage and help determine which media types this player supports.
 		public var mediaDisplayWrapper : MediaDisplayWrapper;
@@ -30,7 +26,7 @@ package com.troyworks.mediaplayer.controller {
 		//	public var __cname:String = "MPB";
 		public function MediaPlayerBasic ()
 		{
-			super (onInit, "MPB");
+			super ("onInit", "MPB");
 			////this.my_video = video;
 			trace ("AAAAAAAAAAAAAAAA MEDIA PLAYER BASIC ");
 		}
@@ -45,8 +41,8 @@ package com.troyworks.mediaplayer.controller {
 			trace ("__________MPB.move " + x + " y " + y);
 			//	this.mediaDisplayWrapper.move (x, y);
 			//	this.swfDisplay.move (x, y);
-			this.x = x	;
-			this.y = y;
+		//	this.x = x	;
+		//	this.y = y;
 		}
 		public function onLoad () : void {
 		}
@@ -55,7 +51,7 @@ package com.troyworks.mediaplayer.controller {
 			this.mediaDisplayWrapper.setSize (w, h);
 			this.swfDisplay.setSize (w, h);
 		}
-		public function dispatch (e:AEvent):Function
+		public function dispatch (e:CogEvent):Function
 		{
 			trace ("media player.dispatch " + e);
 			var path : String = "";
@@ -67,10 +63,10 @@ package com.troyworks.mediaplayer.controller {
 						{
 							path = SWFUtil.getParentPath (SWFUtil.getParentPath (p)) + "data\\";
 						}
-						_global.log.debug(" path  " + path);
-						switch (e)
+					//TODO	_global.log.debug(" path  " + path);
+						switch (e.sig)
 						{
-							case PLAYFLV_EVT :
+							case SIG_PLAYFLV :
 							{
 								this.swfDisplay.visible = false;
 								this.swfDisplay.Q_dispatch(GOTOANDSTOP_EVT);
@@ -79,7 +75,7 @@ package com.troyworks.mediaplayer.controller {
 								this.sndPlayer.Q_dispatch (GOTOANDSTOP_EVT);
 								return null;
 							}
-							case PLAYMP3_EVT :
+							case SIG_PLAYMP3 :
 							{
 								this.swfDisplay.visible = false;
 								this.swfDisplay.Q_dispatch (GOTOANDSTOP_EVT);
@@ -88,7 +84,7 @@ package com.troyworks.mediaplayer.controller {
 								this.sndPlayer.setMedia (path + "cello.mp3", "FLV");
 								return null;
 							}
-							case PLAYIMAGE_EVT :
+							case SIG_PLAYIMAGE :
 							{
 								this.swfDisplay.setMedia(path+ "2125_180x270.jpg");
 								this.swfDisplay.visible = true;
@@ -97,7 +93,7 @@ package com.troyworks.mediaplayer.controller {
 								this.sndPlayer.Q_dispatch (GOTOANDSTOP_EVT);
 								return null;
 							}
-							case PLAYSWF_EVT :
+							case SIG_PLAYSWF :
 							{
 								this.swfDisplay.setMedia(path + "SWF Media.swf");
 								this.swfDisplay.visible = true;
@@ -117,7 +113,7 @@ package com.troyworks.mediaplayer.controller {
 						}
 					}
 					/*.................................................................*/
-					public function onInit (e : AEvent) : void {
+					public function onInit (e : CogEvent) : void {
 						trace ("MediaPlayerBasic.onInitXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 						// Create a NetConnection object
 						//	this.netConn = new NetConnection ();
@@ -134,10 +130,10 @@ package com.troyworks.mediaplayer.controller {
 						//this.handleEvent = this.pausedAtBeginningHandler;
 						this.Q_INIT (s1_active );
 					}
-					function s1_active (e : AEvent) : Function
+					function s1_active (e : CogEvent) : Function
 					{
 						this.onFunctionEnter ("s1_active-", e, []);
-						switch (e)
+						switch (e.sig)
 						{
 							case ENTRY_EVT :
 							{
@@ -182,25 +178,25 @@ package com.troyworks.mediaplayer.controller {
 								}
 								return null;
 							}
-							case PLAYFLV_EVT :
+							case SIG_PLAYFLV :
 							{
 								this.swfDisplay.visible = false;
 								this.mediaDisplayWrapper.visible = true;
 								return null;
 							}
-							case PLAYMP3_EVT :
+							case SIG_PLAYMP3 :
 							{
 								this.swfDisplay.visible = false;
 								this.mediaDisplayWrapper.visible = false;
 								return null;
 							}
-							case PLAYIMAGE_EVT :
+							case SIG_PLAYIMAGE :
 							{
 								this.swfDisplay.visible = true;
 								this.mediaDisplayWrapper.visible = false;
 								return null;
 							}
-							case PLAYSWF_EVT :
+							case SIG_PLAYSWF :
 							{
 								this.swfDisplay.visible = true;
 								this.mediaDisplayWrapper.visible = false;
@@ -209,10 +205,10 @@ package com.troyworks.mediaplayer.controller {
 						}
 						return s_top;
 					}
-					function s10_pausedAtBeginning (e : AEvent) : Function
+					function s10_pausedAtBeginning (e : CogEvent) : Function
 					{
 						this.onFunctionEnter ("s10_pausedAtBeginning-", e, []);
-						switch (e)
+						switch (e.sig)
 						{
 							case ENTRY_EVT :
 							{
@@ -235,10 +231,10 @@ package com.troyworks.mediaplayer.controller {
 						}
 						return this.s1_active ;
 					}
-					function s11_playing (e : AEvent) : Function
+					function s11_playing (e : CogEvent) : Function
 					{
 						this.onFunctionEnter ("s11_playing-", e, []);
-						switch (e)
+						switch (e.sig)
 						{
 							case ENTRY_EVT :
 							{
@@ -267,10 +263,10 @@ package com.troyworks.mediaplayer.controller {
 						}
 						return this.s1_active ;
 					}
-					function s12_stopped (e : AEvent) : Function
+					function s12_stopped (e : CogEvent) : Function
 					{
 						this.onFunctionEnter ("s12_stopped-", e, []);
-						switch (e)
+						switch (e.sig)
 						{
 							case ENTRY_EVT :
 							{
@@ -300,10 +296,10 @@ package com.troyworks.mediaplayer.controller {
 						}
 						return this.s1_active ;
 					}
-					function s13_pausedInMiddle (e : AEvent) : Function
+					function s13_pausedInMiddle (e : CogEvent) : Function
 					{
 						this.onFunctionEnter ("s13_pausedInMiddle-", e, []);
-						switch (e)
+						switch (e.sig)
 						{
 							case ENTRY_EVT :
 							{
@@ -344,9 +340,9 @@ package com.troyworks.mediaplayer.controller {
 				path = SWFUtil.getParentPath (SWFUtil.getParentPath (p)) + "data\\";
 			}
 			_global.log.debug(" path  " + path);
-			switch (e)
+			switch (e.sig)
 			{
-				case PLAYFLV_EVT :
+				case SIG_PLAYFLV :
 				{
 					this.swfDisplay.visible = false;
 					this.swfDisplay.Q_dispatch(GOTOANDSTOP_EVT);
@@ -355,7 +351,7 @@ package com.troyworks.mediaplayer.controller {
 					this.sndPlayer.Q_dispatch (GOTOANDSTOP_EVT);
 					return null;
 				}
-				case PLAYMP3_EVT :
+				case SIG_PLAYMP3 :
 				{
 					this.swfDisplay.visible = false;
 					this.swfDisplay.Q_dispatch (GOTOANDSTOP_EVT);
@@ -364,7 +360,7 @@ package com.troyworks.mediaplayer.controller {
 					this.sndPlayer.setMedia (path + "cello.mp3", "FLV");
 					return null;
 				}
-				case PLAYIMAGE_EVT :
+				case SIG_PLAYIMAGE :
 				{
 					this.swfDisplay.setMedia(path+ "2125_180x270.jpg");
 					this.swfDisplay.visible = true;
@@ -373,7 +369,7 @@ package com.troyworks.mediaplayer.controller {
 					this.sndPlayer.Q_dispatch (GOTOANDSTOP_EVT);
 					return null;
 				}
-				case PLAYSWF_EVT :
+				case SIG_PLAYSWF :
 				{
 					this.swfDisplay.setMedia(path + "SWF Media.swf");
 					this.swfDisplay.visible = true;
@@ -392,8 +388,9 @@ package com.troyworks.mediaplayer.controller {
 				}
 			}
 		}
-		/*.................................................................*/
-		public function onInit (e : AEvent) : void {
+import com.troyworks.core.cogs.CogEvent
+;		/*.................................................................*/
+		public function onInit (e : CogEvent) : void {
 			trace ("MediaPlayerBasic.onInitXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			// Create a NetConnection object
 			//	this.netConn = new NetConnection ();
@@ -410,10 +407,10 @@ package com.troyworks.mediaplayer.controller {
 			//this.handleEvent = this.pausedAtBeginningHandler;
 			this.Q_INIT (s1_active );
 		}
-		function s1_active (e : AEvent) : Function
+		function s1_active (e : CogEvent) : Function
 		{
 			this.onFunctionEnter ("s1_active-", e, []);
-			switch (e)
+			switch (e.sig)
 			{
 				case ENTRY_EVT :
 				{
@@ -458,25 +455,25 @@ package com.troyworks.mediaplayer.controller {
 					}
 					return null;
 				}
-				case PLAYFLV_EVT :
+				case SIG_PLAYFLV :
 				{
 					this.swfDisplay.visible = false;
 					this.mediaDisplayWrapper.visible = true;
 					return null;
 				}
-				case PLAYMP3_EVT :
+				case SIG_PLAYMP3 :
 				{
 					this.swfDisplay.visible = false;
 					this.mediaDisplayWrapper.visible = false;
 					return null;
 				}
-				case PLAYIMAGE_EVT :
+				case SIG_PLAYIMAGE :
 				{
 					this.swfDisplay.visible = true;
 					this.mediaDisplayWrapper.visible = false;
 					return null;
 				}
-				case PLAYSWF_EVT :
+				case SIG_PLAYSWF :
 				{
 					this.swfDisplay.visible = true;
 					this.mediaDisplayWrapper.visible = false;
@@ -485,10 +482,10 @@ package com.troyworks.mediaplayer.controller {
 			}
 			return s_top;
 		}
-		function s10_pausedAtBeginning (e : AEvent) : Function
+		function s10_pausedAtBeginning (e : CogEvent) : Function
 		{
 			this.onFunctionEnter ("s10_pausedAtBeginning-", e, []);
-			switch (e)
+			switch (e.sig)
 			{
 				case ENTRY_EVT :
 				{
@@ -511,10 +508,10 @@ package com.troyworks.mediaplayer.controller {
 			}
 			return this.s1_active ;
 		}
-		function s11_playing (e : AEvent) : Function
+		function s11_playing (e : CogEvent) : Function
 		{
 			this.onFunctionEnter ("s11_playing-", e, []);
-			switch (e)
+			switch (e.sig)
 			{
 				case ENTRY_EVT :
 				{
@@ -543,10 +540,10 @@ package com.troyworks.mediaplayer.controller {
 			}
 			return this.s1_active ;
 		}
-		function s12_stopped (e : AEvent) : Function
+		function s12_stopped (e : CogEvent) : Function
 		{
 			this.onFunctionEnter ("s12_stopped-", e, []);
-			switch (e)
+			switch (e.sig)
 			{
 				case ENTRY_EVT :
 				{
@@ -576,10 +573,10 @@ package com.troyworks.mediaplayer.controller {
 			}
 			return this.s1_active ;
 		}
-		function s13_pausedInMiddle (e : AEvent) : Function
+		function s13_pausedInMiddle (e : CogEvent) : Function
 		{
 			this.onFunctionEnter ("s13_pausedInMiddle-", e, []);
-			switch (e)
+			switch (e.sig)
 			{
 				case ENTRY_EVT :
 				{

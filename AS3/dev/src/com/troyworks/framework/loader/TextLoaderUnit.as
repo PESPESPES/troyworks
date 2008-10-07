@@ -117,8 +117,7 @@ package com.troyworks.framework.loader {
 			clip.y = Math.random() * 50;
 			clip.alpha = .3;
 			targetClip.addChild(clip);
-			dispatchEvent(new PlayheadEvent(EVT_COMPLETE));
-			//dispatchEvent(event);
+			fireCompletedEvent();
 		}
 	}
 }

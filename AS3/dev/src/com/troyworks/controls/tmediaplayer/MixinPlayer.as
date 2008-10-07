@@ -1,17 +1,18 @@
 package com.troyworks.controls.tmediaplayer {
+	import com.troyworks.core.Signals;	
+	import com.troyworks.core.cogs.Hsm;	
 	import com.troyworks.core.cogs.CogEvent;	
-	
+
 	import flash.events.MouseEvent;	
 	import flash.events.Event;	
-	
+
 	import com.troyworks.core.SignalEventAdaptor;	
 	import com.troyworks.controls.tmediaplayer.model.PlayHead;	
 	import com.troyworks.controls.tmediaplayer.ui.SeekBarNav;	
 	import com.troyworks.controls.tmediaplayer.ui.PlayerNav; 
 	import com.troyworks.data.ArrayX;
-
 	import com.troyworks.util.TimeDateUtil;
-	
+
 	import flash.external.ExternalInterface;
 	/**
 	 * This class is a wrapper for a given loaded swf to convert
@@ -23,44 +24,81 @@ package com.troyworks.controls.tmediaplayer {
 	import flash.system.fscommand;
 	import flash.display.MovieClip;
 	import flash.utils.setInterval;
-	public class MixinPlayer extends AMediaPlayer {
-	
+
+	public class MixinPlayer extends Hsm {
+
+		
+		///////////////////////////////////////////////
+
+		public static const SIG_PLAY : Signals = Signals.PLAY;
+		public static const SIG_PAUSE : Signals = Signals.PAUSE;
+		public static const SIG_REWIND_AND_STOP : Signals = Signals.REWIND_AND_STOP;
+		public static const SIG_REWIND_AND_PLAY : Signals = Signals.REWIND_AND_PLAY;
+		public static const SIG_STOP : Signals = Signals.STOP;
+		public static const SIG_GOTOANDSTOP : Signals = Signals.GOTOANDSTOP;
+		public static const SIG_GOTOANDPLAY : Signals = Signals.GOTOANDPLAY;
+
+		
+		public static const SIG_STARTED_CLIP : Signals = Signals.STARTED;
+		public static const SIG_FINISHED_CLIP : Signals = Signals.FINISHED;	
+		public static const SIG_INCREMENT_FRAME : Signals = Signals.INCREMENT_FRAME;
+		public static const SIG_DECREMENT_FRAME : Signals = Signals.DECREMENT_FRAME;
+		//public static const SIG_PLAYBACK_STATE_CHANGED : Signals =  Signals.getNext("PLAYBACK_STATE_CHANGED");
+		//public static const SIG_PROGRESS_CHANGED : Signals = Signals.getNext("PROGRESS_CHANGED");
+		public static const EVTD_PLAYBACK_STATE_CHANGED : String = "EVTD_PLAYBACK_STATE_CHANGED";
+		public static const EVTD_PROGRESS_CHANGED : String = "EVTD_PROGRESS_CHANGED";
+
+		//
+		public static const SIG_NEXTCLIP : Signals = Signals.GOTO_NEXT;
+		public static const SIG_PREVCLIP : Signals = Signals.GOTO_PREVIOUS;
+		//Static Events
+		public static const SIG_PLAYFLV : Signals = Signals.PLAYFLV;
+		public static const SIG_PLAYMP3 : Signals = Signals.PLAYMP3;
+		public static const SIG_PLAYIMAGE : Signals = Signals.PLAYIMAGE;
+		public static const SIG_PLAYSWF : Signals = Signals.PLAYSWF;
+		public static const SIG_TRANS_IN : Signals = Signals.TRANSIN_START;
+		public static const SIG_TRANS_OUT : Signals = Signals.TRANSOUT_START;
+		public var __cStateOpts : ArrayX;
+		//////////////////////////////////////////
+
+		
 		public var base_mc : MovieClip;
 		public var navBase_mc : MovieClip;
 		public var actual_mc : MovieClip;
 		public var playerControls_mc : PlayerNav;
 		public var seekControls_mc : SeekBarNav;
-	
+
 		public var playhead : PlayHead;
 		//
-		protected var m_isLoaded:Boolean = false;
-		protected var m_isReady:Boolean = false;
+		protected var m_isLoaded : Boolean = false;
+		protected var m_isReady : Boolean = false;
 		public var m_hasStarted : Boolean = false;
 		public var m_hasFinished : Boolean = false;
 		public var m_almostFinished : Boolean = false;
-	
+
 		public var playState : String = "loading";
 		public var playerFPS : Number = 24;
 		public var FPS : Number = 24;
-	
+
 		public var autoStart : Boolean = true;
 		public var autoRewind : Boolean = true;
-		
+
 		public var previewMode : Boolean = false;
 		public var almostFinishedFrames : Number = 12;
-		protected var intV : Number = NaN;// setInterval(_mc, "__mxpPollStatus", 1000/24);
+		protected var intV : Number = NaN;
+		// setInterval(_mc, "__mxpPollStatus", 1000/24);
 		protected var pintV : Number = -1;
-	
+
 		public var isSubordinateContent : Boolean = false;
-	
+
 		protected var exposedExternalInterfaceCallbacks : Boolean;
-		public var cleanAllOnUnload:Boolean = false;
-	
+		public var cleanAllOnUnload : Boolean = false;
+
 		/*****************************************************
 		 *  Constructor
 		 */
-	
-		public function MixinPlayer(aMovieClip : MovieClip, parentClip : MovieClip, aIsSubordinateContent:Boolean = false) {
+
+		public function MixinPlayer(aMovieClip : MovieClip, parentClip : MovieClip, aIsSubordinateContent : Boolean = false) {
 			super(null, "MixinPlayer", false);
 			trace("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
 			trace("MMMMMMMMMMMMMMMMMMMMMMMM MixinPlayer MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
@@ -70,8 +108,9 @@ package com.troyworks.controls.tmediaplayer {
 			trace("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
 	
 			base_mc = aMovieClip;
+			playerFPS = aMovieClip.stage.frameRate;
 			navBase_mc = parentClip;
-			playhead = new PlayHead();
+			//playhead = new PlayHead();
 			//////////////Activate the statemachine ///////////
 			if(aMovieClip != null){
 				//init();
@@ -79,61 +118,70 @@ package com.troyworks.controls.tmediaplayer {
 				trace("*** WARNING **** MixinPlayer passed in a null value"); 
 			}
 			isSubordinateContent = aIsSubordinateContent;
-			if(!isSubordinateContent){
+			if(!isSubordinateContent) {
 				trace("ERROR exposing ExternalInterfaces");
 				exposeExternalInterfaceCallbacks();
-			}else{
-					trace("ERROR not exposing ExternalInterfaces");
+			}else {
+				trace("ERROR not exposing ExternalInterfaces");
 			}
 		}
-	
-		public function exposeExternalInterfaceCallbacks():void{
-			ExternalInterface.addCallback("startPlayback", play);
-			ExternalInterface.addCallback("pausePlayback",  stop);
-			ExternalInterface.addCallback("rewindAndStopPlayback",  rewindAndStop);
-			ExternalInterface.addCallback("rewindAndPlayback",  rewindAndPlay);
-			ExternalInterface.addCallback("removeExternalInterfaceCallbacks",  removeExternalInterfaceCallbacks);
-			ExternalInterface.call("onExternalInterfaceChanged", true);
+
+		public function exposeExternalInterfaceCallbacks() : void {
+			if(ExternalInterface.available) {
+				ExternalInterface.addCallback("startPlayback", play);
+				ExternalInterface.addCallback("pausePlayback", stop);
+				ExternalInterface.addCallback("rewindAndStopPlayback", rewindAndStop);
+				ExternalInterface.addCallback("rewindAndPlayback", rewindAndPlay);
+				ExternalInterface.addCallback("removeExternalInterfaceCallbacks", removeExternalInterfaceCallbacks);
+				ExternalInterface.call("onExternalInterfaceChanged", true);
+			}
 			exposedExternalInterfaceCallbacks = true;		
 		}
-		public function removeExternalInterfaceCallbacks():void{
-			ExternalInterface.addCallback("startPlayback", emptyFunction );
-			ExternalInterface.addCallback("pausePlayback",   emptyFunction);
-			ExternalInterface.addCallback("rewindAndStopPlayback",   emptyFunction);
-			ExternalInterface.addCallback("rewindAndPlayback",   emptyFunction);
-			ExternalInterface.call("onExternalInterfaceChanged", false);
+
+		public function removeExternalInterfaceCallbacks() : void {
+			if(ExternalInterface.available) {
+				ExternalInterface.addCallback("startPlayback", emptyFunction);
+				ExternalInterface.addCallback("pausePlayback", emptyFunction);
+				ExternalInterface.addCallback("rewindAndStopPlayback", emptyFunction);
+				ExternalInterface.addCallback("rewindAndPlayback", emptyFunction);
+				ExternalInterface.call("onExternalInterfaceChanged", false);
+			}
 			exposedExternalInterfaceCallbacks = false;
 		}
-		public function emptyFunction():void{
+
+		public function emptyFunction() : void {
 		}
-		public function registerPlayerControls(nav : PlayerNav) : void{
+
+		public function registerPlayerControls(nav : PlayerNav) : void {
 			if(nav == null) return;
 	
 			trace("000000000000000000000000000000000000000000000000000000");
 			trace("000000000000000000000000000000000000000000000000000000");
-			trace("000000000000000000000000 registerPlayerControls " + this+ " 000000000000000000000000000000");
+			trace("000000000000000000000000 registerPlayerControls " + this + " 000000000000000000000000000000");
 			trace("0000000000000000000000000 " + nav + " 00000000000000000000000000000");
-		//	trace("00000000000000000000000000 " + stackOpts +" 0000000000000000000000000000");
-		//	trace("00000000000000000000000nav.requestTran0000000 " + nav.requestTran +" 000000000000000000000000");
+			//	trace("00000000000000000000000000 " + stackOpts +" 0000000000000000000000000000");
+			//	trace("00000000000000000000000nav.requestTran0000000 " + nav.requestTran +" 000000000000000000000000");
 			//var f : Function = nav.createCallback(STATE_CHANGED);
 			addEventListener(SIG_STATE_CHANGED.name, nav.onPlayerStateChanged);
 			//TODO nav.onPlayerStateChanged(stackOpts);
 			////////////////////////////////////////
-		//	nav.playClipBtn_mc.addEventListener(MCButton.EVTD_CLICK, actual_mc, actual_mc.__mxpPlay);
+			//	nav.playClipBtn_mc.addEventListener(MCButton.EVTD_CLICK, actual_mc, actual_mc.__mxpPlay);
 			nav.playClipBtn_mc.addEventListener(MouseEvent.CLICK, new SignalEventAdaptor(dispatchEvent, SIG_PLAY).relayEvent);
 			nav.pauseClipBtn_mc.addEventListener(MouseEvent.CLICK, new SignalEventAdaptor(dispatchEvent, SIG_STOP).relayEvent);
 			playerControls_mc = nav;
 		}
-		public function unRegisterPlayerControls():void{
+
+		public function unRegisterPlayerControls() : void {
 			playerControls_mc.playClipBtn_mc.removeEventListener(MouseEvent.CLICK, dispatchEvent);
 			playerControls_mc.pauseClipBtn_mc.removeEventListener(MouseEvent.CLICK, dispatchEvent);
 			playerControls_mc = null;
 		}
-		public function registerSeekControls(seeknav : SeekBarNav) : void{
+
+		public function registerSeekControls(seeknav : SeekBarNav) : void {
 			if(seeknav == null) return;
 			trace("000000000000000000000000000000000000000000000000000000");
 			trace("000000000000000000000000000000000000000000000000000000");
-			trace("000000000000000000000000registerSeekControls " + this+ " 000000000000000000000000000000");
+			trace("000000000000000000000000registerSeekControls " + this + " 000000000000000000000000000000");
 			trace("0000000000000000000000000 " + seeknav + " 00000000000000000000000000000");
 			seekControls_mc = seeknav;
 		/*	var f:Function = seeknav.createCallback(STATE_CHANGED);
@@ -143,174 +191,200 @@ package com.troyworks.controls.tmediaplayer {
 			nav.playClipBtn_mc.addEventListener(MCButton.EVTD_CLICK, createCallback(PLAY));
 			nav.pauseClipBtn_mc.addEventListener(MCButton.EVTD_CLICK, createCallback(STOP));*/
 		}
-	
+
 		///////////////////// INBOUND COMMANDS //////////////////////////////////////////
-		public function play() : void{
+		public function play() : void {
 			trace("MixinPlayer.play");
 			dispatchEvent(SIG_PLAY.createPrivateEvent());
 		}
-		public function stop() : void{
-					trace("ERROR MXP. stop");
+
+		public function stop() : void {
+			trace("ERROR MXP. stop");
 			//actual_mc.__mxpStopPlaying();
 			dispatchEvent(SIG_STOP.createPrivateEvent());
 		}
-		public function rewindAndStop():void{
+
+		public function rewindAndStop() : void {
 			dispatchEvent(SIG_REWIND_AND_STOP.createPrivateEvent());
 		}
-		public function rewindAndPlay():void{
+
+		public function rewindAndPlay() : void {
 			dispatchEvent(SIG_REWIND_AND_PLAY.createPrivateEvent());
 		}
+
 		/////////////////////// PROPERTIES ///////////////////////////////////////////////////////
-		public function get hasStarted() : Boolean{
+		public function get hasStarted() : Boolean {
 			return m_hasStarted;
 		}
-		
-		public function set hasStarted(aHasStarted:Boolean) : void{
-			if(m_hasStarted != aHasStarted){
-				 m_hasStarted = aHasStarted;
-				 fscommand("ktmoviestart");
-				 ExternalInterface.call ("contentHasStarted", "ID:"+actual_mc.loaderInfo.url, m_hasStarted);
+
+		public function set hasStarted(aHasStarted : Boolean) : void {
+			if(m_hasStarted != aHasStarted) {
+				m_hasStarted = aHasStarted;
+				fscommand("ktmoviestart");
+				ExternalInterface.call("contentHasStarted", "ID:" + actual_mc.loaderInfo.url, m_hasStarted);
 			}
 		}
-		public function get hasAlmostFinished() : Boolean{
+
+		public function get hasAlmostFinished() : Boolean {
 			return m_almostFinished;
 		}
-		
-		public function set hasAlmostFinished(aHasAlmostFinished:Boolean) : void{
-			if(m_almostFinished != aHasAlmostFinished){
-				 m_almostFinished = aHasAlmostFinished;
-				 fscommand("ktmoviealmostfinished");
+
+		public function set hasAlmostFinished(aHasAlmostFinished : Boolean) : void {
+			if(m_almostFinished != aHasAlmostFinished) {
+				m_almostFinished = aHasAlmostFinished;
+				fscommand("ktmoviealmostfinished");
 				 
-				 ExternalInterface.call ("contentIsAlmostFinished", "ID:"+actual_mc.loaderInfo.url, m_almostFinished); 
+				ExternalInterface.call("contentIsAlmostFinished", "ID:" + actual_mc.loaderInfo.url, m_almostFinished); 
 			}
 		}
-	
-		public function get hasFinished() : Boolean{
+
+		public function get hasFinished() : Boolean {
 			return m_hasFinished;
 		}
-		public function set hasFinished(finished: Boolean):void {
-			if(m_hasFinished != finished){
-				 m_hasFinished = finished;
-				 fscommand("ktmoviefinished");
+
+		public function set hasFinished(finished : Boolean) : void {
+			if(m_hasFinished != finished) {
+				m_hasFinished = finished;
+				fscommand("ktmoviefinished");
 				 
-				 ExternalInterface.call ("contentIsFinished", "ID:"+actual_mc.loaderInfo.url, m_hasFinished); 
+				ExternalInterface.call("contentIsFinished", "ID:" + actual_mc.loaderInfo.url, m_hasFinished); 
 			}
 		}
+
 		public function unloadMovie() : void {
 			base_mc.removeChild(actual_mc);
 		}
-		public function set isLoaded(loaded:Boolean):void{
-			if(m_isLoaded != loaded){
+
+		public function set isLoaded(loaded : Boolean) : void {
+			if(m_isLoaded != loaded) {
 				m_isLoaded = loaded;
-				if(m_isLoaded){
-				fscommand("ktmovieloaded");
+				if(m_isLoaded) {
+					fscommand("ktmovieloaded");
 				}
 				
-				ExternalInterface.call ("contentIsLoaded", "ID:"+actual_mc.loaderInfo.url, m_isLoaded);
+				ExternalInterface.call("contentIsLoaded", "ID:" + actual_mc.loaderInfo.url, m_isLoaded);
 			}
 		}
-		public function get isLoaded():Boolean{
-				return m_isLoaded;
-	
+
+		public function get isLoaded() : Boolean {
+			return m_isLoaded;
 		}
-		public function set isReady(ready:Boolean):void{
-			if(m_isReady != ready){
+
+		public function set isReady(ready : Boolean) : void {
+			if(m_isReady != ready) {
 				m_isReady = ready;
-				ExternalInterface.call ("contentIsReady", "ID:"+actual_mc.loaderInfo.url, m_isLoaded);
+				ExternalInterface.call("contentIsReady", "ID:" + actual_mc.loaderInfo.url, m_isLoaded);
 			}
 		}
-		public function get isReady():Boolean{
-				return m_isReady;
+
+		public function get isReady() : Boolean {
+			return m_isReady;
 		}
+
 		//////////////////// OUTBOUND ////////////////////////////////////////////////
-		public function onPlaybackStateChanged():void{
-		//TODO	dispatchEvent({type:EVTD_PLAYBACK_STATE_CHANGED, id:actual_mc.loaderInfo.url, playState:playState, opts:__cStateOpts});
-			if(!isSubordinateContent){
-				ExternalInterface.call ("onPlaybackStateChanged", "ID:"+actual_mc.loaderInfo.url, playState, __cStateOpts);
+		public function onPlaybackStateChanged() : void {
+			//TODO	dispatchEvent({type:EVTD_PLAYBACK_STATE_CHANGED, id:actual_mc.loaderInfo.url, playState:playState, opts:__cStateOpts});
+			if(!isSubordinateContent) {
+				ExternalInterface.call("onPlaybackStateChanged", "ID:" + actual_mc.loaderInfo.url, playState, __cStateOpts);
 			//	fscommand(playState);
 			}
-			playerControls_mc.onPlayerStateChanged(__cStateOpts);
+			if(playerControls_mc != null){
+				playerControls_mc.onPlayerStateChanged(__cStateOpts);
+			}
 		}
-		public function onProgressChanged():void{
+
+		public function onProgressChanged() : void {
 			trace("Progress " + actual_mc.currentFrame + "/" + actual_mc.totalFrames);
-			seekControls_mc.setPlayedProgress(actual_mc.currentFrame / actual_mc.totalFrames);
-			seekControls_mc.setLoadedProgress(actual_mc.loaderInfo.bytesLoaded / actual_mc.loaderInfo.bytesTotal);
+			if(seekControls_mc != null) {
+				seekControls_mc.setPlayedProgress(actual_mc.currentFrame / actual_mc.totalFrames);
+				seekControls_mc.setLoadedProgress(actual_mc.loaderInfo.bytesLoaded / actual_mc.loaderInfo.bytesTotal);
+			}
 			var eT : Number = actual_mc.currentFrame / FPS;
 			var tT : Number = actual_mc.totalFrames / FPS;
-			//	trace("ProgressN " + eT + " " + tT);
-			var feT : TimeDateUtil = new TimeDateUtil(eT*1000);
-			var ftT : TimeDateUtil = new TimeDateUtil(tT*1000);
-			var t : String = feT.a_minute+":"+feT.a_seconds+" / " + ftT.a_minute + ":" + ftT.a_seconds;
-			//	trace("ProgressT " + t + " " );
-			playerControls_mc.display_txt.text =t;
-		//TODO	dispatchEvent({type:EVTD_PROGRESS_CHANGED, id:actual_mc.loaderInfo.url, curFrame:actual_mc.currentFrame, totFrames:actual_mc.totalFrames, elapsedTime:feT.a_minute+":"+TimeDateUtil.padTo(feT.a_seconds,2,"0"), totalTime:ftT.a_minute + ":" + TimeDateUtil.padTo(ftT.a_seconds,2,"0"), bytesLoaded:actual_mc.getBytesLoaded(), bytesTotal:actual_mc.getBytesTotal()});
-			if(!isSubordinateContent){
-				ExternalInterface.call ("onProgressChanged","ID:"+actual_mc.loaderInfo.url, actual_mc.currentFrame, actual_mc.totalFrames, feT.a_minute+":"+TimeDateUtil.padTo(feT.a_seconds,2,"0"), ftT.a_minute + ":" + TimeDateUtil.padTo(ftT.a_seconds,2,"0"), actual_mc.loaderInfo.bytesLoaded, actual_mc.loaderInfo.bytesTotal);
+				trace("ProgressN " + eT + " " + tT);
+			var feT : TimeDateUtil =  TimeDateUtil.parseRelativeTime(eT * 1000);
+			var ftT : TimeDateUtil = TimeDateUtil.parseRelativeTime(tT * 1000);
+			var t : String = TimeDateUtil.padTo(feT.a_minute,2,"0") + ":" + TimeDateUtil.padTo(feT.a_seconds,2,"0") + " / " + TimeDateUtil.padTo(ftT.a_minute,2,"0") + ":" + TimeDateUtil.padTo(ftT.a_seconds,2,"0");
+				trace("ProgressT " + t + " "  + FPS);
+			if(playerControls_mc != null) {
+				playerControls_mc.display_txt.text = t;
+			}
+			//TODO	dispatchEvent({type:EVTD_PROGRESS_CHANGED, id:actual_mc.loaderInfo.url, curFrame:actual_mc.currentFrame, totFrames:actual_mc.totalFrames, elapsedTime:feT.a_minute+":"+TimeDateUtil.padTo(feT.a_seconds,2,"0"), totalTime:ftT.a_minute + ":" + TimeDateUtil.padTo(ftT.a_seconds,2,"0"), bytesLoaded:actual_mc.getBytesLoaded(), bytesTotal:actual_mc.getBytesTotal()});
+			if(!isSubordinateContent) {
+				ExternalInterface.call("onProgressChanged", "ID:" + actual_mc.loaderInfo.url, actual_mc.currentFrame, actual_mc.totalFrames, feT.a_minute + ":" + TimeDateUtil.padTo(feT.a_seconds, 2, "0"), ftT.a_minute + ":" + TimeDateUtil.padTo(ftT.a_seconds, 2, "0"), actual_mc.loaderInfo.bytesLoaded, actual_mc.loaderInfo.bytesTotal);
 			}
 		//	playerControls_mc.onProgressChanged(__cStateOpts);
 		}
+
 		///////////////////////////////////////////////////////////////
-		public function onLoad():void{
+		public function onLoad() : void {
 		//	super.onLoad(false);
 		}
-	
+
+		///////////////////// STATES ///////////////////////////////
+
+		/*.................................................................*/
+		public function s_initial(e : CogEvent) : Function {
+			switch (e.sig) {
+				case SIG_INIT :
+					/* initialize extended state variable */
+					//this.__foo = false;
+					trace("s_initial");
+					return s_viewAssetsUnLoaded;
+			}
+			return  s_root;
+		}
+
 		//////////////////////// LEVEL 0 STATES////////////////////////////
 		/*.................................................................*/
-		public function s0_viewAssetsUnLoaded(e :CogEvent) : Function
-		{
-			trace("s0_viewAssetsUnLoaded");
-		//	onFunctionEnter ("s0_viewAssetsUnLoaded-", e, []);
-			switch (e.sig)
-			{
+		public function s_viewAssetsUnLoaded(e : CogEvent) : Function {
+			trace("s_viewAssetsUnLoaded " + e);
+			trace("s_root?:" + s_root);
+			//	onFunctionEnter ("s_viewAssetsUnLoaded-", e, []);
+			switch (e.sig) {
 				case SIG_ENTRY :
-				{
+					trace("SIG_ENTRY");
 					playState = "loading";
-					startPulse(1000/30);
+					startPulse(1000 / 30);
 					return null;
-				}
+					
 				case SIG_EXIT :
-				{
+					trace("SIG_EXIT");		
 					stopPulse();
 					return null;
-				}
-				case SIG_PULSE:{
-	
-					trace("MixinPlayer.LoadCheck  " + base_mc.loaderInfo.bytesLoaded+ " / "+ base_mc.loaderInfo.bytesTotal);
-					if(actual_mc == null){
+				
+				case SIG_PULSE:
+					trace("SIG_PULSE");
+					trace("MixinPlayer.LoadCheck  " + base_mc.loaderInfo.bytesLoaded + " / " + base_mc.loaderInfo.bytesTotal);
+					if(actual_mc == null) {
 						actual_mc = scanClip(base_mc);
-						if(actual_mc.onUnload != null){
-							actual_mc.mxpOnOnload =actual_mc.onUnload;
-							 
+						if(actual_mc.onUnload != null) {
+							actual_mc.mxpOnOnload = actual_mc.onUnload;
 						}
-					//TODO	actual_mc.onUnload  =TProxy.create( onActualClipUnload);
-						if(actual_mc != null){
-							requestTran(s2_stoppedAtBeginning);
+						//TODO	actual_mc.onUnload  =TProxy.create( onActualClipUnload);
+						if(actual_mc != null) {
+							requestTran(s___stoppedAtBeginning);
 	//						MixinPlayer.createMovieTracker(actual_mc);
 						}			
 					}
 	
 					return null;
-				}
-				case SIG_INIT :
-				{
-					return null;
-				}
 			}
 			return s_root;
 		}
+
 		/*.................................................................*/
-		public function s0_viewAssetsLoaded(e :CogEvent) : Function
-		{
+		public function s_viewAssetsLoaded(e : CogEvent) : Function {
 	
-			//onFunctionEnter ("s0_viewAssetsLoaded-", e, []);
-			switch (e.sig)
-			{
+			//onFunctionEnter ("s_viewAssetsLoaded-", e, []);
+			switch (e.sig) {
 				case SIG_ENTRY :
-				{
-					trace("s0_viewAssetsLoaded.onEnter --- " );
-					registerPlayerControls(navBase_mc.PlayerNavButtonBar_mc);
-	
-					registerSeekControls(navBase_mc.PlayerNavButtonBar_mc.seekControls_mc);
+					{
+					trace("s_viewAssetsLoaded.onEnter --- ");
+					if(navBase_mc != null && navBase_mc.PlayerNavButtonBar_mc != null) {
+						registerPlayerControls(navBase_mc.PlayerNavButtonBar_mc);
+						registerSeekControls(navBase_mc.PlayerNavButtonBar_mc.seekControls_mc);
+					}
 					hasStarted = false;
 					playState = "initializing";
 					m_hasFinished = false;
@@ -320,24 +394,19 @@ package com.troyworks.controls.tmediaplayer {
 					onProgressChanged();
 	
 					return null;
-				}
-				case SIG_EXIT :
-				{
-					return null;
-				}
+					}
 				case SIG_INIT :
 				{
-					requestTran(s2_stoppedAtBeginning);
-					return null;
+					return s___stoppedAtBeginning;
 				}
 				case SIG_PLAY:
 				{
-					requestTran(s1_playing);
+					requestTran(s__playing);
 					return null;
 				}
 				case SIG_STOP:
 				{
-					requestTran(s1_stopped);
+					requestTran(s__stopped);
 					return null;
 				}
 				case SIG_REWIND_AND_STOP:
@@ -346,7 +415,7 @@ package com.troyworks.controls.tmediaplayer {
 					actual_mc.gotoAndStop(1);
 					m_almostFinished = false;
 					m_hasFinished = false;
-					requestTran(s2_stoppedAtBeginning);
+					requestTran(s___stoppedAtBeginning);
 					return null;
 				}
 				case SIG_REWIND_AND_PLAY:
@@ -354,7 +423,7 @@ package com.troyworks.controls.tmediaplayer {
 					actual_mc.gotoAndPlay(1);
 					m_almostFinished = false;
 					m_hasFinished = false;
-					requestTran(s1_playing);
+					requestTran(s__playing);
 					return null;
 				}
 				case SIG_GETOPTS:
@@ -371,24 +440,23 @@ package com.troyworks.controls.tmediaplayer {
 					//playerControls_mc.onPlayerStateChanged(ArrayX(__cStateOpts));
 					return null;
 				}
-	
 			}
 			return s_root;
 		}
 		//========================== LEVEL 1 ===============================/
 		/*.................................................................*/
 	
-		public function s0_viewAssetsDestroyed(e :CogEvent) : Function
+		public function s_viewAssetsDestroyed(e :CogEvent) : Function
 	
 		{
-			trace("s0_viewAssetsDestroyed");
-			//onFunctionEnter ("s0_viewAssetsDestroyed-", e, []);
+			trace("s_viewAssetsDestroyed");
+			//onFunctionEnter ("s_viewAssetsDestroyed-", e, []);
 			switch (e.sig)
 			{
 				case SIG_ENTRY :
 				{
 					playState = "unloaded";
-				//	_root.status_txt.text += "s0_viewAssetsDestroyed";
+				//	_root.status_txt.text += "s_viewAssetsDestroyed";
 					if(exposedExternalInterfaceCallbacks){
 						unRegisterPlayerControls();
 						removeExternalInterfaceCallbacks();
@@ -399,18 +467,15 @@ package com.troyworks.controls.tmediaplayer {
 					}
 					return null;
 				}
-				case SIG_INIT :
-				{
-					return null;
-				}
+	
 			}
 			return s_root;
 		}
 		//========================== LEVEL 1 ===============================/
 		/*.................................................................*/
-		public function s1_stopped(e :CogEvent) : Function
+		public function s__stopped(e :CogEvent) : Function
 		{
-			//onFunctionEnter ("s1_stopped-", e, []);
+			//onFunctionEnter ("s__stopped-", e, []);
 			switch (e.sig)
 			{
 				case SIG_ENTRY :
@@ -442,19 +507,17 @@ package com.troyworks.controls.tmediaplayer {
 					trace("s1 stopped.INIT");
 					if(actual_mc.currentFrame == 1){
 						trace("-> stopped at beginning");
-						requestTran(s2_stoppedAtBeginning);
+						return s___stoppedAtBeginning;
 					}else if(actual_mc.currentFrame == actual_mc.totalFrames){
 						trace("-> stopped at end");
-						requestTran( s2_stoppedAtEnd);
+						return s___stoppedAtEnd ;
 					}else{
 						trace("-> stopped in middle");
-						requestTran(s2_stoppedInMiddle);
+						return s___stoppedInMiddle;
 					}
-	
-					return null;
 				}
 				case SIG_GETOPTS:{
-					trace("s1_stopped GETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTS");
+					trace("s__stopped GETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTS");
 					var opts:ArrayX =new ArrayX("ID:"+actual_mc.loaderInfo.url,"PLAY_CLIP", "REWIND_AND_STOP", "FASTFORWARD_PLAY", "SEEK_TO", "FULLSCREEN_CLIP"); 
 					__cStateOpts= opts;
 					onPlaybackStateChanged();
@@ -462,13 +525,13 @@ package com.troyworks.controls.tmediaplayer {
 		
 				}
 			}
-			return s0_viewAssetsLoaded;
+			return s_viewAssetsLoaded;
 		}
 	
 		/*.................................................................*/
-		public function s1_playing(e :CogEvent) : Function
+		public function s__playing(e :CogEvent) : Function
 		{
-			//onFunctionEnter ("s1_stopped-", e, []);
+			//onFunctionEnter ("s__stopped-", e, []);
 			switch (e.sig)
 			{
 				case SIG_ENTRY :
@@ -495,10 +558,10 @@ package com.troyworks.controls.tmediaplayer {
 				{
 					onProgressChanged();
 					if((actual_mc.totalFrames  >almostFinishedFrames)  && actual_mc.currentFrame == (actual_mc.totalFrames - almostFinishedFrames) || actual_mc.almostFinished){
-						requestTran(s2_almostFinishedPlaying);
+						requestTran(s___almostFinishedPlaying);
 					}
 					if(actual_mc.currentFrame == actual_mc.totalFrames || actual_mc.hasFinished){
-						requestTran(s2_stoppedAtEnd);
+						requestTran(s___stoppedAtEnd);
 					}
 					return null;
 				}
@@ -518,11 +581,6 @@ package com.troyworks.controls.tmediaplayer {
 				{
 					clearInterval(pintV);
 					stopPulse();
-					return null;
-				}
-				case SIG_INIT :
-				{
-	
 					return null;
 				}
 				case SIG_GETOPTS:{
@@ -548,10 +606,10 @@ package com.troyworks.controls.tmediaplayer {
 				//	trace("ProgressT " + t + " " );
 					playerControls_mc.display_txt.text =t;
 					if((actual_mc.totalFrames  >almostFinishedFrames)  && actual_mc.currentFrame == (actual_mc.totalFrames - almostFinishedFrames) || actual_mc.almostFinished){
-						requestTran(s2_almostFinishedPlaying);
+						requestTran(s___almostFinishedPlaying);
 					}
 					if(actual_mc.currentFrame == actual_mc.totalFrames || actual_mc.hasFinished){
-						requestTran(s2_stoppedAtEnd);
+						requestTran(s___stoppedAtEnd);
 					}
 					return null;
 				}
@@ -561,10 +619,6 @@ package com.troyworks.controls.tmediaplayer {
 					stopPulse();
 					return null;
 				}
-				case SIG_INIT :
-				{
-					return null;
-				}
 				case SIG_GETOPTS:{
 					trace("GETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTS");
 					__cStateOpts= new ArrayX("ID"+actual_mc.loaderInfo.url,"PAUSE_CLIP", "REWIND_AND_STOP", "RESTART", "REWIND_PLAY", "FASTFORWARD_PLAY","SEEK_TO", "FULLSCREEN_CLIP");
@@ -572,19 +626,19 @@ package com.troyworks.controls.tmediaplayer {
 					
 				}
 			}
-			return s0_viewAssetsLoaded;
+			return s_viewAssetsLoaded;
 		}
 		//========================== LEVEL 2 ===============================/
 		/*.................................................................*/
-		public function s2_stoppedAtBeginning(e :CogEvent) : Function
+		public function s___stoppedAtBeginning(e :CogEvent) : Function
 		{
-		//	onFunctionEnter ("s2_stoppedAtBeginning-", e, []);
+		//	onFunctionEnter ("s___stoppedAtBeginning-", e, []);
 			switch (e.sig)
 			{
 				case SIG_ENTRY :
 				{
 					playState = "stopped";
-					trace("HIGHLIGHT s2_stopped at beginning" + actual_mc.currentFrame);
+					trace("HIGHLIGHT s___stopped at beginning" + actual_mc.currentFrame);
 					if(actual_mc.currentFrame >2){
 						actual_mc.gotoAndStop(1);
 					
@@ -593,14 +647,6 @@ package com.troyworks.controls.tmediaplayer {
 					m_almostFinished = false;
 					m_hasFinished = false;
 					callbackIn(1);
-					return null;
-				}
-				case SIG_EXIT :
-				{
-					return null;
-				}
-				case SIG_INIT :
-				{
 					return null;
 				}
 				case SIG_CALLBACK:{
@@ -613,7 +659,7 @@ package com.troyworks.controls.tmediaplayer {
 					return null;
 				}
 				case SIG_GETOPTS:{
-					trace("s1_stopped GETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTS");
+					trace("s__stopped GETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTS");
 					var opts:ArrayX =new ArrayX("ID:"+actual_mc.loaderInfo.url,"PLAY_CLIP","FASTFORWARD_PLAY", "SEEK_TO", "FULLSCREEN_CLIP"); 
 					 __cStateOpts = opts;
 					onPlaybackStateChanged();
@@ -621,12 +667,12 @@ package com.troyworks.controls.tmediaplayer {
 				}
 	
 			}
-			return s1_stopped;
+			return s__stopped;
 		}
 		/*.................................................................*/
-		public function s2_stoppedInMiddle(e :CogEvent) : Function
+		public function s___stoppedInMiddle(e :CogEvent) : Function
 		{
-			//onFunctionEnter ("s2_stoppedInMiddle-", e, []);
+			//onFunctionEnter ("s___stoppedInMiddle-", e, []);
 			switch (e.sig)
 			{
 				case SIG_ENTRY :
@@ -635,21 +681,13 @@ package com.troyworks.controls.tmediaplayer {
 					onProgressChanged();
 					return null;
 				}
-				case SIG_EXIT :
-				{
-					return null;
-				}
-				case SIG_INIT :
-				{
-					return null;
-				}
 			}
-			return s1_stopped;
+			return s__stopped;
 		}
 		/*.................................................................*/
-		public function s2_stoppedAtEnd(e :CogEvent) : Function
+		public function s___stoppedAtEnd(e :CogEvent) : Function
 		{
-		//	onFunctionEnter ("s2_stoppedAtEnd-", e, []);
+		//	onFunctionEnter ("s___stoppedAtEnd-", e, []);
 			switch (e.sig)
 			{
 				case SIG_ENTRY :
@@ -663,28 +701,24 @@ package com.troyworks.controls.tmediaplayer {
 					stopPulse();
 					return null;
 				}
-				case SIG_INIT :
-				{
-					return null;
-				}
 				case SIG_PULSE:{
-					requestTran(s2_finishedPlaying);
+					requestTran(s___finishedPlaying);
 					return null;
 				}
 				case SIG_GETOPTS:{
-					trace("s1_stopped GETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTS");
+					trace("s__stopped GETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTSGETOPTS");
 					var opts:ArrayX =new ArrayX("ID:"+actual_mc.loaderInfo.url,"REWIND_AND_STOP", "SEEK_TO", "FULLSCREEN_CLIP"); 
 					__cStateOpts= opts;
 					onPlaybackStateChanged();
 					return null;
 				}
 			}
-			return s1_stopped;
+			return s__stopped;
 		}
 			/*.................................................................*/
-		public function s2_almostFinishedPlaying(e :CogEvent) : Function
+		public function s___almostFinishedPlaying(e :CogEvent) : Function
 		{
-			//onFunctionEnter ("s2_almostFinishedPlaying-", e, []);
+			//onFunctionEnter ("s___almostFinishedPlaying-", e, []);
 			switch (e.sig)
 			{
 				case SIG_ENTRY :
@@ -692,21 +726,13 @@ package com.troyworks.controls.tmediaplayer {
 					hasAlmostFinished = true;
 					return null;
 				}
-				case SIG_EXIT :
-				{
-					return null;
-				}
-				case SIG_INIT :
-				{
-					return null;
-				}
+
 			}
-			return s1_playing;
+			return s__playing;
 		}
 		/*.................................................................*/
-		public function s2_finishedPlaying(e :CogEvent) : Function
+		public function s___finishedPlaying(e :CogEvent) : Function
 		{
-			//onFunctionEnter ("s2_finishedPlaying-", e, []);
 			switch (e.sig)
 			{
 				case SIG_ENTRY :
@@ -716,22 +742,14 @@ package com.troyworks.controls.tmediaplayer {
 					callbackIn(0);
 					return null;
 				}
-				case SIG_EXIT :
-				{
-					return null;
-				}
-				case SIG_INIT :
-				{
-					return null;
-				}
 				case SIG_CALLBACK:
 				{
 					if(autoRewind){
-						requestTran(s2_stoppedAtBeginning);
+						requestTran(s___stoppedAtBeginning);
 					}
 				}
 			}
-			return s1_stopped;
+			return s__stopped;
 		}
 	
 		/***************************************************************************
@@ -793,8 +811,7 @@ package com.troyworks.controls.tmediaplayer {
 		/* called when the clip is unloaded */
 		protected function onActualClipUnload() : void {
 			//_root.status_txt.text = "onActualClipUnload";
-			requestTran(s0_viewAssetsDestroyed);
+			requestTran(s_viewAssetsDestroyed);
 		}
-	
 	}
 }

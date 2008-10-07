@@ -27,31 +27,38 @@ package com.troyworks.controls.tslidermenu {
 	public class TSliderMenu {
 		import com.troyworks.core.tweeny.*;
 		var slidingTray : Sprite;
-		var view:MovieClip;
+		var slidingTraySize : Sprite;
+		var view:Sprite;
 		var slidingTrayTny : Tny;
 		var activationRadius : Number = 40;
 		var defaultScale : Number = 1;
 		var enlargedScale : Number = 2;
-			
-		public function TSliderMenu(viewMC:MovieClip = null) {
+		var config:Object = new Object();	
+		var hideTraySize:Boolean = true;
+		var drawSlider:Boolean  = false;
+		var drawSliderColor:Number = 0xcccccc;
+		var drawSliderAlpha:Number = .7; 
+		public function TSliderMenu(view:Sprite = null, initObj:Object = null) {
 			trace("EEEEEEEEEEEEEEEEEE new TSliderMenu EEEEEEEEEEEEEEEEEEEEEE " );
-			view = viewMC;
+			this.view = view;
 			//if(view.hasOwnProperty("config")){
 			//	trace("has config Object");
 			//}else{
 			//	trace("has NO config Object");
 			//}
+			Object(view).config = initObj;
 			view.addEventListener(Event.ENTER_FRAME, onFrame1);
 		}
 		public function onFrame1(evt:Event = null):void{
 			trace("new TSliderMenu.onFrame1********************************" );
 			view.removeEventListener(Event.ENTER_FRAME, onFrame1);
+			var cfg:Object = Object(view).config;
 			try{
-				trace("ACCESSING INSIDE OF FRAME2 " + view.config);
-				if(view.config != null){
-				  for(var i:String in view.config) {
-				  	trace(" setting " + i + " = " + view.config[i]);
-		            this[i] = view.config[i];
+				trace("ACCESSING INSIDE OF FRAME2 " + cfg);
+				if(cfg!= null){
+				  for(var i:String in cfg) {
+				  	trace(" setting " + i + " = " +cfg[i]);
+		            this[i] = cfg[i];
 		        }
 				}
 			}catch(err:Error){
@@ -61,16 +68,17 @@ package com.troyworks.controls.tslidermenu {
 			}
 		
 		}
-		public function setView(mc : MovieClip) : void {
+		public function setView(mc : Sprite) : void {
 			view = mc;
 			slidingTray  = new Sprite();
 			slidingTray.name = "slidingTray";
-			trace("LandscaptNav============================ " + view.sliderTraySize);
+			slidingTraySize = view.getChildByName("sliderTraySize") as Sprite;
+			trace("LandscaptNav============================ " + slidingTraySize);
 
 		
 			for (var i : int = 0;i < view.numChildren; i++) {
 				var dO : DisplayObject = view.getChildAt(i);
-				if (dO != view.sliderTraySize) {
+				if (dO != slidingTraySize) {
 					trace("adding Child " + dO.name);
 					defaultScale = dO.scaleX;
 					dO.addEventListener(MouseEvent.ROLL_OVER, onRollOverHandler);
@@ -79,9 +87,9 @@ package com.troyworks.controls.tslidermenu {
 					i = i - 1;
 				}
 			}
-
+		
 			view.addChild(slidingTray);
-			view.sliderTraySize.visible = false;
+			//slidingTraySize.visible = false;
 			slidingTray.cacheAsBitmap = true;
 			//slidingTray.y = 250;// = false;
 			
@@ -96,8 +104,13 @@ package com.troyworks.controls.tslidermenu {
 		}
 
 		function onEnterFrameHandler(evt : Event = null) : void {
-			var dx:Number = view.sliderTraySize.x - ((slidingTray.width - view.sliderTraySize.width) * view.sliderTraySize.mouseX / view.sliderTraySize.width);
+			var dx:Number = slidingTraySize.x - ((slidingTray.width - slidingTraySize.width) * slidingTraySize.mouseX / slidingTraySize.width);
 			slidingTray.x -= (slidingTray.x - dx) / 6;
+			if(drawSlider){
+				slidingTray.graphics.clear();
+				slidingTray.graphics.beginFill(drawSliderColor, drawSliderAlpha);
+				slidingTray.graphics.drawRect(0, 0, slidingTray.width, 5);
+			}
 			for (var i : int = 0;i < slidingTray.numChildren; i++) {
 				var dO : DisplayObject = slidingTray.getChildAt(i);
 				var xxm : Number = dO.mouseX - activationRadius / 2;
@@ -120,7 +133,7 @@ package com.troyworks.controls.tslidermenu {
 
 		function onMouseMoveHandler(evt : Event = null) : void {
 			trace("onMouseMoveHandler");
-			slidingTrayTny.x = view.sliderTraySize.x - ((slidingTray.width - view.sliderTraySize.width) * view.sliderTraySize.mouseX / view.sliderTraySize.width);
+			slidingTrayTny.x = slidingTraySize.x - ((slidingTray.width - slidingTraySize.width) * slidingTraySize.mouseX / slidingTraySize.width);
 			slidingTrayTny.ease = Bounce.easeOut;
 			slidingTrayTny.duration = .5;
 		}

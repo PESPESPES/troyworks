@@ -9,6 +9,7 @@ package com.troyworks.controls.menu {
 	 */
 	public class MenuSystemItem implements IMenuDataItem {
 		public static var IDz : int = 0;
+		private var _menuDepth:Number = 0;
 		public var id : Number = MenuSystemItem.IDz++;
 		public static var _ALL : Dictionary = new Dictionary();
 		public static var _ALLDEEPLINKS : Dictionary = new Dictionary();
@@ -41,7 +42,15 @@ package com.troyworks.controls.menu {
 		public function getName() : String {
 			return _name;
 		}
-
+		public function setName(name : String) : void {
+			_name = name;
+		}
+		public function getMenuDepth() : int {
+			return _menuDepth;
+		}
+		public function setMenuDepth(name : int) : void {
+			_menuDepth = name;
+		}
 		public function set isSelected(val : Boolean) : void {
 			_isSelected = val;
 		}
@@ -50,9 +59,6 @@ package com.troyworks.controls.menu {
 			return _isSelected;
 		}
 
-		public function setName(name : String) : void {
-			_name = name;
-		}
 
 		public function getParent() : IMenuDataItem {
 			return _parent;
@@ -135,6 +141,10 @@ package com.troyworks.controls.menu {
 
 		public function getMovieClipName() : String {
 			return mcStyle;
+		}
+		public function toString():String{
+		
+			return _name + " ";
 		}
 	}
 }

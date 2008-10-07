@@ -73,7 +73,20 @@ package com.troyworks.data {
 		public function getWeights() : Array {
 			return wts;	
 		}
-
+		
+		public function setWeights(wts : Array) : void {
+			
+			this.wts = wts;
+			W = new Array();
+			sum_of_wts = 0;
+			for (var i : Number = 0;i < wts.length; i++) {
+				//	trace("sum of wts1 " + sum_of_wts);
+				sum_of_wts = sum_of_wts + wts[i];
+				//	trace("sum of wts2 " + sum_of_wts);
+				W[i] = sum_of_wts;
+			}
+		//	trace("sum_of_wts " + sum_of_wts + "  array:" + W);
+		}
 		public function multiplyWeightsBy(val : Number = 1, startIdx : Number = 0, upperIdx : Number = NaN) : void {
 			var i : int = startIdx;
 			var n : int = isNaN(upperIdx) ? wts.length : upperIdx;
@@ -119,20 +132,7 @@ package com.troyworks.data {
 		}
 
 		
-		
-		public function setWeights(wts : Array) : void {
-			
-			this.wts = wts;
-			W = new Array();
-			sum_of_wts = 0;
-			for (var i : Number = 0;i < wts.length; i++) {
-				//	trace("sum of wts1 " + sum_of_wts);
-				sum_of_wts = sum_of_wts + wts[i];
-				//	trace("sum of wts2 " + sum_of_wts);
-				W[i] = sum_of_wts;
-			}
-		//	trace("sum_of_wts " + sum_of_wts + "  array:" + W);
-		}
+
 
 		/*****************************************
 		 * for a given bunch of elements, e.g. A, B,C
@@ -140,32 +140,34 @@ package com.troyworks.data {
 		 * get a random one that matches the approximate
 		 * distrubtion of the weights.
 		 */
-		public function getWeightedRandom(source : Array, quantity : Number = 1) : ArrayX {
+		public function getWeightedRandom(overrideSource : Array = null, quantityToGenerate : Number = 1) : ArrayX {
 	
-			var a : Array = (source == null) ? c : source;
+			var a : Array = (overrideSource == null) ? c : overrideSource;
 			var res : ArrayX = new ArrayX();
-	
-			while(res.length < quantity) {
+			var i : int = 0;
+			var n : int =W.length; 
+			while(res.length < quantityToGenerate) {
 				var passes : Boolean = false;		
 				////////////evaluate /////////////
 				while(!passes) {
 					var R : Number = Math.random() * sum_of_wts;
 					//    trace("threshold "+ R + "-----------");
-					for(var i : int = 0;i < W.length; i++) {
+					//for(var i : int = 0;i < W.length; i++) {
+						for (;i < n; ++i) {
 						var cr : Number = W[i];
 						if (R <= cr) {
 							
 							if(!allowImmediateRepeats && (lastR == R)) {
 								trace("skipping repeat");
 							}else {
-								trace("adding " + a[i]);
+								//trace("adding " + a[i]);
 								res.push(a[i]);
 								lastR = R;
 								passes = true;
 								break;
 							}
 						} else {
-							trace("not adding " + a[i]); 
+						//	trace("not adding " + a[i]); 
 						}
 					}
 				}

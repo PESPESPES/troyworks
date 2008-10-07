@@ -34,6 +34,7 @@
 */
 
 package com.troyworks.core.tweeny {
+	import flash.events.Event;	
 	import flash.display.MovieClip;	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -55,7 +56,7 @@ package com.troyworks.core.tweeny {
 		/* easing function */
 		public var ease:Function = Linear.easeIn;
 		/* prop array */
-		static var p:Array;
+		protected static var p:Array;
 		
 		/* loop iterators */
 		protected var i:int = 0;
@@ -146,6 +147,7 @@ package com.troyworks.core.tweeny {
 			}
 			if(targetD != null && targetD.stage == null){
 				trace("WARNING invalid stage, Tny won't be able to start");
+				targetD.addEventListener(Event.ADDED_TO_STAGE, addPulse);
 			}
 			target = targetD;
 
@@ -161,7 +163,7 @@ package com.troyworks.core.tweeny {
 		}*/
 		public function set props(pObj:Object):void{
 			//trace("setting prop " + pObj );
-			for (var i in pObj) {
+			for (var i:String in pObj) {
 			//	trace("setting prop " + i );
 				this[i] = pObj[i];
 			}
@@ -176,13 +178,20 @@ package com.troyworks.core.tweeny {
 		 * whatever 
 		 * other values are between -100 to 100;
 		 */
-		public function set colorP(percent:Number){
+		public function set colorP(percent:Number):void{
 			trace("setting colorP " + percent);
 			if(percent == 0){
 				colorTransform = new ColorTransform(1,1,1,1,0,0,0,0);
 			}else{
 				colorTransform.redMultiplier = colorTransform.greenMultiplier = colorTransform.blueMultiplier = 1 - percent/100;
 			}
+		}
+		public function addPulse(evt:Event):void{
+				if(isNaN(fps) && trg.stage != null){
+				//	trace("setting FPS!");
+					trg.stage.addEventListener("enterFrame", onPulse);//, false, 0, true);
+					fps = trg.stage.frameRate;
+				}
 		}
 		public function set target(v:DisplayObject):void{
 		
@@ -192,16 +201,12 @@ package com.troyworks.core.tweeny {
 				isFinished = true;
 				return;
 			}else{
-				if(isNaN(fps) && trg.stage != null){
-				//	trace("setting FPS!");
-					trg.stage.addEventListener("enterFrame", onPulse);//, false, 0, true);
-					fps = trg.stage.frameRate;
-				}
 				if(trg is MovieClip){
 	//				trace("attempting to add vars of MovieClip")
 					//addVarsOf(new MovieClip());
 					isMovieClip = true;
 				}
+				addPulse(null);
 			//	trace("setting target " + v.name + " " + v);
 			    transform.matrix = trg.transform.matrix.clone();
 				colorTransform = new ColorTransform();
@@ -412,7 +417,7 @@ package com.troyworks.core.tweeny {
 					_lm = trg.transform.matrix;
 					trg.transform.matrix = c as Matrix;
 				}else if(j ==6){
-				//trace("finishing ColorTransform----------" + trg.transform.colorTransform.alphaMultiplier );
+			//	trace("finishing ColorTransform----------" + trg.transform.colorTransform.alphaMultiplier );
 					_lc = trg.transform.colorTransform;
 					trg.transform.colorTransform = c as ColorTransform;
 					trg.visible = trg.transform.colorTransform.alphaMultiplier > .15;
