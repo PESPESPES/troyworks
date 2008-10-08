@@ -1,4 +1,6 @@
-package com.troyworks.util { 
+package com.troyworks.util {
+	import flash.events.EventDispatcher;
+	 
 	/*
 	A utility for comparing two times and creating duration based on milisecond resolution.
 	duration can be quantized to some units of calendar time eg. year, minute second.
@@ -12,7 +14,8 @@ package com.troyworks.util {
 	 * Note that moving in time by milliseconds, when cast back into Calendar time may not 
 	 * be quite the place intended due to things like Leap year, speed of light etc ;) 
 	*/
-	public class TimeDateUtil {
+	public class TimeDateUtil extends EventDispatcher
+	{
 		public static const oneSecond:Number = 1000;
 		public static const oneMinute:Number = 60*TimeDateUtil.oneSecond;
 		// milliseconds in a minute
@@ -25,23 +28,23 @@ package com.troyworks.util {
 		public static const oneYear:Number = 365*TimeDateUtil.oneDay;
 		private var _msRelative:Number;
 		//////////////////////////
-		public var a_milliseconds : Number;
-		public var a_seconds : Number;
-		public var a_minute : Number;
-		public var a_hour : Number;
-		public var a_day : Number;
-		public var a_week : Number;
-		public var a_month : Number;
-		public var a_year : Number;
+		private var a_millisecond : Number;
+		private var a_second : Number;
+		private var a_minute : Number;
+		private var a_hour : Number;
+		private var a_day : Number;
+		private var a_week : Number;
+		private var a_month : Number;
+		private var a_year : Number;
 		
-		public var milliseconds : Number;
-		public var seconds : Number;
-		public var minute : Number;
-		public var hour : Number;
-		public var day : Number;
-		public var week : Number;
-		public var month : Number;
-		public var year : Number;	
+//		public var milliseconds : Number;
+//		public var seconds : Number;
+//		public var minute : Number;
+//		public var hour : Number;
+//		public var day : Number;
+//		public var week : Number;
+//		public var month : Number;
+//		public var year : Number;	
 		/////
 		//dateformat
 		public function TimeDateUtil(relativeTimeMS:Number = 0) {
@@ -86,13 +89,13 @@ package com.troyworks.util {
 			}
 
 			if(r > oneSecond){
-				res.a_seconds = Math.floor(r/TimeDateUtil.oneSecond);
+				res.a_second = Math.floor(r/TimeDateUtil.oneSecond);
 				r = r % TimeDateUtil.oneSecond;
 			}else{
-				res.a_seconds = 0;
+				res.a_second = 0;
 			}
 
-			res.a_milliseconds = r;
+			res.a_millisecond = r;
 			return res;
 			
 		}
@@ -100,7 +103,6 @@ package com.troyworks.util {
 			var res:Array = String(number).split('');
 			if(res.length < characters){
 				var dif:int =   characters - res.length;
-			//	trace("dif " + dif)
 				while(dif--){
 					res.unshift(spacer);
 				}
@@ -130,23 +132,23 @@ package com.troyworks.util {
 		}
 		public function toStopWatchString() : String{
 			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(_msRelative);
-			return padTo(res.a_minute,2,"0")+":"+ padTo(res.a_seconds,2,"0");
+			return padTo(res.a_minute,2,"0")+":"+ padTo(res.a_second,2,"0");
 		}
 		
 		public function toDateTimeString() : String{
 			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(_msRelative);
 			return res.a_year+"-"+padTo(res.a_month,2,"0")+"-"+padTo(res.a_day,2,"0")+" "+ 
-			padTo(res.a_hour,2,"0")+":"+padTo(res.a_minute,2,"0")+":"+ padTo(res.a_seconds,2,"0");
+			padTo(res.a_hour,2,"0")+":"+padTo(res.a_minute,2,"0")+":"+ padTo(res.a_second,2,"0");
 		}
 		
 		public function toClockString() : String{
 			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(_msRelative);
-			return res.a_hour +":"+ res.a_minute+":"+ res.a_seconds;
+			return res.a_hour +":"+ res.a_minute+":"+ res.a_second;
 		}
 		
-		public function toString() : String{
+		override public function toString() : String{
 			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(_msRelative);
-			return res.a_hour +":"+ res.a_minute+":"+ res.a_seconds+"."+ res.a_milliseconds;
+			return res.a_hour +":"+ res.a_minute+":"+ res.a_second+"."+ res.a_millisecond;
 		}
 		
 		public function getRelativeTimeMs():Number
@@ -156,7 +158,112 @@ package com.troyworks.util {
 	
 		public static function formatToString(val : Number) : String{
 			var res:TimeDateUtil = TimeDateUtil.parseRelativeTime(val);
-			return res.a_hour +":"+ res.a_minute+":"+ res.a_seconds+"."+ res.a_milliseconds;
-		}		
+			return res.a_hour +":"+ res.a_minute+":"+ res.a_second+"."+ res.a_millisecond;
+		}
+		
+		public function get millisecond():Number
+		{
+			return a_millisecond;
+		}
+
+		public function set millisecond(ms:Number):void
+		{
+//			startChangeRequest();
+			_msRelative += ms;
+			parseRelativeTime(_msRelative);
+//			endChangeTransation(); //reupdate values from the parseRelativeTime
+		}
+		
+		public function get second():Number
+		{
+			return a_second;
+		}
+
+		public function set second(s:Number):void
+		{
+//			startChangeRequest();
+			_msRelative += s*oneSecond;
+			parseRelativeTime(_msRelative);
+//			endChangeTransation(); //reupdate values from the parseRelativeTime
+		}
+		
+		public function get minute():Number
+		{
+			return a_minute;
+		}
+
+		public function set minute(min:Number):void
+		{
+//			startChangeRequest();
+			_msRelative += min*oneMinute;
+			parseRelativeTime(_msRelative);
+//			endChangeTransation(); //reupdate values from the parseRelativeTime
+		}
+		
+		public function get hour():Number
+		{
+			return a_hour;
+		}
+
+		public function set hour(h:Number):void
+		{
+//			startChangeRequest();
+			_msRelative += h*oneHour;
+			parseRelativeTime(_msRelative);
+//			endChangeTransation(); //reupdate values from the parseRelativeTime
+		}
+		
+		public function get day():Number
+		{
+			return a_day;
+		}
+
+		public function set day(d:Number):void
+		{
+//			startChangeRequest();
+			_msRelative += d*oneDay;
+			parseRelativeTime(_msRelative);
+//			endChangeTransation(); //reupdate values from the parseRelativeTime
+		}
+		
+		public function get week():Number
+		{
+			return a_week;
+		}
+
+		public function set week(w:Number):void
+		{
+//			startChangeRequest();
+			_msRelative += w*oneWeek;
+			parseRelativeTime(_msRelative);
+//			endChangeTransation(); //reupdate values from the parseRelativeTime
+		}
+		
+		public function get month():Number
+		{
+			return a_month;
+		}
+
+		public function set month(m:Number):void
+		{
+//			startChangeRequest();
+			_msRelative += m*oneMonth;
+			parseRelativeTime(_msRelative);
+//			endChangeTransation(); //reupdate values from the parseRelativeTime
+		}
+		
+		public function get year():Number
+		{
+			return a_year;
+		}
+
+		public function set year(y:Number):void
+		{
+//			startChangeRequest();
+			_msRelative += y*oneYear;
+			parseRelativeTime(_msRelative);
+//			endChangeTransation(); //reupdate values from the parseRelativeTime
+		}
+
 	}
 }

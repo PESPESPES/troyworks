@@ -1,32 +1,60 @@
 package com.troyworks.util {
-	import com.troyworks.util.TimeLogEntry;	
+	import com.troyworks.util.TimeLogEntry;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;	
 	
-	public class CountDownTimer extends StopWatch
+	public class StopWatchLogger extends EventDispatcher
 	{
 		private var log:Array;
-		public function CountDownTimer()
+		private var watch:StopWatch;
+		
+		public function StopWatchLogger()
 		{
-			super();
 		}
 		
-		override public function start():void
+		public function addWatch(stopWatch:StopWatch)
 		{
-			trace("Start logging");
+			watch = stopWatch;
+			watch.addEventListener(StopWatch.START,onStart);
+			watch.addEventListener(StopWatch.STOP,onStop);
+			watch.addEventListener(StopWatch.RESET,onReset);
+		}
+		
+		public function removeWatch(stopWatch:StopWatch):Boolean
+		{
+			if (watch == stopWatch)
+			{
+				watch.removeEventListener(StopWatch.START,onStart);
+				watch.removeEventListener(StopWatch.STOP,onStop);
+				watch.removeEventListener(StopWatch.RESET,onReset);
+				return true;
+			}
+			else return false;
+		}
+		
+		public function onStart(evt:Event):void
+		{
+			trace("hear Start logging evt "+evt);
 			log = new Array();
-			super.start();
-			log["start"] = new TimeLogEntry(this);
+			log["start"] = new TimeLogEntry(watch);
 		}
 		
-		override public function stop():void
+		public function onStop(evt:Event):void
 		{
+			trace("onStop evt "+evt);
 			if (log == null) return;
-			super.stop();
-			log["stop"] = new TimeLogEntry(this);
+			log["stop"] = new TimeLogEntry(watch);
+		}
+		
+		public function onReset(evt:Event):void
+		{
+			trace("onReset evt "+evt);
+			log = new Array();
 		}
 		
 		public function getElapsedTimeDate(): String
 		{
-			var time:Number = super.getElapsedTime();
+			var time:Number = watch.getElapsedTime();
 			var timeDate:TimeDateUtil = new TimeDateUtil(time);
 			return timeDate.toDateTimeString();
 		}
@@ -34,7 +62,7 @@ package com.troyworks.util {
 		public function addLogEntry(name:String):void
 		{
 			if (log == null) return;
-			log[name] = new TimeLogEntry(this);
+			log[name] = new TimeLogEntry(watch);
 		}
 		
 		public function traceLog():void

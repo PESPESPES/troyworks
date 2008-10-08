@@ -1,4 +1,7 @@
-﻿package com.troyworks.util { 
+﻿package com.troyworks.util {
+	import flash.events.EventDispatcher;
+	import flash.events.Event;
+	 
 	//////////////////////////////////////////////////////////////
 	//Generic stopwatch class used for evaluating performance
 	// used like
@@ -13,7 +16,12 @@
 	// alarm mode, timer mode, reminder mode (check againts an array of times)
 	/////////////////////////////////////////////////////////////
 	
-	public class StopWatch {
+	public class StopWatch extends EventDispatcher
+	{
+		public static var STOP="STOP";
+		public static var START="START";
+		public static var RESET="RESET";
+		
 		public var startTime:Date;
 		public var endTime:Date;
 		public var elapsedTime:Number;
@@ -27,22 +35,27 @@
 			if(!persistent){
 				endTime = null;
 				startTime =  new Date();
+				dispatchEvent(new Event(START));
 			}
 		}
 		
 		public function stop():void  {
 			endTime = new Date();
 			elapsedTime = endTime.getTime()-startTime.getTime();
+			dispatchEvent(new Event(STOP));
 		}
+		
 		public function zero():void  {
 			startTime = null;
 			endTime = null;
 			elapsedTime = 0;
 		}
+		
 		public function reset():void  {
 			startTime =  new Date();
 			endTime = new Date();
 			elapsedTime = 0;
+			dispatchEvent(new Event(RESET));
 		}
 		//this updates the elapsed time
 		public function getElapsedTime():Number{
@@ -63,7 +76,7 @@
 			return secs+" Seconds";
 		}
 		
-		public function toString():String{
+		override public function toString():String{
 			var res:String = "StopWatch " + getElapsedTime();
 			return res;
 		}
