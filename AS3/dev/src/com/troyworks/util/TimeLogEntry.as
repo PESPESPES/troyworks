@@ -1,19 +1,17 @@
 package com.troyworks.util
 {
-//	import com.adobe.utils.DateUtil;
-	
 	public class TimeLogEntry
 	{
-		private var watch:CountDownTimer;
+		private var watch:StopWatch;
 		private var date:Date;
 		private var elapsedTime:TimeDateUtil;
 		
-		public function TimeLogEntry(timer:CountDownTimer, dateTime:Date = new Date())
+		public function TimeLogEntry(timer:StopWatch, dateTime:Date = null)
 		{
+			if (dateTime == null) dateTime = new Date();
 			date = dateTime;
 			watch = timer;
 			elapsedTime = new TimeDateUtil(watch.getElapsedTime());			
-//			trace("TimeLogEntry date: "+date.toString()+" time: "+elapsedTime.toDateTimeString());
 		}
 		
 		public function getDate():Date
