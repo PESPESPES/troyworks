@@ -18,14 +18,15 @@
 	
 	public class StopWatch extends EventDispatcher
 	{
-		public static var STOP="STOP";
-		public static var START="START";
-		public static var RESET="RESET";
+		public static const STOP="STOP";
+		public static const START="START";
+		public static const RESET="RESET";
 		
 		public var startTime:Date;
 		public var endTime:Date;
 		public var elapsedTime:Number;
 		public var persistent:Boolean;
+		
 		public function StopWatch(persist:Boolean = false) {
 			trace("StopWatch");
 			zero();
