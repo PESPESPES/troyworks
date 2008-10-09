@@ -1,5 +1,6 @@
 package com.troyworks.util {
 	import flash.events.EventDispatcher;
+	import flash.events.Event;
 	 
 	/*
 	A utility for comparing two times and creating duration based on milisecond resolution.
@@ -16,6 +17,9 @@ package com.troyworks.util {
 	*/
 	public class TimeDateUtil extends EventDispatcher
 	{
+		public static const CHANGED="CHANGED";
+		public static const START_CHANGE="START_CHANGE";
+		
 		public static const oneSecond:Number = 1000;
 		public static const oneMinute:Number = 60*TimeDateUtil.oneSecond;
 		// milliseconds in a minute
@@ -28,24 +32,15 @@ package com.troyworks.util {
 		public static const oneYear:Number = 365*TimeDateUtil.oneDay;
 		private var _msRelative:Number;
 		//////////////////////////
-		private var a_millisecond : Number;
-		private var a_second : Number;
-		private var a_minute : Number;
-		private var a_hour : Number;
-		private var a_day : Number;
-		private var a_week : Number;
-		private var a_month : Number;
-		private var a_year : Number;
+		private var a_millisecond : Number = 0;
+		private var a_second : Number = 0;
+		private var a_minute : Number = 0;
+		private var a_hour : Number = 0;
+		private var a_day : Number = 0;
+		private var a_week : Number = 0;
+		private var a_month : Number = 0;
+		private var a_year : Number = 0;
 		
-//		public var milliseconds : Number;
-//		public var seconds : Number;
-//		public var minute : Number;
-//		public var hour : Number;
-//		public var day : Number;
-//		public var week : Number;
-//		public var month : Number;
-//		public var year : Number;	
-		/////
 		//dateformat
 		public function TimeDateUtil(relativeTimeMS:Number = 0) {
 			_msRelative = relativeTimeMS;
@@ -168,10 +163,10 @@ package com.troyworks.util {
 
 		public function set millisecond(ms:Number):void
 		{
-//			startChangeRequest();
+			startChangeRequest();
 			_msRelative += ms;
 			parseRelativeTime(_msRelative);
-//			endChangeTransation(); //reupdate values from the parseRelativeTime
+			endChangeTransation(); //reupdate values from the parseRelativeTime
 		}
 		
 		public function get second():Number
@@ -181,10 +176,10 @@ package com.troyworks.util {
 
 		public function set second(s:Number):void
 		{
-//			startChangeRequest();
+			startChangeRequest();
 			_msRelative += s*oneSecond;
 			parseRelativeTime(_msRelative);
-//			endChangeTransation(); //reupdate values from the parseRelativeTime
+			endChangeTransation(); //reupdate values from the parseRelativeTime
 		}
 		
 		public function get minute():Number
@@ -194,10 +189,10 @@ package com.troyworks.util {
 
 		public function set minute(min:Number):void
 		{
-//			startChangeRequest();
+			startChangeRequest();
 			_msRelative += min*oneMinute;
 			parseRelativeTime(_msRelative);
-//			endChangeTransation(); //reupdate values from the parseRelativeTime
+			endChangeTransation(); //reupdate values from the parseRelativeTime
 		}
 		
 		public function get hour():Number
@@ -207,10 +202,10 @@ package com.troyworks.util {
 
 		public function set hour(h:Number):void
 		{
-//			startChangeRequest();
+			startChangeRequest();
 			_msRelative += h*oneHour;
 			parseRelativeTime(_msRelative);
-//			endChangeTransation(); //reupdate values from the parseRelativeTime
+			endChangeTransation(); //reupdate values from the parseRelativeTime
 		}
 		
 		public function get day():Number
@@ -220,10 +215,10 @@ package com.troyworks.util {
 
 		public function set day(d:Number):void
 		{
-//			startChangeRequest();
+			startChangeRequest();
 			_msRelative += d*oneDay;
 			parseRelativeTime(_msRelative);
-//			endChangeTransation(); //reupdate values from the parseRelativeTime
+			endChangeTransation(); //reupdate values from the parseRelativeTime
 		}
 		
 		public function get week():Number
@@ -233,10 +228,10 @@ package com.troyworks.util {
 
 		public function set week(w:Number):void
 		{
-//			startChangeRequest();
+			startChangeRequest();
 			_msRelative += w*oneWeek;
 			parseRelativeTime(_msRelative);
-//			endChangeTransation(); //reupdate values from the parseRelativeTime
+			endChangeTransation(); //reupdate values from the parseRelativeTime
 		}
 		
 		public function get month():Number
@@ -246,10 +241,10 @@ package com.troyworks.util {
 
 		public function set month(m:Number):void
 		{
-//			startChangeRequest();
+			startChangeRequest();
 			_msRelative += m*oneMonth;
 			parseRelativeTime(_msRelative);
-//			endChangeTransation(); //reupdate values from the parseRelativeTime
+			endChangeTransation(); //reupdate values from the parseRelativeTime
 		}
 		
 		public function get year():Number
@@ -259,11 +254,20 @@ package com.troyworks.util {
 
 		public function set year(y:Number):void
 		{
-//			startChangeRequest();
+			startChangeRequest();
 			_msRelative += y*oneYear;
 			parseRelativeTime(_msRelative);
-//			endChangeTransation(); //reupdate values from the parseRelativeTime
+			endChangeTransation(); //reupdate values from the parseRelativeTime
 		}
 
+		private function endChangeTransation():void
+		{
+			dispatchEvent(new Event(CHANGED));
+		}
+		
+		private function startChangeRequest():void
+		{
+			dispatchEvent(new Event(START_CHANGE));
+		}
 	}
 }
