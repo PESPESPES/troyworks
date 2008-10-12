@@ -1,4 +1,4 @@
-package com.troyworks.util {
+package com.troyworks.util.swfconnect {
 
 	/**
 	 * LocalConnectionBridge

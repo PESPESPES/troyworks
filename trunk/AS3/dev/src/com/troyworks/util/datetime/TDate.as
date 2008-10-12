@@ -3,31 +3,23 @@ package com.troyworks.util.datetime {
 	import flash.events.EventDispatcher; 
 
 	import com.troyworks.util.DesignByContract;
-	import com.troyworks.framework.model.BaseModelObject;
+	import  com.troyworks.data.DataChangedEvent;
 
 	import flash.events.Event;	
 
-	/* 
-	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	
-	Title : 		XDate Class
-	Author : 		P.J. Onori
-	URL : 			http://www.somerandomdude.net/flash_xdate.html
-	
-	Description :	Extension of Macromedia's Date class for Flash MX 2004+. Various methods to get more detailed 
-	date information. This class was designed for calendar-based applications and provides many useful
-	methods to pull out all the data needed to do so.
-	
-	Created : 		7/22/05
-	Modified : 		9/17/05
-	
-	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	 */
-	
 	/**
 	 * based off the XDate utility from P.J. Onori
 	 * URL : 			http://www.somerandomdude.net/flash_xdate.html
-	 * @author Troy Gardner
+	 * @author Troy Gardner, P.J. Onori
+	 * 
+	 * Description :	Extension of Macromedia's Date class for Flash MX 2004+. Various methods to get more detailed 
+	 * date information. This class was designed for calendar-based applications and provides many useful
+	 * methods to pull out all the data needed to do so.
+	 * 
+	 * It's been updated to have more transactional changes, and updated to AS3.0 event
+	 * 
+	 * 	Created : 		7/22/05, 9/17/05
+
 	 */
 	public class TDate extends Date implements IEventDispatcher {
 
@@ -44,65 +36,17 @@ package com.troyworks.util.datetime {
 		public var REQUIRE : Function;
 
 		
-		// Time Values.. useful for more than just finding the date.
-	   
-		/* How many milliseconds are in a second*/
-		public static var SECOND : Number = 1000;
-		/* How many milliseconds are in a minute*/
-		public static var MINUTE : Number = SECOND * 60;
-		/* How many milliseconds are in an hour*/
-		public static var HOUR : Number = MINUTE * 60;
-		/* How many milliseconds are in a day*/
-		public static var DAY : Number = HOUR * 24;
-		/* How many milliseconds are in a week*/
-		public static var WEEK : Number = DAY * 7;
-		/* How many milliseconds are in average month*/
-		public static var MONTH : Number = (365 * DAY) / 12;
-		/* How many milliseconds are in average 3 month period */
-		public static var QUARTER : Number = MONTH * 3;
-		/* How many milliseconds are in a year*/
-		public static var YEAR : Number = DAY * 365;
+
 
 		//protected var mask:Number = ;
 
-		protected var monthDays : Number;
-		protected var monthWeeks : Number;
+		protected var monthDays : Number = NaN;
+		protected var monthWeeks : Number = NaN;
 		protected var weekArray : Array;
+		private var lastDate : Date;
 
-		public var lastDate : Date = null;
-
-		/*
-		Day names in various langauges (sorry, no Arabic or Eastern langauges at this point).
-		EN - English
-		SP - Spanish
-		FR - French
-		GR - German
-		IT - Italian
-		 */
-
-		protected static var dayNameEN : Array = new Array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
-		protected static  var dayNameSP : Array = new Array("El Domingo", "El Lunes", "El Martes", "El Miércoles", "El Jueves", "El Viernes", "El Sábado");
-		protected static  var dayNameFR : Array = new Array("Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi");
-		protected static  var dayNameDE : Array = new Array("Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag");
-		protected static  var dayNameIT : Array = new Array("Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato");
-		public static var dayNameRO : Array = new Array("Luni", "Marti", "Miercuri", "Joi", "Vineri", "Sambata", "Duminica");
-		public static var DAY_NAMES : Array = dayNameEN;
-		/*
-		Month names in various langauges.
-		EN - English
-		SP - Spanish
-		FR - French
-		DE - German
-		IT - Italian
-		 */
-		public static var monthNameRO : Array = new Array("Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie");
-		protected static  var monthNameEN : Array = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
-		protected static  var monthNameSP : Array = new Array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
-		protected static  var monthNameFR : Array = new Array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
-		protected static  var monthNameDE : Array = new Array("Januar", "Februar", "Marschiert", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
-		protected static  var monthNameIT : Array = new Array("Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre");
-		public static var MONTH_NAMES : Array = monthNameEN;
-
+		
+		
 		public function TDate(year : Number = NaN, month : Number = NaN, date : Number = NaN, hour : Number = NaN, min : Number = NaN, sec : Number = NaN, ms : Number = NaN) {
 			super(year, month, date, hour, min, sec, ms);
 			//REQUIRE(arguments.length < 7, "TDate has invalid arguments, more than 7 passed!" + arguments.join(","));
@@ -126,9 +70,11 @@ package com.troyworks.util.datetime {
 		}
 
 		protected function dispatchChangedEvent() : void {
-			dispatchEvent({
-				type : BaseModelObject.EVTD_MODEL_CHANGED, target : this, oldVal:lastDate, newVal:this
-			});
+			var evt:DataChangedEvent = new DataChangedEvent(Event.CHANGE);
+			evt.oldVal = lastDate;
+			evt.currentVal = this;
+			dispatchEvent(evt);
+
 		}
 
 		protected function startChangeTransaction() : void {
@@ -352,7 +298,7 @@ package com.troyworks.util.datetime {
 		 * Summary:		Finds the total amount of days in the object's month
 		 * 				and sets 'daysInMonth' with the value
 		 */
-		function setDaysInMonth() : void {
+		public function setDaysInMonth() : void {
 			var tempDate : Date = new Date(super.getYear(), this.getMonth() + 1, 0);
 			this.monthDays = tempDate.getDate();
 		}
@@ -363,7 +309,11 @@ package com.troyworks.util.datetime {
 		 * Return:      The total number of days in the month
 		 */
 
-		function getDaysInMonth() : Number {
+		public function getDaysInMonth() : Number {
+			
+			if(isNaN(this.monthDays)){
+			   setDaysInMonth();	
+			}
 			return this.monthDays;
 		}
 
@@ -372,7 +322,7 @@ package com.troyworks.util.datetime {
 		 * Summary:		Returns the total number of days left in the object's month
 		 * Return:      The total number of days left in the month
 		 */
-		function getDaysLeftInMonth() : Number {
+		public function getDaysLeftInMonth() : Number {
 			return this.getDaysInMonth() - super.getDate();
 		}
 
@@ -383,7 +333,7 @@ package com.troyworks.util.datetime {
 		 * Return:      The total number of days in the year
 		 */
 
-		function getDaysInYear() : Number {
+		public function getDaysInYear() : Number {
 			var daysInYear : Number = 0;
 			var tempDate : Date = cloneAsDate();
 			for (var i : Number = 0;i < 12; i++) {
@@ -398,7 +348,7 @@ package com.troyworks.util.datetime {
 		 * Summary:		Finds the day (i.e Monday, Tuesday, etc.)
 		 * 				that the first day of the object's month lands on
 		 */
-		function getMonthStartDate() : Number {
+		public function getMonthStartDate() : Number {
 			var tmpDate : Date = cloneAsDate();
 			tmpDate.setDate(1);
 			var day : Number = tmpDate.getDay();
@@ -410,7 +360,7 @@ package com.troyworks.util.datetime {
 		 * Summary:		Finds the day (i.e Monday, Tuesday, etc.)
 		 * 				that the last day of the object's month lands on
 		 */
-		function getMonthEndDate() : Number {
+		public function getMonthEndDate() : Number {
 			var tmpDate : Date = cloneAsDate();
 			tmpDate.setDate(getDaysInMonth());
 			var day : Number = tmpDate.getDay();
@@ -421,7 +371,7 @@ package com.troyworks.util.datetime {
 		 * Function:	setWeeksInMonth
 		 * Summary:		Sets the total number of weeks in the object's month
 		 */
-		function setWeeksInMonth() : void {
+		public function setWeeksInMonth() : void {
 			monthWeeks = 0;
 			var tD : Date = new Date();
 			for (var i : Number = 0;i < getDaysInMonth() + 1; i++) {
@@ -437,7 +387,7 @@ package com.troyworks.util.datetime {
 		 * Summary:		Gets the total number of weeks in the object's month
 		 */
 
-		function getWeeksInMonth() : Number {
+		public function getWeeksInMonth() : Number {
 			return monthWeeks;
 		}
 
@@ -447,7 +397,7 @@ package com.troyworks.util.datetime {
 		 * 				for each week in the object's month
 		 */
 
-		function getDaysInWeeks() : Array {
+		public function getDaysInWeeks() : Array {
 			var day : Number = 1;
 			var weekCount : Number = 0;
 			var daysCounted : Number = 0;
@@ -476,8 +426,8 @@ package com.troyworks.util.datetime {
 		 * Summary:		Returns the total amount of days in a specified week
 		 * 				of the object's month
 		 */
-		function getDaysInWeek(week : Number) : Number {
-			var weeks : Array = daysInWeeks;
+		public function getDaysInWeek(week : Number) : Number {
+			var weeks : Array = getDaysInWeeks();
 			if(week > weeks.length || week < 0) {
 				return null;
 			}
@@ -488,76 +438,12 @@ package com.troyworks.util.datetime {
 		 * Function:	getDay
 		 * Summary:		Finds the day for any date specified
 		 */
-		function getDay(month : Number, year : Number, day : Number) : Number {
+		public function getDay(month : Number, year : Number, day : Number) : Number {
 			var res : Date = new Date(year, month, day);
 			return res.getDay();
 		}
 
-		/*
-		 * Function:	getDayName
-		 * Summary:		Returns the name of the day specified in the language specified
-		 * Parametets:	Number of days (starting w/ 0), Language of name (EN = english, FR = french, etc.)
-		 */
-		function getDayName(day : Number, lang : String) : String {
-			if(day >= 0 || day <= 6) {
-				switch(lang) {
-					case "EN":
-						return dayNameEN[day];
-						break;
-					case "SP":
-						return dayNameSP[day];
-						break;
-					case "FR":
-						return dayNameFR[day];
-						break;
-					case "DE":
-						return dayNameDE[day];
-						break;
-					case "IT":
-						return dayNameIT[day];
-						break;
-					default :
-						return dayNameEN[day];
-						break;	
-				}
-			}
-			else {
-				return null;
-			}
-		}
 
-		/*
-		 * Function:	getMonthName
-		 * Summary:		Returns the name of the month specified in the language specified
-		 * Parametets:	Number of month (starting w/ 0), Language of name (EN = english, FR = french, etc.)
-		 */
-		function getMonthName(month : Number, lang : String) : String {
-			if(month >= 0 || month <= 11) {
-				switch(lang) {
-					case "EN":
-						return monthNameEN[month];
-						break;
-					case "SP":
-						return monthNameSP[month];
-						break;
-					case "FR":
-						return monthNameFR[month];
-						break;
-					case "DE":
-						return monthNameDE[month];
-						break;
-					case "IT":
-						return monthNameIT[month];
-						break;
-					default :
-						return monthNameEN[month];
-						break;	
-				}
-			}
-			else {
-				return null;
-			}
-		}
 
 		public function clone() : TDate {
 			//needed to get around type checking in FDT/Mtasc
