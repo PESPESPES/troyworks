@@ -117,7 +117,7 @@
 
 
 		}
-		public static function ASSERT(test : Boolean, desc : String, aFatal : Boolean = false):void {
+		public static function ASSERT(test : Boolean, desc : String, aFatal : Boolean = false):Boolean {
 			var s:String;
 			if (appIsHalted ) {
 
@@ -127,7 +127,7 @@
 					trace("throwing ASSERT DesignByContractError");
 					throw new DesignByContractEvent(s);
 				} else {
-					return;
+					return false;
 				}
 			}
 			if ( ! test) {
@@ -141,10 +141,12 @@
 
 				DesignByContract.getInstance().dispatchEvent(dbcE);
 				isDispatching =false;
-
+				return false;
+			}else{
+			 	return true;	
 			}
 		}
-		public static function REQUIRE(test : Boolean, desc : String, var1:* = undefined, var2:* = undefined, var3:* = undefined):void {
+		public static function REQUIRE(test : Boolean, desc : String, var1:* = undefined, var2:* = undefined, var3:* = undefined):Boolean {
 			var s:String;
 
 			if (appIsHalted) {
@@ -155,7 +157,7 @@
 					trace("throwing REQUIRE DesignByContractEvent");
 					throw new DesignByContractEvent(s);
 				} else {
-					return;
+					return false;
 				}
 			}
 			if ( ! test) {
@@ -184,7 +186,11 @@
 
 				DesignByContract.getInstance().dispatchEvent(dbcE);
 				isDispatching = false;
+				return false;
+			}else{
+			 	return true;	
 			}
+
 		}
 		public static function toString():String {
 			return "DesignByContractLog:\r\t" + log.join("\r\t");

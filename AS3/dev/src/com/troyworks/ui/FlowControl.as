@@ -173,6 +173,7 @@
 
 		public function FlowControl(initObj : Object = null, subclassed : Boolean = false) {
 			super();
+			trace("FlowControl () subclassed? " + subclassed);
 			flowcontrollSubClassed = subclassed;
 			if(!flowcontrollSubClassed) {
 				init(initObj);
@@ -886,6 +887,7 @@
 				var nm : String;
 				var cnm : String;
 				var evt : FlowControlEvent;
+				try{
 				for (var i : int = 0;i < view.currentLabels.length; i++) {
 					cnm = view.currentLabels[i].name;
 					if (cnm != " " && view.currentLabels[i].frame == view.currentFrame && activeFrames[cnm] != true) {
@@ -927,6 +929,9 @@
 					}//sp.visible = false;
 				}
 				lastFrameNumber = view.currentFrame;
+				}catch(err:Error){
+					trace("error in flowcontrol " + err.getStackTrace());
+				}
 			}
 		}
 

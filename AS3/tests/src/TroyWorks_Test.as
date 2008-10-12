@@ -23,6 +23,7 @@
 	import com.troyworks.data.Test_ArrayX;
 	import com.troyworks.core.cogs.StateMachine;
 	import com.troyworks.framework.loader.Test_SWFLoaderUnit;
+	import com.troyworks.util.datetime.*;
 
 	/*************************************************
 	 *  This is the 'main' TestRunner extends Sprite so it
@@ -101,7 +102,8 @@
 				//testRunner.addTest(Test_Hsm);		
 				//testRunner.addTest(Test_AsynchronousTestSuite);
 				//testRunner.addTest(Test_Indexer);
-				testRunner.addTest(Test_DirtyCleanMachine);
+				//testRunner.addTest(Test_DirtyCleanMachine);
+				testRunner.addTest(Test_TimeQuantity);
 				////////RUN TEST //////////////
 
 				if(testRunner.hasTests){

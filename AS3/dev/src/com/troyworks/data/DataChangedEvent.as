@@ -1,13 +1,12 @@
 package com.troyworks.data {
 	import flash.events.Event;
-l,
 	/**
 	 * @author Troy Gardner
 	 */
 	public class DataChangedEvent extends Event {
 		public var oldVal : Object;
 		public var currentVal : Object;
-		public static const CHANGED : String = "CHANGED";
+		public static const CHANGED : String ="CHANGED";
 
 		public function DataChangedEvent(type : String = CHANGED, bubbles : Boolean = false, cancelable : Boolean = false) {
 			super(type, bubbles, cancelable);
