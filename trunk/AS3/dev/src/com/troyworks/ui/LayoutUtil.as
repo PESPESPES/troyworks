@@ -264,6 +264,8 @@ package com.troyworks.ui {
 			var	t_w : Number = NaN;
 			var t_h : Number = NaN;
 			
+			trace("Has Viewport "+movingSnapShot.hasViewport);
+			trace("viewport w,h "+[movingSnapShot.vp_owidth, movingSnapShot.vp_oheight]);
 			if(movingSnapShot.hasViewport) {
 				trace("using viewport");
 				t_w = movingSnapShot.vp_owidth;
@@ -303,37 +305,17 @@ package com.troyworks.ui {
 			var scaleW : Number = (!movingSnapShot.hasViewport) ? 1 : movingSnapShot.vp_owscale;
 			var scaleH : Number = (!movingSnapShot.hasViewport) ? 1 : movingSnapShot.vp_ohscale;
 	
-			trace("  scaling W " + scaleW + "  H " + scaleH);
-			var still_asp : Number = dw / dh;
-			//o_wh_asp and o_hw_asp are the original captured aspect ratio,
-			//this is as captured from the IDE, and NOT the actionscript,
-			//in order to get accurate onscreen representation.
-			//scale  the largest photo to smallest desired dimension based
-			// on the relative aspect ratio
-			
-			//Added by Ksenia
+			trace("scaling W " + scaleW + " scaling H " + scaleH);
+
 			t_w = moving_mc.width * scaleW;
 			t_h = moving_mc.height * scaleH;
 			
 			trace("CUR DIMENSIONS w:"+moving_mc.width +" h:"+moving_mc.height);
-			trace("PHOTO DIMENSIONS w:" + t_w + " h:" + t_h + " asp " + p_asp);
-			trace("DESIRED DIMENTSION w:" + dw + " h: " + dh + " asp " + still_asp);
+			trace("PHOTO DIMENSIONS w:" + t_w + " h:" + t_h);
+			trace("DESIRED DIMENTSION w:" + dw + " h: " + dh);
 			
-			var asRatios : Number = (p_asp / still_asp);
-			trace("aspect ratio " + asRatios + "  " + still_asp);
+			trace("snapshot original width "+movingSnapShot.vp_owidth+" height "+movingSnapShot.vp_oheight);
 			
-			var m_asp : Number = moving_mc.width / moving_mc.height;
-			var v_asp : Number = movingSnapShot.vp_owidth / movingSnapShot.vp_oheight;
-			
-			trace ("mc width "+moving_mc.width+" height "+ moving_mc.height);
-			trace("original width "+movingSnapShot.vp_owidth+" height "+movingSnapShot.vp_oheight);
-			
-			trace("MASP " + m_asp + " " + v_asp + " " + m_asp / v_asp);
-			var p_asp : Number = t_w / t_h;
-			var p2_asp : Number = t_h / t_w;
-	
-			var resizeAnyWay : Boolean = (asRatios == 1) && t_w != dw;
-			trace("resizeAnyWay "+resizeAnyWay);
 			var ww : Number = t_w / dw;
 			var hh : Number = t_h / dh;
 		
@@ -369,21 +351,13 @@ package com.troyworks.ui {
 			if(resize == "W") {
 				trace("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
 				trace("resizing width first to:" + dw);
-				if(false){
-					var tmp : Number = p_asp;
-					p_asp = p2_asp;
-					p2_asp = tmp;
-				}
-				trace("scaleW = "+scaleW+" "+" dw "+dw+" dh "+dh+" ww "+ww);
-				trace ("mc width "+moving_mc.width+" height "+ moving_mc.height);
-				var newWidth:Number = moving_mc.width/ww;
-				var newHeight:Number = moving_mc.height/ww;
-				trace("width "+moving_mc.width+" / "+ww+" = "+newWidth);
-				trace("height "+moving_mc.height+" / "+ww+" = "+newHeight);
-				
-				moving_mc.width = newWidth;
-				moving_mc.height = newHeight;
-				
+				//works for Horton Colors
+//				moving_mc.width = moving_mc.width/ww;
+//				moving_mc.height = moving_mc.height/ww;
+
+				//works for Garfield
+				moving_mc.width = moving_mc.width/ww * scaleW;
+				moving_mc.height = moving_mc.height/ww * scaleW;
 				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
 				
 				sn = new DisplayObjectSnapShot();
@@ -396,16 +370,14 @@ package com.troyworks.ui {
 			} else if (resize == "H") {
 				trace("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
 				trace("resizing height first to:" + dh);
-				if(m_asp / v_asp != 1) {
-					var tmp2 : Number = p_asp;
-					p_asp = p2_asp;
-					p2_asp = tmp2;
-				}
+				//works for Horton Garfield
+				moving_mc.width = moving_mc.width / hh * scaleH;
+				moving_mc.height = moving_mc.height / hh * scaleH;
 				
-				trace("BEFORE " + moving_mc.width + " " + moving_mc.height);
-				//Added by Ksenia
-				moving_mc.width = moving_mc.width / hh;
-				moving_mc.height = moving_mc.height / hh;
+				//works for Horton Colors
+//				moving_mc.width = moving_mc.width / hh;
+//				moving_mc.height = moving_mc.height / hh;
+
 				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
 				
 				sn = new DisplayObjectSnapShot();
@@ -418,9 +390,15 @@ package com.troyworks.ui {
 			} else {
 				trace("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 				trace("resizing width: " + dh+" and height: "+dw);
-				
-				moving_mc.width = moving_mc.width / ww;
-				moving_mc.height = moving_mc.height / hh;
+				//works for Horton Garfield
+				moving_mc.width = moving_mc.width / ww * scaleW;
+				moving_mc.height = moving_mc.height / hh * scaleH;
+
+				//works for Horton Colors
+//				moving_mc.width = moving_mc.width / ww;
+//				moving_mc.height = moving_mc.height / hh;
+
+				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
 				
 				sn = new DisplayObjectSnapShot();
 				sn.width = dw;
@@ -430,7 +408,7 @@ package com.troyworks.ui {
 				moving_mc.x = getAlignH(sn, moving_mc);
 				moving_mc.y = getAlignV(sn, moving_mc);
 			}
-			trace("HIGHLIGHTO SCALETO "+scaleType+" res:  " + moving_mc.width + "  " + moving_mc.height);
+			trace("HIGHLIGHTO SCALETO "+scaleType+" resulting W,H: " + [moving_mc.width,moving_mc.height]);
 		}
 		
 		public static function printImagePortrait(view:MovieClip, sO : IDisplayObjectSnapShot):void
