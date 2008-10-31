@@ -351,13 +351,9 @@ package com.troyworks.ui {
 			if(resize == "W") {
 				trace("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
 				trace("resizing width first to:" + dw);
-				//works for Horton Colors
-//				moving_mc.width = moving_mc.width/ww;
-//				moving_mc.height = moving_mc.height/ww;
+				moving_mc.width = moving_mc.width/ww;
+				moving_mc.height = moving_mc.height/ww;
 
-				//works for Garfield
-				moving_mc.width = moving_mc.width/ww * scaleW;
-				moving_mc.height = moving_mc.height/ww * scaleW;
 				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
 				
 				sn = new DisplayObjectSnapShot();
@@ -370,13 +366,8 @@ package com.troyworks.ui {
 			} else if (resize == "H") {
 				trace("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
 				trace("resizing height first to:" + dh);
-				//works for Horton Garfield
-				moving_mc.width = moving_mc.width / hh * scaleH;
-				moving_mc.height = moving_mc.height / hh * scaleH;
-				
-				//works for Horton Colors
-//				moving_mc.width = moving_mc.width / hh;
-//				moving_mc.height = moving_mc.height / hh;
+				moving_mc.width = moving_mc.width / hh;
+				moving_mc.height = moving_mc.height / hh;
 
 				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
 				
@@ -389,14 +380,9 @@ package com.troyworks.ui {
 				moving_mc.y = getAlignV(sn, moving_mc);
 			} else {
 				trace("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-				trace("resizing width: " + dh+" and height: "+dw);
-				//works for Horton Garfield
-				moving_mc.width = moving_mc.width / ww * scaleW;
-				moving_mc.height = moving_mc.height / hh * scaleH;
-
-				//works for Horton Colors
-//				moving_mc.width = moving_mc.width / ww;
-//				moving_mc.height = moving_mc.height / hh;
+				trace("resizing to width: " + dw+" and height: "+dh);
+				moving_mc.width = moving_mc.width / ww;
+				moving_mc.height = moving_mc.height / hh;
 
 				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
 				
