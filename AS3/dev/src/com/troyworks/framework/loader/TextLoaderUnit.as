@@ -40,14 +40,14 @@ package com.troyworks.framework.loader {
 		}
 
 		override public function getWorkPerformed() : Number {
-			trace("getWorkPerformed");
+			//trace(_smName+ ".getWorkPerformed");
 			if(s_loader == null ) {
 				
-				trace("getWorkPerformed1 NaN");
+				trace(_smName + ".getWorkPerformed1 NaN");
 				return NaN;
 			}else {
 				
-				trace("getWorkPerformed2 " + s_loader.bytesLoaded);
+				trace(_smName + ".getWorkPerformed2 " + s_loader.bytesLoaded);
 				return s_loader.bytesLoaded;
 			}
 		}
@@ -60,26 +60,26 @@ package com.troyworks.framework.loader {
 				return s_loader.bytesTotal;
 			}
 		}
-		
+
 		override public function s__doing(e : CogEvent) : Function {
 			switch (e.sig) {
 				//case SIG_INIT:
 				//	return (totalPerformed > 0 && totalWork > 0 )? s___partiallyDone:null;
 				case SIG_ENTRY :
 					/////////////////////////////////////
-					try{
-					s_loader = new URLLoader();
-					s_loader.addEventListener(IOErrorEvent.IO_ERROR, onChildErrored);
+					try {
+						s_loader = new URLLoader();
+						s_loader.addEventListener(IOErrorEvent.IO_ERROR, onChildErrored);
 					
-					s_loader.dataFormat = URLLoaderDataFormat.TEXT;
-					//s_loaderUtil = new LoaderUtil(s_loader);
+						s_loader.dataFormat = URLLoaderDataFormat.TEXT;
+						//s_loaderUtil = new LoaderUtil(s_loader);
 
-					s_loader.addEventListener(Event.COMPLETE, completeLoadedHandler);
-					var request : URLRequest = new URLRequest(mediaURL);
+						s_loader.addEventListener(Event.COMPLETE, completeLoadedHandler);
+						var request : URLRequest = new URLRequest(mediaURL);
 					
-					trace("HIGHLIGHTO starting to load SWF/IMG '" + mediaURL + "'");
-					s_loader.load(request);
-					}catch(err:Error){
+						trace(_smName + ".starting to load Text'" + mediaURL + "'");
+						s_loader.load(request);
+					}catch(err : Error) {
 						trace("ERROR " + err.toString());
 					}
 					break;	
@@ -90,7 +90,7 @@ package com.troyworks.framework.loader {
 		
 		
 		public function completeLoadedHandler(event : Event) : void {
-			trace("completeHandler: " + event);
+			trace(_smName +"_"+mediaURL+ ".completeLoadedHandler: " + event);
 			
 			if(event.target.data is XML) {
 				
@@ -101,7 +101,7 @@ package com.troyworks.framework.loader {
 				} catch (err : TypeError) {
 					//Could not convert the data, probavlu because
 					//because is not formated correctly
-					trace("Could not parse the XML");
+					trace(_smName + ".Could not parse the XML");
 					trace(err.message);
 				}
 			}else{

@@ -1,4 +1,6 @@
-package com.troyworks.framework.internationalization { 
+package com.troyworks.framework.internationalization {
+	import flash.utils.Dictionary; 
+
 	/**
 	 * Based off of ISO 639
 	 * http://www.oasis-open.org/cover/iso639a.html
@@ -6,12 +8,14 @@ package com.troyworks.framework.internationalization {
 	 * @author Troy Gardner
 	 */
 	public class Language extends Object {
+		private static var idx : Dictionary = new Dictionary(true);
+		
 		public var code_2 : LanguageCode;
 		public var code_3 : LanguageCode;
-	
+
 		public var name : LanguageName;
 		public var family : LanguageFamily;
-	
+
 		public static var AFAR : Language = new Language(LanguageName.AFAR, LanguageCode.AA, null, LanguageFamily.HAMITIC);
 		public static var ABKHAZIAN : Language = new Language(LanguageName.ABKHAZIAN, LanguageCode.AB, null, LanguageFamily.IBERO_CAUCASIAN);
 		public static var AFRIKAANS : Language = new Language(LanguageName.AFRIKAANS, LanguageCode.AF, null, LanguageFamily.GERMANIC);
@@ -145,26 +149,31 @@ package com.troyworks.framework.internationalization {
 		public static var CHINESE : Language = new Language(LanguageName.CHINESE, LanguageCode.ZH, null, LanguageFamily.ASIAN);
 		public static var SCOTS_GAELIC : Language = new Language(LanguageName.SCOTS_GAELIC, LanguageCode.GD, null, LanguageFamily.CELTIC);
 		public static var ZULU : Language = new Language(LanguageName.ZULU, LanguageCode.ZU, null, LanguageFamily.NEGRO_AFRICAN);
-	
+
 		public static var _ANY : Language = new Language(LanguageName._ANY, LanguageCode._ANY, null, LanguageFamily._ANY);
-	
+
+
 		public function Language(langName : LanguageName, lang2Code : LanguageCode, lang3Code : LanguageCode, languageFamily : LanguageFamily) {
 			name = langName;
 			code_2 = lang2Code;
 			code_3 = lang3Code;
 			family = languageFamily;
-			
+			idx[code_2.code_2D] = this;
 		}
-		public static function getLanguageByCode(code:String):Language{
-			var cd:String = code.toUpperCase();
-			var res:Language;
-			for(var i:String in Language){
-				var lan:Language =Language(Language[i]);
-				if(lan.code_2.code_2D == cd){
-					res = lan;
-					break;
-				}
+
+		public static function getLanguageByCode(code : String) : Language {
+			var cd : String = code.toUpperCase();
+			var res : Language = idx[cd] as Language;
+			trace("attempting to get Language " + cd + "==" + res);
+			
+			/*	for(var i:String in Language){
+			var lan:Language =Language(Language[i]);
+			if(lan.code_2.code_2D == cd){
+			trace("found language!!");
+			res = lan;
+			break;
 			}
+			}*/
 			return res;
 		}
 	}

@@ -1,14 +1,15 @@
 package com.troyworks.framework.loader {
+	import flash.events.ProgressEvent;	
 	import flash.display.MovieClip;	
 	import flash.events.IOErrorEvent;	
 	import flash.errors.IOError;	
 	import flash.system.ApplicationDomain;	
 	import flash.system.LoaderContext;	
-	
+
 	import com.troyworks.core.events.PlayheadEvent;	
-	
+
 	import flash.display.DisplayObject;	
-	
+
 	import com.troyworks.core.cogs.CogEvent;	
 	import com.troyworks.core.chain.UnitOfWork;
 
@@ -41,25 +42,34 @@ package com.troyworks.framework.loader {
 		}
 
 		override public function getWorkPerformed() : Number {
-		//	trace("getWorkPerformed");
-			if(s_loader == null || s_loader.contentLoaderInfo == null) {
+			//	trace("getWorkPerformed");
+			try {
+				if(s_loader == null || s_loader.contentLoaderInfo == null) {
 				
-			//	trace("getWorkPerformed1 NaN");
-				return NaN;
-			}else {
+					//	trace("getWorkPerformed1 NaN");
+					return NaN;
+				}else {
 				
-			//	trace("getWorkPerformed2 " + s_loader.contentLoaderInfo.bytesLoaded );
-				return s_loader.contentLoaderInfo.bytesLoaded;
+					//	trace("getWorkPerformed2 " + s_loader.contentLoaderInfo.bytesLoaded );
+					return s_loader.contentLoaderInfo.bytesLoaded;
+				}
+			}catch(e : Error) {
+				//will throw error if not enough bytes have loaded!!!
 			}
+			return NaN;
 		}
 
 		override public function getTotalWorkToPerform() : Number {
-
-			if(s_loader == null || s_loader.contentLoaderInfo == null) {
-				return NaN;
-			}else {
-				return s_loader.contentLoaderInfo.bytesTotal;
+			try {
+				if(s_loader == null || s_loader.contentLoaderInfo == null) {
+					return NaN;
+				}else {
+					return s_loader.contentLoaderInfo.bytesTotal;
+				}
+			}catch(e : Error) {
+				//will throw error if not enough bytes have loaded!!!
 			}
+			return NaN;
 		}
 
 		override public function s__doing(e : CogEvent) : Function {
@@ -70,14 +80,16 @@ package com.troyworks.framework.loader {
 					/////////////////////////////////////
 					s_loader = new Loader();
 					s_loaderUtil = new LoaderUtil(s_loader.contentLoaderInfo);
-					s_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onChildErrored);
+					//s_loaderUtil.addEventListener(Event.COMPLETE, completeSWFLoadHandler);
+					s_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, calcStats);
+					//s_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onChildErrored);
 					s_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, completeSWFLoadHandler);
 					var request : URLRequest = new URLRequest(mediaURL);
 					
 					trace("HIGHLIGHTO starting to load SWF/IMG '" + mediaURL + "'");
 					
-					var loaderContext: LoaderContext = new LoaderContext();
-						loaderContext.applicationDomain = ApplicationDomain.currentDomain; 
+					var loaderContext : LoaderContext = new LoaderContext();
+					loaderContext.applicationDomain = ApplicationDomain.currentDomain; 
 					s_loader.load(request, loaderContext);
 					break;	
 			}
@@ -93,12 +105,12 @@ package com.troyworks.framework.loader {
 			//clip.x = Math.random() * 50;
 			//clip.y = Math.random() * 50;
 			//clip.alpha = .3;
-			if(clip is MovieClip){
+			if(clip is MovieClip) {
 				(clip as MovieClip).stop();
 			}
 			
-			if(targetClip != null){
-					targetClip.addChild(clip);
+			if(targetClip != null) {
+				targetClip.addChild(clip);
 			}
 			
 			dispatchEvent(new PlayheadEvent(EVT_COMPLETE));

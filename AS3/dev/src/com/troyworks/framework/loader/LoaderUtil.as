@@ -26,12 +26,13 @@ package com.troyworks.framework.loader {
 	 *  
 	 * @author Troy Gardner troy@troyworks.com
 	 */
+	import flash.events.EventDispatcher;	
 	import flash.display.LoaderInfo;
 	import flash.events.ProgressEvent;
 	import flash.events.Event;
 	import flash.utils.getTimer;	
 
-	public class LoaderUtil extends Object {
+	public class LoaderUtil extends EventDispatcher {
 
 		/* kiloBytes per second */
 		public var KBps : Number;
@@ -78,6 +79,7 @@ package com.troyworks.framework.loader {
 		public var curstate : String = NOT_STARTED;
 
 		public function LoaderUtil(loaderInf : LoaderInfo) {
+			super();
 			loaderInf.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			loaderInf.addEventListener(Event.OPEN, openStreamHandler);
 			_loaderInf = loaderInf;
@@ -104,7 +106,7 @@ package com.troyworks.framework.loader {
 			lastTime = NaN;
 			percentLoaded = 0;
 			curstate = NO_BYTES;
-			trace("updatePercentage****************");
+		//	trace("LoaderUtil.updatePercentage****************");
 		}
 
 		public function progressHandler(evt : ProgressEvent) : void {
@@ -114,7 +116,7 @@ package com.troyworks.framework.loader {
 			lastTime = curTime; 
 			curTime = getTimer();
 				
-			trace(curstate + " progressHandler " + evt.toString());
+		//	trace("LoaderUtil@"+curstate + " progressHandler " + evt.toString());
 			switch(curstate) {
 				case  NOT_STARTED:
 					//shouldn't hit this
@@ -128,7 +130,7 @@ package com.troyworks.framework.loader {
 						trace("latencyMS " + latencyMS);
 					}
 					if(curBytesLoaded >= 0) {
-						trace("updating first");
+			//			trace("updating first");
 						lastBytesLoaded =0;
 						updateProgress();
 					}
@@ -140,7 +142,7 @@ package com.troyworks.framework.loader {
 					//shouldn't hit this
 					break;
 			}
-			trace(curstate + " progressHandler2 " + Kbps);
+		//	trace(curstate + " progressHandler2 " + Kbps);
 		}
 
 		private function updateProgress() : void {
@@ -149,11 +151,11 @@ package com.troyworks.framework.loader {
 			/////////////////////////////////////////////
 			//this check is necessary as the browser delivers to the flash player
 			//in buckets
-			trace("curB " + curBytesLoaded + " last "+ lastBytesLoaded);
+		//	trace("LoaderUtil.curB " + curBytesLoaded + " last "+ lastBytesLoaded);
 			if(curBytesLoaded > lastBytesLoaded) {
-				trace("change in bytes");
+			//	trace("LoaderUtil.change in bytes");
 				percentLoaded = curBytesLoaded / totalBytesToLoad;
-				trace("updatePercentage****************");
+		//		trace("LoaderUtil.updatePercentage****************");
 				//TODO: notify of update to Kbps
 				Kbps = getKbps(lastTime, curTime, curBytesLoaded - lastBytesLoaded);
 				bytesLoadedSinceLastCheck = curBytesLoaded - lastBytesLoaded;
@@ -162,9 +164,10 @@ package com.troyworks.framework.loader {
 					//        finished successfully         //
 					//////////////////////////////////////////
 					curstate = "FINISHED";
+					dispatchEvent(new Event(Event.COMPLETE));
 					finishedRecieveAtTime = getTimer();
 					Kbps = getKbps(startLoadAtTime, finishedRecieveAtTime, totalBytesToLoad);
-					trace("found " + Kbps + " Kbps");
+					trace("LoaderUtil.found " + Kbps + " Kbps");
 							//onCallBack(Kbps, latencyMS);
 					if(clearListenersOnComplete) {
 						_loaderInf.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
@@ -191,7 +194,7 @@ package com.troyworks.framework.loader {
 			// convert Bytes to bits
 			sizeInKBits = sizeInBits / 1000; 
 			// convert bits to kbits NOte 1000 not 1024
-			trace(" sizeInKBits " + sizeInKBits + " " + elapsedTime + " sec"); 
+			trace("LoaderUtil.sizeInKBits " + sizeInKBits + " " + elapsedTime + " sec"); 
 			Kbps = (sizeInKBits / elapsedTime) * 0.93 ; 
 			// IP packet header overhead around 7%
 			KBps = Kbps * 8; 
