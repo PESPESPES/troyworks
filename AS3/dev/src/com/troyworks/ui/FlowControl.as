@@ -1,45 +1,32 @@
 ﻿package com.troyworks.ui {
-	import com.troyworks.util.InitObject;	
-	
-	import flash.media.SoundMixer;	
-
-	import com.troyworks.events.EventWithArgs;	
-	import com.troyworks.events.EventTranslator;	
-	import com.troyworks.core.tweeny.Tny;	
-	import com.troyworks.logging.TraceAdapter;	
-
-	import flash.utils.Dictionary;
-	import flash.geom.Rectangle;	
-	import flash.display.Shape;	
-	import flash.display.Bitmap;	
-
-	import com.troyworks.controls.ttooltip.OBO_ToolTip;	
-
-	import flash.text.TextFormat;	
-	import flash.text.TextFieldAutoSize;	
-	import flash.display.DisplayObjectContainer;	
-	import flash.text.TextFieldType;	
-
+	import com.troyworks.controls.ttooltip.OBO_ToolTip;
+	import com.troyworks.core.tweeny.Tny;
+	import com.troyworks.events.EventAdapter;
+	import com.troyworks.events.EventTranslator;
+	import com.troyworks.events.EventWithArgs;
 	import com.troyworks.ui.FlowControlEvent;
+	import com.troyworks.util.InitObject;
+	
+	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	import flash.display.MovieClip;
+	import flash.display.Shape;
+	import flash.display.SimpleButton;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.IEventDispatcher;
+	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
+	import flash.filters.GlowFilter;
+	import flash.geom.Rectangle;
+	import flash.media.SoundMixer;
+	import flash.text.TextField;
+	import flash.text.TextFieldType;
+	import flash.text.TextFormat;
+	import flash.utils.Dictionary;		
 
 	//import fl.controls.RadioButton;	
-
-	import flash.utils.Dictionary;	
-	import flash.display.Sprite;	
-	import flash.filters.GlowFilter;	
-	import flash.text.TextField;	
-	import flash.events.KeyboardEvent;	
-	import flash.events.MouseEvent;	
-	import flash.events.IEventDispatcher;	
-	import flash.display.MovieClip;
-
-	import com.troyworks.events.EventAdapter;
-
-	import flash.events.Event;
-	import flash.display.DisplayObject;
-	import flash.display.SimpleButton;
-	import flash.utils.setTimeout;	
-
 	/**
 	 * FlowControl is a 3 part utility to help create fast prototypes 
 	 * or lightwieght view/controller binding.
@@ -168,6 +155,8 @@
 		public var iniObj : Object;
 		public var framesToWait : Number = 3;
 		public var flowcontrollSubClassed : Boolean = false;
+		
+		public var flowControlHasInited:Boolean = false;
 
 		//	public static var trace : Function = TraceAdapter.SOSTracer;
 
@@ -191,12 +180,14 @@
 				
 				view = this;
 				view.stop();
+				view.visible = false;
 				preloadingRequired = false;
 				InitObject.setInitValues(this, initObj);
 				
 				//note addFrameScript doesn't pick up configuration options
 				// on frame1
-				addEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
+				
+				//addEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
 				//addEventListener(Event.ENTER_FRAME,onEF);
 				if(view.stage == null) {
 					addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
@@ -221,6 +212,15 @@
 			trace("FlowControl.onAddedToStage ***********************" + this);
 			trace("parent " + this.parent + " stage  " + this.stage);
 			setView(this);
+			if(view.hasOwnProperty("config")) {
+				trace("waiting on config");
+				
+			}else {
+				trace("not waiting on config");
+				framesToWait = 1 ;
+				onRenderFirstFrame();
+			}
+			addEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
 		//	onEF();
 		}
 
@@ -231,17 +231,34 @@
 		}*/
 
 		public function onRenderFirstFrame(evt : Event = null) : Boolean {
+			
+			if(flowControlHasInited){
+				removeEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
+				return true;
+			}
 			trace("FlowControl.onRenderFirstFrame ***********************" + view.currentFrame + " try " + (framesRendered + 1));
 			framesRendered++;
+			try {
+				var vw = view.loaderInfo.width; 
+				trace("loaderInfo GOOD");
+			}catch(er : Error) {
+				trace("ER loadingInfo not loaded yet");
+				framesToWait++;
+				return false;
+			}
+		trace("FlowControl.onRenderFirstFrame2 ***********************" );
 			if(isEmbedded && framesRendered >= framesToWait) {
+				trace("removing onRenderFirstFrame111");
 				removeEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
 			}
 			try {
+				// see if this exists
 				//	trace(hasOwnProperty("config") + "  config " + this["config"])			
 				if(this.config != null ) {
 					//call up whatever config is on frame1;
 					InitObject.setInitValues(this, this.config);
-					framesRendered = 3 ;
+					framesToWait = 0 ;
+					trace("removing onRenderFirstFrame2222");
 					removeEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
 				}else {
 					trace(" FlowControl using default configuration ");
@@ -250,6 +267,7 @@
 				trace(" FlowControl couldn't init frame1");
 			}
 			if(isEmbedded && framesRendered < framesToWait) {
+				//trace("isEmb")
 				view.stop();
 				return false;
 			}
@@ -265,12 +283,13 @@
 				view.parent.addChild(QA);
 			}
 			if(view.fadeClip == null) {
+				trace("creating FadeClip---------------------------------");
 				fadeClip = new Sprite();
 				fadeClip.graphics.beginFill(fadeClipColor);
 				if(view.getChildByName("debug_txt") != null) {
 					view.debug_txt.text += view.stage.scaleMode + " SETUP STAGE " + view.stage.stageWidth + " " + view.stage.stageHeight + " loaderInfo.width" + loaderInfo.width + " " + loaderInfo.height;
 				}
-				trace(" view.loaderInfo  " + view.loaderInfo + " " + view.loaderInfo);
+				trace(" view.loaderInfo  " + view.loaderInfo + " " + view.loaderInfo.width);
 				fadeClip.graphics.drawRect(0, 0, view.loaderInfo.width, view.loaderInfo.height);
 				//view.stage.stageWidth, view.stage.stageHeight);
 				fadeClip.graphics.endFill();
@@ -279,6 +298,7 @@
 			}else {
 				fadeClip = view.fadeClip;
 			}
+			view.visible = true;
 			fadeClipTny = new Tny(fadeClip);
 			if(enableToolTips) {
 				_toolTip = OBO_ToolTip.createToolTip(this, null, 0x000000, .8, OBO_ToolTip.ROUND_TIP, 0xFFFFFF, 8, false);
@@ -299,6 +319,7 @@
 				}
 				startFadeDown();
 			}
+			flowControlHasInited = true;
 			return true;
 		}
 
@@ -316,7 +337,7 @@
 			try {
 				//	trace(hasOwnProperty("config") + "  config " + this["config"])		
 				////////////// STAGE CONFIG //////////////////////	
-				if(view.config != null ) {
+				if(view.hasOwnProperty("config") && view.config != null ) {
 					//call up whatever config is on frame1;
 					for(var c:String in view.config) {
 						trace("initObj2 " + c + " = " + view.config[c]);
@@ -414,11 +435,11 @@
 
 		////////////////////// EVENTS /////////////////////////////////
 		protected function addedToStage(event : Event = null) : void {
-			trace("addedToStage " + event.target);
+			trace("FlowControl.addedToStage " + event.target);
 		}
 
 		protected function removedFromStage(event : Event = null) : void {
-			trace("removedFromStage " + event.target);
+			trace("FlowControl.removedFromStage " + event.target);
 		}
 
 		///////////////////  WATCHING CHILDREN ////////////////////////
@@ -489,7 +510,11 @@
 		}
 
 		public function setupGoto(ie : IEventDispatcher, frame : String, event : String = MouseEvent.CLICK) : void {
-			trace("setting up " + frame + " for " + view + "." + (ie as DisplayObject).name + ":" + ie);
+			trace("FlowControl.setupGoto " + frame + " for " + view + "." + (ie as DisplayObject).name + ":" + ie);
+			if(frame == "root1"){
+				trace(" FlowControl.setupGoto -> ignoring root");
+				return;
+			}
 			var ary : Array;
 			var evtTr : EventTranslator = new EventTranslator(view);
 			var ignoreClick : Boolean = false;
@@ -887,49 +912,49 @@
 				var nm : String;
 				var cnm : String;
 				var evt : FlowControlEvent;
-				try{
-				for (var i : int = 0;i < view.currentLabels.length; i++) {
-					cnm = view.currentLabels[i].name;
-					if (cnm != " " && view.currentLabels[i].frame == view.currentFrame && activeFrames[cnm] != true) {
-						activeFrames[cnm] = true;
-						///////////// PERFORM ACTIVATION ACTIONS ////////////////
-						evt = new FlowControlEvent(FlowControlEvent.ENTERED_FRAME_LABEL);
-						evt.frameLabel = cnm;
-						var o : Function = initFrameScripts[view.currentFrame];						
-						if(o != null) {
-							o();
-						}
-						//	dispatchEvent(evt);
-									
-						///////////// DEBUGGER //////////////////////
-						nm = cnm + "_mc";
-																
-						if(debuggerUI_mc != null && debuggerUI_mc.numChildren > 0) {
-							sp = Sprite(debuggerUI_mc.getChildByName(nm));
-							if(sp != null) {
-								sp.alpha = 1;
+				try {
+					for (var i : int = 0;i < view.currentLabels.length; i++) {
+						cnm = view.currentLabels[i].name;
+						if (cnm != " " && view.currentLabels[i].frame == view.currentFrame && activeFrames[cnm] != true) {
+							activeFrames[cnm] = true;
+							///////////// PERFORM ACTIVATION ACTIONS ////////////////
+							evt = new FlowControlEvent(FlowControlEvent.ENTERED_FRAME_LABEL);
+							evt.frameLabel = cnm;
+							var o : Function = initFrameScripts[view.currentFrame];						
+							if(o != null) {
+								o();
 							}
-						}
+							//	dispatchEvent(evt);
+									
+							///////////// DEBUGGER //////////////////////
+							nm = cnm + "_mc";
+																
+							if(debuggerUI_mc != null && debuggerUI_mc.numChildren > 0) {
+								sp = Sprite(debuggerUI_mc.getChildByName(nm));
+								if(sp != null) {
+									sp.alpha = 1;
+								}
+							}
 						//sp.visible = true;
-					} else if ( activeFrames[cnm] == true && cnm != view.currentLabel) {
-						trace("11111111111111111111111111111");
+						} else if ( activeFrames[cnm] == true && cnm != view.currentLabel) {
+							trace("11111111111111111111111111111");
 
-						nm = cnm + "_mc";
-						evt = new FlowControlEvent(FlowControlEvent.LEFT_FRAME_LABEL);
-						evt.frameLabel = cnm;
-						//dispatchEvent(evt);
-						activeFrames[cnm] = false;
+							nm = cnm + "_mc";
+							evt = new FlowControlEvent(FlowControlEvent.LEFT_FRAME_LABEL);
+							evt.frameLabel = cnm;
+							//dispatchEvent(evt);
+							activeFrames[cnm] = false;
 
-						if(debuggerUI_mc != null && debuggerUI_mc.numChildren > 0) {
+							if(debuggerUI_mc != null && debuggerUI_mc.numChildren > 0) {
 							
-							sp = Sprite(debuggerUI_mc.getChildByName(nm));
-							//trace("deactivating " +nm  + " " + sp);
-							sp.alpha = .2;
-						}
-					}//sp.visible = false;
-				}
-				lastFrameNumber = view.currentFrame;
-				}catch(err:Error){
+								sp = Sprite(debuggerUI_mc.getChildByName(nm));
+								//trace("deactivating " +nm  + " " + sp);
+								sp.alpha = .2;
+							}
+						}//sp.visible = false;
+					}
+					lastFrameNumber = view.currentFrame;
+				}catch(err : Error) {
 					trace("error in flowcontrol " + err.getStackTrace());
 				}
 			}

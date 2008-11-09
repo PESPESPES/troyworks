@@ -54,8 +54,8 @@
 		// Custom properties		
 		protected static var baseUrl:String;
 		public var relUrl:String;
-		protected static var synchronousError:String = "Synchronous operations are not available in this implementation. Please use [method]Async() version instead."
-		protected var synchronousError:String = "Synchronous operations are not available in this implementation. Please use [method]Async() version instead."
+		protected static var synchronousError:String = "Synchronous operations are not available in this implementation. Please use [method]Async() version instead.";
+		//protected var synchronousError:String = "Synchronous operations are not available in this implementation. Please use [method]Async() version instead."
 		protected var fileStreams:Array = new Array;
 		protected var fileStreamSeq:uint = 0;
 		protected var fstatus:URLLoader;
@@ -86,7 +86,7 @@
 					this.relUrl = path;
 					this.url = IFile.baseUrl + path;
 				}
-				
+				trace("IFile url " + this.url);
 				// Attach event listener
 				if (fsCallback != null) {
 					this.addEventListener(IFile.STATUS, fsCallback);
@@ -211,7 +211,7 @@
 			return IFile._userDirectory;
 		}
 		
-		public static function setBasePath(url:String)
+		public static function setBasePath(url:String):void
 		{
 			IFile.baseUrl = url;
 		}
@@ -319,7 +319,7 @@
 			var validChars:String = 'qwertyuiopasdfghjklzxcvbnm1234567890';
 			var str:String = '';
 			
-			for (var i = 0; i < length; i++) {
+			for (var i:int = 0; i < length; i++) {
 				str = str + validChars.charAt(Math.random() * (validChars.length - 1));
 			}
 			
@@ -496,11 +496,13 @@
 
 		public function deleteFileAsync():void
 		{
+			trace("deleteFileAsynch");
 			if (this.exists !== true || this.isDirectory === true) {
+				trace("sending IO ERROR " + this.exists);
 				this.dispatchEvent(new Event(IOErrorEvent.IO_ERROR));
 				return;
 			}
-			
+			trace("deleteFileAsynch...sending");
 			var params:Array = new Array;
 			params['url'] = this.url;
 			params['mode'] = 'delete';
@@ -553,37 +555,37 @@
 		
 		public function copyTo(newLocation:FileReference, overwrite:Boolean = false):void
 		{
-			throw new IllegalOperationError(this.synchronousError);
+			throw new IllegalOperationError(synchronousError);
 		}
 		
 		public function deleteDirectory(deleteDirectoryContents:Boolean = false):void
 		{
-			throw new IllegalOperationError(this.synchronousError);
+			throw new IllegalOperationError(synchronousError);
 		}
 		
 		public function deleteFile():void
 		{
-			throw new IllegalOperationError(this.synchronousError);
+			throw new IllegalOperationError(synchronousError);
 		}
 
 		public function getDirectoryListing():Array
 		{
-			throw new IllegalOperationError(this.synchronousError);
+			throw new IllegalOperationError(synchronousError);
 		}
 		
 		public function moveTo(newLocation:FileReference, overwrite:Boolean = false):void
 		{
-			throw new IllegalOperationError(this.synchronousError);
+			throw new IllegalOperationError(synchronousError);
 		}
 		
 		public function moveToTrash():void
 		{
-			throw new IllegalOperationError(this.synchronousError);
+			throw new IllegalOperationError(synchronousError);
 		}
 		
 		public function createDirectory():void
 		{
-			throw new IllegalOperationError(this.synchronousError);
+			throw new IllegalOperationError(synchronousError);
 		}
 		
 		public static function createTempDirectory():IFile

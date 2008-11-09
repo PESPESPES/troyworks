@@ -28,6 +28,7 @@
 		// Event constants
 		public static const STATUS = 'fileStatus';
 		
+		//http://livedocs.adobe.com/flex/3/langref/flash/filesystem/File.html#propertySummary
 		public function IFile(path:String, fsCallback:Function = null)
 		{
 			this.file = new File(path);
@@ -90,21 +91,12 @@
 		{
 			return File.systemCharset;
 		}		
-
-		public function resolvePath(path:String):IFile
+		//////////////////// PUBLIC METHODS ///////////////////////////////
+		//http://livedocs.adobe.com/flex/3/langref/flash/filesystem/File.html#methodSummary
+		public function copyToAsync(newLocation:IFile, overwrite:Boolean = false):void
 		{
-			var rfile:File = this.file.resolvePath(path);
-			return new IFile(rfile.url);
-		}
-		
-		public static function createTempDirectoryAsync():IFile
-		{
-			var theDir:IFile = new IFile(File.createTempDirectory().url);			
-			
-			// This will fire off a delayed COMPLETE event on theDir
-			new IFileTimer(theDir);
-			
-			return theDir;
+			this.file.copyToAsync(newLocation.file, overwrite);			
+			this.file.addEventListener(Event.COMPLETE, eventRepeater);
 		}
 		
 		public static function createTempFileAsync():IFile
@@ -121,6 +113,30 @@
 		{
 			this.file.createDirectory();			
 			this.eventDispatcher.dispatchEvent(new Event(Event.COMPLETE));
+		}
+		
+		public static function createTempDirectoryAsync():IFile
+		{
+			var theDir:IFile = new IFile(File.createTempDirectory().url);			
+			
+			// This will fire off a delayed COMPLETE event on theDir
+			new IFileTimer(theDir);
+			
+			return theDir;
+		}
+		//XXX createTempFileAsynch
+		
+		
+		public function deleteDirectoryAsync(deleteDirectoryContents:Boolean = false):void
+		{
+			this.file.deleteDirectoryAsync(deleteDirectoryContents);			
+			this.file.addEventListener(Event.COMPLETE, eventRepeater);
+		}
+		
+		public function deleteFileAsync():void
+		{
+			this.file.deleteFileAsync();			
+			this.file.addEventListener(Event.COMPLETE, eventRepeater);
 		}
 		
 		public function getDirectoryListingAsync():void
@@ -142,16 +158,16 @@
 			return File.getRootDirectories();
 		}
 		
-		public function copyToAsync(newLocation:IFile, overwrite:Boolean = false):void
-		{
-			this.file.copyToAsync(newLocation.file, overwrite);			
-			this.file.addEventListener(Event.COMPLETE, eventRepeater);
-		}
-		
 		public function moveToAsync(newLocation:IFile, overwrite:Boolean = false):void
 		{
 			this.file.moveToAsync(newLocation.file, overwrite);
 			this.file.addEventListener(Event.COMPLETE, eventRepeater);
+		}
+		
+		public function resolvePath(path:String):IFile
+		{
+			var rfile:File = this.file.resolvePath(path);
+			return new IFile(rfile.url);
 		}
 		
 		override flash_proxy function getProperty(name:*):*
@@ -161,7 +177,8 @@
 			}			
 			return this.file[name];
 	    }
-		
+	    
+
 		override flash_proxy function callProperty(methodName:*, ... args):*
 		{
         	switch (methodName.toString())
@@ -183,7 +200,7 @@
 	        }
 	    }
 		
-		/*
+		/*********************************************************************************
 		 * Event Dispatcher interface
 		 */
 		

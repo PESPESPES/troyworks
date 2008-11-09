@@ -12,8 +12,17 @@ package com.troyworks.ui {
 	import flash.geom.Rectangle;
 	import flash.printing.*;	
 
-	public class LayoutUtil 
-	{
+	public class LayoutUtil {
+		public static function visualizeLayoutGuide(mc : Sprite, color : Number = 0xFF0000) : void {
+			var rect : Rectangle = mc.getBounds(mc);
+			mc.graphics.lineStyle(1, color, .8);
+			mc.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
+			var len : Number = (color == 0xFF0000) ? 10 : 20;
+			mc.graphics.moveTo(-len, 0);
+			mc.graphics.lineTo(len, 0);
+			mc.graphics.moveTo(0, -len);
+			mc.graphics.lineTo(0, len);
+		}
 
 		/*******************************************************
 		 * for a given movie passed in capture it's x, y, width, height, into 
@@ -27,7 +36,7 @@ package com.troyworks.ui {
 		 * The version of it with content inside of it (which distorts the width, height properties)
 		 * When being used with a viewport.
 		 */
-		public static function snapshotDimensions(a_mc : DisplayObject, to_mc : IDisplayObjectSnapShot = null, override_width : Number = NaN, override_height : Number = NaN) : IDisplayObjectSnapShot {
+		public static function snapshotDimensions(a_mc : DisplayObject, to_mc : IDisplayObjectSnapShot = null, override_width : Number = NaN, override_height : Number = NaN, viewport_mcName:String = "viewport_mc") : IDisplayObjectSnapShot {
 			trace("-----------------------------------------------------");
 			trace("CALL snapshotDimensions");
 			var s_mc : DisplayObject = a_mc;
@@ -42,7 +51,7 @@ package com.troyworks.ui {
 			var wholeObject : DisplayObject = null;
 			if(a_mc is DisplayObjectContainer) {
 				var doC : DisplayObjectContainer = DisplayObjectContainer(a_mc);
-				viewport = doC.getChildByName("viewport_mc");
+				viewport = doC.getChildByName(viewport_mcName);
 				wholeObject = doC.getChildByName("slug_mc");
 			}
 			/////Get the original dimension pre scaling and positioning ////////////
@@ -58,20 +67,18 @@ package com.troyworks.ui {
 				to_mc.vp_oheight = viewport.height;
 								
 				trace("clip.width " + a_mc.width + " center " + a_mc.width / 2);
-				trace("a_mc.scaleX "+a_mc.scaleX+" a_mc.scaleY "+a_mc.scaleY);				
+				trace("a_mc.scaleX " + a_mc.scaleX + " a_mc.scaleY " + a_mc.scaleY);				
 				to_mc.vp_ocx_offset = (a_mc.width / a_mc.scaleX) / 2 - (viewport.x + viewport.width / 2);
 				to_mc.vp_ocy_offset = (a_mc.height / a_mc.scaleY) / 2 - (viewport.y + viewport.height / 2);
 				trace(" offset x " + viewport.x + " y " + viewport.y);
 				trace(" offset vcx " + to_mc.vp_ocx_offset + " vcy " + to_mc.vp_ocy_offset);
 				//scale factor between viewport and actual (masked) movie dimensions (as mask shows all stuff on stage)
 
-				if (wholeObject != null)
-				{
+				if (wholeObject != null) {
 					to_mc.owidth = wholeObject.width;
 					to_mc.oheight = wholeObject.height;
 				}
-				else 
-				{
+				else {
 					to_mc.owidth = a_mc.width;
 					to_mc.oheight = a_mc.height;
 				}
@@ -95,15 +102,13 @@ package com.troyworks.ui {
 				to_mc.vp_owscale = 1;
 				to_mc.vp_ohscale = 1;
 				
-				if (wholeObject != null)
-				{
+				if (wholeObject != null) {
 					to_mc.owidth = wholeObject.width;
 					to_mc.oheight = wholeObject.height;
 					to_mc.vp_owidth = wholeObject.width;
 					to_mc.vp_oheight = wholeObject.height;
 				}
-				else 
-				{
+				else {
 					to_mc.owidth = s_mc.width;
 					to_mc.oheight = s_mc.height;
 					to_mc.vp_owidth = s_mc.width;
@@ -141,22 +146,32 @@ package com.troyworks.ui {
 		 * */
 		public static const VISIBILE_PROPS : Array = ["alpha", "visible", "rotation", "xscale", "yscale", "x", "y"];
 
-		public static function matchClips(mc1 : DisplayObject, mc2 : DisplayObject, props : Array = null) {		
-			trace("Matching");
+		public static function matchClips(movingClip : DisplayObject, stillClip : DisplayObject, props : Array = null) {		
+			//trace("Matching");
 			if(props == null) {
 				props = VISIBILE_PROPS;
 			}
 			var L : Number = props.length;
-			while (--L) {
-				mc1[props[L]] = mc2[props[L]];
+			while (L--) {
+				//trace("mathing " + props[L]);
+				movingClip[props[L]] = stillClip[props[L]];
 			}
 		}
 
-		public function center(still_mc : DisplayObject, moving_mc : DisplayObject) : void {
+		public static function centerTo(still_mc : DisplayObject, moving_mc : DisplayObject, roundToWholePixel : Boolean = false) : void {
 			//Center
 			//	trace(this.name + "BaseComponent.center()" + clip.stage.stageWidth + " " + clip.stage.stageHeight  + " " + this.width + " " + this.height);
-			moving_mc.x = (still_mc.stage.stageWidth - moving_mc.width) / 2;
-			moving_mc.y = (still_mc.stage.stageHeight - moving_mc.height) / 2;
+			var w : Number = (still_mc == null) ? moving_mc.stage.stageWidth : still_mc.width;
+			var h : Number = (still_mc == null) ? moving_mc.stage.stageHeight : still_mc.height;
+			var dx : Number = (w - moving_mc.width) / 2;
+			var dy : Number = (h - moving_mc.height) / 2;
+			if(roundToWholePixel) {
+				moving_mc.x = Math.round(dx);
+				moving_mc.y = Math.round(dy);
+			}else {
+				moving_mc.x = dx;
+				moving_mc.y = dy;
+			}
 			//	trace("setting to x " + this.x + " y " + this.y);
 		}
 
@@ -204,14 +219,14 @@ package com.troyworks.ui {
 		public static function getAlignV(still_mc : Object, moving_mc : DisplayObject, movingSnapShot : IDisplayObjectSnapShot = null, y : String = "MIDDLE",  snapToWholePixel : Boolean = false) : Number {
 			
 			trace("CALL getAlignV");
-			trace ("alignV " + y+ " still_mc.y=" + still_mc.y + " moving_mc.height=" + moving_mc.height);
+			trace("alignV " + y + " still_mc.y=" + still_mc.y + " moving_mc.height=" + moving_mc.height);
 			var r : Number = 0;
 			if(movingSnapShot == null) {
 				movingSnapShot = snapshotDimensions(moving_mc);
 			}
 			//Added by Ksenia					
-			var scaleH = moving_mc.height/movingSnapShot.oheight;					
-			var vp_cur_yoffset = movingSnapShot.vp_oy_offset * scaleH;
+			var scaleH:Number = moving_mc.height / movingSnapShot.oheight;					
+			var vp_cur_yoffset:Number = movingSnapShot.vp_oy_offset * scaleH;
 			switch (y.toUpperCase()) {
 				//assume that mask is at 0,0 so no ypos is needed
 				case "CENTER" :
@@ -232,7 +247,7 @@ package com.troyworks.ui {
 					break;
 				case "BOTTOM" :
 					//Added by Ksenia
-					var vp_cur_height = moving_mc.height * movingSnapShot.vp_ohscale;
+					var vp_cur_height:Number = moving_mc.height * movingSnapShot.vp_ohscale;
 					r = (still_mc.y + still_mc.height - moving_mc.height) + (moving_mc.height - (vp_cur_yoffset + vp_cur_height));
 					break;
 				case "TOP" :
@@ -250,9 +265,8 @@ package com.troyworks.ui {
 		}
 
 		public static function scaleTo(still_mc : DisplayObject, moving_mc : DisplayObject , movingSnapShot : IDisplayObjectSnapShot = null, 
-			scaleType : String = "CENTER", override_width : Number = NaN, override_height : Number = NaN) : void 
-		{
-			trace("HIGHLIGHT SCALETO "+scaleType);
+			scaleType : String = "CENTER", override_width : Number = NaN, override_height : Number = NaN) : void {
+			trace("HIGHLIGHT SCALETO " + scaleType);
 			if(moving_mc.stage != null) {
 			}
 			if(movingSnapShot == null) {
@@ -292,13 +306,12 @@ package com.troyworks.ui {
 			//   desired height 
 			////////////////////////////////////
 
-			if (still_mc == null && !isNaN(override_width) && !isNaN(override_height))
-			{
+			if (still_mc == null && !isNaN(override_width) && !isNaN(override_height)) {
 				still_mc = new Sprite();
 				still_mc.x = moving_mc.x;
 				still_mc.y = moving_mc.y;
 				Sprite(still_mc).graphics.lineStyle();
-				Sprite(still_mc).graphics.drawRect(0,0, override_width,override_height);
+				Sprite(still_mc).graphics.drawRect(0, 0, override_width, override_height);
 			}
 			var dw : Number = (isNaN(override_width)) ? still_mc.width : override_width;
 			var dh : Number = (isNaN(override_height)) ? still_mc.height : override_height;
@@ -310,20 +323,33 @@ package com.troyworks.ui {
 			t_w = moving_mc.width * scaleW;
 			t_h = moving_mc.height * scaleH;
 			
-			trace("CUR DIMENSIONS w:"+moving_mc.width +" h:"+moving_mc.height);
+			trace("CUR DIMENSIONS w:" + moving_mc.width + " h:" + moving_mc.height);
 			trace("PHOTO DIMENSIONS w:" + t_w + " h:" + t_h);
 			trace("DESIRED DIMENTSION w:" + dw + " h: " + dh);
 			
 			trace("snapshot original width "+movingSnapShot.vp_owidth+" height "+movingSnapShot.vp_oheight);
 			
+
+//			var m_asp : Number = moving_mc.width / moving_mc.height;
+//			var v_asp : Number = movingSnapShot.vp_owidth / movingSnapShot.vp_oheight;
+			
+//			trace("mc width " + moving_mc.width + " height " + moving_mc.height);
+//			trace("original width " + movingSnapShot.vp_owidth + " height " + movingSnapShot.vp_oheight);
+			
+//			trace("MASP " + m_asp + " " + v_asp + " " + m_asp / v_asp);
+//			var p_asp : Number = t_w / t_h;
+//			var p2_asp : Number = t_h / t_w;
+	
+//			var resizeAnyWay : Boolean = (asRatios == 1) && t_w != dw;
+//			trace("resizeAnyWay " + resizeAnyWay);
+
 			var ww : Number = t_w / dw;
 			var hh : Number = t_h / dh;
 		
-			trace("ww= "+ww+" hh= "+hh);
+			trace("ww= " + ww + " hh= " + hh);
 			
 			var resize : String;
-			switch (scaleType) 
-			{
+			switch (scaleType) {
 				case "CENTER":
 					if(ww > hh) {
 						resize = "W";
@@ -353,14 +379,13 @@ package com.troyworks.ui {
 				trace("resizing width first to:" + dw);
 				moving_mc.width = moving_mc.width/ww;
 				moving_mc.height = moving_mc.height/ww;
-
 				trace("AFTER " + moving_mc.width + " " + moving_mc.height);
 				
 				sn = new DisplayObjectSnapShot();
 				sn.width = dw;
 				sn.height = dh;
-				sn.x = (still_mc  == null)?0: still_mc.x;
-				sn.y = (still_mc  == null)?0: still_mc.y;
+				sn.x = (still_mc == null) ? 0 : still_mc.x;
+				sn.y = (still_mc == null) ? 0 : still_mc.y;
 				moving_mc.x = getAlignH(sn, moving_mc);
 				moving_mc.y = getAlignV(sn, moving_mc);
 			} else if (resize == "H") {
@@ -374,8 +399,8 @@ package com.troyworks.ui {
 				sn = new DisplayObjectSnapShot();
 				sn.width = dw;
 				sn.height = dh;
-				sn.x = (still_mc  == null)?0:still_mc.x;
-				sn.y =  (still_mc  == null)?0:still_mc.y;
+				sn.x = (still_mc == null) ? 0 : still_mc.x;
+				sn.y = (still_mc == null) ? 0 : still_mc.y;
 				moving_mc.x = getAlignH(sn, moving_mc);
 				moving_mc.y = getAlignV(sn, moving_mc);
 			} else {
@@ -389,242 +414,253 @@ package com.troyworks.ui {
 				sn = new DisplayObjectSnapShot();
 				sn.width = dw;
 				sn.height = dh;
-				sn.x =  (still_mc  == null)?0:still_mc.x;
-				sn.y =  (still_mc  == null)?0:still_mc.y;
+				sn.x = (still_mc == null) ? 0 : still_mc.x;
+				sn.y = (still_mc == null) ? 0 : still_mc.y;
 				moving_mc.x = getAlignH(sn, moving_mc);
 				moving_mc.y = getAlignV(sn, moving_mc);
 			}
 			trace("HIGHLIGHTO SCALETO "+scaleType+" resulting W,H: " + [moving_mc.width,moving_mc.height]);
 		}
-		
-		public static function printImagePortrait(view:MovieClip, sO : IDisplayObjectSnapShot):void
-		{
-			printImagePortraitFrames(view, sO, false);
+
+		public static function printImagePortrait(view : MovieClip, sO : IDisplayObjectSnapShot, margin:Number = 80) : void {
+			printImagePortraitFrames(view, sO, false, margin);
 		}
-		
-		public static function printImagePortraitFrames(view:MovieClip, sO : IDisplayObjectSnapShot, allFrames:Boolean):void
-		{
+
+		public static function printImagePortraitFrames(view : MovieClip, sO : IDisplayObjectSnapShot, allFrames : Boolean, margin:Number = 80) : void {
 			if (view == null) return;
-		    var pj:PrintJob = new PrintJob();
-		    pj.start();
-		    var rect : Rectangle;
-		    var pjo:PrintJobOptions;
+			var pj : PrintJob = new PrintJob();
+			pj.start();
+			var rect : Rectangle;
+			var pjo : PrintJobOptions;
 		    
-		    var initW:Number = view.width;
-			var initH:Number = view.height;
-			var initX:Number = view.x;
-			var initY:Number = view.y;
-			var xOffset:int = 0;
-			var yOffset:int = 0;
-			var vp_curWidth:Number = 0;
-			var vp_curHeight:Number = 0;
-			var curScale:Number = 1;
-			var initScrRect:Rectangle;
+			var initW : Number = view.width;
+			var initH : Number = view.height;
+			var initX : Number = view.x;
+			var initY : Number = view.y;
+			var xOffset : int = 0;
+			var yOffset : int = 0;
+			var vp_curWidth : Number = 0;
+			var vp_curHeight : Number = 0;
+			var curScale : Number = 1;
+			var initScrRect : Rectangle;
 			
-		    if(pj.orientation == PrintJobOrientation.PORTRAIT)
-			{
+			if(pj.orientation == PrintJobOrientation.PORTRAIT) {
+				
+				trace("---------------- PRINTING PORTRAIT ------------------");
 				pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(null, view, sO, "CENTER", pj.pageWidth-80, pj.pageHeight-80);
+				LayoutUtil.scaleTo(null, view, sO, "CENTER", pj.pageWidth - margin, pj.pageHeight - margin);
 			
-				curScale = view.width/sO.owidth;
+				curScale = view.width / sO.owidth;
 				
 				vp_curWidth = view.width * sO.vp_owscale;
 				vp_curHeight = view.height * sO.vp_ohscale;
 				
-				xOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
-				yOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
+				xOffset = (pj.pageWidth - vp_curWidth) / 2 / curScale;
+				yOffset = (pj.pageHeight - vp_curHeight) / 2 / curScale;
 				
-				rect = new Rectangle(-xOffset, -yOffset, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
-				initScrRect = new Rectangle(0,0,sO.owidth,sO.oheight);
+				rect = new Rectangle(-xOffset, -yOffset, sO.vp_owidth + xOffset, sO.vp_oheight + yOffset);
+				initScrRect = (view.scrollRect != null) ? view.scrollRect : new Rectangle(0, 0, sO.owidth, sO.oheight);
 				
 				if (sO.hasViewport) 
 					view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
-				try
-				{
-					printFrames(allFrames,pj,view,rect,pjo);
+				try {
+					printFrames(allFrames, pj, view, rect, pjo);
 				}
-		        catch (e:Error)
-		        {
-		        	if (sO.hasViewport) view.scrollRect = initScrRect;
+		        catch (e : Error) {
+					if (sO.hasViewport) { 
+						view.scrollRect = initScrRect;
+					}
 					view.x = initX;
-				    view.y = initY;	
-				    throw new Error();
-		        }
-				if (sO.hasViewport) view.scrollRect = initScrRect;
-		    }
-			else
-			{
-		    	pjo = new PrintJobOptions();
+					view.y = initY;	
+					throw new Error();
+				}
+				if (sO.hasViewport) { 
+					view.scrollRect = initScrRect;
+				}
+			}
+			else {
+				
+				trace("---------------- PRINTING PORTRAIT AS LANDSCAPE ------------------");
+				pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(null, view, sO, "CENTER", pj.pageHeight-80, pj.pageWidth-80);
-				curScale = view.width/sO.owidth;
+				LayoutUtil.scaleTo(null, view, sO, "CENTER", pj.pageHeight - margin, pj.pageWidth - margin);
+				curScale = view.width / sO.owidth;
 
 				view.rotation = 90;
 				
 				view.x = initX;
-		    	view.y = initY;
+				view.y = initY;
 		    	
-		    	vp_curWidth = view.width * sO.vp_ohscale;
+				vp_curWidth = view.width * sO.vp_ohscale;
 				vp_curHeight = view.height * sO.vp_owscale;
 				
-				yOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
-				xOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
+				yOffset = (pj.pageWidth - vp_curWidth) / 2 / curScale;
+				xOffset = (pj.pageHeight - vp_curHeight) / 2 / curScale;
 				
-				rect = new Rectangle(-xOffset, 0, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
+				rect = new Rectangle(-xOffset, 0, sO.vp_owidth + xOffset, sO.vp_oheight + yOffset);
 													 
-				initScrRect = new Rectangle(0,0,sO.owidth,sO.oheight);
+				initScrRect = (view.scrollRect != null) ? view.scrollRect : new Rectangle(0, 0, sO.owidth, sO.oheight);
 				if (sO.hasViewport) view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
-		        try
-				{
-					printFrames(allFrames,pj,view,rect,pjo);
+				try {
+					printFrames(allFrames, pj, view, rect, pjo);
 				}
-		        catch (e:Error)
-		        {
-		        	if (sO.hasViewport) view.scrollRect = initScrRect;
-		        	view.rotation = 0;
+		        catch (e2 : Error) {
+					if (sO.hasViewport) { 
+						view.scrollRect = initScrRect;
+					}
+					;
+					view.rotation = 0;
 					view.x = initX;
-				    view.y = initY;	
-				    throw new Error();
-		        }
-		        if (sO.hasViewport) view.scrollRect = initScrRect;
-		        view.rotation = 0;
-		    }
-		    view.width = initW * sO.vp_owscale;
-			view.height = initH * sO.vp_ohscale;
+					view.y = initY;	
+					throw new Error();
+				}
+				if (sO.hasViewport) { 
+					view.scrollRect = initScrRect;
+				}
+				;
+				view.rotation = 0;
+			}
+			view.width = initW;
+			// * sO.vp_owscale;
+			view.height = initH ;
+			//* sO.vp_ohscale;
 			view.x = initX;
-		    view.y = initY;	
+			view.y = initY;	
 		}
-		
-		public static function printImageLandscape(view:MovieClip, sO : IDisplayObjectSnapShot):void
-		{
-			printImageLandscapeFrames(view, sO, false);
+
+		public static function printImageLandscape(view : MovieClip, sO : IDisplayObjectSnapShot, margin:Number = 80) : void {
+			printImageLandscapeFrames(view, sO, false, margin);
 		}
-		
-		public static function printImageLandscapeFrames(view:MovieClip, sO : IDisplayObjectSnapShot, allFrames:Boolean):void
-		{
+
+		public static function printImageLandscapeFrames(view : MovieClip, sO : IDisplayObjectSnapShot, allFrames : Boolean, margin:Number = 80) : void {
 			if (view == null) return;
 			trace("PRINTING...");
-		    var pj:PrintJob = new PrintJob();
-		    pj.start();
-		    var rect : Rectangle;
-		    var pjo:PrintJobOptions;
+			var pj : PrintJob = new PrintJob();
+			pj.start();
+			var rect : Rectangle;
+			var pjo : PrintJobOptions;
 		    
-		    var initW:Number = view.width;
-			var initH:Number = view.height;
-			var initX:Number = view.x;
-			var initY:Number = view.y;
-			var xOffset:int = 0;
-			var yOffset:int = 0;
-			var vp_curWidth:Number = 0;
-			var vp_curHeight:Number = 0;
-			var curScale:Number = 1;
-			var initScrRect:Rectangle;
-			var initSO:IDisplayObjectSnapShot = sO;
-			var i:int;
+			var initW : Number = view.width;
+			var initH : Number = view.height;
+			var initX : Number = view.x;
+			var initY : Number = view.y;
+			var xOffset : int = 0;
+			var yOffset : int = 0;
+			var vp_curWidth : Number = 0;
+			var vp_curHeight : Number = 0;
+			var curScale : Number = 1;
+			var initScrRect : Rectangle;
+			//var initSO : IDisplayObjectSnapShot = sO;
+			//var i : int;
 				
-		    if(pj.orientation == PrintJobOrientation.LANDSCAPE)
-			{
+			if(pj.orientation == PrintJobOrientation.LANDSCAPE) {
 				trace("Printing Landscape ");
 				pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(null, view, sO, "CENTER", pj.pageWidth-80, pj.pageHeight-80);
-				curScale = view.width/sO.owidth;
+				LayoutUtil.scaleTo(null, view, sO, "CENTER", pj.pageWidth - margin, pj.pageHeight - margin);
+				curScale = view.width / sO.owidth;
 					  
 				vp_curWidth = view.width * sO.vp_owscale;
 				vp_curHeight = view.height * sO.vp_ohscale;
 				
-				xOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
-				yOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
+				xOffset = (pj.pageWidth - vp_curWidth) / 2 / curScale;
+				yOffset = (pj.pageHeight - vp_curHeight) / 2 / curScale;
 		
-				rect = new Rectangle(-xOffset, -yOffset, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
+				rect = new Rectangle(-xOffset, -yOffset, sO.vp_owidth + xOffset, sO.vp_oheight + yOffset);
 				
-				initScrRect = new Rectangle(0,0,sO.owidth,sO.oheight);	
-				if (sO.hasViewport) 
+				
+				if(view.scrollRect != null) {
+					initScrRect = new Rectangle(view.scrollRect.x, view.scrollRect.y, view.scrollRect.width, view.scrollRect.height);
+				}	
+				if (sO.hasViewport) {
 					view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
-				try
-				{
-					printFrames(allFrames,pj,view,rect,pjo);
 				}
-		        catch (e:Error)
-		        {
-		        	if (sO.hasViewport) view.scrollRect = initScrRect;
+				try {
+					printFrames(allFrames, pj, view, rect, pjo);
+				}
+		        catch (e : Error) {
+					if (sO.hasViewport) { 
+						view.scrollRect = initScrRect;
+					}
 					view.x = initX;
-				    view.y = initY;	
-				    throw new Error();
-		        }
+					view.y = initY;
+					view.width = initW;
+					view.height = initH;
+				    
+				    	
+					throw new Error();
+				}
 				if (sO.hasViewport) view.scrollRect = initScrRect;
-		    }
-			else
-			{
+			}
+			else {
 				trace("Printing Portrait ");
-		    	pjo = new PrintJobOptions();
+				pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
 				
-				LayoutUtil.scaleTo(null, view, sO, "CENTER", pj.pageHeight-80, pj.pageWidth-80);
-				curScale = view.width/sO.owidth;
+				LayoutUtil.scaleTo(null, view, sO, "CENTER", pj.pageHeight - margin, pj.pageWidth - margin);
+				curScale = view.width / sO.owidth;
 
 				view.rotation = 90;
 				
 				view.x = initX;
-		    	view.y = initY;
+				view.y = initY;
 				  		    	
-		    	vp_curWidth = view.width * sO.vp_ohscale;
+				vp_curWidth = view.width * sO.vp_ohscale;
 				vp_curHeight = view.height * sO.vp_owscale;
 				
-				yOffset = (pj.pageWidth-vp_curWidth)/2/curScale;
-				xOffset = (pj.pageHeight-vp_curHeight)/2/curScale;
+				yOffset = (pj.pageWidth - vp_curWidth) / 2 / curScale;
+				xOffset = (pj.pageHeight - vp_curHeight) / 2 / curScale;
 				
-				rect = new Rectangle(-xOffset, 0, sO.vp_owidth+xOffset, sO.vp_oheight+yOffset);
+				rect = new Rectangle(-xOffset, 0, sO.vp_owidth + xOffset, sO.vp_oheight + yOffset);
 
-				initScrRect = new Rectangle(0,0,sO.owidth,sO.oheight);	
+				initScrRect = new Rectangle(0, 0, sO.owidth, sO.oheight);	
 				if (sO.hasViewport) 
 					view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
-				try
-				{
-					printFrames(allFrames,pj,view,rect,pjo);
+				try {
+					printFrames(allFrames, pj, view, rect, pjo);
 				}
-		        catch (e:Error)
-		        {
-		        	if (sO.hasViewport) view.scrollRect = initScrRect;
-		        	view.rotation = 0;		        	
+		        catch (e2 : Error) {
+					if (sO.hasViewport) view.scrollRect = initScrRect;
+					view.rotation = 0;		        	
 					view.x = initX;
-				    view.y = initY;	
-				    throw new Error();
-		        }
-		        if (sO.hasViewport) view.scrollRect = initScrRect;
-		        view.rotation = 0;
-		    }
+					view.y = initY;	
+				    
+					view.width = initW;
+					view.height = initH;
+					throw new Error();
+				}
+				if (sO.hasViewport) view.scrollRect = initScrRect;
+				view.rotation = 0;
+			}
 		   
-		    view.width = initW * sO.vp_owscale;
-			view.height = initH * sO.vp_ohscale;
+			view.width = initW;
+			// * sO.vp_owscale;
+			view.height = initH;
+			// * sO.vp_ohscale;
 			view.x = initX;
-		    view.y = initY;	
+			view.y = initY;	
 		}
-		
-		private static function printFrames(allFrames:Boolean, pj:PrintJob, view:MovieClip, rect:Rectangle, pjo:PrintJobOptions)
-		{
-			var i:int;
+
+		private static function printFrames(allFrames : Boolean, pj : PrintJob, view : MovieClip, rect : Rectangle, pjo : PrintJobOptions):void {
+			var i : int;
 			
-			if (allFrames)
-			{
-				for (i = 1; i <= view.totalFrames; i++)
-				{
+			if (allFrames) {
+				for (i = 1;i <= view.totalFrames; i++) {
 					view.gotoAndStop(i);
 					pj.addPage(Sprite(view), rect, pjo);
 				}						
 				view.gotoAndStop(1);
 			}
-			else
-			{
+			else {
 				pj.addPage(Sprite(view), rect, pjo);
 			}
 			pj.send();	
 		}
-		
+
 		public static function center2( back_mc : Object, _mc : DisplayObject, mcSnapShot : IDisplayObjectSnapShot = null) : void {
 			//Center
 			trace("HIGHLIGHT center2");
@@ -664,8 +700,7 @@ package com.troyworks.ui {
 			}
 		}
 
-		public static function scaleToStage(clip : DisplayObject,mcSnapShot : IDisplayObjectSnapShot, override_width : Number, override_height : Number) : void 
-		{
+		public static function scaleToStage(clip : DisplayObject,mcSnapShot : IDisplayObjectSnapShot, override_width : Number, override_height : Number) : void {
 			trace("stage.stageWidth " + clip.stage.stageWidth + " mc " + clip.width);
 			trace("stage.stageHeight " + clip.stage.stageHeight + " mc " + clip.height);
 			//Scale
@@ -678,8 +713,7 @@ package com.troyworks.ui {
 			//scale to smallest dimension based on the relative aspect ratio
 			var asRatios : Number = (sw / sh) / mcSnapShot.o_wh_asp;
 			trace("aspect ratio " + asRatios + "  " + mcSnapShot.o_wh_asp);
-			if (asRatios < 1 ) 
-			{
+			if (asRatios < 1 ) {
 				trace("resizing width first");
 				clip.width = sw;
 				clip.height = sw / mcSnapShot.o_wh_asp;
