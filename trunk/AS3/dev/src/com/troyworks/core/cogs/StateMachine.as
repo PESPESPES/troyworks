@@ -55,7 +55,7 @@ package com.troyworks.core.cogs {
 		protected static var cachedEXIT_EVT:CogEvent = SIG_EXIT.createPrivateEvent();
 		protected static var cachedINIT_EVT:CogEvent = SIG_INIT.createPrivateEvent();
 		protected static var cachedENTRY_EVT:CogEvent = SIG_ENTRY.createPrivateEvent();
-		
+		//public var trace:Function = emptyTrace;
 		////////////////////////////////////////////////////
 		public function StateMachine() {
 			super();
@@ -66,6 +66,8 @@ package com.troyworks.core.cogs {
 		}
 		public static function getNextID():uint{
 			return IDz++;
+		}
+		public static function emptyTrace(... rest):void{
 		}
 		public static function getDefaultTrace():Function{
 			trace("getDefaultTrace " + DEFAULT_TRACE);

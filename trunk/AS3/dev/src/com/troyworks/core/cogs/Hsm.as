@@ -208,19 +208,19 @@
 					o.xml = xml;
 					s_Idx[mn] = o ;
 					stateNames.push(mn);
-					trace("type  " + mn);
+					//trace("type  " + mn);
 				}
 			}
 			///////////// BUILD LINKED TREE /////////////////
 			for (var i:Object in s_Idx) {
-				trace("testing " + i);
+				//trace("testing " + i);
 				if (i == "s_initial") {
 					XMLNode(s_Idx["s_root"].xml).appendChild(s_Idx[i].xml);
 				} else if (i != "s_root" ) {
 					var parentFunc : Function = s_Idx[i].fn.call(this, EVT_EMPTY);
 					var parentName : String = getStateName(parentFunc);
 				
-					trace(s_Idx[i] + " -> " + parentName);
+					//trace(s_Idx[i] + " -> " + parentName);
 					if(parentName == null) {
 						throw new Error("invalid Statemachine Topology " + i + " has null parent, check return value");
 					}
@@ -232,7 +232,7 @@
 			}
 			var sxml : XML = <hsm/>;
 			sxml.appendChild(s_Idx["s_root"].xml);
-			trace(" RESULT TREE \r" + sxml.toString().split(">").join("").split("<").join(""));
+			//trace(" RESULT TREE \r" + sxml.toString().split(">").join("").split("<").join(""));
 			if(cacheResults) {
 				topology = sxml;
 				stateNameIdx = stateNames;
@@ -279,16 +279,16 @@
 			state.call(this, HSM_EVT_ENTRY);
 			_hsm_currentState = state;
 			//_hsm_currentState=hsm_s_Active;
-			trace("HSM DEBUG1 ===========");
-			trace("Activating " + (hsm_s_Activating == _hsm_currentState));
-			trace("Active " + (hsm_s_Active == _hsm_currentState) + " hsm_is_Active: " + hsm_is_Active);
+			//trace"HSM DEBUG1 ===========");
+			//trace"Activating " + (hsm_s_Activating == _hsm_currentState));
+			//trace"Active " + (hsm_s_Active == _hsm_currentState) + " hsm_is_Active: " + hsm_is_Active);
 		}
 
 		public function setHSM(state : Function, name : String) : void {
 			_hsm_currentState = state;
-			trace("HSM DEBUG2 ===========");
-			trace("Activating " + (hsm_s_Activating == _hsm_currentState));
-			trace("Active " + (hsm_s_Active == _hsm_currentState));
+			//trace"HSM DEBUG2 ===========");
+			//trace"Activating " + (hsm_s_Activating == _hsm_currentState));
+			//trace"Active " + (hsm_s_Active == _hsm_currentState));
 		}
 
 		///////////// EXTERNAL STATE ///////////////
@@ -382,9 +382,9 @@
 		public function hsm_onCallbackHandler(event : TimerEvent) : void {
 			trace("hsm hsm_onCallbackHandler: " + event);
 			if(_hsm_currentState != null) {
-				trace("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+				//trace"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 				_hsm_currentState.call(this, HSM_EVT_CALLBACK);
-				trace("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+				//trace"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 			}else {
 				trace("cannot call a null _hsm_currentState");
 			}
@@ -402,12 +402,12 @@
 				var ce : CogEvent = CogEvent(event);
 				/////// LET CHILD DO IT////////////
 				if(_childState != null) {
-					trace(getStateMachineName() + "handing to child");
+					//tracegetStateMachineName() + "handing to child");
 					_childState.dispatchEvent(ce);
 				}
 				/////// TRY LOCALLY //////////////
 				if(ce.continuePropogation) {
-					trace(_smName + "." + getStateName(_myCurState) + ":Hsm.dispatchEvent Cog " + event.type);
+					//trace_smName + "." + getStateName(_myCurState) + ":Hsm.dispatchEvent Cog " + event.type);
 					if(myCurState != null) {
 						s = myCurState;
 						while (true) {
@@ -426,7 +426,7 @@
 							}
 						}
 					}else {
-						trace("error null state");
+						//trace"error null state");
 					}
 				}
 				////// HAND TO PARENT ///////////
@@ -470,14 +470,14 @@
 			if(myCurState != null) {
 				dispatchEvent(CogEvent.getCallbackEvent());
 				IEventDispatcher(event.target).removeEventListener("timer", onCallbackHandler);
-				trace("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+				//trace"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 			}else {
 				trace("cannot call a null onCallbackHandler");
 			}
 		}
 
 		public function startPulse(ms : Number = 45, repeats : Number = 0) : void {
-			trace("hcalling back in ============================" + ms);
+			//trace"hcalling back in ============================" + ms);
 			if(_pulsecallBackTimer != null && _pulsecallBackTimer.running) {
 				_pulsecallBackTimer.stop();
 			}else {
@@ -508,11 +508,11 @@
 		 * state that initial state defines int the constructor
 		 * **********************************************/
 		override public function initStateMachine() : void {
-			trace("HSM.init()" + _hsm_initState + " " + REQUIRE);
+			//trace"HSM.init()" + _hsm_initState + " " + REQUIRE);
 			REQUIRE(this._hsm_initState != null, "_hsm_initState cannot be null, set it in your constructor");
-			trace("PRE HSM_EVT_ENTRY HSM_EVT_ENTRYHSM_EVT_ENTRY");
+			//trace"PRE HSM_EVT_ENTRY HSM_EVT_ENTRYHSM_EVT_ENTRY");
 			this._hsm_initState.call(this, HSM_EVT_ENTRY);
-			trace("POST HSM_EVT_ENTRY HSM_EVT_ENTRYHSM_EVT_ENTRY");
+			//trace"POST HSM_EVT_ENTRY HSM_EVT_ENTRYHSM_EVT_ENTRY");
 		}
 
 		override public function deactivateStateMachine() : void {
@@ -539,7 +539,7 @@
 		 * **********************************************/		
 		override public function requestTran(targetState : Function, transOptions : TransitionOptions = null, crossAction : Function = null) : void {
 	
-			trace("requestTran");
+			//trace"requestTran");
 			//use namespace  COG;
 			//REQUIRE(targetState != null, "***ERROR*** %1.tran, passed null state function" ,  toStringShort ());
 			REQUIRE(targetState != s_root, "cannot transition to root state!");
@@ -613,31 +613,31 @@
 			// 
 			/////////////////////////////////////////////////////////////////
 			if(sS != cS) {
-				trace("UNWINDING-----------------" + getStateName(cS) + "  sS" + getStateName(sS));
+				//trace"UNWINDING-----------------" + getStateName(cS) + "  sS" + getStateName(sS));
 				s = cS;
 				while (true) {
 					sp = s.call(this, EVT_EMPTY);
-					trace(" - sp " + getStateName(sp) + " s " + getStateName(s));
+					//trace" - sp " + getStateName(sp) + " s " + getStateName(s));
 					if (sp == null) {
 						// arrived at target state or root
-						trace(" arrived at root");
+						//trace" arrived at root");
 						break;
 					}else if(sp == sS) {	
 						// else haven't arrived at source state yet, keep going
-						trace("arrived unwinding " + getStateName(s));
+						//trace"arrived unwinding " + getStateName(s));
 						preExit.push(s);
 						//	f= 1;
 						break;
 					} else {
 						// else haven't arrived at source state yet, keep going
-						trace(" unwinding " + getStateName(s));
+						//trace" unwinding " + getStateName(s));
 						preExit.push(s);
 						//	f= 1;
 						s = sp;
 					}
 				}
 			}
-			trace("preExit " + preExit.length);
+			//trace"preExit " + preExit.length);
 			//targetState is parent and it's already active.
 			var tIsPA : Boolean = false;
 			var skipPrune : Boolean = false;
@@ -648,13 +648,13 @@
 			lastState = _myCurState;
 			if (transOptions.useCachedRouting && tran_Idx[key] != null) {
 				//Found an existing routing
-				trace("existing routing");
+				//trace"existing routing");
 				var routing : Array = tran_Idx[key];
 				entry = routing[0];
 				exitry = routing[1];
 			} else {
 				//discover route
-				trace("discovering routing ");
+				//trace"discovering routing ");
 				///////////////////////////////////////////////////////////////////
 				//
 				// ROUTE   , find the path from the source
@@ -662,61 +662,61 @@
 				// start recording transition chain, if not a dynamic
 				// 
 				////////////////////////////////////////////////////////////////////
-				trace("ROUTING----------");
+				//trace"ROUTING----------");
 				if (sS == tS) {
 					////////////////////////////////////////////////////////////
 					//  Self Transitions, no extended discovery needed.
 					// Fig 4.7(a) 
 					////////////////////////////////////////////////////////////
-					trace("(a) - self transition");
+					//trace"(a) - self transition");
 					entry[e++] = tS;
 					exitry[f++] = sS;
 					skipPrune = true;
 					reentrant = true;
 				} else {
-					trace("source != target");
+					//trace"source != target");
 					//target's parent state
 					tp = tS.call(this, EVT_EMPTY);
 					//source's parent state
 					sp = sS.call(this, EVT_EMPTY);
 					//if (cS == sS) {
-					//	trace("single level");
+					//	//trace"single level");
 					////////////////////////////////////////////////////////////
 					//  Single Level Transitions, no extended discovery needed.
 					////////////////////////////////////////////////////////////
 					if (sS == tp) {
 						// CHILD
-						trace("*Fig 4.7 (b)* -  transition to first child - ENTER only");
+						//trace"*Fig 4.7 (b)* -  transition to first child - ENTER only");
 						//		if(tS != cS){
 						entry[e++] = tS;
 						//	}else {
-						//		trace(" already active");
+						//		//trace" already active");
 								//reentrant = true;
 								//return;
 								//break;
 				//	}
 					} else if (sp == tp) {
 						// SIBLING
-						trace("*Fig 4.7 (c) (sp == tp)* -  transition to sibling via parent EXIT and ENTER chain ");
+						//trace"*Fig 4.7 (c) (sp == tp)* -  transition to sibling via parent EXIT and ENTER chain ");
 						entry[e++] = tS;
 						exitry[f++] = sS;
 					} else if (sp == tS) {
 						// PARENT
-						trace("*Fig 4.7 (d)* -  transition to first parent EXIT only");
+						//trace"*Fig 4.7 (d)* -  transition to first parent EXIT only");
 						exitry[f++] = sS;
 						tIsPA = true;
 					} else {
 						//////////////////////////////////////////////////////////////
 						// Multi Level Transitions, extended discovery needed
 						/////////////////////////////////////////////////////////////
-						trace("multi level");
+						//trace"multi level");
 						//trace ("*Fig 4.7 (e),(f), (g), (h) (sp.. == tp..)* -  transition to sibling(s) EXIT and ENTER chain  ");
 						//ENTER LIST from target
 						for (s = tS;s != null && s != s_root; s = s.call(this, EVT_EMPTY)) {
 							//trace ("checking enter list from targets's parent"  + s.call (this, TRACE_EVT));
 							if (s == sS ) {
 								//found it, target is GRANDCHILD
-								trace("e 4.7 (e)  found LCA! " + e);
+								//trace"e 4.7 (e)  found LCA! " + e);
 								LCA = s;
 								break;
 							} else {
@@ -733,7 +733,7 @@
 							//trace ("checking exit list from activestate/source " + s.call (this, TRACE_EVT));
 							if (s == tS || s == LCA) {
 								//found it, target is GRANDPARENT
-								trace("x 4.7 (h) found LCA ! " + f);
+								//trace"x 4.7 (h) found LCA ! " + f);
 								break;
 							} else {
 								// add to exit list keep going,
@@ -741,13 +741,13 @@
 							}
 						}
 						//
-						trace("\r\r");
-						traceEnterExitList(f, e, "after normal routing");
-						trace("\r\r");
+						//trace"\r\r");
+						//traceEnterExitList(f, e, "after normal routing");
+						//trace"\r\r");
 						//PRUNE LIST for any unecessary LCA/root state's
 						if (e > 0 && f > 0) {
 							//if we are here we didn't find the LCA *Fig 4.7 (g)
-							trace("----performing LCA extended discovery pruning---------");
+							//trace"----performing LCA extended discovery pruning---------");
 							var ee : uint = e;
 							var ff : uint = f;
 							while (entry[( --ee )] == exitry[( --ff)]) {
@@ -757,9 +757,9 @@
 							}
 						}
 
-						trace("\r\r");
-						traceEnterExitList(f, e, "after LCA discovery");
-						trace("\r\r");
+						//trace"\r\r");
+						//traceEnterExitList(f, e, "after LCA discovery");
+						//trace"\r\r");
 					}
 				}
 				if(exitry.length == 0) {
@@ -771,7 +771,7 @@
 				//
 				////////////////////////////////////////////////////////////////////
 				if(transOptions.doInitDiscovery) {
-					trace("INIT ROUTING----------------");
+	//traceace("INIT ROUTING----------------");
 					if ( !tIsPA) {
 						s = tS;
 						tp = s.call(this, EVT_EMPTY);
@@ -783,7 +783,7 @@
 								//reached destination, no init state to process
 								break;
 							} else {
-								trace("  init " + getStateName(s) + " ++> " + getStateName(t));
+								//trace"  init " + getStateName(s) + " ++> " + getStateName(t));
 		
 								//found a new state to enter, add to list and keep climbing
 								postEnter.unshift(t);
@@ -806,7 +806,7 @@
 
 			exitry = preExit.concat(exitry);
 			entry = entry.concat(postEnter);
-			trace("MERGED ");
+			//trace("MERGED ");
 			traceEnterExitList(f, e, "after MERGE discovery");
 			//trace("\r\r");
 
@@ -824,7 +824,7 @@
 
 			ASSERT(transLock == false, "Error in HSM Illegal Transition detected in " + toStringShort() + "Q_TRAN, cannot perform another Q_TRAN inside EXIT_EVT or ENTER_EVT (use INIT_EVT instead) ");
 			transLock = true;
-			trace(_smName + " TRANSITIONING===================");
+			//trace_smName + " TRANSITIONING===================");
 			var i : uint;
 			var finalState : Function;
 		
@@ -835,7 +835,7 @@
 					s = exitry[i];
 					/* retrace exit path in reverse order */
 					msg = "EXITING " + getStateName(s);
-					trace(msg);
+					//tracemsg);
 					handled = s.call(this, CogEvent.getExitEvent());
 					if(handled == null) {
 						transitionLog.push(msg + " HANDLED");
@@ -867,7 +867,7 @@
 					if(!isInState(s) || reentrant) {
 						// if we are going from a child to an already active parent //
 						msg = "ENTERING " + getStateName(s);
-						trace(msg);
+						//tracemsg);
 
 						handled = s.call(this, CogEvent.getEnterEvent());
 						if(handled == null) {
@@ -933,7 +933,7 @@
 			var s : Function;
 			var res : Array = new Array();
 
-			res.push("traceEnterExitList\\ ------ x " + x + " e " + e + "  " + str);
+			res.push(_smName+ ".traceEnterExitList\\ ------ x " + x + " e " + e + "  " + str);
 			res.push("[[Exit Chain is ]]" + x);
 			for (i = 0;i < exitry.length; i++) {
 				s = exitry[i];

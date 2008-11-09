@@ -1,4 +1,5 @@
 package com.troyworks.controls.tslidermenu {
+	import flash.geom.Rectangle;	
 	import flash.events.Event;	
 	import flash.events.MouseEvent;	
 	import flash.display.DisplayObject;	
@@ -30,16 +31,19 @@ package com.troyworks.controls.tslidermenu {
 		var slidingTraySize : Sprite;
 		var view:Sprite;
 		var slidingTrayTny : Tny;
-		var activationRadius : Number = 40;
+		var activationRadius : Number = 50;
 		var defaultScale : Number = 1;
 		var enlargedScale : Number = 2;
 		var config:Object = new Object();	
 		var hideTraySize:Boolean = true;
 		var drawSlider:Boolean  = false;
 		var drawSliderColor:Number = 0xcccccc;
-		var drawSliderAlpha:Number = .7; 
+		var drawSliderAlpha:Number = .7;
+		private var hasSetView : Boolean = false;
+		private var scrollmode : String = "EDGE";
+		var velocity:Number;
 		public function TSliderMenu(view:Sprite = null, initObj:Object = null) {
-			trace("EEEEEEEEEEEEEEEEEE new TSliderMenu EEEEEEEEEEEEEEEEEEEEEE " );
+			trace("EEEEEEEEEEEEEEEEEE new TSliderMenu EEEEEEEEEEEEEEEEEEEEEE for " + view);
 			this.view = view;
 			//if(view.hasOwnProperty("config")){
 			//	trace("has config Object");
@@ -47,7 +51,27 @@ package com.troyworks.controls.tslidermenu {
 			//	trace("has NO config Object");
 			//}
 			Object(view).config = initObj;
-			view.addEventListener(Event.ENTER_FRAME, onFrame1);
+			if(view.stage != null){
+			  onADDED_TO_STAGE(null);
+			}else{
+				view.addEventListener(Event.ADDED_TO_STAGE, onADDED_TO_STAGE, false, 0,true);
+				view.addEventListener(Event.REMOVED_FROM_STAGE, onREMOVED_FROM_STAGE,false, 0,true);				
+			}
+			
+		}
+		public function onADDED_TO_STAGE(evt:Event):void{
+				trace("TSliderMenu.onADDED_TO_STAGE " + hasSetView);
+			if(!hasSetView){
+				trace("TSlider.waiting for Frame1 " + view);
+				view.addEventListener(Event.ENTER_FRAME, onFrame1);
+			}else{
+				trace("TSlider.readded to stage");
+				view.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler,false, 0,true);
+			}	
+		}
+		public function onREMOVED_FROM_STAGE(evt:Event):void{
+			trace("TSliderMenu.onREMOVED_FROM_STAGE ");
+			view.removeEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 		}
 		public function onFrame1(evt:Event = null):void{
 			trace("new TSliderMenu.onFrame1********************************" );
@@ -70,12 +94,15 @@ package com.troyworks.controls.tslidermenu {
 		}
 		public function setView(mc : Sprite) : void {
 			view = mc;
+			view.addEventListener(Event.ADDED_TO_STAGE, onADDED_TO_STAGE, false, 0,true);
+			view.addEventListener(Event.REMOVED_FROM_STAGE, onREMOVED_FROM_STAGE,false, 0,true);				
+		
 			slidingTray  = new Sprite();
 			slidingTray.name = "slidingTray";
 			slidingTraySize = view.getChildByName("sliderTraySize") as Sprite;
-			trace("LandscaptNav============================ " + slidingTraySize);
+			velocity = (slidingTray.width / slidingTraySize.width);			
+			trace("TSliderMenu.setView============================ " + slidingTraySize + " velocity " + velocity + " " + view.name);
 
-		
 			for (var i : int = 0;i < view.numChildren; i++) {
 				var dO : DisplayObject = view.getChildAt(i);
 				if (dO != slidingTraySize) {
@@ -97,15 +124,44 @@ package com.troyworks.controls.tslidermenu {
 
 			trace("LandscaptNav============================" + slidingTray.numChildren);
 
-			view.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
+			view.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler, false, 0,true);
 			//addEventListener(MouseEvent.MOUSE_MOVE, onMouseMoveHandler);
-			
-			var dx : Number;
+			hasSetView = true;
 		}
 
 		function onEnterFrameHandler(evt : Event = null) : void {
 			var dx:Number = slidingTraySize.x - ((slidingTray.width - slidingTraySize.width) * slidingTraySize.mouseX / slidingTraySize.width);
-			slidingTray.x -= (slidingTray.x - dx) / 6;
+			velocity = (slidingTray.width / slidingTraySize.width);		
+			//trace(  view.name + " tray velocity " + velocity);
+			var rate:Number = 6;
+			var delta:Number = (slidingTray.x - dx);
+
+			if(scrollmode=="CONTINOUSPAN"){
+			if(delta > activationRadius){
+				slidingTray.x  -= rate;
+			}else if (delta < (-1* activationRadius)){
+				slidingTray.x  += rate;
+			}else{
+			  slidingTray.x -= (slidingTray.x - dx) / (15);
+			}
+			}else if(scrollmode=="AQUADOCK"){
+				 slidingTray.x -= (slidingTray.x - dx) / (15);
+			}else if(scrollmode=="EDGE"){
+				
+				var bns:Rectangle = slidingTraySize.getBounds(slidingTraySize);
+				var re:Number = bns.right - (activationRadius);
+				var le:Number =  bns.left + (activationRadius );
+				
+				var needsMove  =  Math.abs(delta) > rate ;
+			//	trace("EDGE " + le+ " " + slidingTraySize.mouseX + " " + re + " delta " + delta);  
+				if( re< slidingTraySize.mouseX && delta > rate){
+					rate =  rate * Math.max ((slidingTraySize.mouseX - re) / activationRadius, 0);
+					slidingTray.x  -= rate ;
+				}else if (slidingTraySize.mouseX  < le   && rate > delta){
+					rate =  rate * Math.max((le - slidingTraySize.mouseX)/activationRadius,0);
+					slidingTray.x  += rate;
+				}
+			}
 			if(drawSlider){
 				slidingTray.graphics.clear();
 				slidingTray.graphics.beginFill(drawSliderColor, drawSliderAlpha);
@@ -133,9 +189,9 @@ package com.troyworks.controls.tslidermenu {
 
 		function onMouseMoveHandler(evt : Event = null) : void {
 			trace("onMouseMoveHandler");
-			slidingTrayTny.x = slidingTraySize.x - ((slidingTray.width - slidingTraySize.width) * slidingTraySize.mouseX / slidingTraySize.width);
+		//	slidingTrayTny.x = slidingTraySize.x - ((slidingTray.width - slidingTraySize.width) * slidingTraySize.mouseX / slidingTraySize.width);
 			slidingTrayTny.ease = Bounce.easeOut;
-			slidingTrayTny.duration = .5;
+			slidingTrayTny.duration = 10;// * slidingTray.width / slidingTraySize.width;
 		}
 
 		function onRollOverHandler(evt : Event) : void {

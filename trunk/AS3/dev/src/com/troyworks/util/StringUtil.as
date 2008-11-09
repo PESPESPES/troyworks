@@ -196,25 +196,50 @@
 				}
 			}
 		}
-				//parsing variables by type - valtozok ertelmezese tipus szerint
-		public static function getBoolean(att:String,def:Boolean):Boolean {
-			if(att==null) {
-				return def;
+
+		//
+		/*import com.troyworks.util.*;
+
+		trace(StringUtil.toPCase("peter o'tool"));
+		trace(StringUtil.toPCase("camilla parker-bowles"));
+		trace(StringUtil.toPCase("paul mccartney"));
+		 * 
+		 *outputs 
+		/*Peter O'Tool
+		/* Camilla Parker-Bowles
+		/* Paul McCartney 		
+		 * 
+		 */
+		public static function toPCase(input:String):String{
+			var res:Array = new Array();
+			var cc:String = ""; // current character
+			var pc:String= "";//previous character
+			var pcc:String ="";
+			for(var i:Number = 0; i < input.length;i++){
+				cc = input.charAt(i);
+				switch(pc){
+					case "":
+					case " ":
+					case ".":
+					case "-":
+					case ",":
+					case '"':
+					case "'":
+					 	res.push(cc.toUpperCase());
+					   break;
+					default:
+						if(pcc == "mc" ){
+							res.push(cc.toUpperCase());
+						}else{
+						res.push(cc.toLowerCase());
+						}
+					break;   
+				}
+				pcc = pc +cc;
+				//trace("pcc " + pcc);
+				pc = cc;
 			}
-			if(att=="true") return true;
-			else return false;
-		}
-		public static function getNumber(att:String,def:Number= NaN):Number {
-			if(!isNaN(def) && att==null) {
-				return def;
-			}
-			return Number(att);
-		}
-		public static function getString(att:String,def:String= null) :String{
-			if(def!=null && att==null) {
-				return def;
-			}
-			return String(att);
+			return res.join("");
 		}
 	
 	}

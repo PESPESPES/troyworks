@@ -14,7 +14,8 @@
 			// Set static vars that are objects (unable to set that in definition)
 			
 			// TODO: make this a parameter in the main SWF
-			IFile.setBasePath('http://blaze.dnc.pl/~tw/PostReceiver/files/');
+			//IFile.setBasePath('http://blaze.dnc.pl/~tw/PostReceiver/files/');
+			IFile.setBasePath('http://troyworks.com/examples/PostReceiver/files/');
 			
 			IFileStream;
 			IFileMode;

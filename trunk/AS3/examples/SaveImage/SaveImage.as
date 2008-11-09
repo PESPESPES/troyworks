@@ -6,6 +6,7 @@
 	import flash.net.URLLoaderDataFormat;
 	import flash.system.Capabilities;
 	import flash.events.Event;
+	import flash.text.TextField;
 	import flash.utils.ByteArray;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -19,7 +20,8 @@
 	
 		// Image data
 		protected var imgData:ByteArray;
-
+		public var status_txt:TextField;
+		
 		public function SaveImage():void
 		{
 			if (Capabilities.playerType == 'Desktop') {
@@ -36,6 +38,7 @@
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImgLoad);
 			loader.load(request);
 			this.addChild(loader);
+			status_txt.appendText("\rStatus: loading remote image ");
 		}
 
 		protected function onImgLoad(ev:Event):void
@@ -48,11 +51,13 @@
 			var iFile = ExternalLibrary.static('IFile');
 			var aFile = iFile.desktopDirectory.resolvePath('flash-logo.jpg');
 			aFile.addEventListener(iFile.STATUS, onStatus);
+			status_txt.appendText("\rStatus: image loaded ");
 		}
 		
 		protected function onStatus(ev:Event):void
 		{
 			var aFile = ev.target;
+			status_txt.appendText("\rStatus: writing file locally ");
 			
 			var aStream = ExternalLibrary.create('IFileStream');
 			var iFileMode = ExternalLibrary.static('IFileMode');
@@ -65,6 +70,7 @@
 		
 		protected function onClose(ev:Event):void
 		{
+			status_txt.appendText("\rStatus: remote File written locally successfully ");
 			trace('file written to disk');
 		}
 	}

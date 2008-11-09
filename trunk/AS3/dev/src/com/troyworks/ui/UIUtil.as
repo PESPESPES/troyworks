@@ -14,6 +14,41 @@ package com.troyworks.ui {
 	import flash.display.MovieClip;	
 
 	public class UIUtil {
+		protected var clipsToWatch : Array;
+		var hidx : Object = new Object();
+
+		public function UIUtil(clipsToEffect : Array) {
+			this.clipsToWatch = clipsToEffect;
+		}
+
+		///// these are useful for printing ///////
+		public function hide() : void {
+			var hide2 : Array = clipsToWatch.concat();
+			var o : Object;
+			while(hide2.length > 0) {
+				o = hide2.pop();
+				trace("hidthing " + o.name);
+				hidx[o.name] = o.visible;
+				o.visible = false;
+			}
+		}
+
+		public function resetVisibility() : void {
+			var hide2 : Array = clipsToWatch.concat();
+			var o : Object;
+			while(hide2.length > 0) {
+				o = hide2.pop();
+				trace("resettinging " + o.name + " " + hidx[o.name]);
+				
+				o.visible = hidx[o.name];
+			}
+		}
+		public function release():void{
+			while(clipsToWatch.length > 0) {
+				clipsToWatch.pop();
+			}
+		}
+
 		/* returns the zero based frame label to be used in conjunctin with addFrameScript */
 
 		public static function getNumberOfFrameLabel(mc : MovieClip, lblName : String) : int {
@@ -29,29 +64,30 @@ package com.troyworks.ui {
 			}
 			return -1;
 		}
-		public static function addFrameScriptForLabel(mc:MovieClip, lblName:String, fn:Function ):int{
+
+		public static function addFrameScriptForLabel(mc : MovieClip, lblName : String, fn : Function ) : int {
 			var frameNum : int = UIUtil.getNumberOfFrameLabel(mc, lblName);
 			mc.addFrameScript(frameNum, fn);
 			return frameNum;
-			
 		}
-		public static function setInputShieldBehavior(sprite : Sprite, ON : Boolean = true):void
-		{
-			if(ON){
+
+		public static function setInputShieldBehavior(sprite : Sprite, ON : Boolean = true) : void {
+			if(ON) {
 				sprite.buttonMode = true;
 				sprite.mouseChildren = false;
 				sprite.useHandCursor = false;
-			}else{
+			}else {
 				sprite.buttonMode = false;
 				sprite.mouseChildren = true;
 				sprite.useHandCursor = true;
 			}
 		}
-		public static function getMouseAngle(disObjCon : DisplayObjectContainer) :Number{
-			return Math.atan2(disObjCon.parent.mouseY-disObjCon.y, disObjCon.parent.mouseX-disObjCon.x)*180/Math.PI;
+
+		public static function getMouseAngle(disObjCon : DisplayObjectContainer) : Number {
+			return Math.atan2(disObjCon.parent.mouseY - disObjCon.y, disObjCon.parent.mouseX - disObjCon.x) * 180 / Math.PI;
 		};
 
-
+		
 		public static function match(changeClip : DisplayObject, toClip : DisplayObject, withProps : Array = null) : void {
 			
 			if (withProps == null) {
