@@ -1,6 +1,6 @@
 /*
- * Author: Richard Lord
- * Copyright (c) Big Room Ventures Ltd. 2007-2008
+ * Author: Troy Gardner
+ * Copyright (c) TroyWorks. 2007-2008
  * Version: 1.0.0
  * 
  * Licence Agreement
@@ -24,7 +24,6 @@
  * THE SOFTWARE.
  */
 
-//ORIG package uk.co.bigroom.utils
 
 package com.troyworks.util {
 	/**
@@ -35,9 +34,10 @@ package com.troyworks.util {
 	 * @param args An array of up to ten args to pass to the constructor.
 	 * 
 	 * EXAMPLE
-	 * 
+	 *
+	 *		trace("new2 " + new2(Date, 2001,1,1));
+			See also 'construct' 
 			trace("construct " + construct(Date, [2001,1,1]));
-			trace("new2 " + new2(Date, 2001,1,1));
 	 */
 	public function new2( type : Class,...args ) : * {
 		
