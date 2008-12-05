@@ -1,4 +1,4 @@
-package  { 
+package com.troyworks.geom.d1 { 
 	//!-- UTF8
 	trace("\t included line_segment.as");
 	/*************************************************************************
@@ -21,6 +21,9 @@ package  {
 	isFixedPosition = tied to a specific location.
 	
 	************************************************************/
+	public function line_segment() {
+		
+	}
 	LineSegment = function (Name, CurSizeInPixels) {
 		this.init(Name, CurSizeInPixels);
 	};

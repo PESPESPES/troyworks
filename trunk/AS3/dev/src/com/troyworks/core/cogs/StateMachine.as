@@ -52,9 +52,9 @@ package com.troyworks.core.cogs {
 		protected var _initState:Function;
 		/* function pointer to current state*/
 		protected var _currentState:Function;
-		protected static var cachedEXIT_EVT:CogEvent = SIG_EXIT.createPrivateEvent();
-		protected static var cachedINIT_EVT:CogEvent = SIG_INIT.createPrivateEvent();
-		protected static var cachedENTRY_EVT:CogEvent = SIG_ENTRY.createPrivateEvent();
+		protected static var cachedSIG_EXIT:CogEvent = SIG_EXIT.createPrivateEvent();
+		protected static var cachedSIG_INIT:CogEvent = SIG_INIT.createPrivateEvent();
+		protected static var cachedSIG_ENTRY:CogEvent = SIG_ENTRY.createPrivateEvent();
 		//public var trace:Function = emptyTrace;
 		////////////////////////////////////////////////////
 		public function StateMachine() {

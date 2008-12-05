@@ -30,7 +30,7 @@ package com.troyworks.core.commands {
 		
 		public function CommandStack(initState:String = "s_initial") {
 			super(initState, "CommandStack");
-			trace = TraceAdapter.TraceToSOS;
+			trace = TraceAdapter.SOSTracer;
 			_commands = new Array();
 			 trace("HIGHLIGHTP " + _index + " / " + _commands.length);
 		
@@ -119,11 +119,11 @@ package com.troyworks.core.commands {
 		
 		/////////////////// EVENT GENERATORS ////////////////////////////////
 		public function previous(evt:*):void {
-		   dispatchEvent(new CogEvent(CogEvent.EVTD_COG_PROTECTED_EVENT, GOTO_PREVIOUS));
+		   dispatchEvent(new CogEvent(CogEvent.EVTD_COG_PRIVATE_EVENT, GOTO_PREVIOUS));
 		}
 		
 		public function next(evt:*):void {
-		   dispatchEvent(new CogEvent(CogEvent.EVTD_COG_PROTECTED_EVENT, GOTO_NEXT));
+		   dispatchEvent(new CogEvent(CogEvent.EVTD_COG_PRIVATE_EVENT, GOTO_NEXT));
 		}
 
 		////////////////// STATE GETTERS /////////////////////////////////////////

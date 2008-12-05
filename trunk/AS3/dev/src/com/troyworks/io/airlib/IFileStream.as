@@ -78,7 +78,7 @@
 		
 		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void 
 		{
-			return this.eventDispatcher.removeEventListener(type, listener, useCapture);
+			this.eventDispatcher.removeEventListener(type, listener, useCapture);
 		}
 		
 		public function willTrigger(type:String):Boolean

@@ -32,7 +32,7 @@ package com.troyworks.core.cogs.proxies {
 		{
 		
 			trace("Key Pressed: " + String.fromCharCode(event.charCode) +         " (key code: " + event.keyCode + " character code: "         + event.charCode + ")");
-		//	var evt:KeyBoardEvent = new KeyBoardEvent(CogEvent.EVTD_COG_PUBLIC_EVENT, KeyCode.parse(event.keyCode));
+		//	var evt:KeyBoardEvent = new KeyBoardEvent(CogEvent.Eventttt_COG_PUBLIC_EVENT, KeyCode.parse(event.keyCode));
 		//	evt.keyState = KeyBoardEvent.KEY_DOWN;
 		//	_sm.dispatchEvent(evt);
 		}
@@ -41,7 +41,7 @@ package com.troyworks.core.cogs.proxies {
 		{
 			trace("Key Released: " + String.fromCharCode(event.charCode) +         " (key code: " + event.keyCode + " character code: " +         event.charCode + ")");
 
-		//	var evt:KeyBoardEvent = new KeyBoardEvent(CogEvent.EVTD_COG_PUBLIC_EVENT, KeyCode.parse(event.keyCode));
+		//	var evt:KeyBoardEvent = new KeyBoardEvent(CogEveEventntntnt_COG_PUBLIC_EVENT, KeyCode.parse(event.keyCode));
 		//	evt.keyState = KeyBoardEvent.KEY_UP;
 		//	_sm.dispatchEvent(evt);
 			

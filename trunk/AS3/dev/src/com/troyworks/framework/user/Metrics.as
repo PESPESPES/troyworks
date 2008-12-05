@@ -1,6 +1,6 @@
-package com.troyworks.framework.user { 
+package com.troyworks.framework.user {
 	import com.troyworks.framework.model.BaseModelObject;
-	import com.troyworks.data.Array2;
+	import com.troyworks.data.ArrayX;
 	
 	/**
 	 * @author Troy Gardner
@@ -9,7 +9,7 @@ package com.troyworks.framework.user {
 		
 		//
 		public var totalViews:Number;
-		public var history:Array2;
+		public var history:ArrayX;
 		
 		
 		public function Metrics() {

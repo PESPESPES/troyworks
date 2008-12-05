@@ -16,12 +16,25 @@ package com.troyworks.events {
 			_fn = functionToCall;
 			_args = (callbackArguments == null) ? [] : callbackArguments;
 		}
-
+		/* post process add callback arguments, or replace them */
+		
 		public function initTo(functionToCall : Function, callbackArguments : Array) : void {
 			_fn = functionToCall;
 			_args = (callbackArguments == null) ? [] : callbackArguments;
 		}
+		/* post process add callback arguments, or replace them */
+		public function addCallBackArg(arg : Object) : void {
+			//		  if (_args != null){
+			_args.push(arg);
+//		  }else{
+//			 _args = [arg];
+//		  }
+		}
+		
+		/* this function is used to convert someInteractive.addEventListener(someEvent, someFunction(evt)--> your function(your args);
+		 *  evt.target.addEventListener(MouseEvent.CLICK, EventAdapter.create(this[fnName], [arg1,arg2]));
 
+		 */
 		public static function create(functionToCall : Function, callbackArguments : Array, includeEvent : Boolean = false) : Function {
 			//trace("EventAdapter.create");
 			var res : EventAdapter = new EventAdapter(functionToCall, callbackArguments);
@@ -30,14 +43,6 @@ package com.troyworks.events {
 			}else {
 				return res.callFunction;
 			}
-		}
-
-		public function addCallBackArg(arg : Object) : void {
-			//		  if (_args != null){
-			_args.push(arg);
-//		  }else{
-//			 _args = [arg];
-//		  }
 		}
 		/*
 		* for a given event, call a function with the arguments

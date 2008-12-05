@@ -32,7 +32,7 @@ package com.troyworks.framework.ui {
 		// the base component supports
 		// preloading, transition in, active, transition out to inactive,
 		// those that have status provide it
-		public var view : DisplayObject;
+		public var view : Sprite;
 		public static var EVT_LOADED : String = "EVT_LOADED";
 		public static var EVT_READY : String = "EVT_READY";
 		public static var EVT_TRANSIN : String = "EVT_";
@@ -55,6 +55,7 @@ package com.troyworks.framework.ui {
 		public var owner : IHaveChildrenComponents;
 		public var isLoaded : Boolean;
 		public var isReady : Boolean;
+
 	
 		public function BaseComponent(initialState : String = "s_initial", hsmfName : String = null, aInit : Boolean = false)
 		{
@@ -63,7 +64,7 @@ package com.troyworks.framework.ui {
 				initStateMachine();
 			}
 		}
-		public function onLoad(init : Boolean) : void
+		public function onLoad(init : Boolean = true) : void
 		{
 			
 			//if(codeGen > -1){

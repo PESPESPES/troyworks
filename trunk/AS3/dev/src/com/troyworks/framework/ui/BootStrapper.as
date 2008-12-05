@@ -1,11 +1,14 @@
-﻿package com.troyworks.framework.ui
-{
+﻿package com.troyworks.framework.ui {
+	import com.troyworks.util.InitObject;	
+	
+	import flash.display.Stage;	
 	import flash.display.DisplayObjectContainer;
 	import flash.display.MovieClip;
 	import flash.text.TextField;
 	//import com.troyworks.framework.ui.UIFsmComponent;
 	import flash.events.Event;
 	import flash.utils.describeType;
+
 	/******************************************
 	 * This class is called by entry point swf
 	 * and passed configuration parameters (typically on frame1)
@@ -21,33 +24,52 @@
 
 	 * 
 	 * ***************************************/
-	public class BootStrapper extends MovieClip
-	{
-		public var view:MovieClip;
-		public function BootStrapper():void{
+	public class BootStrapper extends MovieClip {
+		public var view : MovieClip;
+		public var ldrInitObj:Object;
+
+		public function BootStrapper() : void {
 			super();
+			trace("BootStrapper()");
 			//_initState
+
+			/*if(parent != stage && Object(parent).xtraVars != null) {
+			//	var img : String = Object(parent).xtraVars["image"];
+				//visualURL = (img != null) ? img : visualURL;
+				//for (keyStr in Object(parent).xtraVars) {
+				//	valueStr = String(Object(parent).xtraVars[keyStr]);
+				//	loading_txt.appendText("\t" + keyStr + ":\t" + valueStr + "\n");
+			//	}
+			}else {
+				trace("\t using DEFAULTS3 \n");
+			}
+			if(ldrInitObj != null){
+				trace("has ldrInitObj");
+			InitObject.setInitValues(this, ldrInitObj);
+			}*/
 		}
-		public function setView(view_mc:MovieClip):void{
+
+		public function setView(view_mc : MovieClip) : void {
 			trace("BootStrapper.setView " + view_mc);
-			view  = view_mc;
-			view.addEventListener(Event.ADDED,onChildAdded);
-			view.addEventListener(Event.REMOVED,onChildRemoved);
+			view = view_mc;
+			view.addEventListener(Event.ADDED, onChildAdded);
+			view.addEventListener(Event.REMOVED, onChildRemoved);
 			
 			//onSetView();
 			scanStage();
 		}
-		protected function scanStage():void {
-		trace("BootStrapper.scanStage=======================================");
+
+		protected function scanStage() : void {
+			trace("BootStrapper.scanStage=======================================");
 			//cellIdx = new Object();
-	
-			var description:XML = describeType(view);
+
+			var description : XML = describeType(view);
 			//trace("description " + description);
-			var _mc:MovieClip;
-			var _txt:TextField;
-			var nm:String;
+			var _mc : MovieClip;
+			var _txt : TextField;
+			var nm : String;
 			for each (var v:XML in description..variable) {
-				var str:String = v.@name;
+				var str : String = v.@name;
 				trace(" FOUND " + v.toXMLString() + " " + str);
 				try {
 					switch (String(v.@type)) {
@@ -57,26 +79,26 @@
 								
 							}
 					}
-				}catch(err:Error){
-				
+				}catch(err : Error) {
 				}
 			}
 		}
+
 		/**************************************************
 		 *  this is called anytime a UI clip is added to the stage
 		 * **********************************************/
-		protected function onChildAdded(event:Event):void {
+		protected function onChildAdded(event : Event) : void {
 			
-			var x:XML = describeType(event.target);
-			var nm:String = String( x.@name);
+			var x : XML = describeType(event.target);
+			var nm : String = String(x.@name);
 			trace("BootStrapper.onChildAdded " + event.target + " " + nm);
-			var ary:Array;
-			var id:Number;
-			switch(nm){
+			var ary : Array;
+			var id : Number;
+			switch(nm) {
 				case "flash.display::Shape":
 				case "flash.text::StaticText":
-				//ignore
-				break;
+					//ignore
+					break;
 /*				case "Ball":
 				trace("found a Ball " + MovieClip(event.target).name);
 				ary = MovieClip(event.target).name.split("_");
@@ -85,30 +107,30 @@
 				bl.addEventListener(Event.COMPLETE, onChildReachedTarget);
 				balls[id] = bl;
 				if(targets[id] != null){
-					bl.seekTarget = targets[id].view;
+				bl.seekTarget = targets[id].view;
 				}
 				break;	
 				case "Target":
 				trace("found a Target " + MovieClip(event.target).name);
 				var t:Bouncer = new Bouncer(MovieClip(event.target));
-					ary = MovieClip(event.target).name.split("_");
+				ary = MovieClip(event.target).name.split("_");
 				id = parseInt(ary[1]);
 				targets[id] = t;
 				if(balls[id] != null){
-					balls[id].seekTarget = t.view;
+				balls[id].seekTarget = t.view;
 				}
 				break;*/
 				default:
-				trace("found unknown");
-				break;
-
+					trace("found unknown");
+					break;
 			}
 		}
+
 		/**************************************************
 		 *  this is called anytime a UI clip is removed from the stage
 		 * **********************************************/
-		
-		protected function onChildRemoved(event:Event):void {
+
+		protected function onChildRemoved(event : Event) : void {
 			trace("!!!!!!!!!!!!!onChildRemoved " + event.target);
 		}
 	}

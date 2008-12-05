@@ -23,15 +23,16 @@ package com.troyworks.framework {
 		// REQUIRED by DesignByContract
 		public var ASSERT : Function;
 		public var REQUIRE : Function;
-		
+		public var log:Function;
 
 		public function BaseObject ()
 		{
+			super();
 			//trace ("BaseObject " );
 			 ///add in the mixins for ASSERT and REQUIRE
 	 		DesignByContract.initialize(this);
 			
-		//	log = ApplicationContext.getInstance().getLoggerRef();
+			log = ApplicationContext.getInstance().getLoggerRef();
 		}
 		override public function toString():String{
 			return getQualifiedClassName(this);

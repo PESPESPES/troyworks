@@ -1,65 +1,61 @@
-package com.troyworks.core.tweeny.fx { 
-	import com.troyworks.hsmf.Hsmf;
-	
-	import com.troyworks.hsmf.AEvent;
-	import com.troyworks.hsmf.Signal;
-	
+package com.troyworks.core.tweeny.fx {
+	import com.troyworks.core.Signals;	
+	import com.troyworks.core.cogs.CogEvent; 
+
 	/**
 	 * @author Troy Gardner
 	 */
 	public class Fades extends com.troyworks.framework.ui.BaseComponent {
-		public static var FADEOUT_EVT : Signal = Signal.getNext("FADEOUT_EVT");
-		public static var FADEIN_EVT : Signal = Signal.getNext("FADEIN_EVT");
-		public static var FADEOUT_IN_EVT : Signal = Signal.getNext("FADEOUT_IN_EVT");
+		public static var FADEOUT_EVT : Signals = Signals.getNextSignal("FADEOUT_EVT");
+		public static var FADEIN_EVT : Signals = Signals.getNextSignal("FADEIN_EVT");
+		public static var FADEOUT_IN_EVT : Signals = Signals.getNextSignal("FADEOUT_IN_EVT");
+
 		
-	
 		public function Fades() {
-			super(s1_active);
+			super("s1_active");
 		}
-		function onLoad():void{
-	
-			// this.oracle = this;	
-		}
-		function onReachedFrame(aFrameLbl:String):void{
-			log("Fades.onReachedFrame " + aFrameLbl);
-			
-			switch(aFrameLbl){
+
+		function onReachedFrame(aFrameLbl : String) : void {
+			//log("Fades.onReachedFrame " + aFrameLbl);
+
+			switch(aFrameLbl) {
 				case "opaque":
-				break;
+					break;
 				case "fadein":
-				break;
+					break;
 				case "fadedin":
-				break;
+					break;
 				case "fadeout":
-				break;
+					break;
 				case "fadedout":
-				break;
+					break;
 				case "fadeoutin":
-				break;
+					break;
 				case "fadeoutin_halfway":
-				break;
+					break;
 				case "fadeoutin":
-				break;
+					break;
 				case "transparent":
-				break;
+					break;
 				default:
-				break;
+					break;
 			}
 		}
-		function s1_active(e : AEvent) : Function
-		{
-			this.onFunctionEnter ("s1_active-", e, [FADEOUT_EVT, FADEIN_EVT, FADEOUT_IN_EVT]);
-			switch (e)
-			{
-				case ENTRY_EVT :{
+
+		function s1_active(e : CogEvent) : Function {
+			//this.onFunctionEnter ("s1_active-", e, [FADEOUT_EVT, FADEIN_EVT, FADEOUT_IN_EVT]);
+			switch (e.sig) {
+				case SIG_ENTRY :
+					
+					{
 				
 					return null;
-				}
-				case EXIT_EVT :
-				{
+					}
+				case SIG_EXIT :
+					{
 					return null;
 				}
-				case INIT_EVT :
+				case SIG_INIT :
 				{
 					return null;
 				}
@@ -75,90 +71,89 @@ package com.troyworks.core.tweeny.fx {
 				{
 					return null;
 				}
-				
 			}
-			return s_top;
+			return s_root;
 		}
-		function s1_opaque(e : AEvent) : Function
+		function s1_opaque(e:CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_opaque-", e, [FADEOUT_EVT, FADEOUT_IN_EVT]);
-			switch (e)
+			//this.onFunctionEnter ("s1_opaque-", e, [FADEOUT_EVT, FADEOUT_IN_EVT]);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :{
+				case SIG_ENTRY :{
 				
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					return null;
 				}
-				case INIT_EVT :
+				case SIG_INIT :
 				{
 					return null;
 				}
 				
 			}
-			return s_top;
+			return s_root;
 		}
-		function s1_fadingin(e : AEvent) : Function
+		function s1_fadingin(e:CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_fadingin-", e, [FADEOUT_EVT, FADEOUT_IN_EVT]);
-			switch (e)
+			//this.onFunctionEnter ("s1_fadingin-", e, [FADEOUT_EVT, FADEOUT_IN_EVT]);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :{
+				case SIG_ENTRY :{
 				
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					return null;
 				}
-				case INIT_EVT :
+				case SIG_INIT :
 				{
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
-		function s1_fadingout(e : AEvent) : Function
+		function s1_fadingout(e:CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_fadingout-", e, [FADEIN_EVT, FADEOUT_IN_EVT]);
-			switch (e)
+		//	this.onFunctionEnter ("s1_fadingout-", e, [FADEIN_EVT, FADEOUT_IN_EVT]);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :{
+				case SIG_ENTRY :{
 				
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					return null;
 				}
-				case INIT_EVT :
+				case SIG_INIT :
 				{
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
-		function s1_transparent(e : AEvent) : Function
+		function s1_transparent(e:CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_transparent-", e, [FADEOUT_EVT, FADEOUT_IN_EVT]);
-			switch (e)
+			//this.onFunctionEnter ("s1_transparent-", e, [FADEOUT_EVT, FADEOUT_IN_EVT]);
+			switch (e.sig)
 			{
-				case ENTRY_EVT :{
+				case SIG_ENTRY :{
 				
 					return null;
 				}
-				case EXIT_EVT :
+				case SIG_EXIT :
 				{
 					return null;
 				}
-				case INIT_EVT :
+				case SIG_INIT :
 				{
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 	}
 }

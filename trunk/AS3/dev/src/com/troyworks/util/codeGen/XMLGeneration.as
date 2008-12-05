@@ -11,7 +11,7 @@ package com.troyworks.util.codeGen {
 		public function XMLGeneration(){
 		}
 		public static function generateCaseStatement(nodeName:String):String{
-			public var res =
+			var res:String =
 			"					case \""+ nodeName +"\" : " + "\r" +
 			"					{"+ "\r" +
 			"						//		updateList += node2.firstChild.nodeValue;" +"\r" +

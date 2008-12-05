@@ -4,9 +4,11 @@ package com.troyworks.ui {
 	 * This is used for interactive swarm effects
 	 * @author Troy Gardner
 	 */
+	import flash.display.DisplayObject;	
+	import flash.events.Event;	
 	import flash.ui.Mouse;
 	import flash.display.MovieClip;
-	public class RandomCharacterGenerator extends MovieClip {
+import flash.net.getClassByAlias;import flash.utils.getDefinitionByName;	public class RandomCharacterGenerator extends MovieClip {
 	
 		public var config : Object;
 		public var characters : Array;
@@ -58,21 +60,28 @@ package com.troyworks.ui {
 				initObj.friction = (config.friction == null)?.95:config.friction;
 				initObj.vx = Math.random()*config.speed - config.speed/2;
 				initObj.vy = Math.random()*config.speed - config.speed/2;
-				var _mc:MovieClip = this.attachMovie(link, link+cnt,this.getNextHighestDepth(), initObj);
-				rangeCheckX(_mc);
-				rangeCheckY(_mc);
+				var cls : Class = Class(getDefinitionByName(link));
+				var _mc:MovieClip = new cls();
+				_mc.name = link+cnt;//this.attachMovie(link, link+cnt,this.getNextHighestDepth(), initObj);
+					var b : Object = _mc.getBounds(this);
+				rangeCheckX(_mc,b );
+				rangeCheckY(_mc, b);
 				characters.push(_mc);
 			}
 			trace("charactersp  " + characters.length + " \r\t " + characters.join("\r\t"));
 			
 		}
+	//	public function rangeCheckX(_mc:DisplayObject):void{
+	//	}
+	//	public function rangeCheckY(_mc:DisplayObject):void{
+	//	}
 		public function activate():void{
-			onEnterFrame = onEnterFrameHandler;
+	//		onEnterFrame = onEnterFrameHandler;
+			addEventListener(Event.ENTER_FRAME,onEnterFrameHandler);
 			
 		}
 		public function deactivate():void{
-			onEnterFrame = null;
-			delete(onEnterFrame);
+			removeEventListener(Event.ENTER_FRAME,onEnterFrameHandler);
 		}
 		
 		public function onEnterFrameHandler() : void{
@@ -93,8 +102,10 @@ package com.troyworks.ui {
 						var activation : Number = Math.max(.01, Math.min(dist/config.mouseSphere, 1));
 						var att = (Math.cos(Math.PI/2 *activation)* config.mouseAttraction) -.8;
 					//trace(_mc.id + "dist " + dist + " " + activation + " att " + att);
-						_mc.vx -= ((dist > 0)? att: -1 * att)*(xdif >0)?1:-1;
-						_mc.vy -= ((dist > 0)? att: -1 * att)*(ydif >0)?1:-1;
+					var xf:Number = (xdif >0)?1:-1;
+					var yf:Number = (ydif >0)?1:-1;
+						_mc.vx -= ((dist > 0)? att: -1 * att)*xf;
+						_mc.vy -= ((dist > 0)? att: -1 * att)*yf;
 					}
 				  	
 				  }

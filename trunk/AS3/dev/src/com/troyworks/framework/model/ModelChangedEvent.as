@@ -1,5 +1,6 @@
-package com.troyworks.framework.model { 
-	import com.troyworks.hsmf.Signal;
+package com.troyworks.framework.model {
+	import com.troyworks.core.Signals; 
+
 	/**
 	 * @author Troy Gardner
 	 */
@@ -10,8 +11,8 @@ package com.troyworks.framework.model {
 		public static var DELETED:Number = -1;
 		public var crud:Number;
 		
-		public function ModelChangedEvent(sig : Signal) {
-			super(sig);
+		public function ModelChangedEvent(type:String, sig : Signals) {
+			super(null, sig);
 		}
 	}
 }

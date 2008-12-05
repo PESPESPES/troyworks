@@ -2,7 +2,6 @@ package com.troyworks.util.datetime {
 	import flash.events.IEventDispatcher;	
 	import flash.events.EventDispatcher; 
 
-
 	import com.troyworks.util.DesignByContract;
 	import  com.troyworks.data.DataChangedEvent;
 
@@ -45,20 +44,19 @@ package com.troyworks.util.datetime {
 
 		
 		
-		public function TDate(yearOrTimevalue:Object = null, month:Number=NaN, date:Number = 1, hour:Number = 0, minute:Number = 0, second:Number = 0, millisecond:Number = 0) {
+		public function TDate(yearOrTimevalue : Object = null, month : Number = NaN, date : Number = 1, hour : Number = 0, minute : Number = 0, second : Number = 0, millisecond : Number = 0) {
 			super();
-			if(arguments.length == 0){
+			if(arguments.length == 0) {
 				innerDate = new Date();
-			}else if(arguments.length == 1){
+			}else if(arguments.length == 1) {
 				innerDate = new Date(yearOrTimevalue);
-				
-			}else{
+			}else {
 				innerDate = new Date(yearOrTimevalue, month, date, hour, millisecond, millisecond, millisecond);
 			}
 			//super.setProxiedObject(innerDate);
 			//REQUIRE(arguments.length < 7, "TDate has invalid arguments, more than 7 passed!" + arguments.join(","));
 			//TEventDispatcher.initialize(this);
-			//$tevD = new EventDispatcher();
+			$tevD = new EventDispatcher();
 			DesignByContract.initialize(this);
 			//super.setYear(year);
 			//super.setMonth(month);
@@ -177,7 +175,6 @@ package com.troyworks.util.datetime {
 
 		
 		public function get month() : Number {
-			startChangeTransaction();
 			return innerDate.month;
 		}
 
@@ -195,17 +192,18 @@ package com.troyworks.util.datetime {
 		public function set monthUTC(newMonthutc : Number) : void {
 			startChangeTransaction();
 			innerDate.monthUTC = newMonthutc;
+			endChangeTransaction();
 		}
 
 		
 		public function get minutesUTC() : Number {
 			return innerDate.minutesUTC;
-			endChangeTransaction();
 		}
 
 		public function set minutesUTC(newMinutesutc : Number) : void {
 			startChangeTransaction();
 			innerDate.minutesUTC = newMinutesutc;
+			endChangeTransaction();
 		}
 
 		
@@ -279,7 +277,7 @@ package com.troyworks.util.datetime {
 			endChangeTransaction();
 		}
 
-		
+		//0-31
 		public function get date() : Number {
 			return innerDate.date;
 		}
@@ -423,11 +421,11 @@ package com.troyworks.util.datetime {
 			return res;
 		}
 
-	/*	public function setYear(value : Number) : Number {
-			startChangeTransaction();
-			var res : Number = innerDate.setYear.apply(this, arguments);
-			endChangeTransaction();
-			return res;
+		/*	public function setYear(value : Number) : Number {
+		startChangeTransaction();
+		var res : Number = innerDate.setYear.apply(this, arguments);
+		endChangeTransaction();
+		return res;
 		}*/
 
 		public function isToday() : Boolean {
@@ -489,7 +487,7 @@ package com.troyworks.util.datetime {
 
 		public function isAWeekday() : Boolean {
 			var dN : Number = innerDate.getDay();
-			if(  0 < dN || dN < 6 ) {
+			if(  0 < dN && dN < 6 ) {
 				return true;
 			}
 			return false;
@@ -577,6 +575,11 @@ package com.troyworks.util.datetime {
 			var day : Number = tmpDate.getDay();
 			return day;
 		}
+
+		public function getDayOfYear() : Number {
+			var onejan = new Date(this.getFullYear(), 0, 1);
+			return Math.ceil((innerDate.time - onejan) / 86400000);
+		} 
 
 		/*
 		 * Function:	setWeeksInMonth
@@ -692,7 +695,31 @@ package com.troyworks.util.datetime {
 			$tevD.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
 
-		
+		public function isBeforeDate(date : *, byDuration : Number = 0, inclusive : Boolean = false) : Boolean {
+			if(inclusive) {
+				return  date.time <= (innerDate.time - byDuration);
+			}else {
+				return  date.time < (innerDate.time - byDuration);
+			}
+		}
+
+		public function isAfterDate(date : *, byDuration : Number = 0, inclusive : Boolean = false) : Boolean {
+			if(inclusive) {
+				return  (innerDate.time + byDuration) <= date.time ;
+			}else {
+				return  (innerDate.time + byDuration) < date.time ;
+			}
+		}
+
+		public function isSameTimeAsDate(date : *, byDuration : Number = 0, inclusive : Boolean = false) : Boolean {
+			
+			if(inclusive) {
+				return  (innerDate.time - byDuration) <= date.time <= (innerDate.time + byDuration) ;
+			}else {
+				return  (innerDate.time - byDuration) < date.time < (innerDate.time + byDuration) ;
+			}
+		}
+
 		public function getDate() : Number {
 			return innerDate.getDate();
 		}
@@ -805,8 +832,8 @@ package com.troyworks.util.datetime {
 		}
 
 		/*Sets the availability of a dynamic property for loop operations. Object */
-	/*	public function  setPropertyIsEnumerable(name : String, isEnum : Boolean = true) : void {
-			innerDate.setPropertyIsEnumerable(name, isEnum);
+		/*	public function  setPropertyIsEnumerable(name : String, isEnum : Boolean = true) : void {
+		innerDate.setPropertyIsEnumerable(name, isEnum);
 		}*/  
 
 		

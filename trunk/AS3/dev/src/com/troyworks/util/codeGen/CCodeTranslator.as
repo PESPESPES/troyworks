@@ -1,57 +1,62 @@
-package com.troyworks.util.codeGen { 
+package com.troyworks.util.codeGen {
+	import com.troyworks.core.cogs.CogEvent;
+
 	import com.troyworks.framework.ui.BaseComponent;
-	import com.troyworks.hsmf.AEvent;
-	import util.StringUtil;
-	import com.troyworks.events.TProxy;
-	import util.StringFormatter;
+	import com.troyworks.util.StringFormatter;
+	import com.troyworks.util.StringUtil;
 	
-	
+	import flash.events.Event;
+	import flash.text.TextField;		
+
 	/**
 	 * @author Troy Gardner
 	 */
-	import flash.text.TextField;
-	public class CCodeTranslator extends BaseComponent {
+
+	
+	
+	class CCodeTranslator extends BaseComponent {
 		public var in_txt : TextField;
 		public var out_txt : TextField;
 		public var inlines : Array;
 		public var outlines : Array;
-	
-		public function CCodeTranslator(initialState : Function, hsmfName : String, aInit : Boolean) {
-			super(initialState, "CCodeTranslator", aInit);
-	
+
+		public function CCodeTranslator(initialState : String, hsmfName : String = "CCodeTranslator", aInit : Boolean = false) {
+			super(initialState, hsmfName, aInit);
 		}
-		public function onInputTextChanged():void{
+
+		public function onInputTextChanged() : void {
 			trace("onInputTextChanged");
-			Q_TRAN(s1_viewCreated);		
+		//	tran(s1_viewCreated);		
 		}
-			/*.................................................................*/
-		function s0_viewAssetsLoaded(e : AEvent) : Function
-		{
-			this.onFunctionEnter ("s0_viewAssetsLoaded-", e, []);
-			switch (e)
-			{
-				case ENTRY_EVT :
-				{
-					in_txt.onChanged  = TProxy.create(this, this.onInputTextChanged);
+
+		/*.................................................................*/
+		override function s0_viewAssetsLoaded(e : CogEvent) : Function {
+			//this.onFunctionEnter ("s0_viewAssetsLoaded-", e, []);
+			switch (e.sig) {
+				case SIG_ENTRY :
+					{
+					in_txt.addEventListener(Event.CHANGE,this.onInputTextChanged);
+					
+				//	in_txt.onChanged  = TProxy.create(this, this.onInputTextChanged);
 					return null;
 				}
 			}
 			return super.s0_viewAssetsLoaded(e);
 		}
 		/*.................................................................*/
-		function s1_viewCreated(e : AEvent) : Function
+		override function s1_viewCreated(e : CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_creatingView-", e, []);
+		//	this.onFunctionEnter ("s1_creatingView-", e, []);
 			switch (e.sig)
 			{
-				case Q_ENTRY_SIG :
-				{
+				case SIG_ENTRY :
+				
 					isReady = true;
 					inlines = new Array();
 					outlines = new Array();
 					inlines = String(in_txt.text).split("\r");
 					out_txt.text = "";
-					var namespace:String = "";
+					var namespaceS:String = "";
 					var visibility:String ="";
 					trace("HIGHLIGHTP parsing " + inlines.length + " lines");
 					for (var i : Number = 0; i < inlines.length; i++) {
@@ -63,9 +68,9 @@ package com.troyworks.util.codeGen {
 						}else if(iln.indexOf("#include <iostream>")==0){
 							oln = "  ";
 						}else if(iln.indexOf("#include")==0){
-							oln = StringUtil.replace(iln, "#include","import");
-							oln = StringUtil.replace(oln, ".h","");
-							oln = StringUtil.replace(oln, "\"","");
+							oln = iln.replace("#include","import");
+							oln = oln.replace(".h","");
+							oln = oln.replace("\"","");
 							oln += ";";
 						}else if(iln.indexOf("#ifndef")==0){
 							oln = "  ";
@@ -124,10 +129,10 @@ package com.troyworks.util.codeGen {
 							oln = "\t "+visibility+" function " + sb + "():void {\r\t}";
 							
 					}else if(iln.indexOf("<<") > -1 && iln.indexOf("<<")== iln.length - 2){
-						 oln = "var4 " + StringUtil.replace(iln,"<<", ":String = ");
+						 oln = "var4 " + iln.replace("<<", ":String = ");
 						
 					}else if(iln.indexOf("<<")> -1){
-						 oln = StringUtil.replace(iln,"<<", " + ");
+						 oln = iln.replace("<<", " + ");
 					}else if(iln.indexOf("};") ==0){
 						oln = " " ;
 					}
@@ -143,7 +148,8 @@ package com.troyworks.util.codeGen {
 									oary.push(ln.substring(0, a)+"(");
 								}
 								var b : Number = ln.indexOf(" ");
-								var type : String = StringFormatter.toTitleCase(ln.substring(a, b));
+								var st:String = ln.substring(a, b);
+								var type : String = StringFormatter.toTitleCase(st, true);
 								var name:String = ln.substring(b, ln.length);
 								trace("type '" + type + "' name '" + name + "'");
 								var end:String = (j==args.length-1)?"" :", ";
@@ -159,9 +165,9 @@ package com.troyworks.util.codeGen {
 				
 				}//for lines end
 				return null;
-			}//case end
+			//}//case end
 			}//switch end
 			return super.s1_viewCreated(e);
 		}
-	};
+	}
 }

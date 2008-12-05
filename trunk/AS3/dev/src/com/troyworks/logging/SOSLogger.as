@@ -83,7 +83,7 @@ package com.troyworks.logging {
 				}
 			}
 		}
-	
+		
 		////////////////////////////////////////////////////////////////////////////
 		override public function logBreak() : void{
 			sos.showMessage(_appKeyName,"-------------------------------------------------------------------");

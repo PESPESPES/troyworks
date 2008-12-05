@@ -1,23 +1,17 @@
 ﻿package com.troyworks.ui {
-	import com.kidthing.website.utils.HTMLUtil;	
-	
-	import flash.display.DisplayObjectContainer;	
-	import flash.display.DisplayObject;	
-
-	import com.kidthing.util.SWFContextUtil;	
-	import com.troyworks.core.tweeny.Tny;	
-
-	import flash.text.TextFieldAutoSize;	
-	import flash.text.AntiAliasType;	
-	import flash.text.TextFormat;	
-	import flash.net.URLRequest;	
-	import flash.display.Loader;	
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	import flash.display.Loader;
 	import flash.display.MovieClip;
-	import flash.display.StageScaleMode;
 	import flash.display.StageAlign;
-	import flash.events.Event;	
+	import flash.display.StageScaleMode;
+	import flash.events.Event;
+	import flash.net.URLRequest;
+	import flash.text.AntiAliasType;
 	import flash.text.TextField;
-	import flash.utils.setTimeout;	
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
+	import flash.utils.setTimeout;		
 
 	/*
 	 */
@@ -25,17 +19,17 @@
 	/**
 	 * @author Troy Gardner
 	 */
-	public class Preloader extends MovieClip {
+	public class StandalonePreloader extends MovieClip {
 		//public var loading_mc : MovieClip;
 		public var loading_txt : TextField;
 		public var loading_mc : MovieClip;
 		//public var bottomNav_txt:TextField;
-		public var ctx : SWFContextUtil;
+	//	public var ctx : SWFContextUtil;
 		public var step : int = 0;
 
 		//	public var loadingTny : Tny;
 
-		public function Preloader() {
+		public function StandalonePreloader() {
 			super();
 			addEventListener(Event.ADDED_TO_STAGE, onFrame1);
 //			addFrameScript(0, onFrame1);
@@ -46,7 +40,7 @@
 			trace("stage " + stage);
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP;
-			ctx = new SWFContextUtil(this);
+//			ctx = new SWFContextUtil(this);
 			//TODO get ip/cookie.
 			
 			//TODO clickity

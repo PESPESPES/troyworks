@@ -14,16 +14,16 @@ package com.troyworks.framework.loader {
 	 * CREATED :: Jun 7, 2008
 	 * DESCRIPTION ::
 	 *
-	  playSound();
+	playSound();
 	 */
 	public class SoundLoaderAS3 {
-		
+
 		
 		
 		var s : Sound;
 		var _channel : SoundChannel;
 		var audioSwfURL : String = "sound.mp3";
-		
+
 		public function playSound(evt : Event = null) {
 			
 			trace("***************************************************************");
@@ -64,6 +64,5 @@ package com.troyworks.framework.loader {
 	//if has more sounds play them else, move to next slide
 	//content_mc.play();
 		}
-
 	}
 }

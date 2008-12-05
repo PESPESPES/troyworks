@@ -1,5 +1,5 @@
 package  com.troyworks.util{ 
-	class util.IntrospectGraph
+	class IntrospectGraph
 	{
 		public static var blnUnhide;
 		public static var blnStrict;
@@ -51,7 +51,7 @@ package  com.troyworks.util{
 			//
 			for (var p in pObj)
 			{
-				if (IntrospectGraph.blnStrict && ! pObj.hasOwnProperty (p) && pObj != _global)
+				if (IntrospectGraph.blnStrict && ! pObj.hasOwnProperty (p) )//&& pObj != _global)
 				{
 					continue;
 				}
@@ -109,7 +109,7 @@ package  com.troyworks.util{
 			if (IntrospectGraph.isCollection (pObj))
 			{
 				pObj.__hiddenIsTraced__ = true;
-				_global.ASSetPropFlags (pObj, ['__hiddenIsTraced__'] , 1, 0);
+				//XXX _global.ASSetPropFlags (pObj, ['__hiddenIsTraced__'] , 1, 0);
 			}
 		};
 		//
@@ -121,7 +121,7 @@ package  com.troyworks.util{
 			if (IntrospectGraph.isCollection (pObj) && ! IntrospectGraph.isObjectTraced (pObj))
 			{
 				pObj.__hiddenId__ = IntrospectGraph.intObjectCount ++;
-				_global.ASSetPropFlags (pObj, ['__hiddenId__'] , 1, 0);
+				//XXX _global.ASSetPropFlags (pObj, ['__hiddenId__'] , 1, 0);
 			}
 		};
 		//
@@ -134,9 +134,9 @@ package  com.troyworks.util{
 		};
 		//
 		public static function unhideProperties (pObj:Object) : void {
-			_global.ASSetPropFlags (pObj, null, 0, 1);
-			_global.ASSetPropFlags (pObj, ['__hiddenIsTraced__'] , 1, 0);
-			_global.ASSetPropFlags (pObj, ['__hiddenId__'] , 1, 0);
+			//XXX _global.ASSetPropFlags (pObj, null, 0, 1);
+			//XXX _global.ASSetPropFlags (pObj, ['__hiddenIsTraced__'] , 1, 0);
+			//XXX _global.ASSetPropFlags (pObj, ['__hiddenId__'] , 1, 0);
 			//
 			// uncomment if you dont want to see the properties
 			//ASSetPropFlags(pObj, ['__proto__'], 1, 0);

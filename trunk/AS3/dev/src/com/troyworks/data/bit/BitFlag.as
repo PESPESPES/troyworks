@@ -200,7 +200,7 @@
 		// a = BitFlag.create(1);
 		// trace("a =" + a); // return a = 1;
 	
-		public static function create ():uint
+		public static function create (...rest):uint
 		{
 			var output:uint = 0;
 				var i:int = 0;

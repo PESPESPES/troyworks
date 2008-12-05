@@ -3,8 +3,7 @@ package com.troyworks.data.btree {
 	//Listing 3. This class implements the bTreeKey interface and defines a key that is a simple String datatype.
 	// Class for implementing a key
 	// that's a String
-	import flash.ui.Keyboard;
-	public class bTreeStringKey implements bTreeKey {
+     class bTreeStringKey implements bTreeKey {
 		public var key:String;
 		// The key element
 		// Comparison method

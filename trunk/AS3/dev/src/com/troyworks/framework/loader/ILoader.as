@@ -1,10 +1,13 @@
-package  { 
+package  com.troyworks.framework.loader { 
+
 	/**
 	 * @author Troy Gardner
 	 */
-	interface com.troyworks.framework.loader.ILoader {
-		public function getAmountLoaded():Number;
-		public function getTotalSize():Number;
-		public function startLoading(path:String):void;
+	interface ILoader {
+		function getAmountLoaded() : Number;
+
+		function getTotalSize() : Number;
+
+		function startLoading(path : String) : void;
 	}
 }

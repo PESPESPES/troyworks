@@ -1,71 +1,71 @@
-package com.troyworks.util.codeGen { 
+package com.troyworks.util.codeGen {
+	import com.troyworks.core.cogs.*;		
+	import com.troyworks.util.StringUtil;	
 	import com.troyworks.framework.ui.BaseComponent;
-	import com.troyworks.hsmf.AEvent;
-	import util.StringUtil;
-	import com.troyworks.events.TProxy;
-	import util.StringFormatter;
-	
-	
+
+	import flash.text.TextField;
+
 	/**
 	 * @author Troy Gardner
 	 */
-	import flash.text.TextField;
-	public class As2CodeHelper extends BaseComponent {
+	class As2CodeHelper extends BaseComponent {
 		public var in_txt : TextField;
 		public var out_txt : TextField;
 		public var inlines : Array;
 		public var outlines : Array;
-	
-		public function As2CodeHelper(initialState : Function, hsmfName : String, aInit : Boolean) {
+
+		public function As2CodeHelper(initialState : String, hsmfName : String, aInit : Boolean) {
 			super(initialState, "As2CodeHelper", aInit);
-	
 		}
-		public function onInputTextChanged() : void{
+
+		public function onInputTextChanged() : void {
 			trace("onInputTextChanged");
-			Q_TRAN(s1_viewCreated);		
-		}
-		public static function swap(str : String) : String{
-			public var a : Number = 0;
-			public var b : Number = StringUtil.indexOf(str, StringUtil.WHITE_SPACE, false);
+			tran(s1_viewCreated);
 	
-			public var m : Number = str.indexOf("=");
-			public var z : Number = str.length -1;
-			public var leadingSpace : String = str.substring(a,b);
-			public var AA : String = str.substring(b, m);
-			public var BB : String = str.substring(m+1, z);
-			trace("swap AA '" + AA + "' BB '" + BB+ "'");
-			public var res : String = leadingSpace + BB + "=" + AA + ";";
-			trace("swap returning " +  res);
+		}
+
+		public static function swap(str : String) : String {
+			var a : Number = 0;
+			var b : Number = StringUtil.indexOf(str, StringUtil.WHITE_SPACE, false);
+	
+			var m : Number = str.indexOf("=");
+			var z : Number = str.length - 1;
+			var leadingSpace : String = str.substring(a, b);
+			var AA : String = str.substring(b, m);
+			var BB : String = str.substring(m + 1, z);
+			trace("swap AA '" + AA + "' BB '" + BB + "'");
+			var res : String = leadingSpace + BB + "=" + AA + ";";
+			trace("swap returning " + res);
 			return res;
 		}
-			/*.................................................................*/
-		function s0_viewAssetsLoaded(e : AEvent) : Function
-		{
-			this.onFunctionEnter ("s0_viewAssetsLoaded-", e, []);
-			switch (e)
-			{
-				case ENTRY_EVT :
-				{
-					in_txt.onChanged  = TProxy.create(this, this.onInputTextChanged);
+
+		/*.................................................................*/
+		override public function s0_viewAssetsLoaded(e : CogEvent) : Function {
+			//	this.onFunctionEnter ("s0_viewAssetsLoaded-", e, []);
+			switch (e.sig) {
+				case SIG_ENTRY :
+					{
+//					in_txt.addEventListener  = TProxy.create(this, this.onInputTextChanged);
 					return null;
 				}
 			}
-			return super.s0_viewAssetsLoaded(e);
+			//XXX	return super.s0_viewAssetsLoaded(e);
+			return null;
 		}
 		/*.................................................................*/
-		function s1_viewCreated(e : AEvent) : Function
+		override public function s1_viewCreated( e:CogEvent) : Function
 		{
-			this.onFunctionEnter ("s1_creatingView-", e, []);
+	//		this.onFunctionEnter ("s1_creatingView-", e, []);
 			switch (e.sig)
 			{
-				case Q_ENTRY_SIG :
+				case SIG_ENTRY :
 				{
 					isReady = true;
 					inlines = new Array();
 					outlines = new Array();
 					inlines = String(in_txt.text).split("\r");
 					out_txt.text = "";
-					var namespace : String = "";
+					//var namespace : String = "";
 					var visibility : String = "";
 					trace("HIGHLIGHTP parsing " + inlines.length + " lines");
 					for (var i : Number = 0; i < inlines.length; i++) {
@@ -84,8 +84,8 @@ package com.troyworks.util.codeGen {
 				}//case end
 					return null;
 			}//switch end
-			return super.s1_viewCreated(e);
+		//XXX	return super.s1_viewCreated(e);
+		return null;
 		}
-	};
-	
+	}
 }

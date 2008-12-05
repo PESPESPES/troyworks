@@ -16,8 +16,8 @@ package com.troyworks.core.persistance {
 	import flash.utils.ByteArray;
 
 	public interface IExternalizable {
-		 function saveExternal(byteAry:ByteArray);
-		 function readExternal(byteAry:ByteArray);
+		 function saveExternal(byteAry:ByteArray):void;
+		 function readExternal(byteAry:ByteArray):void;
 	}
 	
 }

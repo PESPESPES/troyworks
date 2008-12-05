@@ -4,20 +4,9 @@
 * @version 0.1
 */
 
-package com.troyworks.prevayler.implementation {
+package com.troyworks.core.persistance.implementation {
+	import com.troyworks.core.persistance.Prevayler;	
 	
-
-	import com.troyworks.prevayler.CPrevayler;
-	import com.troyworks.prevayler.Clock;
-	import com.troyworks.prevayler.Query;
-	import com.troyworks.prevayler.SureTransactionWithQuery;
-	import com.troyworks.prevayler.Transaction;
-	import com.troyworks.prevayler.TransactionWithQuery;
-	import com.troyworks.prevayler.foundation.serialization.Serializer;
-	import com.troyworks.prevayler.implementation.publishing.TransactionPublisher;
-	import com.troyworks.prevayler.implementation.snapshot.GenericSnapshotManager;
-	import flash.errors.IOError;
-
 	public class PrevaylerImpl implements Prevayler{
 		//private final _gaurd:PrevalentSystemGuard;
 		private final var _clock:Clock;

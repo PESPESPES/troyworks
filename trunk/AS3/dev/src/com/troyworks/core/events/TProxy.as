@@ -1,5 +1,5 @@
-package com.troyworks.events { 
-	import com.troyworks.framework.logging.SOSLogger;
+package com.troyworks.core.events {
+	import com.troyworks.util.Trace; 
 	import com.troyworks.util.DesignByContract;
 	/**
 	 * 
@@ -45,7 +45,7 @@ package com.troyworks.events {
 	    REQUIRE(DesignByContract.appIsHalted == false, "TProxy ignoring, fix previous errors first");
 	    }
 		REQUIRE(aScopeObj != null,currentUserName + ":TProxy " + id +" aScope cannot be null");
-		REQUIRE(fFunction != null,currentUserName + ":TProxy " + id +" must have a valid function to call, cannot be null " + util.Trace.me(aScopeObj,"aScopeObj",false));
+		REQUIRE(fFunction != null,currentUserName + ":TProxy " + id +" must have a valid function to call, cannot be null " + Trace.me(aScopeObj,"aScopeObj",false));
 		REQUIRE(fFunction is Function,currentUserName + ":TProxy " + id +" tFunction must be of type function");
 		/////// parse the user parameters, removing the object and target
 	    var aUsrParams:Array = new Array();
@@ -70,7 +70,7 @@ package com.troyworks.events {
 	     	t.push("************** aScopeObj:"+ aScopeObj + " **********************");
 	      	t.push("**************** with " + aActualParameters.length + " total params, of which " + aUsrParams.length +" are USR params ************************");
 	      	if(aActualParameters.length >0){
-	      		t.push(util.Trace.me(aActualParameters, "Params", false));
+	      		t.push(Trace.me(aActualParameters, "Params", false));
 	      	}
 	      	trace(t.join("\r"));
 	      }
@@ -83,7 +83,7 @@ package com.troyworks.events {
 	      	t.push("................ TPROXY:"+ id + " CREATED for " + TProxy.currentUserName+".....................HIGHLIGHTV");
 	      	t.push("................ with " + aUsrParams.length + " User params: .......................");  
 	      	if(aUsrParams.length >0){
-	      		t.push(util.Trace.me(aUsrParams, "Usr Params", false));
+	      		t.push(Trace.me(aUsrParams, "Usr Params", false));
 	      	}
 	      	trace(t.join("\r"));
 	      }

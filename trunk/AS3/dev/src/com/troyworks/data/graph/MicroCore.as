@@ -1,6 +1,7 @@
-package com.troyworks.data.graph { 
+package com.troyworks.data.graph {
+	import com.troyworks.util.Trace; 
 	import com.troyworks.data.MultiEntryDictionary;
-	//import com.troyworks.data.skiplist. *;
+import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 	public class MicroCore extends com.troyworks.data.graph.MicroNode
 	{
 		public static var className : String = "com.troyworks.data.graph.MicroCore";
@@ -70,7 +71,7 @@ package com.troyworks.data.graph {
 				} else if (typeof (className) == "string")
 				{
 					trace("$3");
-					f = eval (String(className));
+					f = getDefinitionByName(String(className));
 					n = new f(this.nodes.length, name, oType);
 				}
 				else
@@ -124,7 +125,8 @@ package com.troyworks.data.graph {
 					n = new f (this.nodes.length, name, oType);
 	
 				} else if (typeof (className) == "string"){
-					n = new eval (String(className))();
+					var cl = getDefinitionByName(String(className));
+					n = new cl (String(className))();
 				} else
 				{
 					n = new MicroCore (this.nodes.length, name, oType);
@@ -148,7 +150,7 @@ package com.troyworks.data.graph {
 		public function createHeirarchicalRootNode (name : String, className : Object, oType : String) : MicroCore
 		{
 			var root : MicroCore = this.createHeirarchicalNode (name, className, oType);
-			root.setAsRootNode (true);
+			root.setAsRootNode ();
 			return root;
 		};
 		public function addNode (n : MicroNode) : MicroNode
@@ -443,7 +445,7 @@ package com.troyworks.data.graph {
 				}
 				_color [u.id] = BLACK;
 			}
-			trace (util.Trace.me (d, "distances from " + s, true));
+			trace (Trace.me (d, "distances from " + s, true));
 			var id = 5;
 			while (id != s.id)
 			{
@@ -466,8 +468,7 @@ package com.troyworks.data.graph {
 			{
 				res.push ("\t " + this.links [li]);
 			}
-			return res.join (newline);
+			return res.join ("\r");
 		}
-	};
-	
+	}
 }

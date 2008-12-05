@@ -1,98 +1,135 @@
-package com.troyworks.geom.d1 { 
-	import flash.xml.XMLDocument;
-	import flash.xml.XMLNode;
-	public class Line1D extends com.troyworks.framework.BaseObject
-	{
-		public var id:Number = -1;
+﻿package com.troyworks.geom.d1 {
+/**
+*  A 1 dimensional line.
+*  
+*  A point bound between two points on a line (inclusive or non-inclusive)
+*  where length is the Z- A.
+* 
+* eg.:     A[......C.......]Z
+* 
+* Useful for volume slider like application models.
+* 
+* @author Troy Gardner
+* @version 0.1
+*/	import com.troyworks.data.DataChangedEvent;	
+	import com.troyworks.framework.BaseObject; 
+
+	public class Line1D extends  BaseObject {
+		public var id : Number = -1;
 		public var name : String = "";
 		public var type : Number = 1;
-		public var A : Point1D = null;
-		public var B : Point1D = null;
+		protected var _A : Point1D = null;
+		protected var _C : Point1D = null;
+		protected var _B : Point1D = null;
 		public var length : Number = NaN;
-		public var data:Object;
+		public var data : Object;
+
 		////////////
-		public function Line1D (obj : Object, type : Number, start : Number, length : Number, end : Number)
-		{
-				//trace("new Line1D ");
+		public function Line1D(obj : Object = null, type : Number = NaN, start : Number = NaN, length : Number = NaN, end : Number = NaN) {	
+			super();
+			//trace("new Line1D ");
 			//	trace("new Line1D " + name + " start " + start + " len " + length + " end " + end);
-	
-			if (obj is XMLNode)
-			{
-				var x = XMLNode (obj);
-				//	//trace("XMLNode" + x);
-				initFromXML (x);
-			} else if (obj is XMLDocument)
-			{
-				var x = XMLDocument (obj);
-				//	//trace("XMLDocument" + x);
-				initFromXML (x);
-			} else
-			{
-				init (String (obj) , type, start, length, end);
+
+			if (obj is XML) {
+				initFromXML(obj as XML);
+			} else {
+				init(String(obj), type, start, length, end);
 			}
 		}
-		public function init (name : String, type : Number, start : Number, length : Number, end : Number) : void
-		{
-		//	trace("Line1D.init " + name + " start " + start + " len " + length + " end " + end);
+
+		public function get A() : Point1D {
+			return _A ;
+		}
+
+		public function set A(val : Point1D) : void {
+			if(_A != null){
+				_A.removeEventListener(DataChangedEvent.CHANGED, onAChanged);
+			}
+			var dce : DataChangedEvent = new DataChangedEvent();
+			dce.oldVal = _A;
+			dce.currentVal = val;
+			_A = val;
+			if(_A != null){
+				_A.addEventListener(DataChangedEvent.CHANGED, onAChanged);
+			}
+			dispatchEvent(dce);
+		}
+		public function onAChanged(evt:DataChangedEvent):void{
+			calc();
+		}
+		public function get Z() : Point1D {
+			return _B ;
+		}
+
+		public function set Z(val : Point1D) : void {
+				if(_B != null){
+				_B.removeEventListener(DataChangedEvent.CHANGED, onBChanged);
+			}
+			var dce : DataChangedEvent = new DataChangedEvent();
+			dce.oldVal = _B;
+			dce.currentVal = val;
+			_B = val;
+			if(_B != null){
+				_B.addEventListener(DataChangedEvent.CHANGED, onBChanged);
+			}
+			dispatchEvent(dce);
+		}
+		public function onBChanged(evt:DataChangedEvent):void{
+			calc();
+		}
+
+		public function init(name : String = null, type : Number = NaN, start : Number = NaN, length : Number = NaN, end : Number = NaN) : void {
+			trace("Line1D.init " + name + " start " + start + " len " + length + " end " + end);
 			name = (name != null) ? name : "";
-			type = (type != null) ? type : 1;
-			if (start != null)
-			{
-				A = new Point1D ("A", start);
+			type = (!isNaN(type)) ? type : 1;
+			if (!isNaN(start)) {
+				A = new Point1D("A", start);
 			}
-			if (end != null)
-			{
-				B = new Point1D ("B", end);
+			if (!isNaN(end)) {
+				Z = new Point1D("Z", end);
 			}
-			if (length != null)
-			{
-				length = length;
+			if (!isNaN(length)) {
+				this.length = length;
 			}
-			calc ();
-			trace (this);
+			calc();
+			trace(this);
 		}
-		public function calc () : void
-		{
+
+		public function calc() : void {
 			//trace("Line.calc");
-			//trace("Line1D.calc1 "+ name + " A:" + A + " B:" + B + " len:" + length);
-			var aV = (A != null) && (!isNaN(A.val));
-			var bV = (B != null)  && (!isNaN(B.val));
-			var lV = (length != null) && (!isNaN(length));
-		//	trace("aV "+ aV + " bV " + bV + " lV " + lV);
-			if (!aV && bV && lV)
-			{
-				//calc A from B and length
-				A = new Point1D ("A", B.val - length);
-			} else if (aV && bV )
-			{
-				//calc length from A & B;
-				length = B.val - A.val;
-			} else if (aV && !bV && lV)
-			{
-				var b:Point1D =  Point1D(new Point1D ("B", (A.position + length)));
-				B = b;
-			}else
-			{
-				trace("!!!!!!!!!!!!!!!!!!!!!!!!Line1D..can't calc! "+ name + " A:" + A + " B:" + B + " len:" + length);
+			//trace("Line1D.calc1 "+ name + " A:" + A + " Z:" + Z + " len:" + length);
+			var aV : Boolean = (A != null) && (!isNaN(A.position));
+			var bV : Boolean = (Z != null) && (!isNaN(Z.position));
+			var lV : Boolean = (!isNaN(length));
+			//	trace("aV "+ aV + " bV " + bV + " lV " + lV);
+			if (!aV && bV && lV) {
+				//calc A from Z and length
+				A = new Point1D("A", Z.position - length);
+			} else if (aV && bV ) {
+				//calc length from A & Z;
+				length = Z.position - A.position;
+			} else if (aV && !bV && lV) {
+				var b : Point1D = new Point1D("Z", (A.position + length));
+				Z = b;
+			}else {
+				trace("!!!!!!!!!!!!!!!!!!!!!!!!Line1D..can't calc! " + name + " A:" + A + " Z:" + Z + " len:" + length);
 			}
-			//	trace("Line1D.calc2 "+ name + " A:" + A + " B:" + B + " len:" + length);
-	
+			//	trace("Line1D.calc2 "+ name + " A:" + A + " Z:" + Z + " len:" + length);
 		}
+
 		///////////////////////////////////////////////////////////////////////
 		/// This is used to deserialize from disk
-		public function initFromXML (tree : XMLDocument) : Line1D
-		{
+		public function initFromXML(tree : XML) : Line1D {
 			//trace("SlideMediaAsset.initFromDiskXML");
-			var res : XMLNode = tree;
-			name = res.@name + "";
-			type = parseInt (res.@type);
-			length = parseInt (res.@length);
+
+			name = tree.@name + "";
+			type = parseInt(tree.@type);
+			length = parseInt(tree.@length);
 			return this;
 		}
-		public function toString () : String
-		{
-			return " from " + A + " to " + B + " (" + length+ ") " + name ;
+
+		override public function toString() : String {
+			return name+" from " + A + " to " + Z + " (" + length + ") " + name ;
 		}
 	}
-	
 }

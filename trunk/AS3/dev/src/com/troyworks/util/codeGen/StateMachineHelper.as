@@ -12,7 +12,7 @@ package com.troyworks.util.codeGen {
 					trace(i+" is a state func ");
 					o.fname = String(i);
 					switch(i){
-						case "s_top":
+						case "s_rootttt":
 						o.stype = -1;
 						break;
 						case "s_initial":
@@ -46,7 +46,7 @@ package com.troyworks.util.codeGen {
 				return __cname + ":  +   source:" + mySourceStateName + "  myState:" +myStateName;
 			}else {
 	
-				myTopStateName  = s_top.fname;
+				myTopStateName s_rootototot.fname;
 				return __cname + ":  +   source:" + mySourceStateName + "  myState:" +myStateName+ "  top:" + myTopStateName;
 			}
 	 

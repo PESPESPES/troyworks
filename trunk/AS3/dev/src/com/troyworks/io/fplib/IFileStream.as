@@ -199,7 +199,7 @@
 		
 		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void 
 		{
-			return this.eventDispatcher.removeEventListener(type, listener, useCapture);
+			this.eventDispatcher.removeEventListener(type, listener, useCapture);
 		}
 		
 		public function willTrigger(type:String):Boolean
@@ -213,7 +213,8 @@
 		override public function writeBytes(bytes:ByteArray, offset:uint = 0, length:uint = 0):void
 		{
 			if (this.mode == IFileMode.READ) {
-				return super.writeBytes(bytes, offset, length);
+				super.writeBytes(bytes, offset, length);
+				return;
 			}
 			
 			loader = new URLLoader;

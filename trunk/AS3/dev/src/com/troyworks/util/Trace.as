@@ -328,7 +328,7 @@ package com.troyworks.util {
 
 		//Since some logging utilities don't respect line breaks, out put them
 		// each line by line.
-		public static function meAsArrayToConsole(objStruct : Object, txt : String, showNested : Boolean, showType : Boolean, showValue : Boolean = true) : Array {
+		public static function meAsArrayToConsole(objStruct : Object, txt : String = "SOME ARRAY", showNested : Boolean = true, showType : Boolean = true, showValue : Boolean = true) : Array {
 			var res : Array = Trace.meAsArray(objStruct, txt, showNested, showType, showValue);
 			for (var i : Number = 0;i < res.length; i++) {
 				trace(res[i]);

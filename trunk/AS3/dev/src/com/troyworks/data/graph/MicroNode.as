@@ -1,9 +1,10 @@
-package com.troyworks.data.graph { 
+package com.troyworks.data.graph {
+	import com.troyworks.core.cogs.CogEvent;	
+	import com.troyworks.core.cogs.Hsm; 
 	import com.troyworks.data.MultiEntryDictionary;
-	import com.troyworks.hsmf.Hsmf;
-	import com.troyworks.hsmf.AEvent;
+
 	
-	public class MicroNode extends Hsmf
+	public class MicroNode extends Hsm
 	{
 		public var _inLinks : MultiEntryDictionary;
 		public var _outLinks : MultiEntryDictionary;
@@ -21,7 +22,7 @@ package com.troyworks.data.graph {
 		public static var debugLevel : Number = 1;
 		public function MicroNode (id : Number, name : String, nType : String)
 		{
-			super(s_initial, "MicroNode", false);
+			super("s_initial", "MicroNode", false);
 			this.initnode (id, name, nType);
 		}
 		/********************************************************
@@ -144,7 +145,7 @@ package com.troyworks.data.graph {
 		public function getInLinksReadOnly(lType : String) : Array{
 			return this._inLinks.getAllItems (lType);
 		}
-		public function traceMe (str : String, lvl : Number) : void
+		public function traceMe (str : String, lvl : Number =0) : void
 		{
 			if (MicroNode.debugLevel == - 1)
 			{
@@ -153,12 +154,12 @@ package com.troyworks.data.graph {
 			trace (str);
 			}
 		}
-		public function setAsRootNode (val : Boolean) : void
+		public function setAsRootNode () : void 
 		{
 			if(this.core == null){
 				throw new Error("MicroNode.setAsRootNode Core cannoto be null!");
 			}
-			this.core.addAsRootNode (this, val);
+			this.core.addAsRootNode (this);//, val);
 		}
 		/////////////////////////////////////////////////////
 		public function toString () : String
@@ -168,21 +169,21 @@ package com.troyworks.data.graph {
 		////////////////////////////////////////////////////
 	
 		/*..PSEUDOSTATE...............................................................*/
-		public function s_initial(e : AEvent) : void
+		public function s_initial(e : CogEvent) : Function
 		{
 			//trace("************************* s_initial " + util.Trace.me(e)+" ******************");
-			onFunctionEnter ("s_initial-", e, []);
-			if(e.sig != Q_TRACE_SIG){
-				Q_INIT(s_active);
+			//onFunctionEnter ("s_initial-", e, []);
+			if(e.sig != SIG_TRACE){
+				return s_active;
 			}
 		}
 		/*.................................................................*/
-		public function s_active(e : AEvent) : Function
+		public function s_active(e : CogEvent) : Function
 		{
-			onFunctionEnter ("s_active-", e, []);
+			//onFunctionEnter ("s_active-", e, []);
 			/*switch (e.sig)
 			{
-				case Q_ENTRY_SIG :
+				case SIG_ENTRY :
 				{
 					dispState("calc");
 					return null;
@@ -196,24 +197,23 @@ package com.troyworks.data.graph {
 				case SIG_C:
 				case SIG_CE:{
 					graphics.clear();
-					Q_TRAN(s_calc);
+					tranc);
 					return null;
 				}
 				case Q_TERMINATE_SIG:
 				{
-					Q_TRAN(s_final);
-					return null;
+					trtrtrtran					return null;
 				}
 			}*/
-			return s_top;
+			return s_root;
 		}
 		/*..PSEUDOSTATE...............................................................*/
-		public function s_final(e : AEvent) : void
+		public function s_final(e : CogEvent) : void
 		{
-			this.onFunctionEnter ("s_final-", e, []);
+//			this.onFunctionEnter ("s_final-", e, []);
 			switch (e.sig)
 			{
-				case Q_ENTRY_SIG :
+				case SIG_ENTRY :
 				{ 
 					return;
 				}

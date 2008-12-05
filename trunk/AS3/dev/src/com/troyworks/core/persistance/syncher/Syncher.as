@@ -1,4 +1,4 @@
-package com.troyworks.syncher { 
+package com.troyworks.core.persistance.syncher { 
 	import flash.xml.XMLDocument;
 	import flash.xml.XMLNode;
 	public class Syncher extends Object
@@ -11,28 +11,6 @@ package com.troyworks.syncher {
 		public function Syncher ()
 		{
 			trace ("new Syncher");
-			if (arguments.length > 0)
-			{
-				var arg1 = arguments [0];
-				if (arg1 is XMLNode)
-				{
-					var x = XMLNode (arg1);
-					//	trace("XMLNode" + x);
-					this.initFromDiskXML (x);
-				} else if (arg1 is XMLDocument)
-				{
-					var x = XMLDocument (arg1);
-					//	trace("XMLDocument" + x);
-					this.initFromDiskXML (x);
-				} else
-				{
-					//	trace("String");
-					this.init.apply (this, arguments);
-				}
-			}
-		}
-		public function init () : void
-		{
 		}
 		public function initFromDiskXML () : void
 		{

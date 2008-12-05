@@ -307,12 +307,14 @@ package com.troyworks.ui {
 			////////////////////////////////////
 
 			if (still_mc == null && !isNaN(override_width) && !isNaN(override_height)) {
+				trace("creating layout guide");
 				still_mc = new Sprite();
 				still_mc.x = moving_mc.x;
 				still_mc.y = moving_mc.y;
 				Sprite(still_mc).graphics.lineStyle();
 				Sprite(still_mc).graphics.drawRect(0, 0, override_width, override_height);
 			}
+			trace("dw " +still_mc.width +" " +  override_width );
 			var dw : Number = (isNaN(override_width)) ? still_mc.width : override_width;
 			var dh : Number = (isNaN(override_height)) ? still_mc.height : override_height;
 			var scaleW : Number = (!movingSnapShot.hasViewport) ? 1 : movingSnapShot.vp_owscale;
@@ -531,11 +533,11 @@ package com.troyworks.ui {
 			view.y = initY;	
 		}
 
-		public static function printImageLandscape(view : MovieClip, sO : IDisplayObjectSnapShot, margin:Number = 80) : void {
-			printImageLandscapeFrames(view, sO, false, margin);
+		public static function printImageLandscape(view : MovieClip, sO : IDisplayObjectSnapShot, margin:Number = 80, buffer:Number =1) : void {
+			printImageLandscapeFrames(view, sO, false, margin, buffer);
 		}
 
-		public static function printImageLandscapeFrames(view : MovieClip, sO : IDisplayObjectSnapShot, allFrames : Boolean, margin:Number = 80) : void {
+		public static function printImageLandscapeFrames(view : MovieClip, sO : IDisplayObjectSnapShot, allFrames : Boolean, margin:Number = 80, buffer:Number = 1) : void {
 			if (view == null) return;
 			trace("PRINTING...");
 			var pj : PrintJob = new PrintJob();
@@ -557,6 +559,7 @@ package com.troyworks.ui {
 			//var i : int;
 				
 			if(pj.orientation == PrintJobOrientation.LANDSCAPE) {
+				trace("PRINTPRINTPRINPRINTPRINTPRINPRINTPRINTPRINPRINTPRINTPRINPRINTPRINTPRIN");
 				trace("Printing Landscape ");
 				pjo = new PrintJobOptions();
 				pjo.printAsBitmap = true;
@@ -572,29 +575,41 @@ package com.troyworks.ui {
 		
 				rect = new Rectangle(-xOffset, -yOffset, sO.vp_owidth + xOffset, sO.vp_oheight + yOffset);
 				
-				
+				var hasScrollRect:Boolean = false;
 				if(view.scrollRect != null) {
+					trace(" has a initScrollRect scrollREctange");
+					hasScrollRect = true;
 					initScrRect = new Rectangle(view.scrollRect.x, view.scrollRect.y, view.scrollRect.width, view.scrollRect.height);
 				}	
 				if (sO.hasViewport) {
 					view.scrollRect = new Rectangle(sO.vp_ox_offset, sO.vp_oy_offset, sO.vp_owidth, sO.vp_oheight);
 				}
 				try {
+					trace("printing ---------------------");
 					printFrames(allFrames, pj, view, rect, pjo);
 				}
 		        catch (e : Error) {
-					if (sO.hasViewport) { 
+		        	trace("caught Error in printing");
+					if (hasScrollRect) {
+						trace("resetting scrollRect2"); 
 						view.scrollRect = initScrRect;
 					}
-					view.x = initX;
-					view.y = initY;
-					view.width = initW;
-					view.height = initH;
+				//	view.x = initX;
+				//	view.y = initY;
+				//	view.width = initW;
+				//	view.height = initH;
 				    
 				    	
 					throw new Error();
 				}
-				if (sO.hasViewport) view.scrollRect = initScrRect;
+				if (hasScrollRect){
+					trace("resetting scrollRect1");
+					 view.scrollRect = initScrRect;
+				}else if(view.scrollRect != null){
+					view.scrollRect = null;
+				}
+				trace("PRINTPRINTPRINPRINTPRINTPRINPRINTPRINTPRINPRINTPRINTPRINPRINTPRINTPRIN");
+				
 			}
 			else {
 				trace("Printing Portrait ");
@@ -626,23 +641,24 @@ package com.troyworks.ui {
 		        catch (e2 : Error) {
 					if (sO.hasViewport) view.scrollRect = initScrRect;
 					view.rotation = 0;		        	
-					view.x = initX;
-					view.y = initY;	
+				//	view.x = initX;
+				//	view.y = initY;	
 				    
-					view.width = initW;
-					view.height = initH;
+				//	view.width = initW;
+				//	view.height = initH;
 					throw new Error();
 				}
 				if (sO.hasViewport) view.scrollRect = initScrRect;
 				view.rotation = 0;
 			}
+			trace("resetting print...........");
 		   
-			view.width = initW;
-			// * sO.vp_owscale;
-			view.height = initH;
+			//view.width = initW;
+			//// * sO.vp_owscale;
+			//view.height = initH;
 			// * sO.vp_ohscale;
-			view.x = initX;
-			view.y = initY;	
+		//	view.x = initX;
+		//	view.y = initY;	
 		}
 
 		private static function printFrames(allFrames : Boolean, pj : PrintJob, view : MovieClip, rect : Rectangle, pjo : PrintJobOptions):void {

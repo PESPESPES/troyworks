@@ -1,18 +1,16 @@
-package com.troyworks.framework { 
-	import com.troyworks.framework.model.AssetLibrary;
-	import com.troyworks.hsmf.Hsmf;
-	
-	
-	
+package com.troyworks.framework {
+	import com.troyworks.core.cogs.Hsm;
+	//import com.troyworks.framework.model.AssetLibrary;	 
+
 	/**
 	 *
 	 * @author Troy Gardner
 	 * @version
 	 * parent chain: HsmfE (statemachine + events)->MovieClip->Object
 	 **/
+
 	
-	import flash.display.MovieClip;
-	public class Application extends Hsmf  {
+	public class Application extends Hsm  {
 		public static var LOADING1_SWF_LEVEL:Number = 9999;
 		public static var SCRIPT_SWF_LEVEL:Number = 9800;
 		public static var APP:Object;
@@ -28,9 +26,9 @@ package com.troyworks.framework {
 		public static function getNextScriptLevel():Number{
 			return  nextScriptLevel++;
 		}
-		public function registerAssetLibrary(astLib:AssetLibrary):void{
-			trace("DDDDDDDDDDDDDregisterAssetLibrary " + astLib + " DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
-		}
+		//public function registerAssetLibrary(astLib:AssetLibrary):void{
+		//	trace("DDDDDDDDDDDDDregisterAssetLibrary " + astLib + " DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+		//}
 	
 		public static function registerClasses():void{
 			

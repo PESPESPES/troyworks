@@ -13,7 +13,7 @@ package com.troyworks.core.cogs
 			super();
 		}
 
-		override public function set currentState(state:Function):void {
+		public function set currentState(state:Function):void {
 			if (state == null) {
 				// No state transition taken if invalid target state
 				return;
@@ -23,7 +23,7 @@ package com.troyworks.core.cogs
 			///////EXIT OLD STATES //////////////////////////////
 			if (_currentState != null) {
 				dispatchEvent(CogEvent.getExitEvent());
-				removeEventListener(CogEvent.EVTD_COG_PRIVATE_EVENT,_currentState);
+				removeEventListener(CogEvent.EVTD_COG_PRIVATE_EVENT, _currentState);
 				_currentState=null;
 			}
 			

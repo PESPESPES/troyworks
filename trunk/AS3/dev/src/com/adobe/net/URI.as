@@ -1906,9 +1906,9 @@ package com.adobe.net
 				// Take the scheme from this URI and tack it on.  This is
 				// intended to make working with chdir() a little more
 				// tolerant.
-				var final:String = this.scheme + ":" + ref;
+				var finals:String = this.scheme + ":" + ref;
 				
-				return constructURI(final);
+				return constructURI(finals);
 			}
 			else if (ref.charAt(0) == "?")
 			{
@@ -2377,7 +2377,9 @@ package com.adobe.net
 			}
 			
 			// Some users love the backslash key.  Fix it.
-			unknown = unknown.replace(/\\/g, "/");
+			//unknown = unknown.replace(/\\/g, "/");
+			var lastPartRgx:RegExp = new RegExp("/\\/g","g");			
+			unknown = lastPartRgx.exec(unknown);
 			
 			// Check for any obviously missing scheme.
 			if (unknown.length >= 2)

@@ -1,5 +1,6 @@
-package com.troyworks.syncher { 
-	import com.troyworks.util.BitFlag;
+package com.troyworks.core.persistance.syncher {
+	import com.troyworks.data.bit.BitFlag; 
+
 	public class SynchState extends Object
 	{
 		// since flash only has 32 bit numbers (nothing less, nothing really bigger) might as well use

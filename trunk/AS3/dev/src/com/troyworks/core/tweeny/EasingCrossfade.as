@@ -42,7 +42,7 @@ package com.troyworks.core.tweeny {
 		 * @param b		Starting value.
 		 * @param c		Change needed in value.
 		 * @param d		Expected easing duration (in frames or seconds).
-		 * @return		The correct value.
+		 * @return		The current value.
 		 */
 		public function ease(t:Number, b:Number, c:Number, d:Number):Number {	
 		///	trace("ease " + t + " " + d);
@@ -56,8 +56,8 @@ package com.troyworks.core.tweeny {
 				//average  
 				var ct:Number = t-sp/cross;
 				var a:Number = ease1(t,b,c,d) * (1- ct);
-				var b:Number = ease2(t,b,c,d) * ct;
-				return (a+b)/2;
+				var a2:Number = ease2(t,b,c,d) * ct;
+				return (a+a2)/2;
 			}
 		}	
 	}

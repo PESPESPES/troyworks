@@ -17,28 +17,29 @@
 */
 
 package com.troyworks.core.tweeny {
-
+	import com.troyworks.core.Signals;
+	import com.troyworks.core.cogs.CogEvent;
 	import com.troyworks.core.cogs.Fsm;
-	import com.troyworks.core.EventAdapter;
+	
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
-	import com.troyworks.core.Signals;
-	import com.troyworks.core.cogs.CogEvent;
 	import flash.events.EventDispatcher;
-	import flash.events.TimerEvent;
+	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.geom.Transform;
 	import flash.media.SoundChannel;
 	import flash.media.SoundTransform;
-	import flash.utils.Timer;
-	//import com.troyworks.data.TweenEquations;
-	import flash.display.DisplayObject;
-	import flash.geom.ColorTransform;
-	import flash.utils.getTimer;
+	import flash.utils.getTimer;	
 
+	//import com.troyworks.data.TweenEquations;
+
+	
+	
+	
 	public class TweenyFSM extends Fsm {
 		public static var stage:Stage;
 		/* cache the signals for clarity in code and performance reasons */
@@ -162,7 +163,7 @@ package com.troyworks.core.tweeny {
 		
 		
 		private var calc:Number;
-		private var _f:Function = Tweeny.easeNone;
+		private var _f:Function = None.easeInOut;
 		private var _fHasXtraArgs:Boolean = false;
 		/* optional easing args */
 		private var _fA:Array;
@@ -219,7 +220,7 @@ package com.troyworks.core.tweeny {
 		public var onCompleteParams:Array; //An array containing the parameters that should be passed to the this.onComplete when this tween has finished.
 
 		
-		private static const _enterEvent:CogEvent = new CogEvent(CogEvent.EVTD_COG_PRIVATE_EVENT, Signals.ENTER_FRAME);
+		private static const _enterEvent:CogEvent = new CogEvent(CogEvent.Eventttt_COG_PRIVATE_EVENT, Signals.ENTER_FRAME);
 		
 		public function TweenyFSM(initStateName:String="s_noMovementNeeded", smName:String = "Tweeny") {
 			super(((initStateName==null)?  "s_noMovementNeeded":initStateName), ((smName==null)? "Tweeny":smName));
@@ -240,8 +241,9 @@ package com.troyworks.core.tweeny {
 				return t;
 			}else{
 				t =  new Tweeny();
-				t.setInit(target, duration);
-				t.recycleOnComplete = false;
+				t.target = target as DisplayObject;
+				t.dur = duration;//(target, duration);
+				//t.recycleOnComplete = false;
 			//	trace("cache: new Tweeny " + t.getStateMachineName());
 				return t;
 			}
@@ -265,11 +267,11 @@ package com.troyworks.core.tweeny {
 		}
 		public static function to(target:Object, duration:Number, initObj:Object = null):Tweeny{
 			var ty:Tweeny = new Tweeny();
-			ty.setTarget(target);
+			ty.target = DisplayObject(target);
 			ty.duration = duration;
 			
-			ty.initStateMachine();
-			ty.startFromBeginning();
+		//	ty.initStateMachine();
+			ty.gotoAndPlay(0);
 			return ty;
 		}
 

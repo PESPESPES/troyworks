@@ -13,7 +13,7 @@
 
 	import flash.utils.Dictionary;
 
-	public class Hsm extends StateMachine implements IStateMachine, IFiniteStateMachine, IHeirarchicalStateMachine, IStackableStateMachine {
+import flash.utils.setTimeout;	public class Hsm extends StateMachine implements IStateMachine, IFiniteStateMachine, IHeirarchicalStateMachine, IStackableStateMachine {
 
 		
 		/* these are special events that don't need to be tracked for time/undo */
@@ -110,7 +110,7 @@
 
 			REQUIRE(_smName != null, " hsm %1 requires an a name passed into constructor", _smID);
 			REQUIRE(initState != null, " %1 hsm %2 requires an initial state passed into constructor", _smName, _smID);
-			REQUIRE(initState != s_root, "% 1 hsm %2  requires an initial state (not Root_st) passed into constructor", _smName, _smID);
+			REQUIRE(initState != s_root, "%1 hsm %2  requires an initial state (not Root_st) passed into constructor", _smName, _smID);
 
 			_hsm_initState = hsm_s_Initial;
 			_hsm_currentState = hsm_s_Initial;
@@ -374,12 +374,13 @@
 
 		public function hsm_callbackIn(ms : Number = 45) : void {
 			trace("hsm calling back in ============================");
-			var myTimer : Timer = new Timer(ms, 1);
-			myTimer.addEventListener("timer", hsm_onCallbackHandler);
-			myTimer.start();
+		//	var myTimer : Timer = new Timer(ms, 1);
+		//	myTimer.addEventListener("timer", hsm_onCallbackHandler);
+		//	myTimer.start();
+		 setTimeout(hsm_onCallbackHandler, ms);
 		}
 
-		public function hsm_onCallbackHandler(event : TimerEvent) : void {
+		public function hsm_onCallbackHandler(event : TimerEvent= null) : void {
 			trace("hsm hsm_onCallbackHandler: " + event);
 			if(_hsm_currentState != null) {
 				//trace"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -437,10 +438,10 @@
 			}
 		}
 
-		/*public function Q_dispatch(e : AEvent) : void{
+		/*public function dispatchEvent(e : CogEvent) : void{
 		REQUIRE(!DesignByContract.appIsHalted, " app is halted");
-		REQUIRE(e != null, "Q_dispatch must not have a null event");
-		REQUIRE(e.sig != null, "Q_dispatch must not have an event with a valid SIG signature");
+		REQUIRE(e != null, "dispatchEvent must not have a null event");
+		REQUIRE(e.sig != null, "dispatchEvent must not have an event with a valid SIG signature");
 			
 		if (deferredEvts.length > 0)
 		{
@@ -449,27 +450,28 @@
 		var len : Number = deferredEvts.length;
 		for( var i:Number = 0; i < len; i++)
 		{
-		var ev : AEvent = AEvent (deferredEvts.shift ());
+		var ev : CogEvent = CogEvent (deferredEvts.shift ());
 		trace ("XXXXXXXXXXdispatch deferred XXXXXXXXXX " + e.toString ());
-		Q_dispatchI (ev);
+		dispatchEventI (ev);
 		}
 		}else{
-		Q_dispatchI (e);
+		dispatchEventI (e);
 		}
 			
 		}*/
 		public function callbackIn(ms : Number = 45) : void {
 			trace("hcalling back in ============================" + ms);
-			var _callBackTimer : Timer = new Timer(ms, 1);
-			_callBackTimer.addEventListener("timer", onCallbackHandler);
-			_callBackTimer.start();
+			//var _callBackTimer : Timer = new Timer(ms, 1);
+			//_callBackTimer.addEventListener("timer", onCallbackHandler);
+			//_callBackTimer.start();
+			 setTimeout(hsm_onCallbackHandler, ms);
 		}
 
-		public function onCallbackHandler(event : TimerEvent) : void {
+		public function onCallbackHandler(event : TimerEvent= null) : void {
 			trace("onCallbackHandler: " + event);
 			if(myCurState != null) {
 				dispatchEvent(CogEvent.getCallbackEvent());
-				IEventDispatcher(event.target).removeEventListener("timer", onCallbackHandler);
+				//IEventDispatcher(event.target).removeEventListener("timer", onCallbackHandler);
 				//trace"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 			}else {
 				trace("cannot call a null onCallbackHandler");
@@ -560,14 +562,14 @@
 		 * it ensure that actions are performed in the right direction, handling parents appropriately
 		 * generally it's Exit actions, Transition Actions (if any), Enter Actions and then possibly
 		 * INIT actions. Enter and Exit actions are not allowed to fire off any state transitions of their own
-		 * but can update state variables (e.g. visibile = true).
+		 * but can update state variables (e.g. visible = true).
 		 *
 		 * Transitions (not the exit and enter actions) are supposed to be take zero time, meaning all the work is associated with the Enter and Exit actions
 		 * and inbetween the Exit and Enter states, when technically it's an undefined state, no work is performed.
 		 * if you need work performed between states you should introduce a new state, e.g.
 		 *   - OFF->Dimming Up->OnFull
-		 *   - SRootped->AnimatedTransitionRootlay->Playing
-		 *            <-AnimatedTransitionToSRoot<-
+		 *   - Stopped->AnimatedTransitionPlay->Playing
+		 *            <-AnimatedTransitionToStop<-
 		 */
 		override public function tran(targetState : Function, transOptions : TransitionOptions = null, crossAction : Function = null) : * {
 			//use namespace  COG;
@@ -822,7 +824,7 @@
 			 * [2] grandparent
 			 */
 
-			ASSERT(transLock == false, "Error in HSM Illegal Transition detected in " + toStringShort() + "Q_TRAN, cannot perform another Q_TRAN inside EXIT_EVT or ENTER_EVT (use INIT_EVT instead) ");
+			ASSERT(transLock == false, "Error in HSM Illegal Transition detected in " + toStringShort() + "trannnot perform another trtrtranSIG_EXIT or ENTER_EVT (use SIG_INIT instead) ");
 			transLock = true;
 			//trace_smName + " TRANSITIONING===================");
 			var i : uint;
@@ -1053,9 +1055,9 @@
 						break;
 				}
 			}else {
-				trace("HIGHLIGHT1 " + toStringShort() + ".Q_dispatch " + event);
-				REQUIRE(event != null, "Q_dispatchI must not have a null event");
-				REQUIRE(event.sig != null, "Q_dispatchI must not have an event with a valid SIG signature");
+				trace("HIGHLIGHT1 " + toStringShort() + ".dispatchEvent " + event);
+				REQUIRE(event != null, "dispatchEventI must not have a null event");
+				REQUIRE(event.sig != null, "dispatchEventI must not have an event with a valid SIG signature");
 				////////////////////////////////////
 				// responsible for firing an Event through the active state list/stack
 				// until it hits a loop, or the event is consumed (the state returns null)
@@ -1068,7 +1070,7 @@
 					s = t;
 					//trace("DISPATCH 22222" + mySource.call (this, TRACE_EVT));
 				} while (t != s_root && t != null );
-				trace("HIGHLIGHT0 Q_dispatchEND ");
+				trace("HIGHLIGHT0 dispatchEventEND ");
 			}
 		}
 
