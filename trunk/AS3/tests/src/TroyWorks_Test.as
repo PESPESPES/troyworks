@@ -24,6 +24,7 @@
 	import com.troyworks.core.cogs.StateMachine;
 	import com.troyworks.framework.loader.Test_SWFLoaderUnit;
 	import com.troyworks.util.datetime.*;
+	import com.troyworks.geom.d1.*;
 
 	/*************************************************
 	 *  This is the 'main' TestRunner extends Sprite so it
@@ -98,12 +99,14 @@
 				//				testRunner.addTest(Test_SOS);
 				//		testRunner.addTest(Test_SwitchPerformance);
 				//				var nE:Test_NumberExtention = new Test_NumberExtention();
-				//testRunner.addTest(SampleTest);
-				//testRunner.addTest(Test_Hsm);		
+				//testRunner.addTest(SampleTest);		
 				//testRunner.addTest(Test_AsynchronousTestSuite);
 				//testRunner.addTest(Test_Indexer);
 				//testRunner.addTest(Test_DirtyCleanMachine);
-				testRunner.addTest(Test_TimeQuantity);
+				//testRunner.addTest(Test_TimeQuantity);
+				//testRunner.addTest(Test_Point1D);
+				//testRunner.addTest(Test_Line1D);
+				testRunner.addTest(Test_CompoundLine1D);
 				////////RUN TEST //////////////
 
 				if(testRunner.hasTests){
@@ -128,7 +131,7 @@
 
 		public function startAsynchTests() : void {
 			
-			trace("startAsynchTests");
+			trace("startAsynchTests2");
 			try {
 				testRunner2 = new AsynchTestRunner();
 				testRunner2.view = this;
@@ -138,7 +141,7 @@
 				testRunner2.addEventListener(Event.COMPLETE, onAllTestComplete);
 				testRunner2.addEventListener(Event.CHANGE, onProgress);
 				///////////////////////////////////////////
-				//testRunner2.addTest(Test_Hsm);
+				testRunner2.addTest(Test_Hsm);
 			//	testRunner2.addTest(Test_PlaceHolderUnitOfWork);
 			//testRunner2.addTest(SampleTest);
 				//	testRunner2.addTest(Test_SWFLoaderUnit);
