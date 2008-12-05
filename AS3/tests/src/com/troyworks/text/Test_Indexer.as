@@ -1,7 +1,7 @@
-﻿package com.troyworks.text
-{
+﻿package com.troyworks.text {
+	import com.troyworks.apps.tester.TestSuite;	
 	import com.troyworks.text.Indexer;
-	import com.troyworks.tester.TestSuite;
+
 
 	public class Test_Indexer extends TestSuite
 	{

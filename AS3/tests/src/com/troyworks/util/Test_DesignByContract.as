@@ -36,7 +36,7 @@
 		public function test_notificationonAssertFailed2():Boolean {
 			var res : Boolean = false;
 			assertRes = "MM";
-			var dbcE:DesignByContractEvent = new DesignByContractEvent(DesignByContract.EVTD_ASSERT_FAILED);
+			var dbcE:DesignByContractEvent = new DesignByContractEvent(DesignByContract.Event_ASSERT_FAILED);
 			dbcE.message = DesignByContractEvent.ASSERT_FAILED;
 			dbcE.fatal = true;
 			onAssertFailed(dbcE);
