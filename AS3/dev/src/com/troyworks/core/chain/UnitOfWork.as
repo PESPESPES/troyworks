@@ -212,7 +212,7 @@ package com.troyworks.core.chain {
 					c.startWork();
 					active.push(c);
 				//if(!pulseHasStarted()){
-				//	Q_dispatch(SIG_ENTRY);
+				//	dispatchEventententent(SIG_ENTRY);
 				//}
 				}
 				//_initState =s__doing;

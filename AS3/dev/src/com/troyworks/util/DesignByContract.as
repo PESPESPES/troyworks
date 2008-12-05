@@ -47,8 +47,8 @@
 		public static  var appHaltMessage:String = null;
 		public static  var HALT_ON_ERRORS : Boolean = false;
 
-		public static  const EVTD_REQUIRE_FAILED : String = "EVTD_REQUIRE_FAILED";
-		public static  const EVTD_ASSERT_FAILED : String = "EVTD_ASSERT_FAILED";
+		public static  const EVT_REQUIRE_FAILED : String ="EVT_REQUIRE_FAILED";
+		public static  const EVT_ASSERT_FAILED : String ="EVT_ASSERT_FAILED";
 		public static  const REQUIRE_FAILED:String = "REQUIRE FAILED";
 		public static  const ASSERT_FAILED:String = "ASSERT FAILED";
 

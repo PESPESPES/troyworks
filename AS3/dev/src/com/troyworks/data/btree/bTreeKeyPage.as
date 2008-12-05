@@ -2,7 +2,7 @@ package com.troyworks.data.btree {
 	///////////////////////////////////////////////////
 	// Class definition for a key page in the bTree
 	///////////////////////////////////////////////////
-	public class bTreeKeyPage {
+	class bTreeKeyPage {
 		public static var MAXKEYS:Number = 4;
 		public var numKeys:Number;
 		//bTreeKey[]

@@ -13,7 +13,6 @@
 
 package com.troyworks.core.patterns {
 	import com.troyworks.core.cogs.CogSignal;
-	import com.troyworks.core.cogs.EightStateMachineEvent;
 	import com.troyworks.core.cogs.Hsm;
 	import com.troyworks.core.cogs.CogEvent;
 	import com.troyworks.core.cogs.CogExternalEvent;

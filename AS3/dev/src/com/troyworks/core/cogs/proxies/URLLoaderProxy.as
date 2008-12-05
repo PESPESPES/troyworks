@@ -1,4 +1,4 @@
-﻿package com.troyworks.core.cogs.proxies {
+﻿﻿package com.troyworks.core.cogs.proxies {
 
 	import flash.net.URLLoader;
 	import com.troyworks.core.cogs.CogSignal;

@@ -1,4 +1,4 @@
-package  { 
+package com.troyworks.geom.d1 { 
 	//!-- UTF8
 	trace("\t included composite_line_segment.as");
 	/************************************************************

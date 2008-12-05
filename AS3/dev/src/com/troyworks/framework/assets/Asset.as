@@ -41,17 +41,13 @@ package com.troyworks.framework.assets {
 		public var timeOfLastSave:Number = -1;
 		public static var PATH_SEPARATOR:String = "/";
 	
-		public function Asset(){
+		public function Asset(...rest){
 			super();
 			if(arguments.length >0){
 				var arg1:Object = arguments[0];
-				if( arg1 is XMLNode){
-					var x:XMLNode = XMLNode(arg1);
+				if( arg1 is XML){
+					var x:XML = XML(arg1);
 				//	//trace("XMLNode" + x);
-				  this.initFromDiskXML(x);
-				}else if( arg1 is XMLDocument){
-					var x:XMLNode = XML(arg1);
-				//	//trace("XMLDocument" + x);
 				  this.initFromDiskXML(x);
 				}else{
 				//	//trace("String");

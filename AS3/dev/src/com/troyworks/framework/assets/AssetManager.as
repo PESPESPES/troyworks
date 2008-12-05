@@ -1,6 +1,7 @@
-package com.troyworks.framework.assets { 
+package com.troyworks.framework.assets {
+	import com.troyworks.framework.controller.CollectionManager; 
 	import com.troyworks.framework.BaseObject;
-	import com.troyworks.framework.CollectionManager;
+
 	import com.troyworks.data.ArrayX;
 	
 	
@@ -43,15 +44,10 @@ package com.troyworks.framework.assets {
 			{
 				this.init ();
 				var arg1:Object = arguments [0];
-				if (arg1 is XMLNode)
+				if (arg1 is XML)
 				{
-					var x:XMLNode = XMLNode (arg1);
+					var x:XML = XML (arg1);
 					//	//// trace("XMLNode" + x);
-					this.initFromDiskXML (x);
-				} else if (arg1 is XMLDocument)
-				{
-					var x:XMLNode = XML (arg1);
-					//	//// trace("XMLDocument" + x);
 					this.initFromDiskXML (x);
 				}else
 				{
@@ -793,11 +789,11 @@ package com.troyworks.framework.assets {
 		}
 		///////////////////////////////////////////////////////////////////////
 		/// This is used to deserialize from disk
-		public function initFromDiskXML (tree : XMLNode) : void
+		public function initFromDiskXML (tree : XML) : void
 		{
 			//trace("AssetManager.initFromDiskXML");
 			var stime:Number = getTimer ();
-			var res : XMLNode = tree;
+			var res : XML = tree;
 			//////////assets/////////////////////////
 			for (var m:Number = 0; m < res.childNodes.length; m ++)
 			{
@@ -808,7 +804,7 @@ package com.troyworks.framework.assets {
 					case "Assets" :
 					for (var i:Number = 0; i < cnode.childNodes.length; i ++)
 					{
-						var ccnode : XMLNode = cnode.childNodes [i];
+						var ccnode : XML = cnode.childNodes [i];
 						//trace("assets content '" +ccnode.nodeName+"'");
 						switch (ccnode.nodeName)
 						{

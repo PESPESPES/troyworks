@@ -36,10 +36,10 @@ package com.troyworks.framework.loader {
 		public var targetClip : DisplayObjectContainer;
 		private var _exists : Boolean = false;
 		public var callback : Function;
-		public var binaryMode:Boolean = false;
-		public function SimpleSWFLoader(modeBinary:Boolean = false) {
+
+
+		public function SimpleSWFLoader() {
 			super();
-			binaryMode = modeBinary;
 			setupLoader(); 	
 		}
 
@@ -51,10 +51,10 @@ package com.troyworks.framework.loader {
 			s_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, completeSWFLoadHandler);
 		}
 
-		public function onChildErrored(evt : Event = null) :void{
+		public function onChildErrored(evt : Event = null) : void {
 			_exists = false;
 			if(callback != null) {
-				callback(mediaURL,_exists);
+				callback(mediaURL, _exists);
 			}
 		}
 
@@ -67,11 +67,9 @@ package com.troyworks.framework.loader {
 			this.mediaURL = mediaURL;
 			trace("loadMovie '" + this.mediaURL + "'");
 			var request : URLRequest = new URLRequest(this.mediaURL);
-			if(binaryMode){
-			s_loader.loadB(request);
-			}else{
-				s_loader.load(request);
-			}
+			
+			s_loader.load(request);
+			
 
 			// addChild(_loader);
 		}

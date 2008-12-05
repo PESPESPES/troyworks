@@ -1,5 +1,6 @@
-package  { 
-	class com.troyworks.syncher.EditedState extends Number
+package com.troyworks.core.persistance.syncher { 
+
+	class EditedState extends Object
 	{
 		public static var NO_CHANGE : Number = 0;
 		public static var UPDATED : Number = 1;

@@ -1,6 +1,7 @@
-package com.troyworks.events { 
-	import com.troyworks.framework.logging.SOSLogger;
-	
+package com.troyworks.core.events {
+	import com.troyworks.util.Trace;	
+	import com.troyworks.logging.SOSLogger; 
+
 	/******************************************************
 	* A generic broadcaster engine, calls all listeners
 	* used for things like e.g.
@@ -41,7 +42,7 @@ package com.troyworks.events {
 			name = "TDispatcher"+ TDispatcher.dispatchers++;
 		};
 		static public function initialize(p_obj : Object) : void {
-			public var td:TDispatcher = new TDispatcher();
+			var td:TDispatcher = new TDispatcher();
 			if(td == null){
 				SOSLogger.getInstance().fatal("TDispatcher.initialize can't get TD copy");
 			}
@@ -49,7 +50,7 @@ package com.troyworks.events {
 	//	   trace("initing " + td.name);
 			TProxy.currentUserName = "TDispatcher.initialize";
 			//TProxy.ADD_CALLEE = false;
-			public var temp:Boolean =TProxy.DEBUG_TRACES_ON;
+			var temp:Boolean =TProxy.DEBUG_TRACES_ON;
 			TProxy.DEBUG_TRACES_ON = false;
 			p_obj.containsListener = TProxy.create(td, td.containsListener);
 			trace("td.containsListener = TProxy " + TProxy.IDz);
@@ -67,10 +68,10 @@ package com.troyworks.events {
 			TProxy.currentUserName = null;
 		}
 		public function containsListener(object : Object, fn : Object) : Boolean{
-			for(public var i in this.listeners){
-				public var list : Object = this.listeners[i];
-				public var isSFn:Boolean= list.fn == fn;
-				public var isSObj:Boolean = list.obj == object;
+			for(var i in this.listeners){
+				var list : Object = this.listeners[i];
+				var isSFn:Boolean= list.fn == fn;
+				var isSObj:Boolean = list.obj == object;
 				if(isSFn && isSObj){
 					trace("WARNING : addListener Error! listener already added");
 					return true;
@@ -82,23 +83,23 @@ package com.troyworks.events {
 			var places : Array = new Array();
 			for(var i:String in this.listeners){
 				//actually TProxy created
-				public var list : Object = this.listeners[i];
-				public var isSFn:Boolean= list.fn == fn;
-				public var isSObj:Boolean = list.obj == object;
+				var list : Object = this.listeners[i];
+				var isSFn:Boolean= list.fn == fn;
+				var isSObj:Boolean = list.obj == object;
 				if(isSFn && isSObj){
 					places.push(Number(i));
 				}
 			}
 			return places;
 		}
-		protected function getIndexesOfListeners(object : Object, fn : Object, operation : Number, proxy:TProxy) : Array{
+		protected function getIndexesOfListeners(object : Object, fn : Object, operation : Number, proxy:TProxy = null) : Array{
 			var found : Array = new Array();
 			var i : Number = this.listeners.length;
 			while (i--) {
 				//actually TProxy created
-				public var list : Object = this.listeners[i];
-				public var isSFn:Boolean= list.fn == fn || fn == null;
-				public var isSObj:Boolean = list.obj == object;
+				var list : Object = this.listeners[i];
+				var isSFn:Boolean= list.fn == fn || fn == null;
+				var isSObj:Boolean = list.obj == object;
 				if(isSFn && isSObj){
 	
 					switch(operation){
@@ -162,13 +163,13 @@ package com.troyworks.events {
 		// NOTIFYLISTENERS.  Expects at least an event id and an optional values,
 		public function notifyListeners() : void {
 			if(debugTracesOn){
-			trace(this.name + ".notifyListeners "+ util.Trace.me(arguments, "arguments", true));
+			trace(this.name + ".notifyListeners "+ Trace.me(arguments, "arguments", true));
 			}
 			//SOSLogger.getInstance().highlight(util.Trace.me(arguments, "Arguments",true));
 			//Note that arguments is actually the TProxy	
 			var len:Number = this.listeners.length;
 			for (var i:Number = 0; i<len; i++) {
-				public var li:Function = Function(this.listeners[i]);
+				var li:Function = Function(this.listeners[i]);
 				li.apply(li, arguments);
 			}
 			
@@ -177,8 +178,8 @@ package com.troyworks.events {
 			var result:String = "";
 			var len:Number = this.listeners.length;
 			for (var i:Number = 0; i<len; i++) {
-				public var name:String = ((this.listeners[i].obj != null) ? (this.listeners[i].obj.name) : ("no object"));
-				public var delimiter:String = ((i<len) ? ", " : "");
+				var name:String = ((this.listeners[i].obj != null) ? (this.listeners[i].obj.name) : ("no object"));
+				var delimiter:String = ((i<len) ? ", " : "");
 				result += name+delimiter;
 			}
 			return result;

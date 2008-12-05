@@ -1,10 +1,10 @@
-package  com.troyworks.core.events{ 
-	import com.troyworks.hsmf.AEvent;
+package  com.troyworks.core.events {
+	import flash.events.IEventDispatcher;	
+
 	/**
 	 * @author Troy Gardner
 	 */
-	interface com.troyworks.framework.events.IEventOracle {
-	
-		public function Q_dispatch(evt:AEvent):void;
+	public interface IEventOracle extends IEventDispatcher {
+
 	}
 }

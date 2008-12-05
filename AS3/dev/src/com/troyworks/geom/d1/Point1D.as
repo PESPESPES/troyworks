@@ -1,57 +1,48 @@
-package com.troyworks.geom.d1 { 
-	import flash.events.EventDispatcher;
+package com.troyworks.geom.d1 {
+	import com.troyworks.data.DataChangedEvent;	
+	import com.troyworks.framework.BaseObject; 
+
+	//import flash.events.EventDispatcher;
 	 /*
-	* A single dimension point
-	* Test Code:
-	
-	
-	pn = new Point1D(34,1);
-	trace(pn);
-	
-	pv = pn.clone();
-	trace(pv);
-	p3 = pv + pn;
-	trace(p3)//
-	p4 = pv-pn;
-	trace(p4);
-	
-	trace(3 < p4);
-	pv.position = 2;
-	trace(pv);
-	
-	
-	//Outputs
-	/*
-	* P1D 34 1
-	  P1D 34 1
-	   2
-	   0
-	   false
-	setting position 2
-	   P1D 34 2
+	* A single dimension point 
 	*/
-	   public class Point1D extends EventDispatcher
+	   public class Point1D extends BaseObject
 	{
 		public var id : Number = 0;
 		public var name : String = "Point";
-		public var val:Number = 0;
-		public function Point1D (name : String, x : Number)
+		protected var val:Number = 0;
+		public function Point1D (name : String, x : Number = 0)
 		{
 			//id = (id != null) ?id : id;
 			name = (name != null) ?name : name;
-			if (x != null)
-			{
-				val = x;
-			}
+			val = x;
+			
 		}
+		public function add(p:Point1D):Point1D{
+			return new Point1D(name+"+" + p.name,position + p.position );
+		}
+		public function subtract(p:Point1D):Point1D{
+			return new Point1D(name+"-" + p.name,position - p.position );
+		}
+		public function multiply(p:Point1D):Point1D{
+			return new Point1D(name+"*" + p.name,position * p.position );
+		}
+		public function divide(p:Point1D):Point1D{
+			return new Point1D(name+"/" + p.name,position / p.position );
+		}
+		
 		public function get position () : Number
 		{
 			return val;
 		}
 		public function set position (newVal:Number) : void
 		{
-			trace ("Point1D setting position from " +super.toString() + " to " + newVal);
+		//	trace ("Point1D setting position from " +super.toString() + " to " + newVal);
+			var dce:DataChangedEvent = new DataChangedEvent();
+			dce.oldVal = val;
+			dce.currentVal = newVal;
 			val = newVal;
+			dispatchEvent(dce);
 			
 		}
 		public function clone () : Point1D
@@ -60,9 +51,9 @@ package com.troyworks.geom.d1 {
 			p.id = Number(id);
 			return p;
 		}
-		public function toString () : String
+		override public function toString () : String
 		{
-			return "P1D " + name + " " + super.toString ();
+			return "" + name + "@" + val;
 		}
 	}
 	

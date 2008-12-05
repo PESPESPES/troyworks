@@ -9,7 +9,7 @@
 */
 
 package com.troyworks.core.tweeny {
-	import flash.display.*	
+	import flash.display.*;	
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.media.*;

@@ -1,7 +1,8 @@
 package com.troyworks.framework.loader {
+	import flash.text.TextField;	
 	import flash.events.Event;	
 	import flash.display.Sprite;	
-	
+
 	/**
 	 * SimplePreloader
 	 * @author Troy Gardner
@@ -13,17 +14,24 @@ package com.troyworks.framework.loader {
 	 */
 	public class SimplePreloader {
 		public var view : Sprite;
-		public var percentLoaded:Number;
-		public function SimplePreloader(clipToTrack:Sprite, view:Sprite) {
+		public var txt : TextField;
+		public var percentLoaded : Number;
+
+		public function SimplePreloader(clipToTrack : Sprite, view : Sprite) {
 			this.view = view;
+			if(view.hasOwnProperty("loading_txt")) {
+				txt = view["loading_txt"] as TextField;
+			}
 		}
 
-		public function setUp():void{
+		public function setUp() : void {
 			view.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 		}
-		function onEnterFrameHandler(evt:Event):void{
-			percentLoaded	= Math.round(view.loaderInfo.bytesLoaded/view.loaderInfo.bytesTotal*100);
-			view.loading_txt.text = "Loading " +  percentLoaded+ "%";
-	
+
+		function onEnterFrameHandler(evt : Event) : void {
+			percentLoaded = Math.round(view.loaderInfo.bytesLoaded / view.loaderInfo.bytesTotal * 100);
+			txt.text = "Loading " + percentLoaded + "%";
+			view.removeEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
+		}
 	}
 }

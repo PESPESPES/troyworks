@@ -2,6 +2,7 @@
 	import com.troyworks.events.EventWithArgs;	
 
 	import flash.utils.clearTimeout;	
+	import flash.utils.getTimer;
 	import flash.utils.setTimeout;	
 	import flash.events.EventDispatcher;
 	import flash.events.Event;
@@ -168,8 +169,8 @@ startTheWatch();
 		public static const COMPLETE : String = "COMPLETE";
 		public static const SPLIT : String = "SPLIT";
 
-		public var startTime : Date;
-		public var endTime : Date;
+		public var startTime : Date = null;//new Date();
+		public var endTime : Date = null;//new Date();
 		private var _elapsedTime : Number = 0;
 		public var persistent : Boolean;
 
@@ -187,6 +188,7 @@ startTheWatch();
 		/////////// COUNTDOWN /////////////////
 		public var durationMS : Number = 0;
 		private var _intV : Number;
+		private static var _referenceDate:Date = new Date();
 
 		
 		
@@ -199,7 +201,7 @@ startTheWatch();
 			
 			if(!isNaN(startTimeMS)) {
 				startTime = new Date();
-				startTime.time = startTimeMS;
+				startTime.setTime( startTimeMS);
 			}
 			
 			if(durationInMS < 0) {
@@ -214,10 +216,11 @@ startTheWatch();
 				case MODE_COUNTUP:
 					if(!persistent) {
 						endTime = null;
-						startTime = (startTime == null) ? new Date() : new Date();
+						startTime = getNowDate();//.time = getNow();// = (startTime == null) ? new Date() : new Date();
 					}else {			  
 						endTime = null;
-						startTime = (startTime == null) ? new Date() : startTime;
+						
+						startTime = (startTime == null) ? getNowDate() : startTime;
 					}
 					break;
 				case MODE_COUNTDOWN:
@@ -226,13 +229,14 @@ startTheWatch();
 						_hasCompleted = false;
 						_intV = setTimeout(complete, durationMS);
 						endTime = null;
-						startTime = (startTime == null) ? new Date() : new Date();
+						startTime == getNowDate();
+//						startTime.setTime(getNow());// = (startTime == null) ? new Date() : new Date();
 					}else {
 						
 						if(!_hasCompleted) {
 							_intV = setTimeout(complete, durationMS - _elapsedTime);
 							endTime = null;
-							startTime = (startTime == null) ? new Date() : startTime;
+							startTime = (startTime == null) ? getNowDate(): startTime;
 						}
 					}
 					break;
@@ -255,7 +259,7 @@ startTheWatch();
 		public function stop() : void {
 			trace("StopWatch.stop()");
 			
-			endTime = new Date();
+			endTime = getNowDate();
 			_elapsedTime = endTime.getTime() - startTime.getTime();
 		
 			switch(mode) {
@@ -270,10 +274,19 @@ startTheWatch();
 			_isRunning = false;
 			dispatchEvent(new Event(STOP));
 		}
-
+		public function getNow():Number{
+			return _referenceDate.getTime() + getTimer();
+		}
+		public function getNowDate():Date{
+			var res:Date = new Date(_referenceDate.getTime() + getTimer());
+			return res;
+		}
 		public function reset() : void {
-			startTime = new Date();
-			endTime = new Date();
+			//startTime.setTime(getNow());// = new Date();
+			//endTime.setTime(getNow());
+			startTime = getNowDate();
+			endTime = getNowDate();
+			//endTime.time = getNow();// = new Date();
 			_elapsedTime = 0;
 			
 			_hasCompleted = false;
@@ -289,7 +302,7 @@ startTheWatch();
 
 		public function zero() : void {
 			startTime = null;
-			endTime = null;
+			endTime   = null;
 			_elapsedTime = 0;
 			
 			switch(mode) {
@@ -312,7 +325,9 @@ startTheWatch();
 		}
 
 		public function get timeStamp() : Date {
-			return new Date();
+			var res:Date = getNowDate();
+//			res.time = getNow();
+			return res;
 		}
 
 		//this updates the elapsed time
@@ -321,7 +336,7 @@ startTheWatch();
 			//if running
 			if(_hasStarted) {
 				if(_isRunning) {
-					_elapsedTime = new Date().getTime() - startTime.getTime();
+					_elapsedTime = getNow() - startTime.getTime();
 				}else {
 					_elapsedTime = endTime.getTime() - startTime.getTime();
 				}

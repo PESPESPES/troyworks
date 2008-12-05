@@ -1,4 +1,6 @@
-package com.troyworks.events { 
+package com.troyworks.core.events {
+	import com.troyworks.util.Trace; 
+
 	//!-- UTF8
 	/***********************************************************
 	* A specific event Broadcaster  e.g "myEvent" args
@@ -37,26 +39,26 @@ package com.troyworks.events {
 			/*********************************************************
 			 * Constructor for TEventDispatcher
 			 */
-			public function TEventDispatcher(stripEventLabel:Boolean){
-				this.stripEventLabel = (stripEventLabel == null) ? true : stripEventLabel;
+			public function TEventDispatcher(stripEventLabel:Boolean = true){
+				this.stripEventLabel =stripEventLabel;// (stripEventLabel == null) ? true : stripEventLabel;
 				//TDispatcher.initialize(this);
 				this.ents = new Object();
 				id = IDz++;
 			}
 			static public function initialize(p_obj:Object):Boolean {
-				public var ted:TEventDispatcher = new TEventDispatcher();
+				var ted:TEventDispatcher = new TEventDispatcher();
 				p_obj.$tevD = ted;
 				p_obj.dispatchEvent = TProxy.create(ted, ted.dispatchEvent);
 	//			p_obj.eventListenerExists = TProxy.create(ted, ted.eventListenerExists);
 				p_obj.addEventListener = TProxy.create(ted, ted.addEventListener);
 				p_obj.removeEventListener =TProxy.create(ted, ted.removeEventListener);
 				p_obj.removeAllEventListeners = TProxy.create(ted, ted.removeAllEventListeners);
-				_global.ASSetPropFlags (p_obj, "$tevD", 1);
-				_global.ASSetPropFlags (p_obj, "dispatchEvent", 1);
+			//	_global.ASSetPropFlags (p_obj, "$tevD", 1);
+			//	_global.ASSetPropFlags (p_obj, "dispatchEvent", 1);
 		//		_global.ASSetPropFlags (p_obj, "eventListenerExists", 1);
-				_global.ASSetPropFlags (p_obj, "addEventListener", 1);
-				_global.ASSetPropFlags (p_obj, "removeEventListener", 1);
-				_global.ASSetPropFlags (p_obj, "removeAllEventListeners", 1);
+			//	_global.ASSetPropFlags (p_obj, "addEventListener", 1);
+			//	_global.ASSetPropFlags (p_obj, "removeEventListener", 1);
+			//	_global.ASSetPropFlags (p_obj, "removeAllEventListeners", 1);
 				return true;
 			}
 			public function addEventListener (event:String, obj:Object, fn:Object) :void{
@@ -64,7 +66,7 @@ package com.troyworks.events {
 		  			 trace("HIGHLIGHTy TEventDispatcher" + id+".addListener   for " + event + " obj: " + obj + " fn(): " + fn);
 				}
 				//displayObj(args);
-				public var td:TDispatcher = TDispatcher(this.ents[event]);
+				var td:TDispatcher = TDispatcher(this.ents[event]);
 				if (td== null) {
 					td= new TDispatcher();
 					this.ents[event] = td;
@@ -87,7 +89,7 @@ package com.troyworks.events {
 			};
 			public function removeEventListener (event:String, obj:Object, fn:Object):void {
 				//trace("MultipleEventBroadcaster.removeListener " + event + " obj: " + object + " fn(): " + fn);
-				public var td:TDispatcher = TDispatcher(this.ents[event]);
+				 var td:TDispatcher = TDispatcher(this.ents[event]);
 				//remove event
 				arguments.shift();
 				td.removeListener.apply(td, arguments);
@@ -114,9 +116,9 @@ package com.troyworks.events {
 			};
 			public function dispatchEvent (event:Object):void {
 				
-				public var td:TDispatcher =TDispatcher(this.ents[event.type]);
+				var td:TDispatcher =TDispatcher(this.ents[event.type]);
 				if(DEBUG_TRACES_ON ||debugTracesOn || event.debug == true){
-					trace("HIGHLIGHTO TEventDispatcher" + id+" notify " + td.listeners.length + " Listeners of event "+event.type+"----------------" + util.Trace.me(arguments, "arguments", true));
+					trace("HIGHLIGHTO TEventDispatcher" + id+" notify " + td.listeners.length + " Listeners of event "+event.type+"----------------" + Trace.me(arguments, "arguments", true));
 				}
 				td.notifyListeners.apply(td, arguments);
 			};

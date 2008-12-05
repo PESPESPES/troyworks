@@ -19,7 +19,6 @@
 package com.troyworks.core.tweeny {
 
 	import com.troyworks.core.cogs.Fsm;
-	import com.troyworks.core.EventAdapter;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -219,7 +218,7 @@ package com.troyworks.core.tweeny {
 		public var onCompleteParams:Array; //An array containing the parameters that should be passed to the this.onComplete when this tween has finished.
 
 		
-		private static const _enterEvent:CogEvent = new CogEvent(CogEvent.EVTD_COG_PRIVATE_EVENT, Signals.ENTER_FRAME);
+		private static const _enterEvent:CogEvent = new CogEvent(CogEvent.Eventttt_COG_PRIVATE_EVENT, Signals.ENTER_FRAME);
 		
 		public function TweenyB(initStateName:String="s_noMovementNeeded", smName:String = "Tweeny") {
 			super(((initStateName==null)?  "s_noMovementNeeded":initStateName), ((smName==null)? "Tweeny":smName));
@@ -240,8 +239,9 @@ package com.troyworks.core.tweeny {
 				return t;
 			}else{
 				t =  new Tweeny();
-				t.setInit(target, duration);
-				t.recycleOnComplete = false;
+				t.target = target as DisplayObject;//(target, duration);
+				t.dur = duration;
+				//t.recycleOnComplete = false;
 			//	trace("cache: new Tweeny " + t.getStateMachineName());
 				return t;
 			}
@@ -265,11 +265,11 @@ package com.troyworks.core.tweeny {
 		}
 		public static function to(target:Object, duration:Number, initObj:Object = null):Tweeny{
 			var ty:Tweeny = new Tweeny();
-			ty.setTarget(target);
+			ty.target = DisplayObject(target);
 			ty.duration = duration;
 			
-			ty.initStateMachine();
-			ty.startFromBeginning();
+			//ty.initStateMachine();
+			ty.gotoAndPlay(0);
 			return ty;
 		}
 

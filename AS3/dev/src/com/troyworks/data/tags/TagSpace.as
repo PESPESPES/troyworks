@@ -1,4 +1,5 @@
-package com.troyworks.data.tags { 
+package com.troyworks.data.tags {
+	import com.troyworks.util.Trace; 
 	import com.troyworks.data.bit.BitFlag;
 	import com.troyworks.data.bit.MaskedBitFlag;
 	/**
@@ -91,7 +92,7 @@ package com.troyworks.data.tags {
 		public function buildCollisionShadow(matchClip : Object) : void {
 			var numCtx:Number = 0;
 			for(var ctx:String in matchClip){
-				trace("testing match context " + ctx + " against " + util.Trace.me(whiteList,"whiteList", true));
+				trace("testing match context " + ctx + " against " + Trace.me(whiteList,"whiteList", true));
 				if(whiteListAll ){
 					var bf : MaskedBitFlag = new MaskedBitFlag();
 					bf.b = BitFlag.ALLBITSON;

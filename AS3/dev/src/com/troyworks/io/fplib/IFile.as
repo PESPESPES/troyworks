@@ -1,19 +1,16 @@
-﻿package com.troyworks.io.fplib
-{
-	import flash.net.FileReference;
-	import flash.errors.IllegalOperationError;
-	import com.troyworks.io.fplib.IFileStream;
+﻿package com.troyworks.io.fplib {
 	import com.troyworks.io.fplib.IFileListEvent;
-	import flash.events.EventDispatcher;
+	import com.troyworks.io.fplib.IFileStream;
+	
+	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
+	import flash.net.FileReference;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
-	import flash.net.URLVariables;
-	import flash.events.IOErrorEvent;
-	import flash.utils.ByteArray;
-	import flash.errors.IOError;
-	import flash.utils.describeType;
-	
+	import flash.utils.ByteArray;	
+
 	public class IFile extends EventDispatcher
 	{
 		// Flash.filesystem.File properties		
@@ -117,7 +114,7 @@
 			
 			// Generate this.name & this.extension
 			var sUrl:String = this.relUrl;
-			var lastPartRgx:RegExp = new RegExp("([^/]+)/?$");			
+			var lastPartRgx:RegExp = new RegExp("([^/]+)/?$","g");			
 			var parts:Object = lastPartRgx.exec(sUrl);
 			
 			// Regex match failed
@@ -128,7 +125,7 @@
 			this.name = parts[1];
 			
 			if (this.isDirectory !== true) {
-				var nameRgx:RegExp = new RegExp("(.+)\\.([^\\.]+)$");
+				var nameRgx:RegExp = new RegExp("(.+)\\.([^\\.]+)$","g");
 				var nameParts:Object = nameRgx.exec(parts[1]);
 				if (nameParts) {
 					// nameParts[1]: name without extension

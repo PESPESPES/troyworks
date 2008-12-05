@@ -1,6 +1,8 @@
-package com.troyworks.core.events { 
-	import com.troyworks.hsmf.AEvent;
-	import util.Trace;
+package com.troyworks.core.events {
+	import com.troyworks.util.Trace;	
+	
+	import flash.events.Event; 
+
 	/**
 	 * A utility to be used in early application development to test out that events are 
 	 * getting sent in the correct fashion, tracing out to the console/logger. To eventually
@@ -21,12 +23,27 @@ package com.troyworks.core.events {
 			}
 			return DummyEventDispatcher.instance;
 		}
-		public function Q_dispatch(evt : AEvent) : void {
+		public function dispatchEvent(evt : Event) : Boolean {
 			trace("DummyEventDispatcher.dispatch("+ evt+")");
-			util.Trace.meAsArrayToConsole(evt.args, "Event", true);
+			trace(Trace.me(evt, "Event", true));
+			return true;
 		}
 		public function toString():String{
 			return DummyEventDispatcher.className;
+		}
+		
+		public function hasEventListener(type : String) : Boolean {
+			return true;
+		}
+		
+		public function willTrigger(type : String) : Boolean {
+				return true;
+		}
+		
+		public function removeEventListener(type : String, listener : Function, useCapture : Boolean = false) : void {
+		}
+		
+		public function addEventListener(type : String, listener : Function, useCapture : Boolean = false, priority : int = 0, useWeakReference : Boolean = false) : void {
 		}
 	}
 }

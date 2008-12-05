@@ -1,12 +1,8 @@
-package com.troyworks.framework { 
-	import com.troyworks.spring.Factory;
-	import com.troyworks.framework.logging.ILogger;
-	import com.troyworks.framework.events.IEventOracle;
-	import com.troyworks.events.TEventDispatcher;
-	import com.troyworks.framework.bootstrapper.BootTraceLogger;
-	import com.troyworks.framework.logging.SOSLogger;
-	import com.troyworks.util.DesignByContract;
-	
+package com.troyworks.framework {
+	import com.troyworks.core.events.IEventOracle;
+	import com.troyworks.logging.ILogger;
+	import com.troyworks.util.DesignByContract; 
+
 	/**
 	 * This serves as a SWF specific place to get common services, for contextualized
 	 * logging,
@@ -21,9 +17,7 @@ package com.troyworks.framework {
 		public var REQUIRE : Function;
 		protected static var instance : ApplicationContext;
 		protected var loggers:Array = new Array();
-		protected static var _b:Function = SOSLogger;
-		protected static var _c:Function = BootTraceLogger;
-		protected static var startUpDate:Date = new Date();
+			protected static var startUpDate:Date = new Date();
 		protected static var displayName:String = "DefaultApplicationContext";
 		/*design by contract log, logs errors for this particular statemachine */
 		public var dbclog : Array = new Array ();
@@ -44,7 +38,7 @@ package com.troyworks.framework {
 				obj["Logger"] = "com.troyworks.framework.logging.SOSLogger";
 				obj["Oracle"] = "com.troyworks.framework.events.DummyEventDispatcher";
 				registerImplementers(obj);
-				instance.loggers.push(BootTraceLogger.getInstance());
+				//instance.loggers.push(BootTraceLogger.getInstance());
 				  ///add in the mixins for ASSERT and REQUIRE
 	 			DesignByContract.initialize(instance);
 			//	instance.loggers.push(SOSLogger.getInstance());
@@ -53,8 +47,8 @@ package com.troyworks.framework {
 			return instance;
 		}
 		
-		protected function ApplicationContext() {
-	   		super();		
+		function ApplicationContext() {
+	   		super("ApplicationContext");		
 	   		trace("******************************************************");
 			trace("******************************************************");
 			trace("*******************ApplicationContext2***********************************");
@@ -63,14 +57,14 @@ package com.troyworks.framework {
 			trace("******************************************************");
 		}
 		public function getLogger():ILogger{
-		   var l =	getImplementor("Logger");
-		   var lc = ILogger(l);
-		   return l;
+		   var l:Object =	getImplementor("Logger");
+		   var lc:ILogger = ILogger(l);
+		   return lc;
 		}
 		public function getEventOracle():IEventOracle{
-			var ocl = getImplementor("Oracle");
-			var oclc = IEventOracle(ocl);
-			return ocl;
+			var ocl:Object = getImplementor("Oracle");
+			var oclc:IEventOracle = IEventOracle(ocl);
+			return oclc;
 		}
 		public function getStartupDate():Date{
 			return startUpDate;
@@ -81,7 +75,7 @@ package com.troyworks.framework {
 		public function log():void{
 	//			SOSLogger.traceToSOS("PRE: AppContext.log");
 			
-			for(var i in loggers){
+			for(var i:Object in loggers){
 		//		SOSLogger.traceToSOS("PRE: [ AppContext.log " + i);	
 				var log:ILogger = ILogger(loggers[i]);
 				log.log.apply(log, arguments);
@@ -96,17 +90,17 @@ package com.troyworks.framework {
 		public function getLoggerRef() : Function {
 			//	SOSLogger.traceToSOS("PRE: getLoggerREf");
 	
-			var f = function()
+			var f:Object= function():Object
 			{
-				var target = arguments.callee.target;
-				var func = arguments.callee.func;
+				var target:Object = arguments.callee.target;
+				var func:Object = arguments.callee.func;
 	//			SOSLogger.traceToSOS("PRE: LoggerDelegate() args:" + arguments + " target " + target + " func " + func);
 				return func.apply(target, arguments);
 			};
 	
 			f.target = this;
 			f.func = this.log;
-			return f;
+			return f as Function;
 		}
 	
 		/*******************************************

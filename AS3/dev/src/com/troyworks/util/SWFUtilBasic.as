@@ -1,8 +1,9 @@
 package com.troyworks.util { 
 	 /*
 	* This is a light weight class to help with loading of initial swf that have more than 1 frame
-	*
-	*/
+	 *
+	 */
+	import flash.system.Capabilities;	
 	import flash.display.MovieClip;
 	import flash.system.System;
 	public class SWFUtilBasic
@@ -28,12 +29,12 @@ package com.troyworks.util {
 			{
 				trace ("clip type MovieClip");
 				_mc = clip;
-			} else if (typeof (clip) == "string")
-			{
-				trace ("clip type string");
-				_mc = eval (String (clip));
-			}
-			if (_mc == null)
+			//} else if (typeof (clip) == "string")
+			//{
+			//	trace ("clip type string");
+			//	_mc = eval (String (clip));
+			//}
+			}else if (_mc == null)
 			{
 				throw new Error ("invalid loading clip to get progress for");
 				return null;
@@ -62,7 +63,7 @@ package com.troyworks.util {
 		
 		public static function inBrowser () : Boolean
 		{
-			var s = System.capabilities.playerType;
+			var s = Capabilities.playerType;
 			return (s == "PlugIn" || s == "ActiveX") ?true : false;
 		}
 	}

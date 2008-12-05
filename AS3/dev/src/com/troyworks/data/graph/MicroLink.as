@@ -16,7 +16,7 @@ package com.troyworks.data.graph {
 		public var weight:Number = 1;
 	
 	
-		public function MicroLink(id:Number,  name:String, nType:String, weight:Number){
+		public function MicroLink(id:Number = NaN,  name:String = "unnamedLink", nType:String ="", weight:Number= 0.0){
 			trace("creating new link " + id + " name " + name + " type "  + nType + " weight " + weight);
 			//this.core = core;
 			this._fromNode = undefined;
@@ -54,10 +54,10 @@ package com.troyworks.data.graph {
 		public function removeNode(incoming:Boolean, link:MicroLink):void{
 			if(incoming){
 				this._fromNode = null;
-				this._fromNodeID = null;
+				this._fromNodeID = NaN;
 			} else {
 				this._toNode = null;
-				this._toNodeID = null;
+				this._toNodeID = NaN;
 			}
 		}
 		public function traceMe (str : String, lvl : Number) : void

@@ -1,22 +1,23 @@
-package com.troyworks.framework { 
-	import com.troyworks.hsmf.Hsmf;
+package com.troyworks.framework {
+	import com.troyworks.core.cogs.CogEvent;
+	import com.troyworks.core.cogs.Hsm;
 	import com.troyworks.framework.model.BaseModelObject;
-	import com.troyworks.hsmf.AEvent;
-	import com.troyworks.ui.tree.ITreeDataProvider;
+	import com.troyworks.util.Trace;		
+
 	/**
 	 * @author Troy Gardner
 	 */
-	import flash.xml.XMLDocument;
-	import flash.xml.XMLNode;
-	public class BaseStatefulObject extends Hsmf implements ITreeDataProvider {
+
+	
+	public class BaseStatefulObject extends Hsm {
 		
 		
 		public var _id_ : Number = NaN;
 		public var _extendedToString : Boolean = false;
 		protected static var _className : String = "com.troyworks.framework.model.BaseModelObject";
 	
-		public function BaseStatefulObject(initialState : Function, hsmfName : String, aInit : Boolean) {
-			super ((initialState == null)? s_initial :initialState, (hsmfName != null)?hsmfName:":BaseStatefulObject", aInit);
+		public function BaseStatefulObject(initState:String = "s_initial", hsmfName:String = "BaseStatefulObject",aInit:Boolean = true) {
+			super(initState,hsmfName,aInit);
 			_id_ = BaseModelObject.IDz++;
 		}
 		public function toString() : String{
@@ -24,63 +25,61 @@ package com.troyworks.framework {
 			var res : String = null;
 			//util.Trace.engageLoopCheck();
 			if(_extendedToString){
-				res =util.Trace.me(this, _className);
+				res =Trace.me(this, _className);
 			}else{
 				res = ("BaseStatefulObject _id_ " + _id_);
 			}
 			//util.Trace.disEngageLoopCheck();
 			return res;
 		}
-		public function toXML(tree : XMLDocument) : XMLNode {
+		public function toXML(tree : XML) : XML {
 			if (tree == null) {
-				tree = new XMLDocument();
+				tree = new XML();
 			}
-			var n : XMLNode = tree.createElement("BaseStatefulObject");
+			//XXX TODO
+			var n : XML = tree.createElement("BaseStatefulObject");
 			n.attributes.label = "BaseStatefulObject";
 			return n;
 			
 		}
-		public function addEventListener(evt : String, arg1 : Object, arg2 : Object, arg3 : Object) : void {
-			super.addEventListener.apply(this, arguments);
-		}
 		
 		
 		/*..PSEUDOSTATE...............................................................*/
-		public function s_initial(e : AEvent) : void
+		public function s_initial(e : CogEvent) :  Function
 		{
 			//trace("************************* s_initial " + util.Trace.me(e)+" ******************");
-			onFunctionEnter ("s_initial-", e, []);
-			if(e.sig != Q_TRACE_SIG){
-				Q_INIT(s_active);
+			//onFunctionEnter ("s_initial-", e, []);
+			if(e.sig != SIG_TRACE) {
+				return s_active;
 			}
 		}
 		/*.................................................................*/
-		public function s_active(e : AEvent) : Function
+		public function s_active(e : CogEvent) : Function
 		{
-			onFunctionEnter ("s_begin-", e, []);
+			//onFunctionEnter ("s_begin-", e, []);
 			switch (e.sig)
 			{
-				case Q_ENTRY_SIG :
-				{
+				case SIG_ENTRY :
+					{
 	
 					return null;
 				}
 	
-				case Q_TERMINATE_SIG:
-				{
-					Q_TRAN(s_final);
+				case SIG_TERMINATE:
+					{
+					tran(s_final);
 					return null;
 				}
 			}
-			return s_top;
+			return s_root;
 		}
 		/*..PSEUDOSTATE...............................................................*/
-		public function s_final(e : AEvent) : void
+		public function s_final(e : CogEvent) : void
 		{
-			this.onFunctionEnter ("s_final-", e, []);
+			//this.onFunctionEnter ("s_final-", e, []);
 			switch (e.sig)
 			{
-				case Q_ENTRY_SIG :
+				case SIG_ENTRY :
 				{
 					return;
 				}

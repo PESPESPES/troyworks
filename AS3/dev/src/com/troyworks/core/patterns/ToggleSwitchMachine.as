@@ -80,7 +80,7 @@ package com.troyworks.core.patterns {
 	}
 	 class ToggleSwitchMachineEvent extends CogEvent{
 		public static function getToggleEvent():ToggleSwitchMachineEvent{
-		  return new ToggleSwitchMachineEvent(CogEvent.EVTD_COG_PRIVATE_EVENT,ToggleSwitchMachineSignal.TOGGLE_SIG);
+		  return new ToggleSwitchMachineEvent(CogEvent.Eventttt_COG_PRIVATE_EVENT,ToggleSwitchMachineSignal.TOGGLE_SIG);
 		}
 	}*/
 	

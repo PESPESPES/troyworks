@@ -5,7 +5,7 @@ package com.troyworks.framework.loader {
 	import com.troyworks.core.cogs.CogEvent;	
 	import com.troyworks.core.cogs.Hsm; 
 	import flash.display.BitmapData;
-	import com.troyworks.controls.tloadingIndicator.MCLoadingProgressIndicator;
+//	import com.troyworks.controls.tloadingIndicator.MCLoadingProgressIndicator;
 	/**
 	 * @author Troy Gardner
 	 * hasStarted
@@ -39,7 +39,7 @@ package com.troyworks.framework.loader {
 		public var hasStarted : Boolean;
 		public var target : MovieClip;
 		public var target_loadTarget : MovieClip;
-		public var loadingProgress_mc : MCLoadingProgressIndicator;
+		public var loadingProgress_mc : MovieClip;// MCLoadingProgressIndicator;
 		public var actTarget : MovieClip;
 	
 		public static var EVT_DATA_LOADED : String = "DATA_LOADED";
@@ -254,7 +254,7 @@ package com.troyworks.framework.loader {
 					}else if(errorTime < getTimer() ){
 						requestTran(s1_errorInLoading);
 					}else {
-						trace("Loader.actTarget _url " + actTarget._url + "actTarget.name " + actTarget.name+ " totalFrames " + actTarget.totalFrames + " bytesTot: " + actTarget.getBytesTotal()+ " time " +getTimer() + " " + errorTime);
+						//trace("Loader.actTarget _url " + actTarget._url + "actTarget.name " + actTarget.name+ " totalFrames " + actTarget.totalFrames + " bytesTot: " + actTarget.getBytesTotal()+ " time " +getTimer() + " " + errorTime);
 					}
 					return null;
 				}
@@ -289,7 +289,7 @@ package com.troyworks.framework.loader {
 				}
 				case SIG_PULSE:
 				{
-					trace("----MCL pulse-----"  + loadingProgress_mc + " func: " + util.Trace.me(loadingProgress_mc.gotoLoadingPercent, " looking for func", true));
+					//trace("----MCL pulse-----"  + loadingProgress_mc + " func: " + Trace.me(loadingProgress_mc.gotoLoadingPercent, " looking for func", true));
 					var l : Number = getAmountLoaded();
 					var tot : Number = getTotalSize();
 					var percent : Number = Math.round(l/tot*100);

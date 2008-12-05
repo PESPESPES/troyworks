@@ -1,4 +1,4 @@
-package  { 
+package com.troyworks.data.graph { 
 
 	class PatternFactory {
 		protected var handleEvent:Function;

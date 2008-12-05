@@ -7,7 +7,7 @@ package com.troyworks.logging {
 	 */
 	import flash.events.SecurityErrorEvent;	
 	import flash.events.ProgressEvent;	
-	import flash.events.DataEvent;	
+	//import flash.events.DatCogEventntntnt;	
 	import flash.events.Event;	
 	import flash.events.IEventDispatcher;	
 	import flash.events.IOErrorEvent;
@@ -57,7 +57,7 @@ package com.troyworks.logging {
 		 private function configureListeners(dispatcher:IEventDispatcher):void {
             dispatcher.addEventListener(Event.CLOSE, closeHandler);
            
-        //    dispatcher.addEventListener(DataEvent.DATA, dataHandler);
+        //    dispatcher.addEventListenCogEventventventvent.DATA, dataHandler);
             dispatcher.addEventListener(IOErrorEvent.IO_ERROR, onIOErrorEvent);
        //     dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
             dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
@@ -76,9 +76,9 @@ package com.troyworks.logging {
             trace("connectMessageHandler: " + event);
         }
 
-        private function dataHandler(event:DataEvent):void {
-            trace("dataHandler: " + event);
-        }
+//        private function dataHandlCogEventgEventgEventgEvent):void {
+ //           trace("dataHandler: " + event);
+  //      }
         private function progressHandler(event:ProgressEvent):void {
             trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
         }

@@ -1,9 +1,5 @@
 package com.troyworks.framework.assets {
 	import com.troyworks.framework.assets.AssetCreatorCategory;	
-
-
-	import flash.xml.XMLDocument;
-	import flash.xml.XMLNode;
 	public class MultiResolutionAsset extends Asset
 	{
 		//the thumbnail equivalent for display in the media gallery

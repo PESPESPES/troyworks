@@ -39,7 +39,7 @@
 			loader.load(new URLRequest(this.url), addedDefinitions);
 		}
 		
-		private static function load(url:String, callback:Function = null):void
+		private static function loadLib(url:String, callback:Function = null):void
 		{
 			var el = new ExternalLibrary;
 			el.setUrl(url);
@@ -50,13 +50,13 @@
 		public static function loadAirLib(callback:Function = null)
 		{
 			ExternalLibrary.library = 'airlib';
-			ExternalLibrary.load('air-lib.swf', callback);
+			ExternalLibrary.loadLib('air-lib.swf', callback);
 		}
 		
 		public static function loadPlayerLib(callback:Function = null)
 		{
 			ExternalLibrary.library = 'fplib';
-			ExternalLibrary.load('fp-lib.swf', callback);
+			ExternalLibrary.loadLib('fp-lib.swf', callback);
 		}
 		
 		public static function create(className:String, params:* = null):Object
@@ -70,7 +70,7 @@
 			}
 		}
 		
-		public static function static(className:String):Class
+		public static function statics(className:String):Class
 		{
 			var fullClassName:String = 'com.troyworks.io.' + ExternalLibrary.library + '.' + className;
 			trace(fullClassName);

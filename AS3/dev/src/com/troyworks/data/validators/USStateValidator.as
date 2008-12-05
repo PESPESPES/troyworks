@@ -1,5 +1,5 @@
 package com.troyworks.data.validators { 
-	import com.troyworks.controls.tautocomplete.AutoCompleteDataItem;
+
 	
 	/**
 	 * Taken from the USPS
@@ -8,70 +8,81 @@ package com.troyworks.data.validators {
 	 */
 	public class USStateValidator extends Validator {
 	
-		public static var ALABAMA:AutoCompleteDataItem = new AutoCompleteDataItem("ALABAMA", 02, "AL");
-		public static var ALASKA:AutoCompleteDataItem = new AutoCompleteDataItem("ALASKA", 02, "AK");
-		public static var AMERICAN_SAMOA:AutoCompleteDataItem = new AutoCompleteDataItem("AMERICAN SAMOA", 02, "AS");
-		public static var ARIZONA:AutoCompleteDataItem = new AutoCompleteDataItem("ARIZONA", 02, "AZ");
-		public static var ARKANSAS:AutoCompleteDataItem = new AutoCompleteDataItem("ARKANSAS", 02, "AR");
-		public static var CALIFORNIA:AutoCompleteDataItem = new AutoCompleteDataItem("CALIFORNIA", 02, "CA");
-		public static var COLORADO:AutoCompleteDataItem = new AutoCompleteDataItem("COLORADO", 02, "CO");
-		public static var CONNECTICUT:AutoCompleteDataItem = new AutoCompleteDataItem("CONNECTICUT", 02, "CT");
-		public static var DELAWARE:AutoCompleteDataItem = new AutoCompleteDataItem("DELAWARE", 02, "DE");
-		public static var DISTRICT_OF_COLUMBIA:AutoCompleteDataItem = new AutoCompleteDataItem("DISTRICT OF COLUMBIA", 02, "DC");
-		public static var FEDERATED_STATES_OF_MICRONESIA:AutoCompleteDataItem = new AutoCompleteDataItem("FEDERATED STATES OF MICRONESIA", 02, "FM");
-		public static var FLORIDA:AutoCompleteDataItem = new AutoCompleteDataItem("FLORIDA", 02, "FL");
-		public static var GEORGIA:AutoCompleteDataItem = new AutoCompleteDataItem("GEORGIA", 02, "GA");	
-		public static var GUAM :AutoCompleteDataItem = new AutoCompleteDataItem("GUAM ", 02, "GU");
-		public static var HAWAII:AutoCompleteDataItem = new AutoCompleteDataItem("HAWAII", 02, "HI");
-		public static var IDAHO:AutoCompleteDataItem = new AutoCompleteDataItem("IDAHO", 02, "ID");	
-		public static var ILLINOIS :AutoCompleteDataItem = new AutoCompleteDataItem("ILLINOIS ", 02, "IL");
-		public static var INDIANA:AutoCompleteDataItem = new AutoCompleteDataItem("INDIANA", 02, "IN");
-		public static var IOWA:AutoCompleteDataItem = new AutoCompleteDataItem("IOWA", 02, "IA");
-		public static var KANSAS:AutoCompleteDataItem = new AutoCompleteDataItem("KANSAS", 02, "KS");
-		public static var KENTUCKY:AutoCompleteDataItem = new AutoCompleteDataItem("KENTUCKY", 02, "KY");
-		public static var LOUISIANA:AutoCompleteDataItem = new AutoCompleteDataItem("LOUISIANA", 02, "LA");
-		public static var MAINE:AutoCompleteDataItem = new AutoCompleteDataItem("MAINE", 02, "ME");
-		public static var MARSHALL_ISLANDS:AutoCompleteDataItem = new AutoCompleteDataItem("MARSHALL ISLANDS", 02, "MH");
-		public static var MARYLAND:AutoCompleteDataItem = new AutoCompleteDataItem("MARYLAND", 02, "MD");
-		public static var MASSACHUSETTS:AutoCompleteDataItem = new AutoCompleteDataItem("MASSACHUSETTS", 02, "MA");
-		public static var MICHIGAN:AutoCompleteDataItem = new AutoCompleteDataItem("MICHIGAN", 02, "MI");
-		public static var MINNESOTA:AutoCompleteDataItem = new AutoCompleteDataItem("MINNESOTA", 02, "MN");
-		public static var MISSISSIPPI:AutoCompleteDataItem = new AutoCompleteDataItem("MISSISSIPPI", 02, "MS");
-		public static var MISSOURI:AutoCompleteDataItem = new AutoCompleteDataItem("MISSOURI", 02, "MO");
-		public static var MONTANA:AutoCompleteDataItem = new AutoCompleteDataItem("MONTANA", 02, "MT");
-		public static var NEBRASKA:AutoCompleteDataItem = new AutoCompleteDataItem("NEBRASKA", 02, "NE");
-		public static var NEVADA:AutoCompleteDataItem = new AutoCompleteDataItem("NEVADA", 02, "NV");
-		public static var NEW_HAMPSHIRE:AutoCompleteDataItem = new AutoCompleteDataItem("NEW_HAMPSHIRE", 02, "NH");
-		public static var NEW_JERSEY:AutoCompleteDataItem = new AutoCompleteDataItem("NEW_JERSEY", 02, "NJ");
-		public static var NEW_MEXICO:AutoCompleteDataItem = new AutoCompleteDataItem("NEW_MEXICO", 02, "NM");
-		public static var NEW_YORK:AutoCompleteDataItem = new AutoCompleteDataItem("NEW YORK", 02, "NY");
-		public static var NORTH_CAROLINA:AutoCompleteDataItem = new AutoCompleteDataItem("NORTH CAROLINA", 02, "NC");
-		public static var NORTH_DAKOTA:AutoCompleteDataItem = new AutoCompleteDataItem("NORTH_DAKOTA", 02, "ND");
-		public static var NORTHERN_MARIANA_ISLANDS:AutoCompleteDataItem = new AutoCompleteDataItem("NORTHERN_MARIANA_ISLANDS", 02, "MP");
-		public static var OHIO:AutoCompleteDataItem = new AutoCompleteDataItem("OHIO", 02, "OH");
-		public static var OKLAHOMA:AutoCompleteDataItem = new AutoCompleteDataItem("OKLAHOMA", 02, "OK");
-		public static var OREGON:AutoCompleteDataItem = new AutoCompleteDataItem("OREGON", 02, "OR");
-		public static var PALAU:AutoCompleteDataItem = new AutoCompleteDataItem("PALAU", 02, "PW");
-		public static var PENNSYLVANIA:AutoCompleteDataItem = new AutoCompleteDataItem("PENNSYLVANIA", 02, "PA");
-		public static var PUERTO_RICO:AutoCompleteDataItem = new AutoCompleteDataItem("PUERTO RICO", 02, "PR");
-		public static var RHODE_ISLAND:AutoCompleteDataItem = new AutoCompleteDataItem("RHODE ISLAND", 02, "RI");
-		public static var SOUTH_CAROLINA:AutoCompleteDataItem = new AutoCompleteDataItem("SOUTH CAROLINA", 02, "SC");
-		public static var SOUTH_DAKOTA:AutoCompleteDataItem = new AutoCompleteDataItem("SOUTH DAKOTA", 02, "SD");
-		public static var TENNESSEE:AutoCompleteDataItem = new AutoCompleteDataItem("TENNESSEE", 02, "TN");
-		public static var TEXAS:AutoCompleteDataItem = new AutoCompleteDataItem("TEXAS", 02, "TX");
-		public static var UTAH:AutoCompleteDataItem = new AutoCompleteDataItem("UTAH", 02, "UT");
-		public static var VERMONT:AutoCompleteDataItem = new AutoCompleteDataItem("VERMONT", 02, "VT");
-		public static var VIRGIN_ISLANDS:AutoCompleteDataItem = new AutoCompleteDataItem("VIRGIN ISLANDS", 02, "VI");
-		public static var VIRGINIA:AutoCompleteDataItem = new AutoCompleteDataItem("VIRGINIA", 02, "VA");
-		public static var WASHINGTON:AutoCompleteDataItem = new AutoCompleteDataItem("WASHINGTON", 02, "WA");
-		public static var WEST_VIRGINIA:AutoCompleteDataItem = new AutoCompleteDataItem("WEST VIRGINIA", 02, "WV");
-		public static var WISCONSIN:AutoCompleteDataItem = new AutoCompleteDataItem("WISCONSIN", 02, "WI");
-		public static var WYOMING:AutoCompleteDataItem = new AutoCompleteDataItem("WYOMING", 02, "WY");
+		public static const ALABAMA:USState = new USState("ALABAMA", "AL");
+		public static const ALASKA:USState = new USState("ALASKA", "AK");
+		public static const AMERICAN_SAMOA:USState = new USState("AMERICAN SAMOA", "AS");
+		public static const ARIZONA:USState = new USState("ARIZONA", "AZ");
+		public static const ARKANSAS:USState = new USState("ARKANSAS", "AR");
+		public static const CALIFORNIA:USState = new USState("CALIFORNIA", "CA");
+		public static const COLORADO:USState = new USState("COLORADO", "CO");
+		public static const CONNECTICUT:USState = new USState("CONNECTICUT", "CT");
+		public static const DELAWARE:USState = new USState("DELAWARE", "DE");
+		public static const DISTRICT_OF_COLUMBIA:USState = new USState("DISTRICT OF COLUMBIA", "DC");
+		public static const FEDERATED_STATES_OF_MICRONESIA:USState = new USState("FEDERATED STATES OF MICRONESIA", "FM");
+		public static const FLORIDA:USState = new USState("FLORIDA", "FL");
+		public static const GEORGIA:USState = new USState("GEORGIA", "GA");	
+		public static const GUAM :USState = new USState("GUAM ", "GU");
+		public static const HAWAII:USState = new USState("HAWAII", "HI");
+		public static const IDAHO:USState = new USState("IDAHO", "ID");	
+		public static const ILLINOIS :USState = new USState("ILLINOIS ", "IL");
+		public static const INDIANA:USState = new USState("INDIANA", "IN");
+		public static const IOWA:USState = new USState("IOWA", "IA");
+		public static const KANSAS:USState = new USState("KANSAS", "KS");
+		public static const KENTUCKY:USState = new USState("KENTUCKY", "KY");
+		public static const LOUISIANA:USState = new USState("LOUISIANA", "LA");
+		public static const MAINE:USState = new USState("MAINE", "ME");
+		public static const MARSHALL_ISLANDS:USState = new USState("MARSHALL ISLANDS", "MH");
+		public static const MARYLAND:USState = new USState("MARYLAND", "MD");
+		public static const MASSACHUSETTS:USState = new USState("MASSACHUSETTS", "MA");
+		public static const MICHIGAN:USState = new USState("MICHIGAN", "MI");
+		public static const MINNESOTA:USState = new USState("MINNESOTA", "MN");
+		public static const MISSISSIPPI:USState = new USState("MISSISSIPPI", "MS");
+		public static const MISSOURI:USState = new USState("MISSOURI", "MO");
+		public static const MONTANA:USState = new USState("MONTANA", "MT");
+		public static const NEBRASKA:USState = new USState("NEBRASKA", "NE");
+		public static const NEVADA:USState = new USState("NEVADA", "NV");
+		public static const NEW_HAMPSHIRE:USState = new USState("NEW_HAMPSHIRE", "NH");
+		public static const NEW_JERSEY:USState = new USState("NEW_JERSEY", "NJ");
+		public static const NEW_MEXICO:USState = new USState("NEW_MEXICO", "NM");
+		public static const NEW_YORK:USState = new USState("NEW YORK", "NY");
+		public static const NORTH_CAROLINA:USState = new USState("NORTH CAROLINA", "NC");
+		public static const NORTH_DAKOTA:USState = new USState("NORTH_DAKOTA", "ND");
+		public static const NORTHERN_MARIANA_ISLANDS:USState = new USState("NORTHERN_MARIANA_ISLANDS", "MP");
+		public static const OHIO:USState = new USState("OHIO", "OH");
+		public static const OKLAHOMA:USState = new USState("OKLAHOMA", "OK");
+		public static const OREGON:USState = new USState("OREGON", "OR");
+		public static const PALAU:USState = new USState("PALAU", "PW");
+		public static const PENNSYLVANIA:USState = new USState("PENNSYLVANIA", "PA");
+		public static const PUERTO_RICO:USState = new USState("PUERTO RICO", "PR");
+		public static const RHODE_ISLAND:USState = new USState("RHODE ISLAND", "RI");
+		public static const SOUTH_CAROLINA:USState = new USState("SOUTH CAROLINA", "SC");
+		public static const SOUTH_DAKOTA:USState = new USState("SOUTH DAKOTA", "SD");
+		public static const TENNESSEE:USState = new USState("TENNESSEE", "TN");
+		public static const TEXAS:USState = new USState("TEXAS", "TX");
+		public static const UTAH:USState = new USState("UTAH", "UT");
+		public static const VERMONT:USState = new USState("VERMONT", "VT");
+		public static const VIRGIN_ISLANDS:USState = new USState("VIRGIN ISLANDS", "VI");
+		public static const VIRGINIA:USState = new USState("VIRGINIA", "VA");
+		public static const WASHINGTON:USState = new USState("WASHINGTON", "WA");
+		public static const WEST_VIRGINIA:USState = new USState("WEST VIRGINIA", "WV");
+		public static const WISCONSIN:USState = new USState("WISCONSIN", "WI");
+		public static const WYOMING:USState = new USState("WYOMING", "WY");
 	
-	
-	
+		
+		private var AB_idx:Object = new Object();
+		private var FULL_idx:Object = new Object();
+		//private static var hasInit:Boolean = false;
 		public function USStateValidator() {
 			super();
+		}
+		public function init():void{
+			//TODO fill out indexes with the objects.
+		}
+		public function containsAbbeviation(key:String):Boolean{
+			return AB_idx[key] != null;
+		}
+		public function containsFullname(fullName:String):Boolean{
+			return FULL_idx[fullName] != null;
 		}
 	
 	}

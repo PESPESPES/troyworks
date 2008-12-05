@@ -1,5 +1,4 @@
 package com.troyworks.framework.controller { 
-	import com.troyworks.hsmf.Hsmf;
 	import com.troyworks.framework.BaseStatefulObject;
 	
 	/**
@@ -7,8 +6,8 @@ package com.troyworks.framework.controller {
 	 */
 	public class BaseController extends BaseStatefulObject {
 		
-		public function BaseController(initialState:Function, hsmfName:String, aInit:Boolean) {
-			super(initialState, (hsmfName== null)?"BaseController":hsmfName,aInit);
+		public function BaseController(initialState:String = "s_initial", hsmfName:String = "BaseController", aInit:Boolean = true) {
+			super(initialState, hsmfName,aInit);
 		}
 	
 	}

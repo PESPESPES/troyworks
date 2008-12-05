@@ -5,7 +5,7 @@
 */
 
 package com.troyworks.core.tweeny {
-	import flash.display.*	
+	import flash.display.*;	
 	public class Tweeny extends Teeny{
 		
 		//tmp holders
@@ -25,7 +25,7 @@ package com.troyworks.core.tweeny {
 			$s = dObj;
 		}*/
 		public function get totalTime():Number{
-			return dur + _delay
+			return dur + _delay;
 		}	
 		public function toString():String{
 			trace(-_delay + "> " + 0+ "( " + ct + " )" + dur);

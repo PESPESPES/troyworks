@@ -19,6 +19,7 @@
 		private var _endTime:Number;
 		private var duration:Number;
 		public var origEvent:Event;
+		public var args:Object;
 		private var _isHandled:Boolean = false;
 		private var _continuePropogation:Boolean = true;
 		
@@ -60,6 +61,7 @@
 		public override function clone():Event {
 
 			var ret:CogEvent = new CogEvent(type, _sig, bubbles, cancelable);
+			ret.args = this.args;
 			return ret;
 
 		}

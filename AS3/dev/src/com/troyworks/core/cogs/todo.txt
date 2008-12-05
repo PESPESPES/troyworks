@@ -1,4 +1,20 @@
-	/*
+TODO
+- cache class discovery (static)
+- Dictionary for the function to function name lookup.
+- externalize the fsm trans and hsm trans
+ -- cached for later.
+ -- reroute (e.g. add waypoints).
+ -- discrete phases of:
+  -- 1)(re)routing discovery
+  -- 2) executing first time (profiling and watching the events actually processed)
+  -- 3) executing optimized.
+- create an interface to the current and next state
+ -- so movieclips, textfields etc. can participate as a statemachine
+ 
+ IExternalizeable the statemachines so they can be stored and retrieved.
+ - state lookup. Get a state implementation
+ 
+ 	/*
 	* This is a heirarchical statemachine inspired by Miro Samek's Quantum Statemachine Framework
 	* that uses functions for the states, and function pointers for the statetransitions and heirarchy,
 	* this is the 3rd major revision, rebuilt from scratch to take advantage of Actionscript 3.0's 
