@@ -159,21 +159,23 @@
 
 		override public function passesFilter(itemVal : *, index : int = 0, array : Array = null) : Boolean {
 			//public function passesMinAndMaxCheck(minVal : Number, maxVal : Number) : Boolean {
-			//trace(itemVal + " ? passesMinAndMaxCheck " + min + " " + max);
+			
 			finalRes = false;
 			_minIn = itemVal;
 			_maxIn = itemVal;
-			minPassesMin = passesMinCheck(_minIn, minRelationToMin, false);
-			minPassesMax = passesMaxCheck(_minIn, minRelationToMax, false);
-			maxPassesMin = passesMinCheck(_maxIn, maxRelationToMin, false);
-			maxPassesMax = passesMaxCheck(_maxIn, maxRelationToMax, false);
-			finalRes = minPassesMin && minPassesMax && maxPassesMin && maxPassesMax;
+			minPassesMin = passesMinCheck(itemVal, minRelationToMin, false);
+			maxPassesMax = passesMaxCheck(itemVal, maxRelationToMax, false);
+			//maxPassesMin = passesMinCheck(_maxIn, maxRelationToMin, false);
+			//maxPassesMax = passesMaxCheck(_maxIn, maxRelationToMax, false);
+			finalRes = minPassesMin && maxPassesMax;//minPassesMin && minPassesMax && maxPassesMin && maxPassesMax;
 			if(invert) {
 				finalRes = !finalRes;
 			}
 			if(finalRes) {
 				onPassedFiltered();
 			}
+			trace(itemVal + " ? passesMinAndMaxCheck " + min + " " + max + " "+ finalRes);
+			
 			return finalRes;
 		}
 

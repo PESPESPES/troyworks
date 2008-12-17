@@ -1,10 +1,7 @@
 ﻿package com.troyworks.data.valueobjects {
-	import com.troyworks.data.filters.Filter;	
-	import com.troyworks.data.filters.NumberRangeBooleanFilter;	
-	import com.adobe.utils.NumberFormatter;	
 	import com.troyworks.data.DataChangedEvent;	
-
-	import flash.events.EventDispatcher;	
+	
+	import flash.events.Event;	
 
 	/*
 	 * NumberVO
@@ -43,20 +40,28 @@
 
 	public class NumberVO extends ValueObject {
 		private var _val : Number = NaN;
-			
 
-		public function NumberVO(val : Number) {
+		
+		public function NumberVO(val : Number, myConstraint : Function = null, myTriggers : Array = null) {
 			super();
 			_val = val;
+			constraint = myConstraint;
+			triggers = (myTriggers == null) ? new Array() : myTriggers;	
 		}
 
-		public function set value(newVal : Number):void {
+		public function set value(newVal : Number) : void {
 			if(constraint != null) {
 				newVal = constraint(newVal);
 			}
 			if (_val != newVal) {
-				onChanged(newVal,_val);
-				_val = newVal;
+				//PRE COMMIT
+				var evt : DataChangedEvent = onChanged(newVal, _val, PRE_DATA_CHANGE);
+				if(evt.cancelable && evt.isCancelled){
+				}else {
+					_val = newVal;
+					//POST COMMIT
+					onChanged(newVal, _val, DATA_CHANGE);
+				}
 			}
 		}
 

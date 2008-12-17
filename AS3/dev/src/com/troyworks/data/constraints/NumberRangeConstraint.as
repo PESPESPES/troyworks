@@ -5,10 +5,11 @@ package com.troyworks.data.constraints {
 	 * @author Troy Gardner
 	 */
 	public class NumberRangeConstraint extends NumberConstraint {
-		public var min:Number =0;
-		public var max:Number = 0;
-		public function NumberRangeConstraint() {
+		public function NumberRangeConstraint(myMin:Number, myMax:Number) {
+			
 			super();
+			min = myMin;
+			max = myMax;
 		}
 		public function constrainToRange(val:Number):Number{
 			return Math.min(Math.max(min, val),max);
