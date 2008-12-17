@@ -73,6 +73,18 @@
 	}
  * @author Troy Gardner troy@troyworks.com http://www.troyworks.com/tweeny/
  * @version 1.1
+ * 
+ * TODO
+ *  staggered tweens?
+ *  call functions?
+ *  processing strings as time e.g. 1.5second, 1500ms
+ *  oscillating tweens eases
+ *  TextField properties tween
+ *  relative change
+ *  retarget while running
+ *  stepped function
+ *  random ease
+ *  osillator easy
  */
 
 package com.troyworks.core.tweeny {
@@ -412,6 +424,9 @@ package com.troyworks.core.tweeny {
 			dl = del * 1000;
 		//	trace("delay"  + dl + " " + del + " " + fps);
 		}
+		public function get durationLeft():Number{
+			return t-d;
+		}
 
 		/*************************************
 		 *             |<--- d --->|
@@ -467,6 +482,9 @@ package com.troyworks.core.tweeny {
 		 *  The primary render loop
 		 *  not that the start and finish can be called back in
 		 * the same pulse when there is a zero duration.
+		 * 
+		 * note that when Tny's exist they are always getting the
+		 * onPulse, this is to avoid startup of animation overhead.
 		 * **/
 		public function onPulse(evt : Object = null) : void {
 			//trace("Tny.Render pulse-----------");
