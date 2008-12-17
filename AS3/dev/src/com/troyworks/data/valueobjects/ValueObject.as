@@ -70,11 +70,11 @@ package com.troyworks.data.valueobjects {
 			super();
 		}
 
-		public function addOnValueAction(rangeFilter : Filter, fn : Function) : void {
+		public function addOnValueChangedAction(rangeFilter : Filter, fn : Function) : void {
 			triggers.push({gaurd:rangeFilter, fn:fn});
 		}
 
-		public function removeOnValueAction(rangeFilter : Filter = null, fn : Function = null) : Boolean {
+		public function removeOnValueChangedAction(rangeFilter : Filter = null, fn : Function = null) : Boolean {
 			var tr : Object = null;
 			var remove : Boolean = false;
 			for (var i : Number = 0;i < triggers.length; i++) {
