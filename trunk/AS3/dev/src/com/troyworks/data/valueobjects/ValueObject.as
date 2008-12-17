@@ -65,6 +65,8 @@ package com.troyworks.data.valueobjects {
 		public var triggers : Array = new Array();
 		//used when synchroizing
 		public var isDirty : Boolean = false;
+		public static const PRE_DATA_CHANGE : String = DataChangedEvent.PRE_DATA_CHANGE;
+		public static const DATA_CHANGE : String = DataChangedEvent.DATA_CHANGE;
 
 		public function ValueObject() {
 			super();
@@ -95,20 +97,29 @@ package com.troyworks.data.valueobjects {
 			return false;
 		}
 
-		protected function onChanged(currentVal : *, oldVal : *) : void {
-			var evt : DataChangedEvent = new DataChangedEvent(DataChangedEvent.CHANGED);
+		protected function onChanged(currentVal : *, oldVal : *, phase : String = DATA_CHANGE) : DataChangedEvent {
+			var evt : DataChangedEvent;
+			if(phase == PRE_DATA_CHANGE) {
+				evt = new DataChangedEvent(PRE_DATA_CHANGE, true, true);
+			}else if(phase == DATA_CHANGE) {
+				evt = new DataChangedEvent(DATA_CHANGE, true, false);
+			}
 			evt.oldVal = oldVal;
 			evt.currentVal = currentVal;
-			
-			isDirty = true;
+			if(phase == DATA_CHANGE) {
+				isDirty = true;
+			}
 			dispatchEvent(evt);
-			///////////
-			for (var i : int = 0;i < triggers.length; i++) {
-				var tr : Object = triggers[i];
-				if (tr.gaurd.passesFilter(currentVal)) {
-					tr.fn();
+			if(phase == DATA_CHANGE) {
+				///////////
+				for (var i : int = 0;i < triggers.length; i++) {
+					var tr : Object = triggers[i];
+					if (tr.gaurd.passesFilter(currentVal)) {
+						tr.fn();
+					}
 				}
 			}
+			return evt;
 		}
 	}
 }
