@@ -174,23 +174,29 @@ package com.troyworks.data {
 
 		/* var ary = ["A","B","C"]; // A,B,C,A,B,C */
 
-		public function getNextInLoop() : Object {
+		public function getNextInLoop(times : int = 1) : Object {
 
 			//trace("ary " + ary);
-			var cur : Object = super.shift();
-		//	trace("cur " + cur);
-			super.push(cur);
+			var cur : Object;
+			while(times--) { 
+				cur = super.shift();
+				//	trace("cur " + cur);
+				super.push(cur);
+			}
 			//trace("ary " + ary);
 			return cur;
 		}
 
 		/* var ary = ["A","B","C"]; // C,B,A,C,B,C */
-		public function getPrevInLoop() : Object {
+		public function getPrevInLoop(times : int = 1) : Object {
 
 			//trace("ary " + ary);
-			var cur : Object = super.pop();
-		//	trace("cur " + cur);
-			super.unshift(cur);
+			var cur : Object;
+			while(times--) { 
+				cur = super.pop();
+				//	trace("cur " + cur);
+				super.unshift(cur);
+			}
 			//trace("ary " + ary);
 			return cur;
 		}
@@ -458,6 +464,7 @@ package com.troyworks.data {
 			return (0 <= num && num <= this.length - 1); 
 		}
 
+		/* if the array is a collection of numbers return the closest numeric value*/
 		public function snapToClosest(num : Number) : Number {
 			var range : Array = this;
 			num = Math.round(num);

@@ -5,6 +5,28 @@ package com.troyworks.framework.ui {
 	/**
 	 * @author Troy Gardner
 	 * http://flash-creations.com/notes/asclass_key.php
+	 * 
+	 * stage.addEventListener(KeyboardEvent.KEY_UP, onKeyListener);
+function onKeyListener(evt : KeyboardEvent):void {
+	trace("enterKeyListener " + evt.charCode);
+	var keyC:KeyCode = KeyCode.parse(evt.charCode);
+	if (keyC== KeyCode._1) {
+		//processForm();
+		trace('1');
+	}
+	if (keyC == KeyCode._3) {
+		//processForm();
+		trace('3');
+	}
+	if (keyC == KeyCode._5) {
+		//processForm();
+		trace('5');
+	}
+	
+	
+
+
+}
 	 */
 	public class KeyCode extends CogSignal{
 		//needs to go first
