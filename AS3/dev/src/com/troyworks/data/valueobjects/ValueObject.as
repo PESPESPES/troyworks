@@ -68,8 +68,9 @@ package com.troyworks.data.valueobjects {
 		public static const PRE_DATA_CHANGE : String = DataChangedEvent.PRE_DATA_CHANGE;
 		public static const DATA_CHANGE : String = DataChangedEvent.DATA_CHANGE;
 
-		public function ValueObject() {
+		public function ValueObject(func:Function = null) {
 			super();
+			constraint = func;
 		}
 
 		public function addOnValueChangedAction(rangeFilter : Filter, fn : Function) : void {
