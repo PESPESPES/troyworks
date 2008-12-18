@@ -11,7 +11,6 @@ package com.troyworks.data {
 		public var currentVal : Object;
 		public var isCancelled:Boolean = false;
 		
-
 		public function DataChangedEvent(type : String, bubbles : Boolean = false, cancelable : Boolean = false) {
 			super(type, bubbles, cancelable);
 		}
