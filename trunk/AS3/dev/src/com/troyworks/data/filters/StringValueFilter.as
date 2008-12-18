@@ -12,7 +12,8 @@ package com.troyworks.data.filters {
 	 */
 	public class StringValueFilter extends Filter {
 		var idx : Object = new Object();
-		var prop : String;
+		var prop : String;
+
 		public function StringValueFilter(values : Array, property : String = null) {
 			addValues(values);
 			prop = property;

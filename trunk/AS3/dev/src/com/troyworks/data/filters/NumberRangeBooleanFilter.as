@@ -1,28 +1,13 @@
 ﻿package com.troyworks.data.filters { 
 
 	/**
-	 * A special filter to compare lines against other lines for overlap, and collisino
+	 * A special filter to compare lines against other lines for overlap, and collision
 	 * @author Troy Gardner
 	 */
 	public class NumberRangeBooleanFilter extends RangeFilter {
 		public var name : String = "";
 		public var min : Number = 0;
 		public var max : Number = 0;
-
-		
-		public var minRelationToMin : String = ANY;
-		public var minRelationToMax : String = ANY;
-
-		public var maxRelationToMin : String = ANY;
-		public var maxRelationToMax : String = ANY;
-
-		public static const ANY : String = "**";
-		public static const LESS_THAN : String = "<";
-		public static const LESS_THAN_OR_EQUAL_TO : String = "<=";
-		public static const EQUAL_TO : String = "==";
-		public static const NOT_EQUAL_TO : String = "!=";
-		public static const GREATER_THAN_OR_EQUAL_TO : String = ">=";
-		public static const GREATER_THAN : String = ">";
 
 		//RESULTS 
 		private var _minIn : Number;
@@ -33,8 +18,6 @@
 		protected var maxPassesMin : Boolean;
 		protected var maxPassesMax : Boolean;
 
-		
-		
 		
 		public function NumberRangeBooleanFilter(minVal : Number = NaN, maxVal : Number = NaN, minIsInclusive : Boolean = false, maxIsInclusive : Boolean = false) {
 			super(minIsInclusive, maxIsInclusive);
@@ -90,7 +73,7 @@
 					res = val >= min;
 					break;
 				case GREATER_THAN:
-					res = val > min;
+					res = val > min;1QA
 					break;
 				case NOT_EQUAL_TO:
 					res = val != min;

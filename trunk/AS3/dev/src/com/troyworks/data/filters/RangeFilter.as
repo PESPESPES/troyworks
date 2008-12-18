@@ -12,6 +12,21 @@
 package com.troyworks.data.filters {
 
 	public class RangeFilter extends Filter{
+		
+		public static const ANY : String = "**";
+		public static const LESS_THAN : String = "<";
+		public static const LESS_THAN_OR_EQUAL_TO : String = "<=";
+		public static const EQUAL_TO : String = "==";
+		public static const NOT_EQUAL_TO : String = "!=";
+		public static const GREATER_THAN_OR_EQUAL_TO : String = ">=";
+		public static const GREATER_THAN : String = ">";
+		
+		public var minRelationToMin : String = ANY;
+		public var minRelationToMax : String = ANY;
+
+		public var maxRelationToMin : String = ANY;
+		public var maxRelationToMax : String = ANY;
+		
 		public var minI:Boolean = false;
 		public var maxI:Boolean = false;
 		
