@@ -5,8 +5,8 @@ package com.troyworks.data.constraints {
 	 * @author Troy Gardner
 	 */
 	public class NumberConstraint extends Constraint {
-		var grid:Number = 1;
-		var gridOffset:Number = 0;
+		public var grid:Number = 1;
+		public var gridOffset:Number = 0;
 		
 		public var min:Number =0;
 		public var max:Number = 0;
@@ -22,7 +22,5 @@ package com.troyworks.data.constraints {
 		public function toGrid(val:Number):Number{
 			return gridOffset + (grid*Math.round(val/grid));
 		}
-
-		
 	}
 }
