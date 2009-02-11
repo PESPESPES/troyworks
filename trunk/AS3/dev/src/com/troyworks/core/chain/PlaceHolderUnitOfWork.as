@@ -28,7 +28,7 @@
 	
 				case SIG_PULSE:  
 					totalPerformed++;
-					trace(smID + ".Pulsing " + totalPerformed + "/ " + totalWork);
+					trace(_smName + "_" + _smID + ".PlaceHolder.Pulsing " + totalPerformed + "/ " + totalWork);
 					if(totalPerformed == totalWork) {
 						requestTran(s_done);
 					}

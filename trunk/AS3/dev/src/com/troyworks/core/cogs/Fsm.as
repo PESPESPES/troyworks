@@ -246,7 +246,7 @@
 		}
 
 		override public function tran(targetState : Function, transOptions : TransitionOptions = null, crossAction : Function = null) : * {
-			//trace("tran " +targetState);
+			trace("tran " +targetState);
 			//// GAURDS--------------------------------------------
 			if (targetState == null) {
 				// No state transition taken if invalid target state

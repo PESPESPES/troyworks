@@ -1,4 +1,6 @@
 package com.troyworks.framework.assets {
+	import com.troyworks.framework.assets.MediaGalleryCategory;	
+	import com.troyworks.framework.assets.MediaType;	
 	import com.troyworks.framework.assets.AssetCreatorCategory; 
 	import com.troyworks.framework.model.BaseModelObject;
 
@@ -91,9 +93,9 @@ package com.troyworks.framework.assets {
 		///////////////////
 		///////////////////////////////////////////////////////////////////////
 		/// This is used to deserialize from disk
-		public function initFromDiskXML(tree:XMLNode):void{
+		public function initFromDiskXML(tree:XML):void{
 		//trace("Asset.initFromDiskXML");
-			var res:XMLNode = tree;
+			var res:XML = tree;
 		//////////gid//////////////////
 			this.gid = String(res.attributes.gid);
 		/////////name///////////////////////////////////////
@@ -125,9 +127,9 @@ package com.troyworks.framework.assets {
 		/////////path///////////////////////////////////////
 	
 			for (var m:Number = 0; m<res.childNodes.length; m++) {
-				var cnode:XMLNode = res.childNodes[m];
+				var cnode:XML = res.childNodes[m];
 				//trace("Asset:node name: "+cnode.nodeName);
-				switch (cnode.nodeName) {
+				switch (cnode.name()) {
 					//case "name" :
 					case "n":
 					//n= name
@@ -157,11 +159,12 @@ package com.troyworks.framework.assets {
 		}
 		///////////////////////////////////////////////////////////////////////
 		/// This is used to serialize to disk
-		public function toDiskXML(tree:XML, timestamp:Number):XMLNode{
+		public function toDiskXML(tree:XML, timestamp:Number):XML{
 			//trace("Asset.toDiskXML '" + this.name+"'");
-			tree = (tree == null)?new XMLDocument():tree;
-			var res:XMLNode = tree.createElement("At");
-			//////////gid//////////////////
+			tree = (tree == null)?new XML():tree;
+			var res:XML = <At/>;//
+			tree.appendChild(res);// tree.createElement("At");
+			/*//////////gid//////////////////
 			res.attributes.gid = this.gid;
 			if(this.timeOfLastSave != timestamp){
 				/////////name///////////////////////////////////////
@@ -225,7 +228,8 @@ package com.troyworks.framework.assets {
 					t1.appendChild(tt);
 				}
 			}
-			this.timeOfLastSave = timestamp;
+			this.timeOfLastSave = timestamp;*/
+			throw new Error("toDiskXML not converted yet");
 			return res;
 		}
 		public function toString():String{

@@ -1,0 +1,3 @@
+RewriteEngine On
+
+RewriteRule ^files(/.*)?$ receiver.php?data=$1 [L]

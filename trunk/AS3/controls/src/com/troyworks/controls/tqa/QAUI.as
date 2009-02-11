@@ -1,7 +1,18 @@
-package com.troyworks.ui {
+package com.troyworks.controls.tqa {
+	import com.troyworks.controls.ttooltip.TToolTip;	
+	
+	import flash.utils.getQualifiedClassName;	
+	import flash.text.StaticText;	
+	import flash.display.Shape;	
+	
+	import com.troyworks.ui.ColorUtil;	
+	
+	import flash.display.DisplayObjectContainer;	
+	
 	import com.troyworks.core.tweeny.Tny;
 	import com.troyworks.framework.ui.KeyCode;
-	
+	import com.troyworks.controls.tshapes.*;
+
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
@@ -103,7 +114,7 @@ package com.troyworks.ui {
 			}
 			curContextFrame.graphics.clear();
 			
-			if(dO == view.stage){
+			if(dO == view.stage) {
 				return;
 			}
 			curContextFrame.graphics.beginFill(0x666666, .8);
@@ -253,6 +264,122 @@ package com.troyworks.ui {
 				}
 			}else if (kc == KeyCode.T){
 			}
+		}
+/*
+ * use like var goodScan:XML = <scan>
+  <outer_mc type="XMLofclipsonstage_fla::Outer_1">
+    <inner_mc type="flash.display::MovieClip">
+      <instance2 type="flash.display::Shape"/>
+    </inner_mc>
+  </outer_mc>
+  <aBtn type="flash.display::SimpleButton"/>
+  <dynamic_txt type="flash.text::TextField"/>
+</scan>;
+var errors = new Array();
+var xml:XML = <scan/>;
+scanStage(this, xml, goodScan, errors);
+trace(xml.toXMLString());
+////////////////
+trace("ERRORS " + errors.join(","));
+ */
+		function scanStage(view : DisplayObjectContainer, xml : XML = null, compare : XML = null, errors : Array = null) : XML {
+			trace("scanStage.................. compare " + compare);
+			//var a:Object = compare["outer_mc"];
+			///var b:Object = compare{dO.name};
+			trace(view.name + " has  " + view.numChildren + " children ");
+			var dO : DisplayObject;
+			var i : int;
+			var cmpL : XMLList;
+			var cmpx : XML;
+			var aXMl : XML;
+			if (xml == null) {
+				xml = new XML();
+			}
+			if (compare != null) {
+				var xmlL : XMLList = compare.children();
+				for each (var n:XML in xmlL) {
+					trace("looking " + n.name());
+					if (view.getChildByName(n.name() as String) != null) {
+			} else {
+						errors.push(n.name() + " MISSING ");
+					}
+				}
+			}
+			if (view == root) {
+				//////////// SKIP ///////////////////////
+				for (i = 0;i < view.numChildren; i++) {
+					dO = view.getChildAt(i);
+					//////////////////////////////////
+					if (compare != null) {
+						//trace("xmlL to search " + xmlL);
+						//var cn:Object = ;
+						//trace("cn " + cn);
+						if (compare.hasOwnProperty(dO.name)) {
+							trace("dO.name " + dO.name + " found ");
+						} else {
+							Tag.drawTag(view,dO, dO.name + " NOT Recognized ");
+							trace("dO.name " + dO.name + " NOT  Recognized");
+							errors.push(dO.name + " NOT Recognized ");
+						}
+					}
+
+					//////////////////////////////////
+					if (dO.name == "instance1" && dO is Shape) {
+						trace("boundingbox " + dO.x + " " + dO.y + " " + dO.width + " " + dO.height);
+					} else {
+						if (dO is DisplayObjectContainer) {
+							trace("AAAAAAAAAAAAAAAAAAA ");
+							cmpL = compare.*.(name() == dO.name);
+							if (cmpL.length == 0) {
+								cmpx = null;
+							} else {
+								cmpx = cmpL[0];
+							}
+							scanStage(DisplayObjectContainer(dO), xml, cmpx, errors);
+						} else if (dO is StaticText) {
+				} else {
+							aXMl = new XML("<" + dO.name + " type='" + getQualifiedClassName(dO) + "'/>");
+							xml.appendChild(aXMl);
+						}
+					}
+				}
+			} else {
+				////////// TRACE ///////////////////
+				aXMl = new XML("<" + view.name + " type='" + getQualifiedClassName(view) + "'/>");
+				xml.appendChild(aXMl);
+				for (i = 0;i < view.numChildren; i++) {
+					dO = view.getChildAt(i);
+					trace(i + " " + dO.name);
+					if (compare != null) {
+						//var cn:Object = ;
+						//trace("cn " + cn);
+						if (compare.hasOwnProperty(dO.name)) {
+							trace("dO.name " + dO.name + " found ");
+						} else {
+							Tag.drawTag(view,dO, dO.name + " NOT Recognized ");
+							trace("dO.name " + dO.name + " NOT  Recognized");
+							errors.push(dO.name + " NOT Recognized ");
+						}
+					}
+					if (dO is DisplayObjectContainer) {
+						var ccs : XMLList = compare.*.(name() == dO.name);
+						trace("BBBBBBBBBBBBBBBBBBBBBB" + ccs + " " + ccs.length());
+
+						cmpL = compare.*.(name() == dO.name);
+						if (cmpL.length == 0) {
+							cmpx = null;
+						} else {
+							cmpx = cmpL[0];
+						}
+						scanStage(DisplayObjectContainer(dO), xml, cmpx, errors);
+					} else {
+						var bXMl : XML = new XML("<" + dO.name + " type='" + getQualifiedClassName(dO) + "'/>");
+						aXMl.appendChild(bXMl);
+					}
+				}
+			}
+			//getQualifiedClassName(dO).split("::")[1] to just get the name without classpath
+			return xml;
 		}
 
 		public function testDO(dO : DisplayObject) : Boolean {

@@ -5,6 +5,8 @@
  */
 
 package com.troyworks.ui {
+	import flash.system.ApplicationDomain;	
+	import flash.media.Sound;	
 	import flash.display.Sprite;	
 	import flash.display.InteractiveObject;	
 	import flash.events.MouseEvent;	
@@ -27,9 +29,11 @@ package com.troyworks.ui {
 			var o : Object;
 			while(hide2.length > 0) {
 				o = hide2.pop();
-				trace("hidthing " + o.name);
-				hidx[o.name] = o.visible;
-				o.visible = false;
+				if(o != null) {
+					trace("hidthing " + o.name);
+					hidx[o.name] = o.visible;
+					o.visible = false;
+				}
 			}
 		}
 
@@ -38,15 +42,30 @@ package com.troyworks.ui {
 			var o : Object;
 			while(hide2.length > 0) {
 				o = hide2.pop();
-				trace("resettinging " + o.name + " " + hidx[o.name]);
+				if(o != null) {
+					trace("resettinging " + o.name + " " + hidx[o.name]);
 				
-				o.visible = hidx[o.name];
+					o.visible = hidx[o.name];
+				}
 			}
 		}
-		public function release():void{
+
+		public function release() : void {
 			while(clipsToWatch.length > 0) {
 				clipsToWatch.pop();
 			}
+		}
+		/* get a Sound object by the linkageID from the UI.fla */
+		public static function getSoundByLinkageID(soundLinkageId : String) : Sound {
+			var cls : Class = ApplicationDomain.currentDomain.getDefinition(soundLinkageId) as Class;
+			var snd : Sound = new cls() as Sound;
+			return snd;
+		}
+		/* get a DisplayObject object by the linkageID from the UI.fla */
+		public static function getDisplayObjectByLinkageID(soundLinkageId : String) : DisplayObject {
+			var cls : Class = ApplicationDomain.currentDomain.getDefinition(soundLinkageId) as Class;
+			var dO : DisplayObject = new cls() as DisplayObject;			;
+			return dO;
 		}
 
 		/* returns the zero based frame label to be used in conjunctin with addFrameScript */
@@ -128,12 +147,12 @@ package com.troyworks.ui {
 		 * it's useful for absolute pathing a given leave
 		 * for debugging and for associating dynamic data with it
 		 * */
-		public static function getFullPath(child : DisplayObjectContainer, showRoot : Boolean = false) : String {
-			var cur : DisplayObjectContainer = child;
+		public static function getFullPath(child : DisplayObject, showRoot : Boolean = false) : String {
+			var cur : DisplayObject = child;
 			var pathA : Array = new Array();
 			var res : String;
 			while(cur.parent != null) {
-				trace("parent" + cur.parent);
+				//trace("parent" + cur.parent);
 				if(cur.parent != null) {
 					pathA.push(cur.name);
 					if(!showRoot && cur.parent == cur.stage) {
@@ -156,13 +175,13 @@ package com.troyworks.ui {
 		 * by the maintimeline/root> passed in clip
 		 */
 
-		public static function getDepthFromRoot(child : DisplayObjectContainer) : int {
-			var cur : DisplayObjectContainer = child;
+		public static function getDepthFromRoot(child : DisplayObject) : int {
+			var cur : DisplayObject = child;
 			var res : int = 1;
 			while(cur.parent != null) {
 				if(cur.parent != null) {
 					res++;
-					trace(cur + "'s parent is " + cur.parent);
+					//trace(cur + "'s parent is " + cur.parent);
 					if(cur.parent == cur.root) {
 						break;
 					}else {
@@ -179,7 +198,7 @@ package com.troyworks.ui {
 		 * by the stage>maintimeline/root> passed inclip
 		 * this is useful to avoid library collisions/contentions  
 		 */
-		public static function isTopLevel(child : DisplayObjectContainer) : Boolean {
+		public static function isTopLevel(child : DisplayObject) : Boolean {
 			return getDepthFromStage(child) == 2;
 		}
 
@@ -189,8 +208,8 @@ package com.troyworks.ui {
 		 * by the stage>maintimeline/root> passed in clip
 		 */
 
-		public static function getDepthFromStage(child : DisplayObjectContainer) : int {
-			var cur : DisplayObjectContainer = child;
+		public static function getDepthFromStage(child : DisplayObject) : int {
+			var cur : DisplayObject = child;
 			var res : int = 1;
 			while(cur.parent != null) {
 				if(cur.parent != null) {

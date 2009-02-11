@@ -1,24 +1,29 @@
-package  { 
-	class com.troyworks.framework.assets.MediaType extends Number {
-		protected function MediaType(value:Number){
-			super(value);
+package  com.troyworks.framework.assets{ 
+	class MediaType extends Object {
+		protected var _name : String;
+		protected var _value:int;
+		
+		protected function MediaType(val : int, name : String)
+		{
+			_value = val;
+			_name = name;
 		}
 		//natively supported
 		//images
-		public static var JPG:MediaType = new MediaType(0);
-		public static var GIF:MediaType = new MediaType(1);
-		public static var PNG:MediaType = new MediaType(2);
-		public static var ZOOMABLE:MediaType = new MediaType(4);
+		public static var JPG:MediaType = new MediaType(0, "JPG");
+		public static var GIF:MediaType = new MediaType(1, "GIF");
+		public static var PNG:MediaType = new MediaType(2, "PNG");
+		public static var ZOOMABLE:MediaType = new MediaType(4, "ZOOMABLE");
 	
 		//timeline based
-		public static var SWF:MediaType = new MediaType(8);
-		public static var MP3:MediaType = new MediaType(16);
-		public static var FLV:MediaType = new MediaType(32);
-		public static var HTM:MediaType = new MediaType(64);
-		public static var PRODUCT:MediaType = new MediaType(128);
-		public static var PRODUCT_CLIP:MediaType = new MediaType(256);
-		//	public static var __:Number = new MediaType(512);
-		public static var PDF:MediaType = new MediaType(1024);
+		public static var SWF:MediaType = new MediaType(8, "SWF");
+		public static var MP3:MediaType = new MediaType(16, "MP3");
+		public static var FLV:MediaType = new MediaType(32, "FLV");
+		public static var HTM:MediaType = new MediaType(64, "HTM");
+		public static var PRODUCT:MediaType = new MediaType(128, "PRODUCT");
+		public static var PRODUCT_CLIP:MediaType = new MediaType(256, "PRODUCT_CLIP");
+		//	public static var __:Number = new MediaType(512, "JPG");
+		public static var PDF:MediaType = new MediaType(1024, "PDF");
 	
 	//	public static var ALL:MediaType = new MediaType(JPG | GIF | PNG | SNOW | MX | MORE);
 		public static var __labels : Object;

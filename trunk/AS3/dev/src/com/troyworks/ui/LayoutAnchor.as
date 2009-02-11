@@ -1,4 +1,4 @@
-package com.troyworks.ui { 
+﻿package com.troyworks.ui { 
 	/**
 	 * 
 	 * Layout Anchors are useful guide for working in the FlashIDE 
@@ -12,9 +12,9 @@ package com.troyworks.ui {
 		public var depth2:Number;
 		public function LayoutAnchor() {
 			super();
-			addFrameScript(0, onLoad);
+			addFrameScript(0, onFirstFrame);
 		}
-		public function onLoad():void{
+		public function onFirstFrame():void{
 			visible = false;
 			setDepth();
 		}

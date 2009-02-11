@@ -9,6 +9,7 @@ package com.troyworks.core.chain
 		 function getTotalWorkToPerform():Number;
 		 function startWork():void;
 		 function isComplete():Boolean;
+         function hasStarted():Boolean;
 		 function setParentTask(parent:IUnit):void;
 		 
 	}

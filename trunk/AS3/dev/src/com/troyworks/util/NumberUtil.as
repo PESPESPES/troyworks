@@ -7,6 +7,28 @@
 package com.troyworks.util {
 
 	public class NumberUtil {
+		/* pick a integer from 0<=n < passed in num, useful for arrays
+		 * MUST use positive
+		 */
+		 //http://osflash.org/as3_speed_optimizations
+		public static function randomPositiveInt(range:Number):Number {
+			var res:int = (Math.random() * range);
+			return res;
+		}
+		/* pick a integer from 0<=n =< passed in num (inclusive) must use positive range*/
+		public static function randomPositiveIntInclusive(range:Number):int {
+			var res:int = (Math.random() * range + 1);
+			return res;
+		}
+		
+		/*The following example outputs 100 random integers between 4 and 11 (inclusively):
+		 * randRange(4, 11), works for positive and negative,
+		 */ 
+		public static function randomInRange(min:Number, max:Number):Number {
+		    var randomNum:Number = Math.floor(Math.random() * (max - min + 1)) + min;
+    		return randomNum;
+		}
+		
 		public static function fitToRange(src : Number, min : Number, max : Number) : Number {
 			var res : Number = Math.min(Math.max(min, src), max);
 			trace(min + " " + res + " " + max);

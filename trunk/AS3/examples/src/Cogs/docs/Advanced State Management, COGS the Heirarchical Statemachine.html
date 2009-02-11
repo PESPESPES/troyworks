@@ -1,0 +1,99 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Advanced State Management, COGS the Heirarchical Statemachine</title>
+<script language="javascript">AC_FL_RunContent = 0;</script>
+<script src="AC_RunActiveContent.js" language="javascript"></script>
+</head>
+<body bgcolor="#ffffff">
+<!--url's used in the movie-->
+<!--text used in the movie-->
+<!--
+<p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><a href="http://www.troyworks.com/blog/">http://www.troyworks.com/blog/</a></font></p>
+<p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><a href="mailto:troy@troyworks.com">troy@troyworks.com</a></font></p>
+<p align="left"><font face="Myriad Pro" size="15" color="#333333" letterSpacing="0.000000" kerning="0">Troy Gardner (<a href="www.troyworks.com/blog" target = "_blank">www.troyworks.com/blog</a>) is the Director of Flash+Interactives for kidthing inc (<a href="http://www.kidthing.com">www.kidthing.com</a>), a &nbsp;fun Los Angeles based startup in the edutainment space. You know, for kids!</font></p><p align="left"></p><p align="left"><font face="Myriad Pro" size="15" color="#333333" letterSpacing="0.000000" kerning="0">Troy has been involved with the Flash platform since version 2. &nbsp;He comes from a CS background, &nbsp;and is active in the IxD, &nbsp;HCI and Flash communities. &nbsp;In his freetime, he creates art, spins fire, and performs as a live-looper.</font></p>
+Learning the basic about states charts, statemachines, nested states.  Common lifecycles in RIA's. To help design and build better  apps.
+- Interaction, Information and Software Architects- Intermediate to Advanced developers handy with AS3
+<p align="left"><font face="Myriad Pro" size="15" color="#333333" letterSpacing="0.000000" kerning="0">Most source code and documentation will be available to attendees on the MIT licensed framework hosted on google.</font></p><p align="left"><font face="Myriad Pro" size="15" color="#333333" letterSpacing="0.000000" kerning="0"><a href="http://code.google.com/p/troyworks/" target = "_blank">http://code.google.com/p/troyworks/</a></font></p>
+<p align="left"><font face="Myriad Pro" size="11" color="#cccccc" letterSpacing="0.000000" kerning="0"><a href="http://strangepictures.net/2007/07/05/droste-effect-time-spiral/">http://strangepictures.net/2007/07/05/droste-effect-time-spiral/</a></font></p>
+1. feed cat2. fill water3. watch youtube
+<p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><b>Sudden realization of </b></font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><b>Soul-Crushing</b></font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><b>Boredom </b></font></p>
+<p align="left"><font face="Verdana" size="9" color="#333333" letterSpacing="0.000000" kerning="0"><b>Enter Bowl</b></font></p><p align="left"><font face="Verdana" size="9" color="#333333" letterSpacing="0.000000" kerning="0">1. take breath</font></p><p align="left"><font face="Verdana" size="9" color="#333333" letterSpacing="0.000000" kerning="0">2. open eyes</font></p><p align="left"><font face="Verdana" size="9" color="#333333" letterSpacing="0.000000" kerning="0"> </font></p>
+<p align="left"><font face="Verdana" size="10" color="#333333" letterSpacing="0.000000" kerning="0"><b>Enter Air</b></font></p><p align="left"><font face="Verdana" size="10" color="#333333" letterSpacing="0.000000" kerning="0">1. hold breath</font></p><p align="left"><font face="Verdana" size="10" color="#333333" letterSpacing="0.000000" kerning="0">2. pray</font></p>
+<p align="left"><font face="Verdana" size="10" color="#333333" letterSpacing="0.000000" kerning="0"><b>Exit Bowl</b></font></p><p align="left"><font face="Verdana" size="10" color="#333333" letterSpacing="0.000000" kerning="0">1. take breath</font></p><p align="left"><font face="Verdana" size="10" color="#333333" letterSpacing="0.000000" kerning="0">2. close eyes</font></p><p align="left"><font face="Verdana" size="10" color="#333333" letterSpacing="0.000000" kerning="0">3. kick hard</font></p>
+<p align="left"><font face="Verdana" size="10" color="#333333" letterSpacing="0.000000" kerning="0"><b>In Bowl</b></font></p><p align="left"><font face="Verdana" size="10" color="#333333" letterSpacing="0.000000" kerning="0">1. take breath</font></p><p align="left"><font face="Verdana" size="10" color="#333333" letterSpacing="0.000000" kerning="0">2. look cute</font></p>
+1. feed cat2. fill water3. watch youtube
+1. feed cat2. fill water3. watch youtube
+1. feed cat2. fill water3. watch youtube
+1. feed cat2. fill water3. watch youtube
+1. feed cat2. fill water3. watch youtube
+1. feed cat2. fill water3. watch youtube
+1. feed cat2. fill water3. watch youtube
+<p align="left"><font face="Comic Sans MS" size="43" color="#333333" letterSpacing="0.000000" kerning="0"><b>Yes!</b></font></p>
+<p align="left"><font face="Comic Sans MS" size="43" color="#333333" letterSpacing="0.000000" kerning="0"><b>zzz</b></font></p>
+<p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><a href="http://www.blog.rivello.org/?p=127">REF: http://www.blog.rivello.org/?p=127</a></font></p>
+<p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"><b>A &nbsp;statemachine library and patterns</b></font></p><p align="left"></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"><b>Cog:</b> the tiny teeth that compose gears, that when meshing properly make up engines which power most the mechanical world, </font></p><p align="left"></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"><b>Cognition:</b> as the meshing of neurons make up the engines of intelligence. </font></p><p align="left"></p>
+<p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"><b>library contains</b></font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - flat finite statemachine (FSM) </font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">&nbsp;- heirarchical finite statemachine (HSM)</font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - stackable + mix and match</font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - common design patterns</font></p><p align="left"></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"><b>for use in AS3.0</b> <b>based</b></font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - games</font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - game AI</font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - components</font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - applications</font></p>
+<p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - Open Source, MIT Licensed</font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - hosted on google.</font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - lightweight, few Kb</font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - pure AS3, Flex, AIR or Flash compatible</font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"> - in beta, but core functionality complete</font></p><p align="left"></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0"><a href="http://code.google.com/p/troyworks/">http://code.google.com/p/troyworks/</a></font></p>
+<p align="left"><font face="Comic Sans MS" size="36" color="#333333" letterSpacing="0.000000" kerning="0">#</font></p>
+<p align="left"><font face="Comic Sans MS" size="36" color="#333333" letterSpacing="0.000000" kerning="0">!</font></p>
+<p align="left"><font face="Comic Sans MS" size="36" color="#333333" letterSpacing="0.000000" kerning="0">@</font></p>
+<p align="left"><font face="Comic Sans MS" size="36" color="#333333" letterSpacing="0.000000" kerning="0">*</font></p>
+<p align="left"><font face="Comic Sans MS" size="36" color="#333333" letterSpacing="0.000000" kerning="0">%</font></p>
+<p align="left"><font face="Comic Sans MS" size="43" color="#333333" letterSpacing="0.000000" kerning="0"><b>!</b></font></p>
+<p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">Building on top of Cogs allows you to: </font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">- ask where you are, </font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">- ask what you can do, </font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">- eliminate manually coding chains of reactions</font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">- easily inherit behavior</font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">- reduce housekeeping</font></p><p align="left"></p><p align="left"></p><p align="left"></p><p align="left"></p>
+<p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">Components are black box event generators: identical events broadcast at different times mean completely different things (like NetConnection).</font></p><p align="left"></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">Mapping in Cogs allows you to ask: </font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">- where they are, </font></p><p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">- what you can ask of them, </font></p><p align="left"></p><p align="left"></p><p align="left"></p><p align="left"></p>
+<p align="left"><font face="Comic Sans MS" size="36" color="#333333" letterSpacing="0.000000" kerning="0">#</font></p>
+<p align="left"><font face="Comic Sans MS" size="36" color="#333333" letterSpacing="0.000000" kerning="0">!</font></p>
+<p align="left"><font face="Comic Sans MS" size="36" color="#333333" letterSpacing="0.000000" kerning="0">@</font></p>
+<p align="left"><font face="Comic Sans MS" size="36" color="#333333" letterSpacing="0.000000" kerning="0">*</font></p>
+<p align="left"><font face="Comic Sans MS" size="36" color="#333333" letterSpacing="0.000000" kerning="0">%</font></p>
+<p align="left"><font face="Comic Sans MS" size="43" color="#333333" letterSpacing="0.000000" kerning="0"><b>!</b></font></p>
+<p align="left"><font face="Myriad Pro" size="36" color="#333333" letterSpacing="0.000000" kerning="0">!...#%..!</font></p>
+1. feed cat2. fill water3. watch youtube
+1. feed cat2. fill water3. watch youtube
+1. feed cat2. fill water3. watch youtube
+<p align="left"><font face="Myriad Pro" size="15" color="#333333" letterSpacing="0.000000" kerning="0"><a href="http://code.google.com/p/troyworks/source/browse/trunk/AS3/tests/src/com/troyworks/core/cogs/EightStateMachine.as"><b>http://code.google.com/p/troyworks/source/browse/trunk/AS3/tests/src/com/troyworks/core/cogs/EightStateMachine.as</b></a></font></p>
+<p align="left"><font face="Myriad Pro" size="23" color="#666666" letterSpacing="0.000000" kerning="0"><a href="http://www.kidthing.com"><b>http://www.kidthing.com/</b></a></font></p>
+1. feed cat2. fill water3. watch youtube
+<p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><b>Play and Contribute </b></font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">&nbsp;<a href="http://code.google.com/p/troyworks/">http://code.google.com/p/troyworks/</a></font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><a href=" http://www.troyworks.com/cogs/"> http://www.troyworks.com/cogs/ </a>- view presentation slides</font></p><p align="left"></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><b>Contact me:</b> <a href="mailto: troy@troyworks.com">&nbsp;troy@troyworks.com</a></font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">- Ask questions</font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">- Request future presentation topics</font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">- Request that I speak at a future event.</font></p><p align="left"></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><b>On the blog</b></font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><a href=" htttp://www.troyworks.com/blog"> htttp://www.troyworks.com/blog</a></font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">- Leave Comments </font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">- keep up to date</font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">- view examples</font></p><p align="left"></p>
+<p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">Miro Samek </font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">&nbsp;&nbsp;- Book: Practical StateCharts in C / C++ ISBN 1578201101</font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"> &nbsp;- Web: <a href="http://www.state-machine.com/ ">http://www.state-machine.com/ </a></font></p><p align="left"></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">Jonathan Kaye </font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">&nbsp;- Book: &nbsp;Flash MX for Interactive Simulation ISBN: 1401812910</font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"> - Web: <a href="http://www.flashsim.com/pubDown/hbps/index.html">http://www.flashsim.com/pubDown/hbps/index.html</a></font></p><p align="left"></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">Sam Rivello</font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0">- on statemanagement (slides and presentation)</font></p><p align="left"><font face="Myriad Pro" size="25" color="#333333" letterSpacing="0.000000" kerning="0"><a href="http://www.blog.rivello.org/?p=127">http://www.blog.rivello.org/?p=127</a></font></p>
+-->
+<!-- saved from url=(0013)about:internet -->
+<script language="javascript">
+	if (AC_FL_RunContent == 0) {
+		alert("This page requires AC_RunActiveContent.js.");
+	} else {
+		AC_FL_RunContent(
+			'codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0',
+			'width', '1024',
+			'height', '768',
+			'src', 'Advanced State Management, COGS the Heirarchical Statemachine',
+			'quality', 'high',
+			'pluginspage', 'http://www.macromedia.com/go/getflashplayer',
+			'align', 'middle',
+			'play', 'true',
+			'loop', 'true',
+			'scale', 'showall',
+			'wmode', 'window',
+			'devicefont', 'false',
+			'id', 'Advanced State Management, COGS the Heirarchical Statemachine',
+			'bgcolor', '#ffffff',
+			'name', 'Advanced State Management, COGS the Heirarchical Statemachine',
+			'menu', 'true',
+			'allowFullScreen', 'false',
+			'allowScriptAccess','sameDomain',
+			'movie', 'Advanced State Management, COGS the Heirarchical Statemachine',
+			'salign', ''
+			); //end AC code
+	}
+</script>
+<noscript>
+	<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="1024" height="768" id="Advanced State Management, COGS the Heirarchical Statemachine" align="middle">
+	<param name="allowScriptAccess" value="sameDomain" />
+	<param name="allowFullScreen" value="false" />
+	<param name="movie" value="Advanced State Management, COGS the Heirarchical Statemachine.swf" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" />	<embed src="Advanced State Management, COGS the Heirarchical Statemachine.swf" quality="high" bgcolor="#ffffff" width="1024" height="768" name="Advanced State Management, COGS the Heirarchical Statemachine" align="middle" allowScriptAccess="sameDomain" allowFullScreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+	</object>
+</noscript>
+</body>
+</html>

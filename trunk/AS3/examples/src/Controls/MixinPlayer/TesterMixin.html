@@ -1,0 +1,409 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>External Interface example</title>
+
+<script language="JavaScript">
+	// Use a variable to reference the embedded SWF.
+	var fcontent;
+	var currentUserID = 1;
+	/* When the HTML page loads (via the onLoad event of the <body> tag) we have it call the initialize() function. */
+	function initialize() {
+
+		/* Check if the browser is IE. If so, flashVideoPlayer is window.videoPlayer. Otherwise, it's 		window.document.videoPlayer. The videoPlayer is the id assigned to <object> and <embed> tags. */
+		fcontent = getMovieName('fcontent');
+       /// alert("fcontent:" + fcontent);
+		
+	}
+	function getMovieName(movieName) {
+		if (navigator.appName.indexOf("Microsoft") != -1) {
+			return window[movieName]
+	   }
+	   else {
+		   return document[movieName]
+	   }
+	}
+
+	/* When the user clicks the play button in the form, update the videoStatus textarea, and call the playVideo() function within the SWF, passing it the URL of the FLV file. */
+	/*function callFlashPlayVideo() {
+		var comboBox = document.forms['videoForm'].videos;
+		var video = comboBox.options[comboBox.selectedIndex].value;
+		updateStatus("____" + video + "____");
+		FlashContent.playVideo("http://www.helpexamples.com/flash/video/" + video);
+	}*/
+	//Outgoing///////////////////////////////////////////////////////////////////////////////////
+	// while this could be replaced with the native play(), those methods would likely break in the 
+	// interactives.
+	function callFlashPlay(){
+		//alert("callFlashPlay " );
+		updateStatus("play");
+		fcontent.startPlayback();
+	 }
+	 function callFlashPause(){
+		updateStatus("pause");
+		fcontent.pausePlayback();
+	 }
+	 function callFlashStop(){
+		updateStatus("stop");
+		fcontent.rewindAndStopPlayback();
+	 }
+	 function prevClick(){
+		updateStatus("prevClick");
+		fcontent.prevClick();
+	 }
+	 function nextClick(){
+		updateStatus("nextClick");
+		fcontent.nextClick();
+	 }
+	function toggleEIClick(){
+		updateStatus("toggleEIClick");
+		fcontent.removeExternalInterfaceCallbacks();
+	}
+	//Incoming///////////////////////////////////////////////////////////////////////////////////
+	
+    function contentIsLoaded(id,bool){
+		updateStatus("contentIsLoaded " + bool);	
+	}
+	function contentIsReady(id,bool){
+		updateStatus("contentIsReady " + bool);
+	}
+	function contentIsAlmostFinished(id,bool){
+		updateStatus("contentIsAlmostFinished " + bool);
+	}
+	function contentIsFinished(id,bool){
+		updateStatus("contentIsFinished " + bool);
+	}
+	function onProgressChanged(id, curFrame, totFrames, curTime, totTime, curBytesLoaded, totBytesLoaded){
+         updateStatus("onProgressChanged Frames:" + curFrame +'/'+totFrames + " Time:"+ curTime +" " + totTime + "  Loaded: " + curBytesLoaded + " " + totBytesLoaded);
+		document.forms['videoForm'].progress.value = curTime +"/" + totTime;
+	}	
+	/* called when the player changes state e.g. stop, play, pause */
+	function onPlaybackStateChanged(id, playState, opArray){
+	   ///////////////UPDATE THE CURRENT PLAY STATE (loading, intializing, playing, stopped, paused, finished)///////////////////
+		document.forms['videoForm'].playstate.value = playState;
+		///////////// UPDATE THE BUTTONS ENABLED/DISABLED ///////////////////////////////////////////////////////////////////////
+	//	updateStatus(" "+ opArray);
+		document.forms['videoForm'].prev.disabled = true;
+		document.forms['videoForm'].play.disabled = true;
+		document.forms['videoForm'].pause.disabled = true;
+		document.forms['videoForm'].stop.disabled = true;
+		document.forms['videoForm'].next.disabled = true;
+	
+		for(var i in opArray){
+			var a = opArray[i];
+			updateStatus(i + " " + a);
+			switch(a){
+				case "PLAY_CLIP":
+				document.forms['videoForm'].play.disabled = false;
+				break;
+				case "REWIND_AND_STOP":
+				document.forms['videoForm'].stop.disabled = false;
+				break;
+				case "REWIND_PLAY":
+				break;
+				case "FASTFORWARD_PLAY":
+				break;
+				case "SEEK_TO":
+				break;
+				case "FULLSCREEN_CLIP":
+				break;
+				case "PAUSE_CLIP":
+				document.forms['videoForm'].pause.disabled = false;
+				break;
+				case "RESTART":
+				break;
+				case "SEEK_TO":
+				break;
+				case "NEXT_CLIP":
+				document.forms['videoForm'].next.disabled = false;
+				break;
+				case "PREV_CLIP":
+				document.forms['videoForm'].prev.disabled = false;
+				break;
+			}
+		}
+	}
+	function onExternalInterfaceChanged(bool){
+		if(!bool){
+			///////////// DISABLED /////////////////////////
+			document.forms['videoForm'].playstate.disabled = true;
+			document.forms['videoForm'].progress.disabled = true;
+			document.forms['videoForm'].prev.disabled = true;
+			document.forms['videoForm'].play.disabled = true;
+			document.forms['videoForm'].pause.disabled = true;
+			document.forms['videoForm'].stop.disabled = true;
+			document.forms['videoForm'].next.disabled = true;
+		}else{
+			///////////// ENABLED /////////////////////////
+			document.forms['videoForm'].playstate.disabled = false;
+			document.forms['videoForm'].progress.disabled = false;
+			document.forms['videoForm'].prev.disabled = true;
+			document.forms['videoForm'].play.disabled = true;
+			document.forms['videoForm'].pause.disabled = true;
+			document.forms['videoForm'].stop.disabled = true;
+			document.forms['videoForm'].next.disabled = true;
+
+		}
+	}
+	////////////////////////////////////////////////////////////////////////////////
+	function addRewardTokens(num){
+		//add to current user
+		updateStatus("Content->client.addRewardTokens("+num+")");
+		document.forms['videoForm'].currentUserTokens.value= Number(document.forms['videoForm'].currentUserTokens.value)+num;
+	}
+	//function alert (built into javascript);
+	function dispatchEventToContent(){
+		var msg = document.forms['videoForm'].eventName.value;
+		updateStatus("client.dispatchEventToContent("+msg+")");
+		var evt = new Object();
+		evt.type = msg;
+		fcontent.dispatchEventToContent(evt);
+	}
+	function getClientVersionNumber(){
+	 return .82;
+	}
+	/* The updateStatus() function is called from the SWF from the onStatus() method of the NetSream object. */
+	function getContentProps(arg){
+		
+		if(arg == "*"){
+			updateStatus("client.getContentProps("+arg+") -> All Users");
+			//All Users------------------------------
+			var u = new Object();
+			u.category = "CONTENT";
+			u.targetUserID = null;
+			u.contentID= 2;
+			u.contentMetaData = new Object();
+			u.contentMetaData.createdOn = new Date();
+			u.contentMetaData.lastModified = new Date();
+			u.contentMetaData.authorID = 15134;
+			//information about this record
+			u.metaData = new Object();
+			u.metaData.createdOn = new Date();
+			u.metaData.lastModified = new Date();
+			u.entries = new Object();
+			u.entries.contentName = "Alphabet Song";
+			u.entries.series= 3;
+			return u;
+		}else if(arg == 2){
+			updateStatus("client.getContentProps("+arg+") -> Zane");
+			// A particular user, gracie in this case.
+			var u = new Object();
+			u.category = "CONTENT";
+			u.targetUserID = 2;
+			u.contentID= 2;
+			u.metaData = new Object();
+			u.metaData.createdOn = new Date();
+			u.metaData.lastModified = new Date();
+			u.entries = new Object();
+			u.entries.lastLvl = 2;
+			u.entries.lvl_1_Score = 20;
+			u.entries.lvl_2_Score = 120;
+			return u;
+		}else{
+			// A particular user, gracie in this case.
+			var u = new Object();
+			u.category = "CONTENT";
+			u.targetUserID = 2;
+			u.contentID= 2;
+			u.metaData = new Object();
+			u.metaData.createdOn = new Date();
+			u.metaData.lastModified = new Date();
+			u.entries = new Object();
+			u.entries.lastLvl = 2;
+			u.entries.lvl_1_Score = 12;
+			u.entries.lvl_2_Score = 130;
+			updateStatus("client.getContentProps("+arg+") -> Gracie *currentUser*");
+			
+			return u;
+		}
+	}
+	/* The updateStatus() function is called from the SWF from the onStatus() method of the NetSream object. */
+	function getCurrentUserProps(arg){
+		
+		if(arg == "*"){
+			updateStatus("client.getCurrentUserProps("+arg+") -> All Users");
+			//All Users------------------------------
+			var u = new Object();
+			u.category = "USER";
+			u.targetUserID = null;
+			u.contentID= 2;
+			u.contentMetaData = new Object();
+			u.contentMetaData.createdOn = new Date();
+			u.contentMetaData.lastModified = new Date();
+			u.contentMetaData.authorID = 15134;
+			u.metaData = new Object();
+			u.metaData.createdOn = new Date();
+			u.metaData.lastModified = new Date();
+			u.entries = new Object();
+			u.entries.familyName = "Jones";
+			u.entries.numberInFamily = 3;
+			return u;
+		}else if(arg == 2){
+			updateStatus("client.getCurrentUserProps("+arg+") -> Zane");
+			// A particular user, gracie in this case.
+			var u = new Object();
+			u.category = "USER";
+			u.targetUserID = 2;
+			u.contentID= 2;
+			u.contentMetaData = new Object();
+			u.contentMetaData.createdOn = new Date();
+			u.contentMetaData.lastModified = new Date();
+			u.contentMetaData.authorID = 15134;
+			u.metaData = new Object();
+			u.metaData.createdOn = new Date();
+			u.metaData.lastModified = new Date();
+			u.entries = new Object();
+			u.entries.firstName = "Zane";
+			u.entries.lastName ="Jones";
+			u.entries.age = 6;
+			u.entries.grade = 1;
+			u.entries.gender = "M";
+			return u;
+		}else{
+			// A particular user, gracie in this case.
+			var u = new Object();
+			u.category = "USER";
+			u.targetUserID = 1;
+			u.contentID= 2;
+			u.contentMetaData = new Object();
+			u.contentMetaData.createdOn = new Date();
+			u.contentMetaData.lastModified = new Date();
+			u.contentMetaData.authorID = 15134;
+			u.metaData = new Object();
+			u.metaData.createdOn = new Date();
+			u.metaData.lastModified = new Date();
+			u.entries = new Object();
+			u.entries.firstName = "Gracie";
+			u.entries.lastName ="Jones";
+			u.entries.age = 5;
+			u.entries.grade = 0;
+			u.entries.gender = "F";
+			u.entries.testString = "String";
+			u.entries.testNumber = 111;
+			u.entries.testFloat = 1.23;
+			u.entries.testBoolean = false;
+			//u.entries.testDate = new Date(); //ONLY PRIMITIVES SUPPORTED
+			u.entries.testArray = ["a","b","c","d"];
+			//u.entries.testXML = new XML("<xml><test><a>value</a></test></xml>"); //ONLY PRIMITIVES SUPPORTED
+			updateStatus("client.getCurrentUserProps("+arg+") -> Gracie *currentUser*");
+			
+			return u;
+		}
+	}
+	function getSystemProps(arg){
+			updateStatus("client.getSystemProps("+arg+") -> All Users");
+			//All Users------------------------------
+			var s = new Object();
+			s.category = "CONTENT";
+			s.targetUserID = null;
+			s.contentID= 2;
+			s.contentMetaData = new Object();
+			s.contentMetaData.createdOn = new Date();
+			s.contentMetaData.lastModified = new Date();
+			s.contentMetaData.authorID = 15134;
+			//information about this record
+			s.metaData = new Object();
+			s.metaData.createdOn = new Date();
+			s.metaData.lastModified = new Date();
+			s.entries = new Object();
+			s.entries.isConnectedOnline = false;
+			s.entries.inTrialMode= false;
+			return s;
+	}
+	function dispatchEventFromContent(evt){
+		updateStatus("Content->Client.dispatchEventFromContent("+evt.type+")");
+		switch(evt.type){
+		case "CONTENT_PLAY_STATE_CHANGE":
+		  updateStatus(evt.msg);
+			switch(evt.msg){
+				case "LOADED_ENTER":
+				break;
+				case "LOADED_LEAVE":
+				break;
+				case "READY_ENTER":
+				break;
+				case "READY_LEAVE":
+				break;
+				case "START_ENTER":
+				break;
+				case "START_LEAVE":
+				break;
+				case "FINISHED_ENTER":
+				break;
+				case "FINISHED_LEAVE":
+				break;
+			}
+		break;
+		case "Started":
+		//insert cases in here;
+		break;
+		}
+	}
+
+	function updateStatus(message) {
+		document.forms['videoForm'].videoStatus.value += message + "\n";
+	}
+	function onEnterFrame(message){
+	    document.forms['videoForm'].progress.value = message;
+	}
+	function echo(arg1, arg2){
+	updateStatus("client.echo("+arg1+","+ arg2+"):");
+	for(var i in arg1){
+	var v = arg1[i];
+	updateStatus("\t" + i + " " + v);
+	//for(var j in v){
+	//updateStatus("\t\t" + j + " " + v[j]);
+	//}
+	}
+	return arg1;
+	}
+</script>
+</head>
+<body bgcolor="#ffffff" onLoad="initialize();">
+
+<h1>The Kidthing API Tester</h1>
+<p>Since the flash content API using the ExternalInterface, is the same regardless of the language, this methods in this and status should work similarly in C++, C# as they are with javascript. </p>
+<p>
+  <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="500" height="500" id="fcontent" align="middle">
+    <param name="allowScriptAccess" value="always" />
+	<param name="movie" value="data/Animal Antics rev_COVER.swf" />
+    <param name="quality" value="high" />
+    <param name="bgcolor" value="#ffffff" />
+    <embed src="MixinPlayer.swf" quality="high" bgcolor="#ffffff" width="500" height="500" name="fcontent" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+   </object>
+</p>
+<!-------------------------- Video Form --------------------------------------------->
+<form name="videoForm">
+   <p><strong>ClientAPI</strong></p>
+   <p>sendEvent
+    <input name="eventName" type="text" id="eventName" value="TestEventFromContent" /> 
+    <input type="button" name="sendEventBtn" id="sendEventBtn" onclick="dispatchEventToContent();"  value="send event" />
+   </p>
+	<p>user 	  tokens
+	  <input name="currentUserTokens" type="text" id="currentUserTokens" value="0" /><br />
+    </p>
+  <p>Status messages <br />
+	<textarea name="videoStatus" cols="80" rows="20"></textarea>
+  </p>
+	<p>&nbsp;</p>
+	<p><strong>ContentAPI</strong></p>
+	<p>Playback
+      <input type="button" name="<" id="prev" onclick="prevClick();"  value="<" />
+      <input type="button" name="play" id="play" onclick="callFlashPlay();"  value="play" />
+      <input type="button" name="pause" id="pause2" onclick="callFlashPause();" value="pause" />
+      <input type="button" name="stop" id="stop2" onclick="callFlashStop();" value="stop" />
+      <input type="button" name=">" id="next" onclick="nextClick();"  value=">" />
+
+	<br />
+	  playstate
+    <input name="playstate" type="text" id="playstate2" />
+	  progress
+	  <input name="progress" type="text" id="progress2" />
+	<br />
+	  <input type="button" name="toggleExternalInterface" id="toggleEI" onclick="toggleEIClick();"  value="toggleExternalInterface" />
+    </p>
+</form>
+
+</body>
+</html>

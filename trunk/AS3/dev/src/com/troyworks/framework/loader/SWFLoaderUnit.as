@@ -39,6 +39,7 @@ package com.troyworks.framework.loader {
 
 		public function SWFLoaderUnit(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE) {
 			super(initState, aMode);
+			setStateMachineName("SWFLoaderUnit");
 		}
 
 		override public function getWorkPerformed() : Number {
@@ -86,7 +87,7 @@ package com.troyworks.framework.loader {
 					s_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, completeSWFLoadHandler);
 					var request : URLRequest = new URLRequest(mediaURL);
 					
-					trace("HIGHLIGHTO starting to load SWF/IMG '" + mediaURL + "'");
+					trace(_smName + "#" + _smID + ".starting to load SWF/IMG '" + mediaURL + "'");
 					
 					var loaderContext : LoaderContext = new LoaderContext();
 					loaderContext.applicationDomain = ApplicationDomain.currentDomain; 
@@ -99,7 +100,7 @@ package com.troyworks.framework.loader {
 		
 		
 		public function completeSWFLoadHandler(event : Event) : void {
-			trace("completeHandler: " + event);
+			trace(_smName + "#" + _smID + ".completeHandler: " + event);
 			clip = DisplayObject(Loader(event.target.loader).content);
 			////////// TODO LAYOUT //////////////////
 			//clip.x = Math.random() * 50;
@@ -112,8 +113,10 @@ package com.troyworks.framework.loader {
 			if(targetClip != null) {
 				targetClip.addChild(clip);
 			}
+			trace(_smName + "#" + _smID + ".requestingDone: " + event);
 			
-			dispatchEvent(new PlayheadEvent(EVT_COMPLETE));
+			requestTran(s_done);
+			//dispatchEvent(new PlayheadEvent(EVT_COMPLETE));
 			//dispatchEvent(event);
 		}
 	}

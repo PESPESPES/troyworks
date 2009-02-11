@@ -14,6 +14,21 @@ package com.troyworks.util {
 	 * DESCRIPTION ::  
 	 * A utility to basically help copy references/values from one clip to another 
 	 *
+	 * 1) Useful for also getting configuration objects/initObjects from view/controller
+	 *  via functions like this
+	 *  
+	 *  
+	 *  
+	 *  public function SomeControllerClass(viewMC : MovieClip) {
+			setView(viewMC);
+		}
+
+		public function setView(viewMC : MovieClip) : void {
+			view = viewMC;
+			initObj = new InitObject(this, view, null, null, null, onLoadedUI );
+		}
+		public function onLoadedUI() : void {
+		}
 	 */
 	public class InitObject extends Object {
 		public var view : MovieClip;
@@ -24,7 +39,7 @@ package com.troyworks.util {
 		public var callback : Function;		
 		public var bindViewPostInit:Boolean = false;
 
-		public function InitObject(cntroller : Object, viewMC : MovieClip, initObj : String = "iniObj", aThatsNot : Array = null, aThatsIsOneOf : Array = null, afterRecievedInitCallback : Function = null, bindView:Boolean = false) {
+		public function InitObject(cntroller : Object, viewMC : MovieClip, initObj : String = "initObj", aThatsNot : Array = null, aThatsIsOneOf : Array = null, afterRecievedInitCallback : Function = null, bindView:Boolean = false) {
 			view = viewMC;
 			initObjName = initObj;
 			target = cntroller;
@@ -41,7 +56,7 @@ package com.troyworks.util {
 					view.addEventListener(Event.ENTER_FRAME, onInitCheck);
 				}
 			}else{
-				trace("no initObj");
+				trace("no " + initObjName);
 				onFinishedInit();
 			}
 		}

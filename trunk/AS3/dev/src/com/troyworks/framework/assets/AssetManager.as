@@ -456,7 +456,7 @@ package com.troyworks.framework.assets {
 		// add asset handles a few cases,
 		// adding images from disk (xml)
 		// adding images from user import
-		public function addAsset (asset : Asset, duplicateCheck : Boolean) : Asset
+		public function addAsset (asset : Asset, duplicateCheck : Boolean = true) : Asset
 		{
 			if (asset == null)
 			{
@@ -493,7 +493,7 @@ package com.troyworks.framework.assets {
 					this.gidIDX [asset.gid] = asset;
 					//	trace("Adding asset " + asset.gid + " addedI: " + this.gidIDX[asset.gid].gid);
 				}
-				if (duplicateCheck == null || duplicateCheck )
+				if (duplicateCheck )
 				{
 					//	trace("starting duplicate check");
 					for (var i:String in this.c)

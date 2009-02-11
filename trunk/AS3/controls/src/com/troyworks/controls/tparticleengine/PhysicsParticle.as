@@ -1,4 +1,4 @@
-package com.troyworks.particleengine { 
+﻿package com.troyworks.controls.tparticleengine { 
 	import com.troyworks.geom.d3.Point3D;
 	/**
 	 * @author Troy Gardner
