@@ -51,26 +51,26 @@
  * 
  * Here's an example of non-visible tweening
  * EXAMPLE: Nonvisible property Tweening
-  import  com.troyworks.core.tweeny.Tny;
+import  com.troyworks.core.tweeny.Tny;
 
-	var obj:Object = new Object();
-	obj.difficulty = 5;
-	obj.sillyNess = 3;
-	var tny:Tny = new Tny(null, false);
-	tny.setHeartBeat(this); // display object
-	tny.trg = obj;
-	tny.addUserProps(["difficulty", "sillyNess"]);
-	tny.usrA.difficulty =0;
-	tny.usrA.sillyNess =3;
-	tny.usrZ.difficulty =100;
-	tny.usrZ.sillyNess =50;
-	tny.duration = 5;
+var obj:Object = new Object();
+obj.difficulty = 5;
+obj.sillyNess = 3;
+var tny:Tny = new Tny(null, false);
+tny.setHeartBeat(this); // display object
+tny.trg = obj;
+tny.addUserProps(["difficulty", "sillyNess"]);
+tny.usrA.difficulty =0;
+tny.usrA.sillyNess =3;
+tny.usrZ.difficulty =100;
+tny.usrZ.sillyNess =50;
+tny.duration = 5;
 	
-	addEventListener(Event.ENTER_FRAME, onENTER_FRAME);
+addEventListener(Event.ENTER_FRAME, onENTER_FRAME);
 	
-	function onENTER_FRAME(evt:Event):void{
-		trace("onENTER_FRAME " + obj.difficulty + " " + obj.sillyNess);
-	}
+function onENTER_FRAME(evt:Event):void{
+trace("onENTER_FRAME " + obj.difficulty + " " + obj.sillyNess);
+}
  * @author Troy Gardner troy@troyworks.com http://www.troyworks.com/tweeny/
  * @version 1.1
  * 
@@ -125,8 +125,8 @@ package com.troyworks.core.tweeny {
 		protected var c : Object;
 		/* end */
 		protected var z : Object;
-		public var usrA:Object = new Object();
-		public var usrZ:Object = new Object();
+		public var usrA : Object = new Object();
+		public var usrZ : Object = new Object();
 		protected var _lm : Matrix = new Matrix();
 		protected var _lc : ColorTransform = new ColorTransform();
 		protected var _ls : SoundTransform = new SoundTransform();
@@ -197,7 +197,7 @@ package com.troyworks.core.tweeny {
 		public static var COLOR_PROPS : Array;
 		public static var MATRIX_PROPS : Array;
 		public static var USR_PROPS : Array;
-		
+
 		public static const SNDTRANSFORM_START : String = "1";
 		public static const SNDTRANSFORM_END : String = "2";
 		public static const COLORTRANSFORM_START : String = "3";
@@ -206,11 +206,12 @@ package com.troyworks.core.tweeny {
 		public static const MATRIXTRANSFORM_END : String = "6";
 		public static const CURRENTFRAME_START : String = "7";
 		public static const CURRENTFRAME_END : String = "8";
-		
+
 		public static const USRP_START : String = "9";
 		public static const USRP_END : String = "10";
 		protected var hasColorSupport : Boolean = false;
-		public static const  VERSION:Number = 1.2;
+		public static const  VERSION : Number = 1.2;
+		private var roundOutput : Boolean = false;
 
 		public function Tny(targetD : DisplayObject = null, standardProps : Boolean = true) {
 			super();
@@ -221,8 +222,7 @@ package com.troyworks.core.tweeny {
 			if(p == null && standardProps) {
 				p = new Array();
 				addMatrixSupport();
-					trace("------------------");
-		
+				trace("------------------");
 			}else {
 				p = new Array();
 			}
@@ -242,24 +242,27 @@ package com.troyworks.core.tweeny {
 		}
 		return tw;
 		}*/
-		public function setHeartBeat(ie:IEventDispatcher, EventName:String ="enterFrame"):void{
+		public function setHeartBeat(ie : IEventDispatcher, EventName : String = "enterFrame") : void {
 			ie.addEventListener(EventName, onPulse);
-			if(ie is DisplayObject){
+			if(ie is DisplayObject) {
 				fps = (ie as DisplayObject).stage.frameRate;
 			}
 		}
-		public function removeHeartBeat(ie:IEventDispatcher, EventName:String  ="enterFrame"):void{
+
+		public function removeHeartBeat(ie : IEventDispatcher, EventName : String = "enterFrame") : void {
 			ie.removeEventListener(EventName, onPulse);
 		}
+
 		public function addPulse(evt : Event) : void {
+			trace("Tny.addPulsee");
 			if(isNaN(fps) && trg.stage != null) {
 				//	trace("setting FPS!");
-				setHeartBeat(trg.stage,"enterFrame");
+				setHeartBeat(trg.stage, "enterFrame");
 				//, false, 0, true);
 				fps = trg.stage.frameRate;
 			}
 		}
-		
+
 		public function staticInit() : void {
 			trace("Tny.staticInit");
 			SND_PROPS = addVarsOf(new SoundTransform(), SNDTRANSFORM_START, SNDTRANSFORM_END, new Array());
@@ -269,6 +272,7 @@ package com.troyworks.core.tweeny {
 			//trace("CLR " + COLOR_PROPS.join(",") );
 			//trace("MTX " + MATRIX_PROPS.join(",") );
 		}
+
 		protected function addVarsOf(o : Object, startCtx : String = null, endCtx : String = null, propArray : Array = null) : Array {
 			var dt : XML = describeType(o);
 			var x : XMLList = dt..variable;
@@ -298,24 +302,26 @@ package com.troyworks.core.tweeny {
 			}
 			return tA;
 		}
+
 		public function addProps(ary : Array) : void {
 			var args : Array = ary;
-			args.unshift(0); //Number to delete
+			args.unshift(0); 
+			//Number to delete
 			args.unshift(p.length);
 			p.splice.apply(p, args);
 		//	trace("updated props are " + p.join(","));
 		}
 
 		public function addSoundSupport() : void {
-		//	trace("Tny.addSoundSupport");
+			//	trace("Tny.addSoundSupport");
 			addProps(SND_PROPS);
 		}
 
 		public function addColorSupport() : void {
-		//	trace("Tny.addColorSupport");
-			if(!hasColorSupport){
-			addProps(COLOR_PROPS);
-			hasColorSupport = true;
+			//	trace("Tny.addColorSupport");
+			if(!hasColorSupport) {
+				addProps(COLOR_PROPS);
+				hasColorSupport = true;
 			}
 		}
 
@@ -323,7 +329,8 @@ package com.troyworks.core.tweeny {
 			trace("Tny.addMatrixSupport");
 			addProps(MATRIX_PROPS);
 		}
-		public function addUserProps(ary:Array):void{
+
+		public function addUserProps(ary : Array) : void {
 			//	trace("Tny.addUserPropsSupport");
 			ary.push(USRP_START);
 			ary.unshift(USRP_END);
@@ -337,14 +344,16 @@ package com.troyworks.core.tweeny {
 				this[i] = pObj[i];
 			}
 		}
-		override public function set alpha(alp:Number):void{
+
+		override public function set alpha(alp : Number) : void {
 			super.alpha = alp;
 			addColorSupport();
 		}
-		override public function get alpha():Number{
+
+		override public function get alpha() : Number {
 			return super.alpha;
 		}
-		
+
 		/*
 		 * A hex RGB color value.
 		 */
@@ -352,7 +361,6 @@ package com.troyworks.core.tweeny {
 			colorTransform.color = rgb;
 			
 			addColorSupport();
-			
 		}
 
 		/* giving it a value of 0, will reset the color transform from 
@@ -360,7 +368,7 @@ package com.troyworks.core.tweeny {
 		 * other values are between -100 to 100;
 		 */
 		public function set colorP(percent : Number) : void {
-	//trace("setting colorP " + percent);
+			//trace("setting colorP " + percent);
 			if(percent == 0) {
 				colorTransform = new ColorTransform(1, 1, 1, 1, 0, 0, 0, 0);
 			}else {
@@ -369,7 +377,7 @@ package com.troyworks.core.tweeny {
 			addColorSupport();
 		}
 
-
+		
 		public function set target(v : DisplayObject) : void {
 		
 			trg = v;
@@ -409,6 +417,7 @@ package com.troyworks.core.tweeny {
 				p.push("currentFrame");
 				p.push(CURRENTFRAME_START);
 				_cFset = true;
+				roundOutput = true;
 			}
 			_currentFrame = cf;
 		}
@@ -424,8 +433,9 @@ package com.troyworks.core.tweeny {
 			dl = del * 1000;
 		//	trace("delay"  + dl + " " + del + " " + fps);
 		}
-		public function get durationLeft():Number{
-			return t-d;
+
+		public function get durationLeft() : Number {
+			return t - d;
 		}
 
 		/*************************************
@@ -454,8 +464,8 @@ package com.troyworks.core.tweeny {
 				//this will be called every frame
 				// so duration will be frames: = dur (in seconds)* fps;
 				// increment equals duration/ fps/
-		
-				//	trace("duration " + dur + " at  " + fps + " fps");
+
+				trace("duration " + dur + " at  " + fps + " fps");
 				fd = 1000 / fps;
 				d = (dur * 1000) - fd; 
 				// how many frames it will take to get there, keeping in mind that the start frame and end frame take up space.
@@ -464,7 +474,7 @@ package com.troyworks.core.tweeny {
 				st = getTimer() + dl;
 				t = -dl ;//+ (Math.random() * fd); // if we have a delay, setup the delay as a percentage of the time (as we increment in percent)
 			}
-			//trace("t " + t + " " + dl + " " + d + " dur " + dur);
+			trace("t " + t + " " + dl + " " + d + " dur " + dur);
 	
 //			trace("ts " + ts);
 		}
@@ -500,18 +510,18 @@ package com.troyworks.core.tweeny {
 			j = p.length;
 			
 			if(t < 0) {
-				//	trace(trg.name +" wait  ----- "+ t);
+				//trace(trg.name +" wait  ----- "+ t);
 				return;
 			}else if(t >= 0 && !hasStarted) {
 				//start
 				/*	if(quantized){
 				t = 0;
 				}*/
-				
-				if(isDisplayObject){
-				_am = trg.transform.matrix.clone();
-				_ac = new ColorTransform();
-				_ac.concat(trg.transform.colorTransform);
+
+				if(isDisplayObject) {
+					_am = trg.transform.matrix.clone();
+					_ac = new ColorTransform();
+					_ac.concat(trg.transform.colorTransform);
 				}
 
 				if(isSprite) {
@@ -521,6 +531,7 @@ package com.troyworks.core.tweeny {
 				if(isMovieClip) {
 					_aF = {currentFrame:MovieClip(trg).currentFrame};
 					_cF = {currentFrame:1};
+				//	trace("ActualFram" + _aF + " " + _cF);
 				}
 				hasStarted = true;
 				
@@ -538,7 +549,7 @@ package com.troyworks.core.tweeny {
 			//trace(" t " + t + " " + dd);
 			if(t >= (d - (fd * .5))) {
 				// finished
-				//trace(trg.name +" isFinishing "+ t + "% " + d  + " "  +(getTimer() - st) );
+				trace(trg.name +" isFinishing "+ t + "% " + d  + " "  +(getTimer() - st) );
 
 				isFinished = true;
 			//	trace(isFinished +" isFinished set? ");
@@ -551,8 +562,8 @@ package com.troyworks.core.tweeny {
 			//	trace(trg.name +" active "+ t + "% " + d + " frame: " + fc + " " + + (getTimer() - st));
 			var pc : Number = Math.min(t / d, 1);
 			tt = ease(pc, 0, 1, 1);
-			var ak:Number;
-			//	trace(trg.name +" active2 "+ pc+ "% " + t +"/" + d +"=  " + tt );	
+			var ak : Number;
+				trace(trg.name +" active2 "+ pc+ "% " + t +"/" + d +"=  " + tt );	
 			while(--j > -1) {
 				k = p[j];
 				///////////////TRACE///////////////////
@@ -590,7 +601,7 @@ package com.troyworks.core.tweeny {
 					a = _as;
 					z = this.soundTransform;
 					continue;			
-				}else if(k === USRP_START){
+				}else if(k === USRP_START) {
 					//trace("setting up user Prop" + trg + " " + usrA + " " + usrZ);
 					c = trg;
 					a = usrA;
@@ -603,17 +614,20 @@ package com.troyworks.core.tweeny {
 					//trace("calc '" + k +"' " + c[k] + " " + ak + " " + z[k] + " @ " + tt);
 					c[k] = ak + ((z[k] - ak) * tt);
 					//trace("pcalc '" + k +"' " + c[k]);
+					if(roundOutput) {
+						c[k] = Math.round(c[k]);
+					}
 				}	
 				/////////// FINISH ////////////
 				if(k === CURRENTFRAME_END ) {
-					//	trace("finishing currentFrame " + _currentFrame);
-					(trg as MovieClip).gotoAndStop(_currentFrame);
+					//		trace("finishing currentFrame " +  Math.round(c.currentFrame));
+					(trg as MovieClip).gotoAndStop(c.currentFrame);
 				}else if(k === MATRIXTRANSFORM_END) {
-					//	trace("finishing Matrix");
+					//		trace("finishing Matrix");
 					_lm = trg.transform.matrix;
 					trg.transform.matrix = c as Matrix;
 				}else if(k === COLORTRANSFORM_END) {
-				//		trace("finising ColorTransform----------" + trg.transform.colorTransform.alphaMultiplier );
+					//		trace("finising ColorTransform----------" + trg.transform.colorTransform.alphaMultiplier );
 					_lc = trg.transform.colorTransform;
 					trg.transform.colorTransform = c as ColorTransform;
 					trg.visible = trg.transform.colorTransform.alphaMultiplier > .15;
@@ -621,7 +635,7 @@ package com.troyworks.core.tweeny {
 					//		trace("finishing SoundTranform----------");
 					_ls = Sprite(trg).soundTransform;
 					Sprite(trg).soundTransform = c as SoundTransform;
-				}else if (k=== USRP_END){
+				}else if (k === USRP_END){
 				//	trace("finishing userProps");
 				}
 			}

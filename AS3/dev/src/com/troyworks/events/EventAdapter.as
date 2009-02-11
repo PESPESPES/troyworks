@@ -53,6 +53,7 @@ package com.troyworks.events {
 	import flash.events.Event;
 
 	public class EventAdapter {
+		public var id:String = "";
 
 		/////////// function callback ///////////
 		private var _fn : Function;

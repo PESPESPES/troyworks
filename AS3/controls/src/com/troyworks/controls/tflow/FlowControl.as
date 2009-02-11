@@ -1,8 +1,9 @@
 ﻿package com.troyworks.controls.tflow {
+	import com.troyworks.ui.UIUtil;	
 	import com.troyworks.controls.ttooltip.OBO_ToolTip;
 	import com.troyworks.core.tweeny.Tny;
 	import com.troyworks.events.EventAdapter;
-	import com.troyworks.events.EventTranslator;
+
 	import com.troyworks.events.EventWithArgs;
 	import com.troyworks.util.InitObject;
 	import com.troyworks.controls.tflow.*;
@@ -54,19 +55,21 @@
 	 * but don't require any actionscript.
 	 * 
 	 * AUTOBUTTONS:
-	home
-	next
-	nextFrame_
-	prev
-	prevFrame_
-	nextScene_ 
-	prevScene_
-	play_  
-	stop_
+	home           - goes to first frame 
+	next          - goes to previous frame
+	nextFrame_    - goes to next frame
+	prev         - goes to previous frame
+	prevFrame_   - goes to previous frame
+	nextScene_  - goes to next scene
+	prevScene_ - goes to previous scene
+	play_   - starts playing
+	stop_   - stops playing
 	gotoAndStop_XXX
 	gotoAndPlay_XXX 
 	XXX_
-	XXX_fn
+	XXX_fn - calls a function scoped to the flow control
+	XXX_evt - dispatches a bubbling event
+	 * 
 	 * 
 	 * 
 	 * KEYSTROKES
@@ -116,6 +119,7 @@
 
 		public var QA : Sprite;
 		public var timers : Dictionary = new Dictionary();
+		public var evtIdx:Dictionary = new Dictionary();
 
 		private var _enableFrameDebugger : Boolean;
 		public var debuggerUI_mc : Sprite;
@@ -160,12 +164,13 @@
 		public var flowcontrollSubClassed : Boolean = false;
 
 		public var flowControlHasInited : Boolean = false;
+		public var version:Number = 1.2;
 
 		//	public static var trace : Function = TraceAdapter.SOSTracer;
 
 		public function FlowControl(initObj : Object = null, subclassed : Boolean = false) {
 			super();
-			trace("FlowControl () subclassed? " + subclassed);
+			trace("FlowControl () "+ version + " subclassed? " + subclassed);
 			flowcontrollSubClassed = subclassed;
 			if(!flowcontrollSubClassed) {
 				init(initObj);
@@ -463,7 +468,10 @@
 		public function validDo(dO : DisplayObject) : Boolean {
 
 			if(!( dO is Bitmap || dO is Shape) && dO.name.indexOf("instance") == 0) {
-				trace("found a bum clip " + dO.name + " " + dO);
+
+			//	trace("found a bum clip " + dO.name+ " " + dO);
+				
+				trace("found a bum clip " + UIUtil.getFullPath(dO)+ " " + dO);
 				//dO.filters = [errorFilter];
 				if(QA != null) {
 					QA.graphics.beginFill(0xFF0000, .6);
@@ -518,7 +526,9 @@
 				return;
 			}
 			var ary : Array;
-			var evtTr : EventTranslator = new EventTranslator(view);
+			var evtTr : EventAdapter = new EventAdapter();
+			
+			evtTr.initAsRedispatcher(view);
 			var ignoreClick : Boolean = false;
 			var fnName : String;
 			if(frame.indexOf("_evt") != -1 ) {
@@ -545,7 +555,8 @@
 					evtTr.evtType = "play";					
 				}else {
 					trace(" gotoAndPlay()");
-					evtTr = new EventTranslator(this);
+					evtTr = new EventAdapter();
+					evtTr.initAsRedispatcher(this);
 					evtTr.evtType = "gotoAndPlay";
 					evtTr.args = [ary[1]];					
 				}
@@ -583,10 +594,13 @@
 					evtTr.args = [frame];					
 				}                
 			}
-		//	if(evtTr != null && evtTr.evtType == null){
+		
+			//	if(evtTr != null && evtTr.evtType == null){
 			//	throw new Error("FlowControl.setupGoto cannot have null evnType");
 			//}
 			if(!ignoreClick) {
+				evtTr.id = view.name + "+" + evtTr.evtType;
+				evtIdx[evtTr.id] = evtTr;
 				ie.addEventListener(event, evtTr.dispatchEvent);
 			}
 			if(enableToolTips) {
@@ -596,29 +610,11 @@
 		}
 
 		//TODO cache the references to EventTranslator and remove them that way.
-		public function takedownGoto(ie : IEventDispatcher, frame : String, event : String = MouseEvent.CLICK) : void {
-			if(frame.indexOf("play_") == 0 || frame == "_play") {
-				var ary : Array = frame.split("_");				
-				if(!ie.hasEventListener(event)) {
-					if(ary.length == 1) {
-				//		ie.removeEventListener(event, EventAdapter.create(view.play, [], false));
-					}else {
-				//		ie.removeEventListener(event, EventAdapter.create(view.gotoAndPlay, [ary[1]], false));
-					}
-				}
-			}else if(frame == "next" || frame == "nextFrame") {
-				if(ie.hasEventListener(event)) {
-			//		ie.removeEventListener(event, EventAdapter.create(view.nextFrame, [], false));
-				}
-			}else if(frame == "prev" || frame == "prevFrame") {
-			}else if(frame == "prevScene") {
-				//TODO Remove
-			}else if(frame == "nextScene") {			
-			}else {
-				if(ie.hasEventListener(event)) {
-			//		ie.removeEventListener(event, EventAdapter.create(view.gotoAndStop, [frame], false));
-				}
-			}
+		public function takedownGoto(ie : IEventDispatcher, event : String = MouseEvent.CLICK) : void {
+				var id:String = view.name + "+" + event;
+				var evtTr:EventAdapter  = evtIdx[id];
+				ie.removeEventListener(event, evtTr.dispatchEvent);
+				delete(evtIdx[id]);		
 		}
 
 		////////////////////////////////////////////////////////////////////
@@ -900,8 +896,11 @@
 			}
 			trace("onframehandler-----------------------");
 			//already on frame so call.
-
-			onEnterFrameHandler(null);
+			//try{
+				onEnterFrameHandler(null);
+			//}catch(er:Error){
+			//	trace(er.toString());
+			//}
 			trace("onframehandler-----------------------222");
 		}
 

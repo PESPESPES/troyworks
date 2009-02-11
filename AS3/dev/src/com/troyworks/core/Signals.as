@@ -166,7 +166,9 @@ package com.troyworks.core {
 		public static const PLAY :Signals = Signals.getNextSignal("PLAY");
 		public static const PLAYING :Signals = Signals.getNextSignal("PLAYING");
 		public static const PLAYED :Signals = Signals.getNextSignal("PLAYED");
-
+		public static const REVERSE_PLAY :Signals = Signals.getNextSignal("REVERSE_PLAY");
+		public static const REVERSE_PLAYING :Signals = Signals.getNextSignal("REVERSE_PLAYING");
+		public static const REVERSE_PLAYED :Signals = Signals.getNextSignal("REVERSE_PLAYING");
 			
 		public static const PAUSE : Signals = Signals.getNextSignal("PAUSE");
 		public static const PAUSING : Signals = Signals.getNextSignal("PAUSING");

@@ -1,8 +1,12 @@
-package com.troyworks.ui { 
+package com.troyworks.ui {
+	import flash.geom.Rectangle; 
+
 	/**
 	 * @author Troy Gardner
 	 */
-	public class BoundsRelationship extends Number {
+	public class BoundsRelationship extends Object {
+		private var val:uint = 0;
+		public var intersectionBounds:Rectangle;
 		public static var ARE_NOT_TOUCHING : Number = 0;
 		public static var OVERLAPPING : Number = 1;
 		public static var CONTAINS : Number = 2;
@@ -18,52 +22,57 @@ package com.troyworks.ui {
 		public static var ON_TOP_SIDE_OF : Number = 512;
 		public static var ON_BOTTOM_SIDE_OF : Number = 1024;
 		
-		public function BoundsRelationship(val : Number) {
-					super (val);
+		public function BoundsRelationship(val : uint) {
+					super ();
+					this.val = val;
 		}
 	
 		public function get isOverlapping():Boolean{
 		//	trace(this + " " + OVERLAPPING);
-			return (this & OVERLAPPING)>0;
+			return (val & OVERLAPPING)>0;
 		}
 	
 		public function get isLeftOf():Boolean{
-			//trace(this + " " + LEFT_OF);
-			return (this & LEFT_OF)>0;
+			//trace(val + " " + LEFT_OF);
+			return (val & LEFT_OF)>0;
 		}
 	
 		public function get isRightOf():Boolean{
-		//	trace(this + " " + RIGHT_OF);
-			return (this & RIGHT_OF)>0;
+		//	trace(val + " " + RIGHT_OF);
+			return (val & RIGHT_OF)>0;
 		}
 	
 		public function get isAboveOf():Boolean{
-			//trace(this + " " + ABOVE_OF);
-			return (this & ABOVE_OF)>0;
+			//trace(val + " " + ABOVE_OF);
+			return (val & ABOVE_OF)>0;
 		}
 	
 		public function get isBelowOf():Boolean{
-			//trace(this + " " + BELOW_OF);
-			return (this & BELOW_OF)>0;
+			//trace(val + " " + BELOW_OF);
+			return (val & BELOW_OF)>0;
 		}
 		public function get isOnLeftSideOf():Boolean{
-			//trace(this + " " + LEFT_OF);
-			return (this & ON_LEFT_SIDE_OF)>0;
+			//trace(val + " " + LEFT_OF);
+			return (val & ON_LEFT_SIDE_OF)>0;
 		}
 	
 		public function get isOnRightSideOf():Boolean{
-		//	trace(this + " " + RIGHT_OF);
-			return (this & ON_RIGHT_SIDE_OF)>0;
+		//	trace(val + " " + RIGHT_OF);
+			return (val & ON_RIGHT_SIDE_OF)>0;
 		}
 	
 		public function get isOnTopSideOf():Boolean{
-			//trace(this + " " + ABOVE_OF);
-			return (this & ON_TOP_SIDE_OF)>0;
+			//trace(val + " " + ABOVE_OF);
+			return (val & ON_TOP_SIDE_OF)>0;
 		}
 	
 		public function get isOnBottomSideOf():Boolean{
-			//trace(this + " " + BELOW_OF);
-			return (this & ON_BOTTOM_SIDE_OF)>0;
+			//trace(val + " " + BELOW_OF);
+			return (val & ON_BOTTOM_SIDE_OF) > 0;
+		}
+		
+		public function setFlags(resF : Number) : void {
+			val = resF;
 		}
 	}
 }

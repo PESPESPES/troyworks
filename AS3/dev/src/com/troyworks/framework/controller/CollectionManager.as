@@ -1,4 +1,4 @@
-package com.troyworks.framework.controller { 
+﻿package com.troyworks.framework.controller { 
 	import com.troyworks.core.cogs.Fsm;
 	import com.troyworks.data.ArrayX;
 	import com.troyworks.data.IArray;
@@ -52,6 +52,7 @@ package com.troyworks.framework.controller {
 		 */
 		public function CollectionManager(aName : String = null) {
 			super(null, aName);
+			trace("new CollectionManager("+ aName + ")");
 			c = new ArrayX();
 			this.name = (aName == null) ? "CollectionManager" : aName;
 		}
@@ -307,8 +308,10 @@ package com.troyworks.framework.controller {
 			return r;
 		}
 
-		public function getRandomElement(from : Number, to : Number, aThatsNot : Array, aThatsIsOneOf : Array) : Object {
+		public function getRandomElement(from : Number, to : Number , aThatsNot : Array , aThatsIsOneOf : Array ) : Object {
+			trace("CollectionMangaer.getRandomElement " + from + " " + to );
 			var r : Object = c.getRandomElement.apply(c, arguments);
+			trace("returning " + r);
 			//(from, to, aThatsNot, aThatsIsOneOf);
 			return r;
 		}

@@ -1,4 +1,4 @@
-package com.troyworks.framework {
+﻿package com.troyworks.framework {
 	import com.troyworks.core.cogs.CogEvent;
 	import com.troyworks.core.cogs.Hsm;
 	import com.troyworks.framework.model.BaseModelObject;
@@ -20,7 +20,7 @@ package com.troyworks.framework {
 			super(initState,hsmfName,aInit);
 			_id_ = BaseModelObject.IDz++;
 		}
-		public function toString() : String{
+		override public function toString() : String{
 	
 			var res : String = null;
 			//util.Trace.engageLoopCheck();
@@ -37,8 +37,8 @@ package com.troyworks.framework {
 				tree = new XML();
 			}
 			//XXX TODO
-			var n : XML = tree.createElement("BaseStatefulObject");
-			n.attributes.label = "BaseStatefulObject";
+			var n : XML = <BaseStatefulObject/>;
+			n.@label = "BaseStatefulObject";
 			return n;
 			
 		}
@@ -52,6 +52,7 @@ package com.troyworks.framework {
 			if(e.sig != SIG_TRACE) {
 				return s_active;
 			}
+			return s_root;
 		}
 		/*.................................................................*/
 		public function s_active(e : CogEvent) : Function
@@ -74,16 +75,17 @@ package com.troyworks.framework {
 			return s_root;
 		}
 		/*..PSEUDOSTATE...............................................................*/
-		public function s_final(e : CogEvent) : void
+		public function s_final(e : CogEvent) : Function
 		{
 			//this.onFunctionEnter ("s_final-", e, []);
 			switch (e.sig)
 			{
 				case SIG_ENTRY :
 				{
-					return;
+					return s_root;
 				}
 			}
+			return s_root;
 		}
 		
 	

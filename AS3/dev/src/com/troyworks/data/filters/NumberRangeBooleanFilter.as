@@ -73,7 +73,7 @@
 					res = val >= min;
 					break;
 				case GREATER_THAN:
-					res = val > min;1QA
+					res = val > min;
 					break;
 				case NOT_EQUAL_TO:
 					res = val != min;

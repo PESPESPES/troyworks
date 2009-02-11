@@ -14,7 +14,7 @@ package com.troyworks.ui {
 			jumpToRandomFrame(this);
 		}
 		public static function jumpToRandomFrame(mc:MovieClip):void{
-			mc.gotoAndPlay(Math.round(Math.random()* mc.totalFrames));
+			mc.gotoAndPlay(Math.floor(Math.random()* mc.totalFrames));
 		}
 		public static function onMCLoaded(evt : Event) : void {
 			trace("RandomFrameStart.onLoad");

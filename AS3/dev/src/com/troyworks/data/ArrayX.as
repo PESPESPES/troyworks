@@ -297,6 +297,7 @@ package com.troyworks.data {
 		//look for a reference and splice from array
 		public function removeFromCollectionItem(aValue_obj : Object) : Number {
 			var tIndexOfMatch_num : Number = getLastIndexOf(aValue_obj);
+			trace("found item at "+ tIndexOfMatch_num);
 			if(tIndexOfMatch_num != -1) {
 				super.splice(tIndexOfMatch_num, 1);
 			}
@@ -363,28 +364,28 @@ package com.troyworks.data {
 		public function getRandomElement(from : * = null, to : * = null, aThatsNot : Array = null, aThatsIsOneOf : Array = null) : Object {
 			//	trace("getRandomElement from " + from + " to " + to+ " aThatsNot " + aThatsNot);
 
-			if(length == 0) {
+			if (length == 0) {
 				return null;
 			}
-			var len : Number = (this.length - 1);
-			var offset : Number = 0;
-			if(from != null && to != null) {
-				len = to - from;
-				offset = from;
-			}else if(from != null) {
-				len = (this.length - 1) - from;
-				offset = from;
-			}else if(to != null) {
-				len = to;
+			if (isNaN(from ) || from == null) {
+				from = 0;
 			}
-			//	trace("getRandomElement2 " +from + " from " + from + " to " + to+ " aThatsNot " + aThatsNot);
+			if (isNaN(to ) || to == null) {
+				to = this.length;
+			}
+		
+			//trace("getRandomElement2 " +from + " from " + from + " to " + to+ " aThatsNot " + aThatsNot);
 			var rndI : Number;
 			var res : Object = null;
-			rndI = offset + Math.round(Math.random() * len);
+			//rndI = offset + int(Math.random() * len);//Math.round(Math.random() * len);
+			rndI =from +Math.floor(Math.random() * (to - from + 1)) ;
+			trace("ArrayX.getRandomElement " + from + " to " + to + " =" + rndI + "of  "+ length);
+			//rndI = offset + Math.round(Math.random() * len);
 			///////////range check//////////////
-			rndI = Math.min(Math.max(0, rndI), length);
+			//rndI = Math.min(Math.max(0, rndI), length);
 			res = this[rndI];
-			//	trace("BBBBBBgetRandomElement returning " + res + " at " + rndI);
+			//trace("BBBBBBgetRandomElement returning " + res + " at " + rndI);
+			//trace("offset " + offset  + " " + len + " = " + rndI);
 			return res;
 		}
 

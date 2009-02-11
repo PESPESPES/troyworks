@@ -37,6 +37,7 @@ package com.troyworks.framework.loader {
 		
 		public function TextLoaderUnit(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE) {
 			super(initState, aMode);
+			setStateMachineName("TextLoaderUnit");
 		}
 
 		override public function getWorkPerformed() : Number {
@@ -90,7 +91,7 @@ package com.troyworks.framework.loader {
 		
 		
 		public function completeLoadedHandler(event : Event) : void {
-			trace(_smName +"_"+mediaURL+ ".completeLoadedHandler: " + event);
+			trace(_smName + "_" + mediaURL + ".completeLoadedHandler: " + event);
 			
 			if(event.target.data is XML) {
 				
@@ -109,15 +110,17 @@ package com.troyworks.framework.loader {
 			}
 			
 			////////// TODO LAYOUT //////////////////
-
-			var clip : TextField = new TextField();
-			
-			clip.text = event.target.data;
-			clip.x = Math.random() * 50;
-			clip.y = Math.random() * 50;
-			clip.alpha = .3;
-			targetClip.addChild(clip);
-			fireCompletedEvent();
+			if(targetClip) {
+				var clip : TextField = new TextField();
+				clip.text = event.target.data;
+				clip.x = Math.random() * 50;
+				clip.y = Math.random() * 50;
+				clip.alpha = .3;
+				targetClip.addChild(clip);
+			}
+			//fireCompletedEvent();
+			trace(_smName + "#" + _smID +".requestingDone: " + event);
+			requestTran(s_done);
 		}
 	}
 }

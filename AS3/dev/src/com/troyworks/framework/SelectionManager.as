@@ -1,4 +1,4 @@
-package com.troyworks.framework { 
+﻿package com.troyworks.framework { 
 	
 	/**
 	 * @author Troy Gardner
@@ -8,15 +8,15 @@ package com.troyworks.framework {
 
 	import com.troyworks.framework.controller.CollectionManager;	
 
-	import flash.display.MovieClip;
+	import flash.display.*;
 
 	public class SelectionManager extends CollectionManager {
 		public static var SINGLE_SELECT_MODE : Number = 0;
 		public static var MULTIPLE_SELECT_MODE : Number = 1;
 		public var selectionMode : Number = SINGLE_SELECT_MODE;
 		public var onChildRelease : Number;
-		public var topClip : MovieClip;
-		public var topClipDepth : Number = 1000;
+		public var topClip : Sprite;
+//		public var topClipDepth : Number = 1000;
 
 		public function SelectionManager(name : String, scope : DisplayObjectContainer) {
 			super(name);
@@ -24,30 +24,34 @@ package com.troyworks.framework {
 		}
 
 		public function onClick(evt : MouseEvent) : void {
+
 			push(evt.target);
 		}
 
-		public function setTopClip(_mc : MovieClip) : void {
+		public function setTopClip(_mc : Sprite) : void {
 			if(topClip != null) {
-				topClip.swapDepths(_mc);
+				//topClip.swapDepths(_mc);
+				_mc.parent.addChild(_mc);
 				topClip = _mc;
 			}else {
-				_mc.swapDepths(topClipDepth);
+				_mc.parent.addChild(_mc);
+				//_mc.swapDepths(topClipDepth);
 				topClip = _mc;
 			}
 		}
 
 		override public function push(obj : Object) : Number {
 			var res : Number;
+			var i:Number;
 			if(selectionMode == SINGLE_SELECT_MODE) {
-				for(var i : Number = 0;i < c.length; i++) {
+				for( i = 0;i < c.length; i++) {
 					c[i].isSelected = false;
 				}
 				obj.selectedOrder = 1;
 				res = super.push(obj);
 			}else if(selectionMode == MULTIPLE_SELECT_MODE) {
 				res = super.push(obj);
-				for(var i : Number = 0;i < c.length; i++) {
+				for(i = 0;i < c.length; i++) {
 					c[i].selectedOrder = (i + 1);
 				}
 			}

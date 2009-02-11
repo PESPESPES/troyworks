@@ -2,8 +2,7 @@ package com.troyworks.controls.tflow {
 		
 	
 	import flash.text.TextField;	
-	
-	import com.troyworks.ui.FlowControl;
+
 	
 	/**
 	 * TFlowControl

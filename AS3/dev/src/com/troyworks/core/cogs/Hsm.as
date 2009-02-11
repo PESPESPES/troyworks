@@ -66,7 +66,7 @@ import flash.utils.setTimeout;	public class Hsm extends StateMachine implements 
 
 		
 		private  var _callBackTimer : Timer;
-		private  var _pulsecallBackTimer : Timer;
+		
 		/* a place to store pending transition list */
 		protected var pendingTranList : Array;
 		//an empty array with nulls as placeholders
@@ -381,19 +381,19 @@ import flash.utils.setTimeout;	public class Hsm extends StateMachine implements 
 		}
 
 		public function hsm_onCallbackHandler(event : TimerEvent= null) : void {
-			trace("hsm hsm_onCallbackHandler: " + event);
+			trace(_smNameID +".hsm_onCallbackHandler: " + event);
 			if(_hsm_currentState != null) {
 				//trace"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 				_hsm_currentState.call(this, HSM_EVT_CALLBACK);
 				//trace"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 			}else {
-				trace("cannot call a null _hsm_currentState");
+				trace(_smName + "#" + _smID + ".cannot call a null _hsm_currentState");
 			}
 		}
 
 		/*************************************************/
 		override public function dispatchEvent(event : Event) : Boolean {
-			trace(getStateMachineName() + ":Hsm.dispatchEvent");
+			trace(_smNameID +":Hsm.dispatchEvent");
 			if (event is CogEvent) {
 				//use namespace  COG;
 				//tmp state variables
@@ -460,47 +460,27 @@ import flash.utils.setTimeout;	public class Hsm extends StateMachine implements 
 			
 		}*/
 		public function callbackIn(ms : Number = 45) : void {
-			trace("hcalling back in ============================" + ms);
+			trace(_smNameID + ".callbackIn  ============================" + ms);
 			//var _callBackTimer : Timer = new Timer(ms, 1);
 			//_callBackTimer.addEventListener("timer", onCallbackHandler);
 			//_callBackTimer.start();
-			 setTimeout(hsm_onCallbackHandler, ms);
+			 setTimeout(onCallbackHandler, ms);
 		}
 
 		public function onCallbackHandler(event : TimerEvent= null) : void {
-			trace("onCallbackHandler: " + event);
+			trace(_smNameID +".onCallbackHandler: " + event);
 			if(myCurState != null) {
 				dispatchEvent(CogEvent.getCallbackEvent());
 				//IEventDispatcher(event.target).removeEventListener("timer", onCallbackHandler);
 				//trace"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 			}else {
-				trace("cannot call a null onCallbackHandler");
+				trace(_smNameID +" HSM.onCallbackHandler cannot call a null state ");
 			}
 		}
 
-		public function startPulse(ms : Number = 45, repeats : Number = 0) : void {
-			//trace"hcalling back in ============================" + ms);
-			if(_pulsecallBackTimer != null && _pulsecallBackTimer.running) {
-				_pulsecallBackTimer.stop();
-			}else {
-				_pulsecallBackTimer = new Timer(ms, repeats);
-			}
-			_pulsecallBackTimer.addEventListener("timer", onPulseCallbackHandler);
-			_pulsecallBackTimer.start();
-		}
 
-		public function onPulseCallbackHandler(event : TimerEvent) : void {
-			//trace("onPulseCallbackHandler: " + event);
-			if(myCurState != null) {
-				dispatchEvent(CogEvent.getPulseEvent());
-			}else {
-				trace("cannot call a null onCallbackHandler");
-			}
-		}
 
-		public function stopPulse() : void {
-			_pulsecallBackTimer.stop();
-		}
+	
 
 		/************************************************
 		 * This is called to activate the statemachine
@@ -584,7 +564,7 @@ import flash.utils.setTimeout;	public class Hsm extends StateMachine implements 
 			var curName : String = getStateName(_myCurState);
 			var sourceName : String = getStateName(mySource);
 			var requestedName : String = getStateName(targetState);
-			trace("HIGHLIGHTB Q_Tran>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + curName + ".. " + sourceName + " to " + requestedName + "");
+			trace("HIGHLIGHTB "+_smNameID+".tran>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + curName + ".. " + sourceName + " to " + requestedName + "");
 			var key : String = curName + "->" + requestedName;
 	
 			///////////////////////////
@@ -912,7 +892,7 @@ import flash.utils.setTimeout;	public class Hsm extends StateMachine implements 
 		 * event to other interested parties who might be intereseted in updating, e.g. the User Interface
 		 */
 		protected function onInternalStateChanged() : void {
-			trace(" NEW STATE " + getStateName(myCurState));
+			trace(_smNameID +" NEW STATE " + getStateName(myCurState));
 			mySource = myCurState; 
 			//reset it incase no events were fired.
 			// FINISHED - notify the rest of the world of the state change, if there is anybody there
@@ -958,7 +938,7 @@ import flash.utils.setTimeout;	public class Hsm extends StateMachine implements 
 		}
 
 		public function toStringShort(stateName : String = null) : String {
-			var res : String = _smName + _smID + "." + ((stateName == null) ? myCurStateName : stateName);
+			var res : String = _smName +"#"+ _smID + "." + ((stateName == null) ? myCurStateName : stateName);
 			//trace("toStringShort " + res);
 			return res;
 		}
