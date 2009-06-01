@@ -7,10 +7,10 @@ package mdl {
 	public class RenderShape {
 		public static const S_CIRCLE : RenderShape = new RenderShape(.8, "S_CIRCLE", "scir");
 		public static const M_CIRCLE : RenderShape = new RenderShape(1, "M_CIRCLE", "mcir");
-		public static const L_CIRCLE : RenderShape = new RenderShape(1.2, "L_CIRCLE","bcir");
-		
+		public static const L_CIRCLE : RenderShape = new RenderShape(1.2, "L_CIRCLE", "bcir");
+
 		public static const S_SQUARE : RenderShape = new RenderShape(.8, "S_SQUARE", "ssqu");
-		public static const M_SQUARE : RenderShape = new RenderShape(1, "M_SQUARE" , "msqu");
+		public static const M_SQUARE : RenderShape = new RenderShape(1, "M_SQUARE", "msqu");
 		public static const L_SQUARE : RenderShape = new RenderShape(1.2, "L_SQUARE", "bsqu");
 
 		public static const S_DIAMOND : RenderShape = new RenderShape(.8, "S_DIAMOND", "sdia");
@@ -25,18 +25,18 @@ package mdl {
 		public static const M_TRIANGLE_DOWN : RenderShape = new RenderShape(1, "M_TRIANGLE_DOWN", "mtri");
 		public static const L_TRIANGLE_DOWN : RenderShape = new RenderShape(1.2, "L_TRIANGLE_DOWN", "btri");
 
-	
-
 		
-		public var shape : String  = "M_DIAMOND";
+		
+		
+		public var shape : String = "M_DIAMOND";
 		//	var color : Number = 0xdddddd;
 		//	var canvas : Sprite;
 		var size : Number = 17;
 		var radius : Number;
 		var scale : Number;
-		public var xmlName:String;
+		public var xmlName : String;
 
-		public function RenderShape( scale : Number = 1, shape : String = null, parseNam:String = null) {
+		public function RenderShape( scale : Number = 1, shape : String = null, parseNam : String = null) {
 			this.scale = scale;
 			this.shape = shape;
 			this.xmlName = parseNam;
@@ -46,7 +46,7 @@ package mdl {
 		//				canvas = view;
 		//	}
 		public static function parse(shapeSizeAndName : String) : RenderShape {
-		//	trace("parse " + shapeSizeAndName);
+			//	trace("parse " + shapeSizeAndName);
 			switch(shapeSizeAndName) {
 				case "scir":
 					return S_CIRCLE; 
@@ -88,7 +88,7 @@ package mdl {
 
 		public function draw(canvas : Sprite, color : Number) : void {
 			radius = size / 2;	
-			canvas.graphics.lineStyle(0, 0x666666, 1,false);
+			canvas.graphics.lineStyle(0, 0x666666, 1, false);
 			canvas.graphics.beginFill(color);
 			var x : Number;
 			
@@ -98,10 +98,10 @@ package mdl {
 			
 			//trace("draw shape " + shape);
 			switch(shape) {
-					case "S_TRIANGLE_DOWN":
+				case "S_TRIANGLE_DOWN":
 				case "M_TRIANGLE_DOWN":
 				case "L_TRIANGLE_DOWN":
-				//	trace("draw utriangle ");
+					//	trace("draw utriangle ");
 					//top
 					st = -Math.PI / 2;
 					stp = Math.PI * 2 / 3;
@@ -157,7 +157,7 @@ package mdl {
 				case "L_CIRCLE":
 					//top
 					//trace("draw circle ");
-					
+
 					canvas.graphics.drawCircle(0, 0, radius * scale); 
 					break;
 				case "S_DIAMOND":
@@ -166,21 +166,21 @@ package mdl {
 					//trace("draw diamond ");
 				
 					//top
-					canvas.graphics.moveTo(0, -radius); 
+					canvas.graphics.moveTo(0, -radius * scale); 
 					//right
-					canvas.graphics.lineTo(radius, 0);
+					canvas.graphics.lineTo(radius * scale, 0);
 					//bottom
-					canvas.graphics.lineTo(0, radius);
+					canvas.graphics.lineTo(0, radius * scale);
 					//left
-					canvas.graphics.lineTo(-radius, 0);
+					canvas.graphics.lineTo(-radius * scale, 0);
 					//top
-					canvas.graphics.lineTo(0, -radius);
+					canvas.graphics.lineTo(0, -radius * scale);
 					break;
 				case "S_SQUARE":
 				case "M_SQUARE":
 				case "L_SQUARE":
-				//	trace("draw square ");
-				
+					//	trace("draw square ");
+
 					var  qp : Number = Math.PI / 4;
 					//top
 					x = Math.cos(0 + qp) * radius * scale;

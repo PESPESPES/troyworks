@@ -21,6 +21,9 @@ package mdl {
 		public function Rotations() {
 			super();
 		}
+		public function get label():String{
+			return name;
+		}
 
 		public static function XMLFactory(xml : XML) : Rotations {
 			trace("Rotations XMLFactory");
@@ -30,21 +33,21 @@ package mdl {
 	//		res.hv = new Array();
 			//hv="0,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0"
 			var hv : String = String(xml.@hv);
-			trace("hv " + hv);
+		//	trace("hv " + hv);
 			var ary : Array = hv.split(";");
-			trace("hv arry " + ary + " " + ary.length);
+			//trace("hv arry " + ary + " " + ary.length);
 			var i : int = 0;
 			var n : int = ary.length;
 			var hvr:Array;		
 			for (;i < n; ++i) {
 				hvr = ary[i].split(",");
-				trace("hvr " + hvr.join(","));
-				trace(i + " " + ary[i]);
+			//	trace("hvr " + hvr.join(","));
+			//	trace(i + " " + ary[i]);
 //				res.hv.push(ary[i].split(","));
 				hvr = ary[i].split(",");
 				res.H["d"+(i+1)] = hvr[0];
 				res.V["d"+(i+1)] = hvr[1];
-				trace(res.H.d1 + " "+ res.V.d1); 
+				//trace(res.H.d1 + " "+ res.V.d1); 
 			}
 			res.selectedHAxisIdx = int(xml.@h);
 			res.selectedVAxisIdx = int(xml.@v);

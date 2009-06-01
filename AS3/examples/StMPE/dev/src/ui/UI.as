@@ -121,10 +121,12 @@
 		var Vsnap : EightDimensionVector = new EightDimensionVector();
 		var Hsnap : EightDimensionVector = new EightDimensionVector();
 		var lblDef : Object;
-		private var standardPoints : Boolean;
+		//	private var standardPoints : Boolean;
+		private var curPointFilter : EightDimensionParticle = new EightDimensionParticle();
 		private var createdParticles : Boolean;
 		private var rotationsHaveChanged : Boolean = false;
-		private var standardPointTny : Tny;
+		private var pointFadeDownTny : Tny;
+		private var pointFadeUpTny : Tny;
 
 		public function UI() : void {
 			super();
@@ -197,24 +199,91 @@
 			if(e != null) {
 				e.stopImmediatePropagation();
 			}
-			if(points_cmb.selectedItem.name == "Standard Model") {
-				trace("STANDARD POINTS");
-				standardPoints = true;
-				standardPointTny.alpha = 0;
-			}else {
-				standardPoints = false;
-				standardPointTny.alpha = 1;	
-				modl.curPointSystem = PointSystem(points_cmb.selectedItem);
+			switch(points_cmb.selectedItem.name) {
+	
+				case "Standard Model":
+					trace("STANDARD POINTS");
+					curPointFilter.isE8 = false;
+					curPointFilter.isE6 = false;
+					curPointFilter.isGeorgi_Glashow = false;
+					curPointFilter.isPati_Salam = false;
+					curPointFilter.isStandardModel = true;
+					//modl.coords = Model.smcoords;
+					modl.isGUTmode = false;
+					break;					
+				case "E6":
+					trace("E6 POINTS");
+					curPointFilter.isE8 = false;
+					curPointFilter.isE6 = true;
+					curPointFilter.isGeorgi_Glashow = false;
+					curPointFilter.isPati_Salam = false;
+					curPointFilter.isStandardModel = false;
+					//	modl.coords = Model.gutcoords;
+					modl.isGUTmode = true;
+					break;
+				
+				case "Georgi-Glashow":
+					trace("Georgi Glashow POINTS");
+					curPointFilter.isE8 = false;
+					curPointFilter.isE6 = false;
+					curPointFilter.isGeorgi_Glashow = true;
+					curPointFilter.isPati_Salam = false;
+					curPointFilter.isStandardModel = false;
+					//	modl.coords = Model.gutcoords;
+					modl.isGUTmode = true;
+					break;
+
+				case "Pati-Salam":
+					trace("Pati Salam POINTS");
+					curPointFilter.isE8 = false;
+					curPointFilter.isE6 = false;
+					curPointFilter.isGeorgi_Glashow = false;
+					curPointFilter.isPati_Salam = true;
+					curPointFilter.isStandardModel = false;
+					//	modl.coords = Model.gutcoords;
+					modl.isGUTmode = true;
+					break;
+				case  "E8":
+					trace("E8 POINTS");
+					curPointFilter.isE8 = true;
+					curPointFilter.isE6 = false;
+					curPointFilter.isGeorgi_Glashow = false;
+					curPointFilter.isPati_Salam = false;
+					curPointFilter.isStandardModel = false;
+					//modl.coords = Model.e8coords;
+					modl.isGUTmode = false;
+					break;	
 			}
-			standardPointTny.duration =1;
+			
+			var ary:Array = modl.curPointSystem.particles;
+			var i:int = 0;
+			var n:int =ary.length;
+			
+			for (; i < n; ++i)
+			{
+				EightDimensionParticle(ary[i]).redrawUI();
+			}
+			pointFadeDownTny.alpha = 1;
+			pointFadeDownTny.duration = 0;
+			pointFadeDownTny.alpha = 0;
+								
+			pointFadeUpTny.alpha = 0;
+			pointFadeUpTny.duration = 0;					
+			pointFadeUpTny.alpha = 1;
+			
+			modl.curPointSystem = PointSystem(points_cmb.selectedItem);
+			pointFadeDownTny.duration = 1;
+			pointFadeUpTny.duration = 1;
 			
 			addEventListener(Event.ENTER_FRAME, updateView);
-			standardPointTny.onComplete = removeFadeUpdater;
+			pointFadeUpTny.onComplete = removeFadeUpdater;
 			updateView();
 		}
 
 		public function removeFadeUpdater() : void {
-			trace("removing fade effect");
+			trace("removing fade effect DOWN " + pointFadeDownTny.target.alpha + " UP " + pointFadeUpTny.target.alpha);
+			pointFadeDownTny.target.alpha = 0;
+			pointFadeUpTny.target.alpha = 1;
 			removeEventListener(Event.ENTER_FRAME, updateView);
 			updateView();
 		}
@@ -230,87 +299,11 @@
 				coords_cmb.dropdownWidth = 200;
 				rotations_lb.removeAll();
 				rotations_lb.enabled = false;
+				
 			}
 		}
 
-		private function coordsChanged(e : Event = null) : void {
-			trace("CMB  settingModelCoord to " + coords_cmb.selectedItem.name);
-			if(e != null) {
-				e.stopImmediatePropagation();
-			}
-				
-			var desCoord : Coordinates = Coordinates(coords_cmb.selectedItem);
-			var hv : Array;
-			var crhv : Array;
-			var cr : Rotations;
-			if(modl.curPointSystem.curCoordinate.id == 0 && desCoord.id == 1) {
-			
-				hv = modl.transformE8CoordsToPhyCoords(modl.camera.H, modl.camera.V);
-				i = 0;
-				n = modl.curPointSystem.curCoordinate.rotations.length;
-				trace("transformE8CoordsToPhyCoords " + n + " items");
-				//				for(i = 0; i < n;i++) {
-				while( modl.curPointSystem.curCoordinate.rotations.length > 0) {
-					trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-					
-					trace(" adjusting rotation " + i);
-					cr = modl.curPointSystem.curCoordinate.rotations.shift() as Rotations;
-					crhv = modl.transformE8CoordsToPhyCoords(cr.H, cr.V);
-					cr.H = crhv[0];
-					cr.V = crhv[1];
-					cr.isE8 = false;
-					desCoord.rotations.push(cr);
-				}
-				
-				cr = modl.curUserRotation;
-				if(cr != null) {
-					crhv = modl.transformE8CoordsToPhyCoords(cr.H, cr.V);
-					cr.H = crhv[0];
-					cr.V = crhv[1];
-					cr.isE8 = false;
-				}
-			}else if(modl.curPointSystem.curCoordinate.id == 1 && desCoord.id == 0) {
-				trace("transformPhyCoordsToE8Coords");
-				hv = modl.transformPhyCoordsToE8Coords(modl.camera.H, modl.camera.V);
-				i = 0;
-				n = modl.curPointSystem.curCoordinate.rotations.length;
-				trace("transformPhyCoordsToE8Coords " + n + " items");
-				//for(i = 0; i < n;i++) {
-				while( modl.curPointSystem.curCoordinate.rotations.length > 0) {
-					trace("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-					trace(" adjusting rotation " + i);
-					cr = modl.curPointSystem.curCoordinate.rotations.shift() as Rotations;
-					crhv = modl.transformPhyCoordsToE8Coords(cr.H, cr.V);
-					cr.isE8 = true;
-					cr.H = crhv[0];
-					cr.V = crhv[1];
-					desCoord.rotations.push(cr);
-					if(modl.curPointSystem.curCoordinate.curRotation == cr) {
-						trace("Found DESIred rotations");
-						desCoord.curRotation = cr; 
-					}
-				}
-				cr = modl.curUserRotation;
-				if(cr != null) {
-					crhv = modl.transformPhyCoordsToE8Coords(cr.H, cr.V);
-					cr.H = crhv[0];
-					cr.V = crhv[1];
-					cr.isE8 = true;
-				}
-			}else {
-				//at desired coords
-				hv = [modl.camera.H, modl.camera.V];
-			}
-			trace("hv " + hv);
-			modl.camera.H = hv[0] as EightDimensionVector;
-			modl.camera.V = hv[1] as EightDimensionVector;
-			desCoord.curRotation = modl.curPointSystem.curCoordinate.curRotation;			
-			
-			trace(modl.curPointSystem.curCoordinate.id + " " + desCoord.id);
-			modl.curPointSystem.curCoordinate = desCoord ;
-			updateView();
-		}
-
+		
 		public static function setAxisLabel(label : MovieClip, text : String) : void {
 			//	trace("setAxisLabel to " + text);
 			var ary : Array = text.split(":");
@@ -330,7 +323,7 @@
 				label.prefix.text = prefix.split("/").join("\r");
 				// "1/2";
 				label.prefixHalf_mc.visible = true;
-			}else {
+			} else {
 				label.prefix.text = "";
 				label.prefixHalf_mc.visible = false;
 			}
@@ -339,20 +332,33 @@
 				label.index_txt.text = ary[0];
 				//"!";
 				label.expo.text = ary[1];//"3";
-			}else {
+			} else {
 				label.index_txt.text = index;
 				label.expo.text = "";
 			}
 			label.postsub.text = postfix;//"5";
 		}
 
+		private function onCoordComboBoxChanged(e : Event = null) : void {
+			trace("CMB  settingModelCoord to " + coords_cmb.selectedItem.name + " " + coords_cmb.selectedItem.data);
+			if(e != null) {
+				e.stopImmediatePropagation();
+			}
+				
+			var desCoord : Coordinates = Coordinates(coords_cmb.selectedItem);
+			modl.curcoords = desCoord;
+			//			updateView();
+		}
+
 		private function onModelCoordinatesChanged(e : Event = null) : void {
 
 			coords_cmb.dataProvider = new DataProvider(modl.curPointSystem.coordinates);
-			trace("onModelCoordinatesChanged " + coords_cmb.dataProvider.length);
+			trace("UI.onModelCoordinatesChanged " + coords_cmb.dataProvider.length);
 			coords_cmb.enabled = (coords_cmb.dataProvider.length > 0);
+			trace("UI.modl.curPointSystem.curCoordinate " + modl.curPointSystem.curCoordinate);
 			coords_cmb.selectedIndex = coords_cmb.dataProvider.getItemIndex(modl.curPointSystem.curCoordinate);
 			
+			trace("bottom_panel.interactionsHeader_mc.aDim_lbl " + modl.curPointSystem.curCoordinate.coordLabels[0]);
 			setAxisLabel(bottom_panel.interactionsHeader_mc.aDim_lbl, modl.curPointSystem.curCoordinate.coordLabels[0]);
 			setAxisLabel(a_btn.dimension_lbl, modl.curPointSystem.curCoordinate.coordLabels[0]);
 			
@@ -386,7 +392,7 @@
 			var p1 : EightDimensionParticle;
 			var p2 : EightDimensionParticle;
 			var pary : Array;
-			trace("UPDATE THE AXISES PARTICLES.. " + n);
+			trace("UPDATE THE AXISES PARTICLES.. " + n + " .....................");
 			/////////// /////////////////////
 			for(;i < n;++i) {
 				trace("UPDATE THE AXISES PARTICLES i " + i);
@@ -409,6 +415,7 @@
 			/////////////////////////////////////////////////////////////
 			// UPDATE THE SELECTED PARTICLES 
 			/////////////////////////////////////////////////////////////
+			trace("UPDATE THE SELECTD PARTICLES.......................");
 			if(modl.firstClicked) {
 				updateDetails(bottom_panel.selection1, modl.firstClicked);
 			}
@@ -421,7 +428,9 @@
 			if(modl.result2) {
 				updateDetails(bottom_panel.selection4, modl.result2);
 			}
+			trace("UPDATE THE MODEL ROTATIONS .......................");
 			onModelRotationsChanged(null, true);
+			trace("UPDATE THE VIEW .......................");
 			
 			updateView();
 		}
@@ -536,32 +545,36 @@
 			
 			//////////// PASS BY VALUE NOT REFERNECE!! ////////////
 			var cr : Rotations = modl.curPointSystem.curCoordinate.curRotation;
-			modl.camera.H.d1 = cr.H.d1;
-			modl.camera.V.d1 = cr.V.d1;
+			if(cr) {
+				modl.camera.H.d1 = cr.H.d1;
+				modl.camera.V.d1 = cr.V.d1;
 			
-			modl.camera.H.d2 = cr.H.d2;
-			modl.camera.V.d2 = cr.V.d2;
+				modl.camera.H.d2 = cr.H.d2;
+				modl.camera.V.d2 = cr.V.d2;
 
-			modl.camera.H.d3 = cr.H.d3;
-			modl.camera.V.d3 = cr.V.d3;
+				modl.camera.H.d3 = cr.H.d3;
+				modl.camera.V.d3 = cr.V.d3;
 
-			modl.camera.H.d4 = cr.H.d4;
-			modl.camera.V.d4 = cr.V.d4;
+				modl.camera.H.d4 = cr.H.d4;
+				modl.camera.V.d4 = cr.V.d4;
 
-			modl.camera.H.d5 = cr.H.d5;
-			modl.camera.V.d5 = cr.V.d5;
+				modl.camera.H.d5 = cr.H.d5;
+				modl.camera.V.d5 = cr.V.d5;
 			
-			modl.camera.H.d6 = cr.H.d6;
-			modl.camera.V.d6 = cr.V.d6;
+				modl.camera.H.d6 = cr.H.d6;
+				modl.camera.V.d6 = cr.V.d6;
 			
-			modl.camera.H.d7 = cr.H.d7;
-			modl.camera.V.d7 = cr.V.d7;
+				modl.camera.H.d7 = cr.H.d7;
+				modl.camera.V.d7 = cr.V.d7;
 			
-			modl.camera.H.d8 = cr.H.d8;
-			modl.camera.V.d8 = cr.V.d8;
+				modl.camera.H.d8 = cr.H.d8;
+				modl.camera.V.d8 = cr.V.d8;
 			
-			modl.curXaxis = Dimension.DIMS[modl.curPointSystem.curCoordinate.curRotation.selectedHAxisIdx];
-			modl.curYaxis = Dimension.DIMS[modl.curPointSystem.curCoordinate.curRotation.selectedVAxisIdx];
+				modl.curXaxis = Dimension.DIMS[modl.curPointSystem.curCoordinate.curRotation.selectedHAxisIdx];
+				modl.curYaxis = Dimension.DIMS[modl.curPointSystem.curCoordinate.curRotation.selectedVAxisIdx];
+			} else {
+				trace("ERROR rotations is blank ");
+			}
 			onSelectionChanged();
 			if(loading_mc.visible == false) {
 				updateView();
@@ -582,11 +595,12 @@
 				points_cmb.labelFunction = nameLabelFunction;
 				points_cmb.addEventListener(Event.CHANGE, pointsChanged);
 				coords_cmb.labelFunction = nameLabelFunction;
-				coords_cmb.addEventListener(Event.CHANGE, coordsChanged);
+				coords_cmb.addEventListener(Event.CHANGE, onCoordComboBoxChanged);
 				rotations_lb.labelFunction = nameLabelFunction;
 				rotations_lb.addEventListener(Event.CHANGE, rotationsChanged);
-			}catch (err : TypeError) {
-				trace("Could not parse text into XML " + err);
+			}catch (err : Error) {
+				trace("Could not parse text into XML " + err.getStackTrace());
+				throw new Error("Error in UI.onLoadedConfigSuccess parsing config");
 			}
 			/*var ary : Array = phy_txt.text.split("\r");
 			////////////////////////////////////////
@@ -720,15 +734,17 @@
 			//for(;i < n;++i) {
 			var half : Sprite;
 			var centr : Sprite;
+			var pointsAr : Array = new Array();
 			while(n--) {
 				trace(" adding Child at " + n);
 				i = n;
 				p = modl.curPointSystem.particles[i];
+				//pointsAr.push(p);
 				cp = modl.curPointSystem.camera_points[i];
 				pntUI = new Sprite();
 			
 				lbl = new lblDef();
-				lbl.gotoAndStop(int(p.name));
+				
 				//setAxisLabel(lbl, p.name);
 
 				lbl.name = "lbl";
@@ -738,10 +754,11 @@
 				lbl.y = -lbl.height / 2 - 10;
 				lbl.visible = false;
 				pntUI.addChild(lbl);
+				p.labelMC = lbl;
 				//trace("placing particle " + p.name);
 				var cnv : Sprite = new Sprite();
 				cnv.name = "shape";
-				p.shape.draw(cnv, p.color);
+				
 			
 				pntUI.addChild(cnv);
 				//	pntUI.cacheAsBitmap = true;
@@ -754,10 +771,11 @@
 			
 				pntUI.x = center.x + (p.curCoords.d1 * modl.zoom);
 				pntUI.y = center.y + (p.curCoords.d2 * modl.zoom);
-				viewport.addChild(pntUI);
+				pointsAr.push(p);
+				//viewport.addChild(pntUI);
 				cp.ui = pntUI; 
 				p.ui = pntUI;
-				
+				p.redrawUI();
 				if(i == 120) {
 					half = pntUI;
 				}
@@ -765,28 +783,44 @@
 					centr = pntUI;
 				}
 			}
-			var fadeSprite : Sprite = new Sprite();
-			viewport.addChild(fadeSprite);
-			standardPointTny = new Tny(fadeSprite); 
-			trace("fadeSPrite " + standardPointTny);
-			viewport.swapChildren(centr, half);
-			createdParticles = true;
-			coords_cmb.selectedIndex = 1;
 			
-			coordsChanged();
+			pointsAr.sortOn("nsize", Array.NUMERIC);
+			while(pointsAr.length > 0) {
+				p = pointsAr.pop();
+				trace("p.size" + p.nsize);
+				viewport.addChild(p.ui);
+			}
+			var fadeUpSprite : Sprite = new Sprite();
+			viewport.addChild(fadeUpSprite);
+			var fadeDownSprite : Sprite = new Sprite();
+			viewport.addChild(fadeDownSprite);
+			pointFadeUpTny = new Tny(fadeUpSprite);
+			pointFadeDownTny = new Tny(fadeDownSprite); 
+			
+			if(centr && half) {
+				viewport.swapChildren(centr, half);
+			}
+			createdParticles = true;
+			
+			/////////////// SET TO DEFAULTS ///////////////////
+			//coords_cmb.selectedIndex = 1;
+			/////////////////Afeter we've already set everything from e8
+			//points_cmb.selectedIndex  =points_cmb.length;
+			
+			//onModelPointsChanged();
+			
+			////////////////UPDATE VIEW  //////////////////////
+			onCoordComboBoxChanged();
 			pointsChanged();
 			onModelRotationsChanged();
 			onSelectionChanged();
+			///////////////ACTIVATE UI /////////////////////////////
 			viewport.addEventListener(MouseEvent.MOUSE_DOWN, onViewportPress);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onViewportRelease);
 			//onEnterFrameHandler();
 			stage.scaleMode = StageScaleMode.SHOW_ALL;
 			updateView();
 			loading_mc.visible = false;
-			/////////////////Afeter we've already set everything from e8
-			//points_cmb.selectedIndex  =points_cmb.length;
-			
-			//onModelPointsChanged();
 
 			trace("FINISH LOADING ================================================");
 		}
@@ -794,10 +828,12 @@
 		public function onViewportPress(mouseEvent : MouseEvent) : void {
 			clickX = viewport.mouseX;
 			clickY = viewport.mouseY;
+			Vsnap = modl.camera.V.clone();
+			Hsnap = modl.camera.H.clone();
 			/*			var dx : Number = (viewport.mouseX - center.x);
 			var dy : Number = (viewport.mouseY - center.y);
 			var radians : Number = Math.atan2(dy, dx)	;	*/
-			aRot.rotation = getHVRotation();
+			aRot.rotation = getHVRotationFromClick();
 			trace("ON PRESS " + aRot.rotation);
 	
 			updateView();
@@ -812,9 +848,17 @@
 			return res;
 		}
 
+		public function getHVRotationFromClick() : Number {
+			var dx : Number = (clickX - center.x);
+			var dy : Number = (clickY - center.y) * -1;
+			var radians : Number = Math.atan2(dy, dx)	;	
+			var res : Number = radians * 180 / Math.PI;
+			return res;
+		}
+
 		public function onViewportRelease(mouseEvent : MouseEvent) : void {
 			removeEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
-		
+			trace("onViewportRelease " + endRot.rotation);
 			curRotation = endRot.rotation; 
 		}
 
@@ -926,7 +970,7 @@
 					for (;i < n; ++i) {
 						(p.outboundParticleLinks[i] as EightDimensionParticle).selectedState = EightDimensionParticle.SELECTED_SECOND_POSSIBLE;
 					}
-				}else {
+				} else {
 					// has first click
 					if(modl.secondClicked == null || p.selectedState == EightDimensionParticle.SELECTED_SECOND_POSSIBLE) {
 						if(modl.secondClicked != null) {
@@ -967,11 +1011,11 @@
 								bottom_panel.selection3.visible = true;
 								bottom_panel.selection4.visible = true;
 							}
-						}else {
+						} else {
 							trace("found no iteractions for pair");
 							//TODO notify no interactions found
 						}
-					}else {
+					} else {
 						//TODO find p3, and p4
 						//updateDetails(selection3, p);
 						//updateDetails(selection4, p);
@@ -1017,10 +1061,14 @@
 		}
 
 		public function updateDetails(mc : MovieClip, p : EightDimensionParticle) {
-			mc.name_txt.text = p.description;
+			mc.name_txt.text = p.label;
 			mc.shape_mc.graphics.clear();
 			mc.dim_lbl.gotoAndStop(int(p.name));
-			p.shape.draw(mc.shape_mc, p.color);
+			if(modl.isGUTmode){
+			p.gutshape.draw(mc.shape_mc, p.gutcolor);
+			}else{
+			p.nshape.draw(mc.shape_mc, p.ncolor);
+			}
 			mc.shape_mc.filters = p.ui.filters;
 				
 			//	trace("UPDATE DETAILS " + p.curCoords.d1Lbl + " " + p.curCoords.d2Lbl);			
@@ -1047,7 +1095,7 @@
 				txt.text = lbl;
 				txt.visible = true;
 				mc.visible = false;
-			}else {
+			} else {
 				txt.visible = false;
 				mc.gotoAndStop("L" + lbl);
 				mc.visible = true;
@@ -1276,11 +1324,13 @@
 					//		trace("V normalized " + V);
 					modl.camera.V = V;
 				}
+				clickX = viewport.mouseX;
+				clickY = viewport.mouseY;
 
 				//	trace("H' " + H);
-			}else {
+			} else {
 				/////////////////////////////////////////////
-				//  ROTATE HV MODE
+				//  ROTATE HV MODE MODE_ROTATEHV
 				/////////////////////////////////////////////
 				var drad : Number;
 				var V1 : EightDimensionVector = new EightDimensionVector();
@@ -1289,22 +1339,22 @@
 				ax = (  clickX - viewport.mouseX); 
 				ay = ( clickY - viewport.mouseY );
 				//trace("----------------------------------");
-				trace("ax " + ax + " " + ay);			
+				trace("ax " + ax + " " + ay + " " + getHVRotation());			
 				if(ax == 0 && ay == 0) {
 					return;
 				}
 			  
-				var dx : Number = viewport.mouseX - center.x;
-				var dy : Number = (viewport.mouseY - center.y );
+				//var dx : Number = (viewport.mouseX -clickX)- center.x;
+				//var dy : Number = (viewport.mouseY -clickY)- center.y ;
 	
-				var radians : Number = Math.atan2(dy, dx);
+				//var radians : Number = Math.atan2(dy, dx);
 				
-				
-				
+				///////////////////////////////////
+				//CURRENT ROTATION  where mouse is at
 				bRot.rotation = getHVRotation();
 				//radians * 180 / Math.PI;
-				endRot.rotation = (bRot.rotation - aRot.rotation) + curRotation;
-				trace("bRot.rotation  " + bRot.rotation + " endRot.rotation " + endRot.rotation);
+				endRot.rotation = (bRot.rotation - aRot.rotation);// + curRotation;
+				trace("ROTATE from bRot  " + bRot.rotation + " to aRot " + aRot.rotation + " == " + endRot.rotation);
 				drad = endRot.rotation * Math.PI / 180;
 				trace("drad " + drad);
 				trace("Hsnap.d1" + Hsnap.d1);
@@ -1378,7 +1428,7 @@
 				modl.curUserRotation = userRotation;
 				modl.curPointSystem.curCoordinate.curRotation = userRotation; 
 				onModelRotationsChanged();
-			}else {
+			} else {
 				///////// PASS BY VALUE NOT REFERENCE!!!!////////////
 				modl.curUserRotation.H.d1 = H.d1;
 				modl.curUserRotation.V.d1 = V.d1;
@@ -1414,223 +1464,286 @@
 			//		}
 
 			
-			clickX = viewport.mouseX;
-			clickY = viewport.mouseY;
-
-
+			
+			
 			updateView();
 		}
 
 		function updateView(evt : Event = null) : void {
 			if(!createdParticles) {
+				trace("Ignoring UpdateView, haven't created particles yet");
 				return;
 			}
-			//////////////////////////////////////////
-			//		trace("CAM____________________________");
-			//		trace("Camera H " + modl.camera.H);
-			//		trace("Camera V " + modl.camera.V);
-			//		trace("CAM____________________________");
-			//	////////////////////////////////////////////////////////
-			if(modl.userInteractionMode == Model.MODE_ROTATEINTOAXIS) {
-				rotateHVMode_Btn.gotoAndStop(1);
-				rotateIntoAxisMode_Btn.visible = false;
-			}else {
-				rotateHVMode_Btn.gotoAndStop(2);
-				rotateIntoAxisMode_Btn.visible = true;
-			}
-			//trace("modl.camera.H. " + modl.camera.H);
-			a_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d1, 2);
-			a_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d1, 2);
-			b_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d2, 2);
-			b_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d2, 2);
-			c_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d3, 2);
-			c_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d3, 2);
-			d_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d4, 2);
-			d_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d4, 2);
-			e_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d5, 2);
-			e_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d5, 2);
-			f_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d6, 2);
-			f_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d6, 2);
-			g_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d7, 2);
-			g_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d7, 2);
-			h_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d8, 2);
-			h_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d8, 2);
+			try {
+				//////////////////////////////////////////
+				//		trace("CAM____________________________");
+				//		trace("Camera H " + modl.camera.H);
+				//		trace("Camera V " + modl.camera.V);
+				//		trace("CAM____________________________");
+				//	////////////////////////////////////////////////////////
+				if(modl.userInteractionMode == Model.MODE_ROTATEINTOAXIS) {
+					rotateHVMode_Btn.gotoAndStop(1);
+					rotateIntoAxisMode_Btn.visible = false;
+				} else {
+					//MODE_ROTATEHV
+					rotateHVMode_Btn.gotoAndStop(2);
+					rotateIntoAxisMode_Btn.visible = true;
+				}
+				//trace("modl.camera.H. " + modl.camera.H);
+				a_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d1, 2);
+				a_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d1, 2);
+				b_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d2, 2);
+				b_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d2, 2);
+				c_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d3, 2);
+				c_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d3, 2);
+				d_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d4, 2);
+				d_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d4, 2);
+				e_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d5, 2);
+				e_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d5, 2);
+				f_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d6, 2);
+				f_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d6, 2);
+				g_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d7, 2);
+				g_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d7, 2);
+				h_btn.hval_txt.text = NumberUtil.roundToPrecision(modl.camera.H.d8, 2);
+				h_btn.vval_txt.text = NumberUtil.roundToPrecision(modl.camera.V.d8, 2);
 	
-			////////////////////////////
-			//	trace("ax " + ax + " " + ay);
-			i = 0;
-			n = modl.curPointSystem.particles.length;
-			var clip : Sprite;
+				////////////////////////////
+				//	trace("ax " + ax + " " + ay);
+				i = 0;
+				n = modl.curPointSystem.particles.length;
+				var clip : Sprite;
 					
-			var lastPart : EightDimensionParticle;
-			if(center != null && bottom_panel.showOrigin_cb != null) {
-				center.visible = bottom_panel.showOrigin_cb.selected;
-			}
-			//trace("rendering " + n + " particles");
+				var lastPart : EightDimensionParticle;
+				if(center != null && bottom_panel.showOrigin_cb != null) {
+					center.visible = bottom_panel.showOrigin_cb.selected;
+				}
+				//trace("rendering " + n + " particles");
 	
-			///////////////////////////////////////////////////////////
-			//   RENDER PARTICLES
-			///////////////////////////////////////////////////////////
-			var x1 : Number;
-			var y1 : Number;
-			for(;i < n;++i) {
-				pobj = modl.curPointSystem.particles[i]; 
-				//spobj = modl.curPointSystem.camera_points[i]; 
-				clip = pobj.ui; 
-				//spobj.ui = clip;
-				//spobj.pmdl = pobj;
-				//	trace("rendering particle  " + pobj.name);
+				///////////////////////////////////////////////////////////
+				//   RENDER PARTICLES
+				///////////////////////////////////////////////////////////
+				var x1 : Number;
+				var y1 : Number;
+				var isE8 : Boolean ;
+				var isE6 : Boolean;
+				var isGeorgi_Glashow : Boolean ;
+				var isPati_Salam : Boolean ;
+				var isStandardModel : Boolean ;
+					
+				for(;i < n;++i) {
+					pobj = modl.curPointSystem.particles[i];
+					isE8 = curPointFilter.isE8 && pobj.isE8 ;
+					isE6 = curPointFilter.isE6 && pobj.isE6;
+					isGeorgi_Glashow = curPointFilter.isGeorgi_Glashow && pobj.isGeorgi_Glashow;
+					isPati_Salam = curPointFilter.isPati_Salam && pobj.isPati_Salam;
+					isStandardModel = curPointFilter.isStandardModel && pobj.isStandardModel;
+					 
+					//spobj = modl.curPointSystem.camera_points[i]; 
+					clip = pobj.ui; 
+					//spobj.ui = clip;
+					//spobj.pmdl = pobj;
+					//	trace("rendering particle  " + pobj.name);
 
+					
+					x1 = pobj.curCoords.getDotProductFromVector(modl.camera.H, false);
+					y1 = pobj.curCoords.getDotProductFromVector(modl.camera.V, false) * -1;
+					//spobj.setX(x1);
+					//* modl.zoom);
+					//spobj.setY(y1);
+					// * modl.zoom);
+					//	trace("x1 " + x1 + "  " + spobj.getX() +" " + ( x1== spobj.getX()) +" y1 " + y1 + "  " + spobj.getY()  + " " +  ( y1== spobj.getY()) + " " + (( spobj.getY()!= spobj.getX())));
 				
-				x1 = pobj.curCoords.getDotProductFromVector(modl.camera.H, false);
-				y1 = pobj.curCoords.getDotProductFromVector(modl.camera.V, false) * -1;
-				//spobj.setX(x1);
-				//* modl.zoom);
-				//spobj.setY(y1);
-				// * modl.zoom);
-				//	trace("x1 " + x1 + "  " + spobj.getX() +" " + ( x1== spobj.getX()) +" y1 " + y1 + "  " + spobj.getY()  + " " +  ( y1== spobj.getY()) + " " + (( spobj.getY()!= spobj.getX())));
-				
-				//if (spobj.getZ() <= -modl.camera.focalLength) {
-				//		clip.visible = false;
-				//	}else {
-				pobj.updateUI();
+					//if (spobj.getZ() <= -modl.camera.focalLength) {
+					//		clip.visible = false;
+					//	}else {
+					pobj.updateUI();
 			
-				if(bottom_panel.showVertices_cb != null ) {
-					clip.visible = bottom_panel.showVertices_cb.selected;
-				}
+					if(bottom_panel.showVertices_cb != null ) {
+						clip.visible = bottom_panel.showVertices_cb.selected;
+					}
 		
-				//	clip.alpha = (transparentVertices_cb.selected) ? .5 : 1;
-				//scale = 3.75;
-				//Number(zoom_txt.text);//(ab / (D + spobj.getZ()));
+					//	clip.alpha = (transparentVertices_cb.selected) ? .5 : 1;
+					//scale = 3.75;
+					//Number(zoom_txt.text);//(ab / (D + spobj.getZ()));
 
-				if(clip != null) {
-					clip.x = vpX + (x1 * scale);
-					//(spobj.getX() * scale);
-					clip.y = vpY + (y1 * scale);
-					/*
-					if(standardPoints ) {
-					trace("rendering standard poitns " + pobj.isStandardModel);
-					clip.visible = pobj.isStandardModel;
-					}else {
-					clip.visible = true;
-					}*/
-
-					
-					clip.alpha = ( pobj.isStandardModel) ? 1 : standardPointTny.target.alpha;
-				}
+					if(clip != null) {
+						clip.x = vpX + (x1 * scale);
+						//(spobj.getX() * scale);
+						clip.y = vpY + (y1 * scale);
+						/*
+						if(standardPoints ) {
+						trace("rendering standard poitns " + pobj.isStandardModel);
+						clip.visible = pobj.isStandardModel;
+						}else {
+						clip.visible = true;
+						}*/
+						//trace("isE8 " + isE8 + " isStandardModel " + isStandardModel + " " + curPointFilter.isStandardModel);
+						if(isE8 || isE6 || isGeorgi_Glashow || isPati_Salam || isStandardModel) {
+							//FADING UP
+							//trace("showing " + pobj.label + " " + pointFadeUpTny.target.alpha);
+							if(clip.alpha <= pointFadeUpTny.target.alpha) {
+								clip.alpha = pointFadeUpTny.target.alpha;
+							}
+						//clip.visible = true;
+						} else {
+							//FADING DOWN
+							//trace("hiding " + pobj.label + " " + pointFadeDownTny.target.alpha);
+							if(clip.alpha >= pointFadeDownTny.target.alpha) {
+								clip.alpha = pointFadeDownTny.target.alpha;
+							}
+						//clip.visible = false;
+						}
+					}
 				//(spobj.getY() * scale);
 				//	trace(pobj.name + " " + clip.x + " " + clip.y);
 				//clip.scaleX = clip.scaleY = scale;
 				//	trace("setting " + clip.scaleX + " " + scale);
 			//	spobj.distFromCamera = scale;
-			}
+				}
 
-			//trace("modl0 " + modl.scene_points);
-			//	var cad:MovieClip = viewport.getChildAt(int(-pobj.d3)) as MovieClip;
-			//	modl.camera_points.sortOn("d3", Array.NUMERIC);
-			//	modl.curPointSystem.camera_points.sortOn("distFromCamera", Array.NUMERIC | Array.DESCENDING);
-			//modl.camera_points.reverse();
-			//trace("modl1 " + modl.scene_points);
-			viewport.graphics.clear();
-			//		viewport.graphics.lineStyle(2, 0xFF0000);
-			//viewport.graphics.moveTo(center.x, center.y);	
-			//	viewport.graphics.lineTo(viewport.mouseX,viewport.mouseY );
-			/////////////////////////
-			//			
-			i = 0;
-			n = modl.curPointSystem.axises.length;
-			var p1 : EightDimensionParticle;
-			var p2 : EightDimensionParticle;
-			var p1v : EightDimensionVector;
-			var p2v : EightDimensionVector;
-			var pary : Array;
-			var x2 : Number;
-			var y2 : Number;
-			///////////////////////////////////////////////////////////
-			//  VISUALIZE THE AXISES 
-			///////////////////////////////////////////////////////////
-			for(;i < n;++i) {
-				//	trace("visualing axis i " + i);
-				pary = modl.curPointSystem.axises[i] as Array;
-				p1 = pary[0] as EightDimensionParticle;
-				p2 = pary[1] as EightDimensionParticle;
-				if(bottom_panel.showAxis_cb.selected) { 
-					var sf:Number = 2;
-					x1 = vpX + p1.curCoords.getDotProductFromVector(modl.camera.H, false) * scale * sf;
-					y1 = vpY + p1.curCoords.getDotProductFromVector(modl.camera.V, false) * scale * sf * -1;
-					x2 = vpX + p2.curCoords.getDotProductFromVector(modl.camera.H, false) * scale * sf;
-					y2 = vpY + p2.curCoords.getDotProductFromVector(modl.camera.V, false) * scale * sf * -1;
-					if(i == (modl.curXaxis.d-1) ){
-						viewport.graphics.lineStyle(1, 0x000000, .8);
-					}else if(i == (modl.curYaxis.d-1)){
-						viewport.graphics.lineStyle(1, 0x333333, .8);
-					}else{
-						viewport.graphics.lineStyle(1, 0xCCCCCC, .5);
-					}
-					
-					viewport.graphics.moveTo(x1, y1);	
-					viewport.graphics.lineTo(x2, y2);
-					if(p1.ui != null) {
-						p1.ui.visible = true;
-						p2.ui.visible = false;				
-						p1.ui.x = x1;
-						p1.ui.y = y1;
-						p2.ui.x = x2;
-						p2.ui.y = y2;
-					}
-				}else {
-					if(p1.ui != null) {
-						p1.ui.visible = false;
-						p2.ui.visible = false;
-					}
-				}
-			}
-			//}
-			///////////////////////////////////////////////////////////
-			//   VISUALIZE TRIALITY
-			///////////////////////////////////////////////////////////
-			if( bottom_panel.showTriality_cb.selected) { 
+				//trace("modl0 " + modl.scene_points);
+				//	var cad:MovieClip = viewport.getChildAt(int(-pobj.d3)) as MovieClip;
+				//	modl.camera_points.sortOn("d3", Array.NUMERIC);
+				//	modl.curPointSystem.camera_points.sortOn("distFromCamera", Array.NUMERIC | Array.DESCENDING);
+				//modl.camera_points.reverse();
+				//trace("modl1 " + modl.scene_points);
+				viewport.graphics.clear();
+				//		viewport.graphics.lineStyle(2, 0xFF0000);
+				//viewport.graphics.moveTo(center.x, center.y);	
+				//	viewport.graphics.lineTo(viewport.mouseX,viewport.mouseY );
+				/////////////////////////
+				//			
 				i = 0;
-				//TODO delete following line
-				n = modl.curPointSystem.trialities.length;
-				var p1ui : Sprite;
-				var p2ui : Sprite;
-				var p3ui : Sprite;
-			//	trace(" alpha is " + standardPointTny.target.alpha);
-				//if(standardPointTny.target.alpha > 0 ) {
-					viewport.graphics.lineStyle(.5, 0x666666, standardPointTny.target.alpha * .5);
-					for(;i < n;++i) {
-				
-						pary = modl.curPointSystem.trialities[i];
-						p1ui = (pary[0] as EightDimensionParticle).ui;
-						p2ui = (pary[1] as EightDimensionParticle).ui;
-						p3ui = (pary[2] as EightDimensionParticle).ui;
-						viewport.graphics.moveTo(p1ui.x, p1ui.y);					
-						viewport.graphics.lineTo(p2ui.x, p2ui.y);
-						viewport.graphics.lineTo(p3ui.x, p3ui.y);
-						viewport.graphics.lineTo(p1ui.x, p1ui.y);
-					}
-				//}
-			}	
-			if(true) {
+				n = modl.curPointSystem.axises.length;
+				var p1 : EightDimensionParticle;
+				var p2 : EightDimensionParticle;
+				var p1v : EightDimensionVector;
+				var p2v : EightDimensionVector;
+				var pary : Array;
+				var x2 : Number;
+				var y2 : Number;
 				///////////////////////////////////////////////////////////
-				//   VISUALIZE THE RAYS
+				//  VISUALIZE THE AXISES 
 				///////////////////////////////////////////////////////////
-				if(modl.secondClicked != null) {
-					viewport.graphics.lineStyle(10, EightDimensionParticle.SELECTED_FIRST_COLOR, .5);
-					viewport.graphics.moveTo(modl.firstClicked.ui.x, modl.firstClicked.ui.y);	
-					viewport.graphics.lineTo(modl.secondClicked.ui.x, modl.secondClicked.ui.y);
-				}
-				if(modl.result1 != null) {
-					viewport.graphics.lineStyle(10, EightDimensionParticle.RESULT_COLOR, .5);
+				for(;i < n;++i) {
+					//	trace("visualing axis i " + i);
+					pary = modl.curPointSystem.axises[i] as Array;
+					p1 = pary[0] as EightDimensionParticle;
+					p2 = pary[1] as EightDimensionParticle;
+					if(bottom_panel.showAxis_cb.selected) { 
+						var sf : Number = 2;
+						x1 = vpX + p1.curCoords.getDotProductFromVector(modl.camera.H, false) * scale * sf;
+						y1 = vpY + p1.curCoords.getDotProductFromVector(modl.camera.V, false) * scale * sf * -1;
+						x2 = vpX + p2.curCoords.getDotProductFromVector(modl.camera.H, false) * scale * sf;
+						y2 = vpY + p2.curCoords.getDotProductFromVector(modl.camera.V, false) * scale * sf * -1;
+						if(i == (modl.curXaxis.d - 1) ) {
+							viewport.graphics.lineStyle(1, 0x000000, .8);
+						}else if(i == (modl.curYaxis.d - 1)) {
+							viewport.graphics.lineStyle(1, 0x333333, .8);
+						} else {
+							viewport.graphics.lineStyle(1, 0xCCCCCC, .5);
+						}
 					
-					viewport.graphics.moveTo(center.x, center.y);		
-					viewport.graphics.lineTo(modl.result1.ui.x, modl.result1.ui.y);
-					if(modl.result2 != null) {
-						viewport.graphics.moveTo(center.x, center.y);	
-						viewport.graphics.lineTo(modl.result2.ui.x, modl.result2.ui.y);
+						viewport.graphics.moveTo(x1, y1);	
+						viewport.graphics.lineTo(x2, y2);
+						if(p1.ui != null) {
+							p1.ui.visible = true;
+							p2.ui.visible = false;				
+							p1.ui.x = x1;
+							p1.ui.y = y1;
+							p2.ui.x = x2;
+							p2.ui.y = y2;
+						}
+					} else {
+						if(p1.ui != null) {
+							p1.ui.visible = false;
+							p2.ui.visible = false;
+						}
 					}
 				}
+				//}
+				///////////////////////////////////////////////////////////
+				//   VISUALIZE TRIALITY
+				///////////////////////////////////////////////////////////
+				if( bottom_panel.showTriality_cb.selected) { 
+					try {
+						i = 0;
+						//TODO delete following line
+						n = modl.curPointSystem.trialities.length;
+						var p1ui : Sprite;
+						var p2ui : Sprite;
+						var p3ui : Sprite;
+						//	trace(" alpha is " + standardPointTny.target.alpha);
+						//if(standardPointTny.target.alpha > 0 ) {
+						if(isE8 || isE6 || isGeorgi_Glashow || isPati_Salam || isStandardModel) {
+							//FADING UP
+							//trace("showing " + pobj.label + " " + pointFadeUpTny.target.alpha);
+							viewport.graphics.lineStyle(.5, 0x666666, pointFadeUpTny.target.alpha * .5);
+				
+				//		if(clip.alpha <= pointFadeUpTny.target.alpha) {
+					//		clip.alpha = pointFadeUpTny.target.alpha;
+					//	}
+						//clip.visible = true;
+						} else {
+							//FADING DOWN
+							viewport.graphics.lineStyle(.5, 0x666666, pointFadeDownTny.target.alpha * .5);
+						//trace("hiding " + pobj.label + " " + pointFadeDownTny.target.alpha);
+					//	if(clip.alpha >= pointFadeDownTny.target.alpha) {
+						//	clip.alpha = pointFadeDownTny.target.alpha;
+						//}
+						//clip.visible = false;
+						}
+						for(;i < n;++i) {
+				
+							pary = modl.curPointSystem.trialities[i];
+							p1ui = (pary[0] as EightDimensionParticle).ui;
+							p2ui = (pary[1] as EightDimensionParticle).ui;
+							p3ui = (pary[2] as EightDimensionParticle).ui;
+							viewport.graphics.moveTo(p1ui.x, p1ui.y);					
+							viewport.graphics.lineTo(p2ui.x, p2ui.y);
+							viewport.graphics.lineTo(p3ui.x, p3ui.y);
+							viewport.graphics.lineTo(p1ui.x, p1ui.y);
+						}
+				//}
+					}catch(er : Error) {
+						trace("error  in showing trialities");
+					}
+				}	
+				if(true) {
+					///////////////////////////////////////////////////////////
+					//   VISUALIZE THE RAYS
+					///////////////////////////////////////////////////////////
+					if(modl.secondClicked != null) {
+						viewport.graphics.lineStyle(10, EightDimensionParticle.SELECTED_FIRST_COLOR, .5);
+						viewport.graphics.moveTo(modl.firstClicked.ui.x, modl.firstClicked.ui.y);	
+						viewport.graphics.lineTo(modl.secondClicked.ui.x, modl.secondClicked.ui.y);
+					}
+					if(modl.result1 != null) {
+						viewport.graphics.lineStyle(10, EightDimensionParticle.RESULT_COLOR, .5);
+					
+						viewport.graphics.moveTo(center.x, center.y);		
+						viewport.graphics.lineTo(modl.result1.ui.x, modl.result1.ui.y);
+						if(modl.result2 != null) {
+							viewport.graphics.moveTo(center.x, center.y);	
+							viewport.graphics.lineTo(modl.result2.ui.x, modl.result2.ui.y);
+						}
+					}
+				}
+				if(false) {
+					///////////////////////////////////////////////////////////
+					//   VISUALIZE THE ROTATION
+					///////////////////////////////////////////////////////////
+					//	if(modl.secondClicked != null) {
+					viewport.graphics.lineStyle(10, 0xFF0000, .5);
+					viewport.graphics.moveTo(clickX, clickY);	
+					viewport.graphics.lineTo(viewport.mouseX, viewport.mouseY);
+					viewport.graphics.lineTo(center.x, center.y);
+					viewport.graphics.lineStyle(10, 0x00FF00, .5);
+						
+				//}
+				}
+			}catch(er : Error) {
+				trace("ERROR in UI.updateView  " + er.getStackTrace());
 			}
 		}
 
@@ -1689,7 +1802,6 @@
 					modl.curUserRotation.selectedHAxisIdx = modl.curXaxis.d - 1;
 					modl.curUserRotation.selectedVAxisIdx = modl.curYaxis.d - 1;
 				}
-				
 			}
 			updateView();
 		}
