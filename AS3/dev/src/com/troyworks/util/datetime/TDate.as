@@ -1,11 +1,10 @@
 package com.troyworks.util.datetime {
-	import flash.events.IEventDispatcher;	
-	import flash.events.EventDispatcher; 
-
+	import com.troyworks.data.DataChangedEvent;
 	import com.troyworks.util.DesignByContract;
-	import  com.troyworks.data.DataChangedEvent;
-
-	import flash.events.Event;	
+	
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;	
 
 	/**
 	 * based off the XDate utility from P.J. Onori
@@ -110,6 +109,16 @@ package com.troyworks.util.datetime {
 		public function incrementMonth(num : Number = NaN) : Number {
 			var by : Number = (isNaN(num)) ? 1 : num ;
 			return setMonth(innerDate.getMonth() + by);
+		}
+		
+		public function decrementDay(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setDate(innerDate.getDate() - by);
+		}
+
+		public function incrementDay(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setDate(innerDate.getDate() + by);
 		}
 
 		public function gotoTodaysDate() : void {
@@ -577,8 +586,8 @@ package com.troyworks.util.datetime {
 		}
 
 		public function getDayOfYear() : Number {
-			var onejan = new Date(this.getFullYear(), 0, 1);
-			return Math.ceil((innerDate.time - onejan) / 86400000);
+			var onejan:Date = new Date(this.getFullYear(), 0, 1);
+			return Math.ceil((innerDate.time - onejan.time) / 86400000);
 		} 
 
 		/*
