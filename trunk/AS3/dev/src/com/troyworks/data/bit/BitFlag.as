@@ -5,8 +5,8 @@
 		public static const ALLBITSOFF : uint = 0;
 		public static const ALLBITSON : uint = ~0;
 
-
-		public static const _1:uint  = 1;
+		public static const _0:uint  = 1<<0;
+		public static const _1:uint  = 1<<1;
 		public static const _2:uint  = 1<<2;
 		public static const _3:uint  = 1<<3;
 		public static const _4:uint  = 1<<4;
@@ -204,9 +204,11 @@
 		{
 			var output:uint = 0;
 				var i:int = 0;
-			var n:int = arguments.length;
+//			var n:int = arguments.length;
+			var n:int = rest.length;
 			for (; i < n; ++i){
-				var pos :uint= arguments [i];
+//				var pos :uint= arguments [i];
+				var pos :uint= rest [i];
 				//since Flash uses 32 bits make sure we range check
 				if (pos > 0 && pos < 33)
 				{
