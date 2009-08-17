@@ -36,7 +36,7 @@ package com.troyworks.framework.loader {
 		public var targetClip : DisplayObjectContainer;
 		private var _exists : Boolean = false;
 		public var callback : Function;
-
+		public var sizeToParent : Boolean = false;
 
 		public function SimpleSWFLoader() {
 			super();
@@ -85,13 +85,17 @@ package com.troyworks.framework.loader {
 			_exists = true;
 			
 			if(targetClip != null) {
+				if(sizeToParent && targetClip.width > 0 && targetClip.height > 0) {
+					s_loader.content.width = targetClip.width;
+					s_loader.content.height = targetClip.height;
+				}
 				targetClip.addChild(s_loader.content);
 			}
 			try {
 				if(str == "flash.display::AVM1Movie") {
 					s_loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, completeSWFLoadHandler);
 					setupLoader();
-				}else {
+				} else {
 					s_loader.unload();
 				}
 			}catch(er : Error) {

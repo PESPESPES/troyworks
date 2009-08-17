@@ -146,7 +146,7 @@ package com.troyworks.ui {
 		 * */
 		public static const VISIBILE_PROPS : Array = ["alpha", "visible", "rotation", "xscale", "yscale", "x", "y"];
 
-		public static function matchClips(movingClip : DisplayObject, stillClip : DisplayObject, props : Array = null) {		
+		public static function matchClips(movingClip : DisplayObject, stillClip : DisplayObject, props : Array = null) :void{		
 			//trace("Matching");
 			if(props == null) {
 				props = VISIBILE_PROPS;

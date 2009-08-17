@@ -66,8 +66,8 @@ package com.troyworks.ui {
 	import flash.geom.ColorTransform;
 
 	public class ColorTransformUtil {
-		var _view:DisplayObject;
-		var _trans:ColorTransform;
+		public var _view:DisplayObject;
+		public var _trans:ColorTransform;
 		
 		public function ColorTransformUtil(spriteToWrap:DisplayObject) {
 				_view = spriteToWrap;
@@ -140,14 +140,14 @@ package com.troyworks.ui {
 		// var cui3:ColorTransformUtil = new ColorTransformUtil(d);
 		// cui3.setBrightnessOffsetRelative(20); //increase brightness by 20, -20 is relative
 		//
-		public function getBrightnessOffsetRelativeTransform(offset) :ColorTransform {
+		public function getBrightnessOffsetRelativeTransform(offset:Number) :ColorTransform {
 			var trans:ColorTransform = new ColorTransform();
 			trans.redOffset = _trans.redOffset + offset;
 			trans.greenOffset = _trans.greenOffset + offset;
 			trans.blueOffset = _trans.blueOffset + offset;
 			return trans; 
 		}
-		public function setBrightnessOffsetRelative (offset) :ColorTransform {
+		public function setBrightnessOffsetRelative (offset:Number) :ColorTransform {
 			var trans:ColorTransform = getBrightnessOffsetRelativeTransform(offset);
 			_view.transform.colorTransform = trans;
 			return trans; 

@@ -220,8 +220,9 @@ package com.troyworks.core.cogs {
 
 		public function stopPulse() : void {
 			trace(_smName + "#" + _smID + ".stopPulse ");
-			
+			if(_pulsecallBackTimer){
 			_pulsecallBackTimer.stop();
+			}
 		}
 
 		///////////////

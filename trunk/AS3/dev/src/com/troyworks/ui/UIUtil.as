@@ -5,6 +5,8 @@
  */
 
 package com.troyworks.ui {
+	import flash.geom.Rectangle;	
+	import flash.display.Stage;	
 	import flash.system.ApplicationDomain;	
 	import flash.media.Sound;	
 	import flash.display.Sprite;	
@@ -16,28 +18,118 @@ package com.troyworks.ui {
 	import flash.display.MovieClip;	
 
 	public class UIUtil {
-		protected var clipsToWatch : Array;
-		var hidx : Object = new Object();
+		public var clipsToWatch : Array;
+		private var hidx : Object = new Object();
+		private var isHidden : Boolean;
 
 		public function UIUtil(clipsToEffect : Array) {
 			this.clipsToWatch = clipsToEffect;
 		}
 
-		///// these are useful for printing ///////
-		public function hide() : void {
+		public function makeVisible() : void {
+			
 			var hide2 : Array = clipsToWatch.concat();
 			var o : Object;
 			while(hide2.length > 0) {
 				o = hide2.pop();
 				if(o != null) {
-					trace("hidthing " + o.name);
+					trace("showing " + o.name);
+					o.visible = true;
 					hidx[o.name] = o.visible;
-					o.visible = false;
+				}
+			}
+			isHidden = false;
+		}
+
+		///// these are useful for printing, switching from edit to preview mode etc. ///////
+		public function hide() : void {
+			if(!isHidden) {
+				var hide2 : Array = clipsToWatch.concat();
+				var o : Object;
+				while(hide2.length > 0) {
+					o = hide2.pop();
+					if(o != null) {
+						trace("hiding " + o.name);
+						hidx[o.name] = o.visible;
+						o.visible = false;
+					}
+				}
+				isHidden = true;
+			}
+		}
+
+		/*********************************************
+		 * Stack based visibility management, as an alternative
+		 * to adding/removing from displayList or frame based management
+		 * 
+		 */
+		public static function hideExcept(disObjCon : DisplayObjectContainer, except : Array = null, dontProcess : Array = null, remove : Boolean = false) : void {
+			var i : int = 0;
+			var  n : int = disObjCon.numChildren;
+			var ii : int = 0;
+			var nn : int = (except == null) ? 0 : except.length;
+			var iii : int = 0;
+			var nnn : int = (dontProcess == null) ? 0 : dontProcess.length;
+			var dO : DisplayObject;
+			var ignore : Boolean;
+			var dontChange : Boolean;
+			for(;i < n;++i) {
+				dO = disObjCon.getChildAt(i);
+				ignore = false;
+				dontChange = false;
+				inner:
+				{
+				iii = 0;
+				for(;iii < nnn;++iii) {
+					//trace("checking to ignore " + dO.name + " " +except[ii].name );
+
+					if(dO == dontProcess[iii]) {
+							
+						//	trace("found something to not ignore");
+						dontChange = true;
+						break inner;
+					}
+				}
+				ii = 0;
+				for(;ii < nn;++ii) {
+					//trace("checking to ignore " + dO.name + " " +except[ii].name );
+
+					if(dO == except[ii]) {
+							
+						//	trace("found something to not ignore");
+						ignore = true;
+						break inner;
+					}
+				}
+				}
+				if(dO != null && !dontChange) {
+					
+					if(!ignore) {
+						dO.visible = false;
+				//	dO.alpha = .3;
+					/*	if(remove){
+						disObjCon.removeChild(dO);
+						}
+						if(dO is DisplayObjectContainer) {
+							DisplayObjectContainer(dO).mouseEnabled = false;
+							DisplayObjectContainer(dO).mouseChildren = false;
+							DisplayObjectContainer(dO).tabEnabled = false;
+						}*/
+					} else {
+						//	dO.alpha = .8;
+						dO.visible = true;
+					/*	if(dO is DisplayObjectContainer) {
+							DisplayObjectContainer(dO).mouseEnabled = true;
+							DisplayObjectContainer(dO).mouseChildren = true;
+							DisplayObjectContainer(dO).tabEnabled = true;
+						}*/
+					}
 				}
 			}
 		}
 
 		public function resetVisibility() : void {
+			isHidden = false;
 			var hide2 : Array = clipsToWatch.concat();
 			var o : Object;
 			while(hide2.length > 0) {
@@ -55,16 +147,25 @@ package com.troyworks.ui {
 				clipsToWatch.pop();
 			}
 		}
+
+		public function moveTo(x : int, y : int) : void {
+			for(var i : int = 0;i < clipsToWatch.length; i++) {
+				clipsToWatch[i].x = x;
+				clipsToWatch[i].y = y;
+			}
+		}
+
 		/* get a Sound object by the linkageID from the UI.fla */
 		public static function getSoundByLinkageID(soundLinkageId : String) : Sound {
 			var cls : Class = ApplicationDomain.currentDomain.getDefinition(soundLinkageId) as Class;
 			var snd : Sound = new cls() as Sound;
 			return snd;
 		}
+
 		/* get a DisplayObject object by the linkageID from the UI.fla */
 		public static function getDisplayObjectByLinkageID(soundLinkageId : String) : DisplayObject {
 			var cls : Class = ApplicationDomain.currentDomain.getDefinition(soundLinkageId) as Class;
-			var dO : DisplayObject = new cls() as DisplayObject;			;
+			var dO : DisplayObject = new cls() as DisplayObject;;
 			return dO;
 		}
 
@@ -95,7 +196,7 @@ package com.troyworks.ui {
 				sprite.buttonMode = true;
 				sprite.mouseChildren = false;
 				sprite.useHandCursor = false;
-			}else {
+			} else {
 				sprite.buttonMode = false;
 				sprite.mouseChildren = true;
 				sprite.useHandCursor = true;
@@ -157,7 +258,7 @@ package com.troyworks.ui {
 					pathA.push(cur.name);
 					if(!showRoot && cur.parent == cur.stage) {
 						break;
-					}else {
+					} else {
 						cur = cur.parent;
 					}
 				}
@@ -168,6 +269,94 @@ package com.troyworks.ui {
 			return res;
 		}
 
+		/*
+		 * Returns a path with frame labels, really a deeplink pointer in the displaylist (minus depth)
+		 * e.g.  Some.swf#[2].outside_mc[1].middle_mc[1].inner_mc
+		 * 
+		 */
+		public static function getAnchorPath(child : DisplayObject, showRoot : Boolean = false) : String {
+			var cur : DisplayObject = child;
+			var pathA : Array = new Array();
+			var res : String;
+			var isLeaf : Boolean = true;
+
+			while (cur.parent != null) {
+				trace("parent" + cur.parent + " == " + cur.parent.name + " " + (cur.parent is Stage));
+				if (cur.parent != null) {
+					//trace("url " + cur.loaderInfo.url);
+
+					if ( !isLeaf ) {
+						if ( cur is MovieClip) {
+							pathA.push("[" + (cur as MovieClip).currentFrame + "].");
+						} else {
+							pathA.push(".");
+						}
+					}
+					if ( cur == child.root) {
+						break;
+					} else {
+						trace("moving up");
+						pathA.push(cur.name);
+						cur = cur.parent;
+						isLeaf = false;
+					}
+				} else {
+					trace("no path above ");
+				}
+			}
+			cur = cur.parent;
+			if ( cur is Stage) {
+				trace("found stage111111111111111");
+				//break;
+				var st : String = cur.loaderInfo.url;
+				var la : int = st.lastIndexOf("\\", st.length);
+				var lb : int = st.lastIndexOf("/", st.length);
+				var ci : int = Math.max(la, lb);
+				var st2 : String = st.substring(ci + 1, st.length);
+				//st2 = st2.replace(".swf", "SWF");
+				trace("swf name " + st2);
+				pathA.push(st2 + "#");
+			}
+			pathA.reverse();
+			trace("res " + res);
+			//res = pathA.join(".");
+			res = pathA.join("");
+			return res;
+		}
+		/* returns the collective rotational transform of the target clip to the stage */
+		public static function getCollectiveTransformsToStage(child : DisplayObject) : Object {
+			var cur : DisplayObject = child;
+			var sp : Sprite = new Sprite();
+			var b:Rectangle = child.getBounds(child);
+			sp.graphics.drawRect(b.x,b.y,b.width, b.height);
+			//sp.rotation = child.rotation;
+			//trace("start child " + child.stage);
+			var hitRoot:Boolean = false;
+			while (cur.parent != null) {
+				if (cur.parent != null) {
+					sp.x +=cur.x;
+					sp.y +=cur.y;
+					sp.rotation += cur.rotation;
+					sp.scaleX *= cur.scaleX;
+					sp.scaleY *= cur.scaleY;
+					sp.visible = (!sp.visible)?false:cur.visible;
+				//	trace("start " + cur.name + " visible " + cur.visible  + " " + cur.stage);
+					//trace(cur + "'s parent is " + cur.parent);
+					if (cur.parent == cur.stage) {
+						
+						hitRoot = true;
+						break;
+					} else {
+						cur = cur.parent;
+					}
+				}
+			}
+			if(!hitRoot || child.stage == null){
+			//	trace("removed from stage ");
+				sp.visible =false;
+			}
+			return sp;
+		}
 		/* 
 		 * will return if the passed in clip distance from the local root
 		 * note in the case of multiple swfs, they have their own independent roots.
@@ -184,7 +373,7 @@ package com.troyworks.ui {
 					//trace(cur + "'s parent is " + cur.parent);
 					if(cur.parent == cur.root) {
 						break;
-					}else {
+					} else {
 						
 						cur = cur.parent;
 					}
@@ -217,7 +406,7 @@ package com.troyworks.ui {
 					trace(cur + "'s parent is " + cur.parent);
 					if(cur.parent == cur.stage) {
 						break;
-					}else {
+					} else {
 						
 						cur = cur.parent;
 					}

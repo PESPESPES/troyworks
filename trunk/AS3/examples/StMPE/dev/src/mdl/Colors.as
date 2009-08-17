@@ -45,7 +45,7 @@ package mdl{
 		public static const  lgray : Colors = new Colors(0xD9D9D9, "lgray");
 		public static const  mgray : Colors = new Colors(0x999999, "mgray");
 		public static const  dgray : Colors = new Colors(0x4D4D4D, "dgray");
-		public static const  black : Colors = new Colors(0xFFFFFF, "black");
+		public static const  black : Colors = new Colors(0x000000, "black");
 
 		public function Colors(clr : Number = 0x333333, name:String ="") {
 			this.rgb = clr;

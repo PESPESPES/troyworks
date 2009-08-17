@@ -105,6 +105,7 @@
 
 		
 		public var trace : Function = StateMachine.getDefaultTrace();
+		private var tmpEvt : Event;
 
 		
 		
@@ -139,7 +140,8 @@
 						//trace(getStateMachineName() + "trying locally");
 						_currentState.call(this, ce);
 					}else {
-						trace("error null state");
+						trace("error null state...are you trying to transition in an Entry state?");
+						tmpEvt = event;
 					}
 				}else{
 					//trace("  Handled event");
@@ -166,7 +168,10 @@
 		 * **********************************************/
 		override public function initStateMachine() : void {
 			//Take initial transition
-			//trace("Fsm.init" + CogEvent.EVT_INIT);
+			if(fsm_hasInited){
+				return;
+			}
+			trace("Fsm.init" + CogEvent.EVT_INIT);
 			//_initState.call(this,CogEvent.EVT_INIT);
 			//_initState.call(this, SIG_ENTRY.createPrivateEvent());
 			tran(_initState);
@@ -234,6 +239,7 @@
 			//// ENTER NEW STATE --------------------------------------
 			//trace("nextState " + nextState + " " + evt);
 			res = nextState.call(this, cachedSIG_ENTRY);
+			trace("_currentState ==" + nextState);
 			_currentState = nextState;
 			nextState = null;
 			// FINISHED - notify the rest of the world of the state change, if there is anybody there
@@ -246,9 +252,10 @@
 		}
 
 		override public function tran(targetState : Function, transOptions : TransitionOptions = null, crossAction : Function = null) : * {
-			trace("tran " +targetState);
+			trace("FSM.tran " +targetState);
 			//// GAURDS--------------------------------------------
 			if (targetState == null) {
+				trace(getStateMachineName() + " invalid state returnning");
 				// No state transition taken if invalid target state
 				return;
 			}
@@ -285,6 +292,7 @@
 			//trace("nextState " + nextState + " " + evt);
 			res = nextState.call(this, evt);
 			if(profilingOn)evt.consumed();
+			//trace("_currentState ==" + nextState);
 			_currentState = nextState;
 			nextState = null;
 			// FINISHED - notify the rest of the world of the state change, if there is anybody there

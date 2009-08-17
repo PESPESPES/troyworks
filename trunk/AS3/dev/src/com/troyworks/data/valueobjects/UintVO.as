@@ -12,6 +12,9 @@ package com.troyworks.data.valueobjects
 		}
 		
 		public function set value(newVal : uint):void {
+			if(!isWriteable){
+				return;
+			}
 			if(constraint != null) {
 				newVal = constraint(newVal);
 			}

@@ -189,13 +189,16 @@ startTheWatch();
 		public var durationMS : Number = 0;
 		private var _intV : Number;
 		private static var _referenceDate:Date = new Date();
+		public static var IDZ:int = 1; 
+		public var id:Number =IDZ++;
+		
 
 		
 		
 		public function StopWatch(persist : Boolean = false, durationInMS : Number = 0,  startTimeMS : Number = NaN) {
 			
 			super();
-			trace("new StopWatch( persist:" + persist + " durationInMS: " + durationInMS + " startTimeMS " + startTimeMS + ")");
+			trace("new StopWatch( + "+ id+ " persist:" + persist + " durationInMS: " + durationInMS + " startTimeMS " + startTimeMS + ")");
 			zero();
 			persistent = persist;
 			
@@ -211,7 +214,7 @@ startTheWatch();
 		}
 
 		public function start() : void {
-			
+			trace("StopWatch+"+id +".start() "+_hasCompleted);
 			switch(mode) {
 				case MODE_COUNTUP:
 					if(!persistent) {
@@ -228,13 +231,16 @@ startTheWatch();
 						
 						_hasCompleted = false;
 						_intV = setTimeout(complete, durationMS);
+						trace("coundown mode"+ _intV);
 						endTime = null;
-						startTime == getNowDate();
+						startTime = getNowDate();
 //						startTime.setTime(getNow());// = (startTime == null) ? new Date() : new Date();
 					}else {
 						
 						if(!_hasCompleted) {
+						
 							_intV = setTimeout(complete, durationMS - _elapsedTime);
+							trace("coundown mode2"+ _intV);
 							endTime = null;
 							startTime = (startTime == null) ? getNowDate(): startTime;
 						}
@@ -242,7 +248,7 @@ startTheWatch();
 					break;
 			}
 			
-			trace("StopWatch.start( " + mode + " )");
+			trace("StopWatch.start( " + mode + " ) " + startTime);
 			
 			_hasStarted = true;
 			_isRunning = true;
@@ -251,14 +257,15 @@ startTheWatch();
 
 		public function complete() : void {
 			_hasCompleted = true;
-			trace("StopWatch.complete()");
+			trace("StopWatch+"+id +".complete(" + _intV + " )");
+			clearTimeout(_intV);
 			stop();	
 			dispatchEvent(new Event(COMPLETE));
 		}
 
 		public function stop() : void {
 			trace("StopWatch.stop()");
-			
+			clearTimeout(_intV);
 			endTime = getNowDate();
 			_elapsedTime = endTime.getTime() - startTime.getTime();
 		
@@ -279,11 +286,21 @@ startTheWatch();
 		}
 		public function getNowDate():Date{
 			var res:Date = new Date(_referenceDate.getTime() + getTimer());
+		//	trace("getNowDate" + res);
 			return res;
 		}
 		public function reset() : void {
 			//startTime.setTime(getNow());// = new Date();
 			//endTime.setTime(getNow());
+			switch(mode) {
+				case MODE_COUNTUP:
+			  
+					break;
+				case MODE_COUNTDOWN:
+					clearTimeout(_intV);
+				//	_intV = setTimeout(complete, durationMS);
+					break;
+			}
 			startTime = getNowDate();
 			endTime = getNowDate();
 			//endTime.time = getNow();// = new Date();
@@ -336,6 +353,8 @@ startTheWatch();
 			//if running
 			if(_hasStarted) {
 				if(_isRunning) {
+					//trace("getNOw" + getNow());
+				//	trace("startTime " + startTime);
 					_elapsedTime = getNow() - startTime.getTime();
 				}else {
 					_elapsedTime = endTime.getTime() - startTime.getTime();

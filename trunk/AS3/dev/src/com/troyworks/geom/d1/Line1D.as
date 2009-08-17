@@ -43,14 +43,14 @@
 
 		public function set A(val : Point1D) : void {
 			if(_A != null){
-				_A.removeEventListener(DataChangedEvent.CHANGED, onAChanged);
+				_A.removeEventListener(DataChangedEvent.DATA_CHANGE, onAChanged);
 			}
-			var dce : DataChangedEvent = new DataChangedEvent();
+			var dce : DataChangedEvent = new DataChangedEvent(DataChangedEvent.DATA_CHANGE);
 			dce.oldVal = _A;
 			dce.currentVal = val;
 			_A = val;
 			if(_A != null){
-				_A.addEventListener(DataChangedEvent.CHANGED, onAChanged);
+				_A.addEventListener(DataChangedEvent.DATA_CHANGE, onAChanged);
 			}
 			dispatchEvent(dce);
 		}
@@ -63,14 +63,14 @@
 
 		public function set Z(val : Point1D) : void {
 				if(_B != null){
-				_B.removeEventListener(DataChangedEvent.CHANGED, onBChanged);
+				_B.removeEventListener(DataChangedEvent.DATA_CHANGE, onBChanged);
 			}
-			var dce : DataChangedEvent = new DataChangedEvent();
+			var dce : DataChangedEvent = new DataChangedEvent(DataChangedEvent.DATA_CHANGE);
 			dce.oldVal = _B;
 			dce.currentVal = val;
 			_B = val;
 			if(_B != null){
-				_B.addEventListener(DataChangedEvent.CHANGED, onBChanged);
+				_B.addEventListener(DataChangedEvent.DATA_CHANGE, onBChanged);
 			}
 			dispatchEvent(dce);
 		}
@@ -80,8 +80,8 @@
 
 		public function init(name : String = null, type : Number = NaN, start : Number = NaN, length : Number = NaN, end : Number = NaN) : void {
 			trace("Line1D.init " + name + " start " + start + " len " + length + " end " + end);
-			name = (name != null) ? name : "";
-			type = (!isNaN(type)) ? type : 1;
+			this.name = (name != null) ? name : "";
+			this.type = (!isNaN(type)) ? type : 1;
 			if (!isNaN(start)) {
 				A = new Point1D("A", start);
 			}

@@ -1,6 +1,8 @@
 package com.troyworks.mediaplayer.controller { 
 	 //import util.SWFUtilBasic;
 	//import util.BasicLoader;
+	
+	import com.troyworks.core.cogs.CogEvent;	
 	import com.troyworks.hsmf.CogEventntntnt;
 	import com.troyworks.hsmf.Signal;
 	import com.troyworks.hsmf.Hsmf;
@@ -40,23 +42,21 @@ package com.troyworks.mediaplayer.controller {
 			trace ("XXXXXXXXXXXXXSound Completed PlayingXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			trace ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		}
-		function soundOnLoad (success:Boolean) : void
-		{
+		function soundOnLoad (success:Boolean) : void{
 			trace ("XXXXXXXXXXXXXSound Loaded " + success + " XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			trace ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			this.tran (s1_active);
 		}
-		function soundOnID3 () : void
-		{
+		function soundOnID3 () : void{
 			trace ("XXXXXXXXXXXXXSound onID3XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			trace ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		}
 		/*.................................................................*/
-		function s0_initCogEventventventvent) : void {
+		function s0_init(evt:CogEvent) : void {
 			trace ("SoundPlayer.onInitXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			this.Q_INIT (s1_active );
 		}
-		function s1_CogEventgEventgEventgEvent) : Function
+		function s1_active(e:CogEvent) : Function
 		{
 			this.onFunctionEnter ("s1_active-", e, []);
 			switch (e.sig)
@@ -85,7 +85,7 @@ package com.troyworks.mediaplayer.controller {
 			}
 			return s_root;
 		}
-		function s10_pauseCogEventCogEventCogEventCogEvent) : Function
+		function s10_pause(e:CogEvent) : Function
 		{
 			this.onFunctionEnter ("s10_pausedAtBeginning-", e, []);
 			switch (e.sig)
@@ -112,7 +112,7 @@ package com.troyworks.mediaplayer.controller {
 			}
 			return this.s1_active ;
 		}
-		fuCogEvent sCogEventyiCogEvent: CogEvent) : Function
+		function s11_playing(e: CogEvent) : Function
 		{
 			this.onFunctionEnter ("s11_playing-", e, []);
 			switch (e.sig)
@@ -147,7 +147,7 @@ package com.troyworks.mediaplayer.controller {
 	
 			}
 			return this.s1_active ;
-		CogEventnctiCogEvent_stoCogEvente : CogEvent) : Function
+		function s12_stopped(e : CogEvent) : Function
 		{
 			this.onFunctionEnter ("s12_stopped-", e, []);
 			switch (e.sig)
@@ -182,7 +182,8 @@ package com.troyworks.mediaplayer.controller {
 				}
 			}
 			return this.s1_active ;
-		}CogEventction CogEventusedInCogEvent (e : CogEvent) : Function
+		}
+		function s13_pausedInMiddle (e : CogEvent) : Function
 		{
 			this.onFunctionEnter ("s13_pausedInMiddle-", e, []);
 			switch (e.sig)

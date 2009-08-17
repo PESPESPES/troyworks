@@ -1,22 +1,24 @@
-package com.troyworks.data.valueobjects
-{
+package com.troyworks.data.valueobjects {
 	import com.troyworks.util.datetime.TDate;
-	public class DateVO extends ValueObject
-	{
+
+	public class DateVO extends ValueObject {
 		private var _val : TDate = null;
-		
-		public function DateVO(val : TDate, func:Function = null)
-		{
+
+		public function DateVO(val : TDate, func : Function = null) {
 			super(func);
-			_val = val
+			_val = val;
 		}
 
-		public function set value(newVal : TDate):void {
+		public function set value(newVal : TDate) : void {
+			if(!isWriteable) {
+				return;
+			}
+			
 			if(constraint != null) {
 				newVal = constraint(newVal);
 			}
 			if (_val != newVal) {
-				onChanged(newVal,_val);
+				onChanged(newVal, _val);
 				_val = newVal;
 			}			
 		}

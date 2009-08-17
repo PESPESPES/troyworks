@@ -58,13 +58,43 @@ package com.troyworks.data.valueobjects {
 	 *  Object?
 	 *  Null/void?
 	 *  Boolean data type
+	 *  
+	 *  
+var constraint:NumberRangeConstraint = new NumberRangeConstraint(0,100);
+
+var mood:NumberVO= new NumberVO(50, constraint.constrainToRange); // initial value is 50.
+
+ * 
+ *  mood.addEventListener( DataChangedEvent.PRE_DATA_CHANGE, onPrecommitCheck);
+    mood.addEventListener( DataChangedEvent.DATA_CHANGE, onPostcommitCheck);
+ * 
+//Cancel the value from actually being commited, in this case the post commit event won't take place.
+
+function onPrecommitCheck(evt:DataChangedEvent):void{
+        trace("onPrecommitCheck");
+        evt.stopPropagation();
+        trace(evt);
+ 
+
+}
+
+function onPostcommitCheck(evt:DataChangedEvent):void{
+
+        trace("onPostcommitCheck");
+
+        trace(evt);
+
+}
+
 	 */
 
 	public class ValueObject extends EventDispatcher {
+		public var name:String = "ValueObject";
 		public var constraint : Function = null;
 		public var triggers : Array = new Array();
 		//used when synchroizing
 		public var isDirty : Boolean = false;
+		public var isWriteable:Boolean = true;
 		public static const PRE_DATA_CHANGE : String = DataChangedEvent.PRE_DATA_CHANGE;
 		public static const DATA_CHANGE : String = DataChangedEvent.DATA_CHANGE;
 
@@ -72,7 +102,11 @@ package com.troyworks.data.valueobjects {
 			super();
 			constraint = func;
 		}
-
+		/*
+		 * 
+			var rFilter1:NumberRangeBooleanFilter = new NumberRangeBooleanFilter(95,100, true, true);
+			mood.addOnValueChangedAction(rFilter1, onRangeSuperHappy);
+		 */
 		public function addOnValueChangedAction(rangeFilter : Filter, fn : Function) : void {
 			triggers.push({gaurd:rangeFilter, fn:fn});
 		}

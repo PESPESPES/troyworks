@@ -38,7 +38,7 @@ package com.troyworks.geom.d1 {
 		public function set position (newVal:Number) : void
 		{
 		//	trace ("Point1D setting position from " +super.toString() + " to " + newVal);
-			var dce:DataChangedEvent = new DataChangedEvent();
+			var dce:DataChangedEvent = new DataChangedEvent(DataChangedEvent.DATA_CHANGE);
 			dce.oldVal = val;
 			dce.currentVal = newVal;
 			val = newVal;

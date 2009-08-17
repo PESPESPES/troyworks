@@ -3,7 +3,6 @@
 	import com.troyworks.controls.ttooltip.OBO_ToolTip;
 	import com.troyworks.core.tweeny.Tny;
 	import com.troyworks.events.EventAdapter;
-
 	import com.troyworks.events.EventWithArgs;
 	import com.troyworks.util.InitObject;
 	import com.troyworks.controls.tflow.*;
@@ -109,6 +108,10 @@
 	this.config = config;
 	stop();
 	 * 
+	 * you can enable or disable the functionality at any time
+	 * dispatchEvent(new Event("FlowControlEnableDynamicBinding", true, true));
+	 * dispatchEvent(new Event("FlowControlDisableDynamicBinding", true, true));
+	 * 
 	 * @author Troy Gardner (troy@troyworks.com)
 	 */
 	dynamic public class FlowControl extends MovieClip {
@@ -119,7 +122,7 @@
 
 		public var QA : Sprite;
 		public var timers : Dictionary = new Dictionary();
-		public var evtIdx:Dictionary = new Dictionary();
+		public var evtIdx : Dictionary = new Dictionary();
 
 		private var _enableFrameDebugger : Boolean;
 		public var debuggerUI_mc : Sprite;
@@ -148,7 +151,8 @@
 
 		//////////////////////////////////////////////////////////
 		private var currentToolTip : TextField;
-		public var TOOLTIPCLASS:Class;//OBO_ToolTip
+		public var TOOLTIPCLASS : Class;
+		//OBO_ToolTip
 		private var _toolTip : OBO_ToolTip;
 		public var fadeClip : Sprite;
 		private var fadeClipTny : Tny;
@@ -164,13 +168,14 @@
 		public var flowcontrollSubClassed : Boolean = false;
 
 		public var flowControlHasInited : Boolean = false;
-		public var version:Number = 1.2;
+		public var version : Number = 1.2;
+		public var fcIsInited:Boolean = false;
 
 		//	public static var trace : Function = TraceAdapter.SOSTracer;
 
 		public function FlowControl(initObj : Object = null, subclassed : Boolean = false) {
 			super();
-			trace("FlowControl () "+ version + " subclassed? " + subclassed);
+			trace("FlowControl () " + version + " subclassed? " + subclassed);
 			flowcontrollSubClassed = subclassed;
 			if(!flowcontrollSubClassed) {
 				init(initObj);
@@ -178,7 +183,11 @@
 		}
 
 		public function init(initObj : Object = null) : void {
-			trace("FlowControl.init ****************************************************" + loaderInfo + " isEmbedded " + isEmbedded);
+			trace("FlowControl("+ version+ ").init ****************************************************" + loaderInfo + " isEmbedded " + isEmbedded);
+			if(fcIsInited){
+				trace("error FC already Inited!!!");
+				return;
+			}
 			isEmbedded = loaderInfo != null && loaderInfo.url != null || this.totalFrames > 1;
 			trace("this.totalFrames  >1 " + this.totalFrames);
 			
@@ -249,7 +258,7 @@
 				var vw = view.loaderInfo.width; 
 				trace("loaderInfo GOOD");
 			}catch(er : Error) {
-				trace("ER loadingInfo not loaded yet");
+				trace("ER loadingInfo not loaded yet" + er.getStackTrace());
 				framesToWait++;
 				return false;
 			}
@@ -360,11 +369,10 @@
 			onRenderFirstFrame();
 			if(watchAddedAndRemovedEvents) {
 				trace("enabling watch");
-				view.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
-				view.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
-				view.addEventListener(Event.ADDED, onChildAdded);
-				view.addEventListener(Event.REMOVED, onChildRemoved);
+				enableFlowControlDynamicBinding();
+		
 			}
+			
 			////////// LISTEN DEEP INSIDE FOR EVENTS TO HAPPEN /////////////
 			//	view.addEventListener(Event.ENTER_FRAME, traceCurrentFrame);
 			/*
@@ -389,13 +397,29 @@
 			view.addEventListener("nextScene", requestNextScene);
 			view.addEventListener("prevScene", requestPrevScene);
 			
-			view.addEventListener("FlowControlEnableKeyboardNavigation", enableFlowControlKeyboardNavigation);
+			view.addEventListener("FlowControlEnableKeyboardNavigation", enableFlowControlKeyboardNavigation );
 			view.addEventListener("FlowControlDisableKeyboardNavigation", disableFlowControlKeyboardNavigation);
 			
+			view.addEventListener("FlowControlEnableDynamicBinding", enableFlowControlDynamicBinding);
+			view.addEventListener("FlowControlDisableDynamicBinding", disableFlowControlDynamicBinding);
 			
 		//	onFrameChanged();
 		}
-
+		public function enableFlowControlDynamicBinding(evt:Event = null):void{
+			trace("****enableFlowControlDynamicBinding****");
+				view.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
+				view.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
+				view.addEventListener(Event.ADDED, onChildAdded);
+				view.addEventListener(Event.REMOVED, onChildRemoved);
+		}
+		public function disableFlowControlDynamicBinding(evt:Event = null):void{
+			trace("****disableFlowControlDynamicBinding****");
+				view.removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
+				view.removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
+				view.removeEventListener(Event.ADDED, onChildAdded);
+				view.removeEventListener(Event.REMOVED, onChildRemoved);
+		}
+		
 		public function enableFlowControlKeyboardNavigation(evt : Event = null) : void {
 			trace("**---enableFlowControlKeyboardNavigation --**");
 			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
@@ -469,9 +493,9 @@
 
 			if(!( dO is Bitmap || dO is Shape) && dO.name.indexOf("instance") == 0) {
 
-			//	trace("found a bum clip " + dO.name+ " " + dO);
-				
-				trace("found a bum clip " + UIUtil.getFullPath(dO)+ " " + dO);
+				//	trace("found a bum clip " + dO.name+ " " + dO);
+
+				trace("found a bum clip " + UIUtil.getFullPath(dO) + " " + dO);
 				//dO.filters = [errorFilter];
 				if(QA != null) {
 					QA.graphics.beginFill(0xFF0000, .6);
@@ -539,7 +563,7 @@
 				if(ary.length == 3) {
 					evtTr.args = [ary[2]];
 				}
-			}else if(frame.indexOf("_fn")!= -1 ) {	
+			}else if(frame.indexOf("_fn") != -1 ) {	
 				fnName = frame.split("_")[0];
 				evtTr = null;
 				if (view[fnName] is Function) {
@@ -611,10 +635,14 @@
 
 		//TODO cache the references to EventTranslator and remove them that way.
 		public function takedownGoto(ie : IEventDispatcher, event : String = MouseEvent.CLICK) : void {
-				var id:String = view.name + "+" + event;
-				var evtTr:EventAdapter  = evtIdx[id];
-				ie.removeEventListener(event, evtTr.dispatchEvent);
-				delete(evtIdx[id]);		
+			
+			var id : String = view.name + "+" + event;
+			var evtTr : EventAdapter = evtIdx[id];
+			trace("takedownGoto " + ie + " " + event + " id " + id + " is " + evtTr);
+			if(evtTr != null){
+			ie.removeEventListener(event, evtTr.dispatchEvent);
+			delete(evtIdx[id]);
+			}		
 		}
 
 		////////////////////////////////////////////////////////////////////
@@ -765,7 +793,7 @@
 		}
 
 		protected  function requestGotoAndPlay(event : EventWithArgs = null) : void {
-			trace("requestGotoAndPlay");
+			trace("requestGotoAndPlay '" + event.args[0] +"'");
 			nextAction = EventAdapter.create(view.gotoAndPlay, event.args, false);
 			startFadeUP();
 			if(event != null) {
@@ -792,60 +820,7 @@
 		///////////////////////////////////////////////////////////////////
 		//                       UI MANAGEMENT 
 		////////////////////////////////////////////////////////////////////
-		/*********************************************
-		 * Stack based visibility management, as an alternative
-		 * to adding/removing from displayList or frame based management
-		 * 
-		 */
-		public static function hideExcept(disObjCon : DisplayObjectContainer, except : Array = null, dontProcess : Array = null) : void {
-			var i : int = 0;
-			var  n : int = disObjCon.numChildren;
-			var ii : int = 0;
-			var nn : int = (except == null) ? 0 : except.length;
-			var iii : int = 0;
-			var nnn : int = (dontProcess == null) ? 0 : dontProcess.length;
-			var dO : DisplayObject;
-			var ignore : Boolean;
-			var dontChange : Boolean;
-			for(;i < n;++i) {
-				dO = disObjCon.getChildAt(i);
-				ignore = false;
-				dontChange = false;
-				inner:
-				{
-				iii = 0;
-				for(;iii < nnn;++iii) {
-					//trace("checking to ignore " + dO.name + " " +except[ii].name );
-
-					if(dO == dontProcess[iii]) {
-							
-						//	trace("found something to not ignore");
-						dontChange = true;
-						break inner;
-					}
-				}
-				ii = 0;
-				for(;ii < nn;++ii) {
-					//trace("checking to ignore " + dO.name + " " +except[ii].name );
-
-					if(dO == except[ii]) {
-							
-						//	trace("found something to not ignore");
-						ignore = true;
-						break inner;
-					}
-				}
-				}
-				if(dO != null && !dontChange) {
-					
-					if(!ignore) {
-						dO.visible = false;
-					}else {
-						dO.visible = true;
-					}
-				}
-			}
-		}
+	
 
 		public function inventoryFrames(enableFrameDebugger : Boolean = false) : void {
 			activeFrames = new Object();
@@ -897,7 +872,7 @@
 			trace("onframehandler-----------------------");
 			//already on frame so call.
 			//try{
-				onEnterFrameHandler(null);
+			onEnterFrameHandler(null);
 			//}catch(er:Error){
 			//	trace(er.toString());
 			//}

@@ -142,8 +142,8 @@ package com.troyworks.data {
 					return innerValue;
 				}else {
 					//change in innerValue
-					if(willTrigger(DataChangedEvent.CHANGED)){
-						var evt:DataChangedEvent = new DataChangedEvent();
+					if(willTrigger(DataChangedEvent.DATA_CHANGE)){
+						var evt:DataChangedEvent = new DataChangedEvent(DataChangedEvent.DATA_CHANGE);
 						evt.oldVal = innerValue;
 						evt.currentVal = nxVal;
 						dispatchEvent(evt);

@@ -59,7 +59,7 @@
 			//dispatchEvent(new Event(Model.ROTATIONS_CHANGED));
 		}
 
-		public static function XMLFactory(xml : XML, gutIDx : Dictionary, GUTparticle : EightDimensionParticle) : PointSystem {
+		public static function XMLFactory(xml : XML, gutIDx : Dictionary, GUTparticle : EightDimensionParticle, GUTparticle2 : EightDimensionParticle) : PointSystem {
 			//	trace("!!!!!!!!!!!!!!!XMLFactory!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			//	trace(xml.toXMLString());
 			//	trace("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -119,15 +119,26 @@
 				
 				p.id = i + 1; //1 based
 				///////////////// UPDATE PARTICLES WITH GUT GRAPHICS /////////////
-				if(gutIDx[p.id]) {
-					trace("FOUND GUT Particle");
+				if(gutIDx[p.id] == "X") {
+					trace("FOUND CONVENTIONAL GUT Particle");
 					p.gutcolor = GUTparticle.gutcolor;
 					p.gutcolorObj = GUTparticle.gutcolorObj;
 					p.gutcoord = GUTparticle.gutcoord;
 					p.gutlabel = GUTparticle.gutlabel;
 					p.gutshape = GUTparticle.gutshape;
 					p.gutname = GUTparticle.gutname;
-				}else {
+					p.isGUT = true;
+				} else 	if(gutIDx[p.id] == "H") {
+				
+					trace("FOUND HIGGS GUT Particle");
+					p.gutcolor = GUTparticle2.gutcolor;
+					p.gutcolorObj = GUTparticle2.gutcolorObj;
+					p.gutcoord = GUTparticle2.gutcoord;
+					p.gutlabel = GUTparticle2.gutlabel;
+					p.gutshape = GUTparticle2.gutshape;
+					p.gutname = GUTparticle2.gutname;
+					p.isGUT = true;
+				} else {
 					trace("FOUND NON GUT Particle " + i);
 				}
 				/*
@@ -225,14 +236,18 @@
 							//trace();
 							//trace(" pk " + pk + "pFrom " +ps.particles[pk] +"  "+ " sk " + sk +" "  + ps.particles[sk]);
 							//					trace("pFrom " +ps.particles[pk] );
+							/////////// BIDIRECTIONAL LINK
 							ps.particles[pk].outboundParticleLinks.push(ps.particles[sk]);
+							ps.particles[sk].outboundParticleLinks.push(ps.particles[pk]);
 						}
 						if(lnks.length == 1) {
 							//					trace("putting 1 interaction" + ky_val[0]);
 							ps.interactions[ky_val[0]] = [ps.particles[Number(lnks[0]) - 1]];
+							ps.interactions[keys[1]+","+keys[0]] = [ps.particles[Number(lnks[0]) - 1]];
 						}else if(lnks.length == 2) {
 							//								trace("putting 2 interaction" + ky_val[0] + "  "+ ps.particles[Number(lnks[0])-1] + " " +  ps.particles[Number(lnks[1])]-1]);
 							ps.interactions[ky_val[0]] = [ps.particles[Number(lnks[0]) - 1], ps.particles[Number(lnks[1]) - 1]];
+							ps.interactions[keys[1]+","+keys[0]] = [ps.particles[Number(lnks[0]) - 1], ps.particles[Number(lnks[1]) - 1]];
 						}
 		//		p = ParticleInteractions.XMLFactory(xparticles[i]);
 			//	trace("Particle obj " + co);

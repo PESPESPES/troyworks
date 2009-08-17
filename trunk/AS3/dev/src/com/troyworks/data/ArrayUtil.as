@@ -33,17 +33,17 @@ package com.troyworks.data {
 	public class ArrayUtil {
 
 		/* returns records at even indices*/
-		public function filterEven(item : *, index : int, array : Array) : Boolean {
+		public static function filterEven(item : *, index : int, array : Array) : Boolean {
 			return Boolean(index % 2);
 		}
 
 		/* returns records at odd indices*/
-		public function filterOdd(item : *, index : int, array : Array) : Boolean {
+		public  static function filterOdd(item : *, index : int, array : Array) : Boolean {
 			return Boolean(index - 1 % 2);
 		}
 
 		/* traces each name in a collection, useful for displayObjects*/
-		public function forEachTraceName(cur : *, ...rest) : void {
+		public static  function forEachTraceName(cur : *, ...rest) : void {
 			trace(cur + " " + cur.name);
 		}
 
@@ -62,7 +62,7 @@ package com.troyworks.data {
 		 * OUTPUT:9 res2 1,4,7,2,5,8,3,6,9
 		 */
 
-		public function splitInPiles(ary : Array, piles : int = 2, collate : Boolean = true ) : Array {
+		public  static  function splitInPiles(ary : Array, piles : int = 2, collate : Boolean = true ) : Array {
 			var res : Array = new Array();
 			var cI : Object;
 			var idx : int;

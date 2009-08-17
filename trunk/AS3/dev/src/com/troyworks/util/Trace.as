@@ -161,12 +161,12 @@ package com.troyworks.util {
 			return res.join('\r');
 		};
 
-		public static function traceByteArray(bA : ByteArray) {
-			var o;
+		public static function traceByteArray(bA : ByteArray) :void{
+			var o:Object;
 			var cnt : int = 0;
 			var cnm : String;
 
-			var o2;
+			var o2:Object;
 			var cnt2 : int = 0;
 			var cnm2 : String;
 			try {
@@ -199,7 +199,7 @@ package com.troyworks.util {
 			}
 		}
 
-		public static function traceBits(bA : ByteArray) {
+		public static function traceBits(bA : ByteArray):void {
 			trace("TraceBits--------------------");
 			for(var i : int = 0;i < bA.length; i++) {
 				bA.position = i;
@@ -222,7 +222,7 @@ package com.troyworks.util {
 			trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			var res:Array = new Array();
-			for(var i in aObj) {
+			for(var i:String in aObj) {
 				trace(" i " + i + " " + aObj[i]);
 				var obj : Object = aObj[i];
 				if(obj is class1) {
@@ -262,7 +262,7 @@ package com.troyworks.util {
 				return null;
 			}
 			//this is used to prevent infinite loops
-			var res = new Array();
+			var res:Array = new Array();
 			if(objStruct.$$_id_ == null) {
 				objStruct.$$_id_ = IDz++;
 				//_global.ASSetPropFlags (objStruct, "$$_id_", 1);
@@ -276,10 +276,10 @@ package com.troyworks.util {
 				var t3 : Boolean = (typeof(objStruct) == "object");
 				var cnt : Number = 0;
 				if( !t1 || t3 ) {
-					for(var i in history) {
+					for(var i:String in history) {
 						trace("   " + cnt++ + " history check of " + i); 
 						//check to make sure we aren't looping
-						var com = history[i].$$_id_;
+						var com:Object = history[i].$$_id_;
 						if(com === objStruct.$$_id_) {
 							trace(i + "ERRROR HIT INFINITE LOOP With TraceID " + " " + com + " _id_: " + history[i]._id_ + " at " + cnt);
 							//res.push("hit circular reference");
@@ -297,25 +297,25 @@ package com.troyworks.util {
 			//	return res;
 			}
 			}
-			var text = (txt == null) ? "" : txt;
+			var text:String = (txt == null) ? "" : txt;
 			res.push("[[[[ " + text + ".displayObjmeAsArray() START  nested: " + showNested + " ]]]]");
 			//trace("11b " + objStruct._id_);
 
 			for (var name:String in objStruct) {
 				//trace("11b2 "+  objStruct._id_ + " name " + name);
-				var n = objStruct[name];
+				var n:Object = objStruct[name];
 				//trace(" 11b3  "+  objStruct._id_ +" " +  n + " name " + name);
 
 
 				//			trace("  11b4 " +  objStruct._id_ +" " + name +" " + n);
-				var l = Trace.buildLine("\t\t+- ", n, name, showNested, showType, showValue);
+				var l:Object = Trace.buildLine("\t\t+- ", n, name, showNested, showType, showValue);
 				//		trace("   line " + l);
 				res.push(l);
 				// trace("showing nested?: " + showNested);
 				if (showNested) {
-					for (var prop in objStruct[name]) {
-						var p = objStruct[name][prop];
-						var m = Trace.buildLine("\t\t\t+-- ", p, prop, showNested, showType, showValue);
+					for (var prop:String in objStruct[name]) {
+						var p:Object = objStruct[name][prop];
+						var m:String = Trace.buildLine("\t\t\t+-- ", p, prop, showNested, showType, showValue);
 						//			trace("    line2 "+ m);
 						res.push(m);
 					}
@@ -448,7 +448,7 @@ package com.troyworks.util {
 		 *  		this.watch("aVariableName", tracer);
 		 */
 		public static function getArgumentsTracer() : Function {
-			var tracer : Function = function() {
+			var tracer : Function = function():void {
 				trace("Tracer " + com.troyworks.util.Trace.me(arguments, "args", true));
 			};
 			return tracer;

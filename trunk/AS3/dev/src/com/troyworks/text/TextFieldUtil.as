@@ -1,12 +1,10 @@
 package com.troyworks.text {
-	import com.troyworks.util.InitObject;	
-
-	import flash.text.AntiAliasType;	
-	import flash.text.TextFormat;	
-	import flash.text.StyleSheet;	
-	import flash.display.DisplayObjectContainer;	
+	import flash.display.DisplayObjectContainer;
+	import flash.text.AntiAliasType;
+	import flash.text.StyleSheet;
 	import flash.text.TextField;
-	import flash.text.TextFieldType;	
+	import flash.text.TextFieldType;
+	import flash.text.TextFormat;		
 
 	/**
 	 * A simple utility when working with a collection of textfields
@@ -25,6 +23,9 @@ package com.troyworks.text {
 				txt.border = true;
 				txt.background = true;
 				txt.selectable = true;
+			//	txt.tabEnabled = true;
+						
+					//view.cert_mc.student_txt.tabIndex = ti++;
 			}
 		}
 
@@ -39,6 +40,7 @@ package com.troyworks.text {
 				txt.background = false;
 				txt.selectable = false;
 				txt.setSelection(-1, -1);
+			//	txt.tabEnabled = false;
 			}
 		}
 

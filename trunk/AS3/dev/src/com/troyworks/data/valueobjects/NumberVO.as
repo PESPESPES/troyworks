@@ -1,6 +1,6 @@
 ﻿package com.troyworks.data.valueobjects {
 	import com.troyworks.data.DataChangedEvent;	
-	
+
 	import flash.events.Event;	
 
 	/*
@@ -50,22 +50,33 @@
 		}
 
 		public function set value(newVal : Number) : void {
+		//	trace(name+":NumberVO.setValue " + newVal);
+			if(!isWriteable) {
+				return;
+			}
+			
 			if(constraint != null) {
+			//	trace(name+":NumberVO.constracit" + newVal);
 				newVal = constraint(newVal);
 			}
 			if (_val != newVal) {
 				//PRE COMMIT
+				//				trace(name+":NumberVO.precommit" + newVal);
+				
 				var evt : DataChangedEvent = onChanged(newVal, _val, PRE_DATA_CHANGE);
 				if(evt.cancelable && evt.isCancelled){
 				}else {
 					_val = newVal;
 					//POST COMMIT
+				//		trace(name+":NumberVO.postcommit" + _val);
+					
 					onChanged(newVal, _val, DATA_CHANGE);
 				}
 			}
 		}
 
 		public function get value() : Number {
+			//trace(name+":NumberVO.getValue " + _val);
 			return _val;
 		}
 

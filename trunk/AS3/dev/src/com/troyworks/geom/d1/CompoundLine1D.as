@@ -1,6 +1,5 @@
 ﻿package com.troyworks.geom.d1 {
-	import com.troyworks.data.ArrayX;	
-	import com.troyworks.geom.d1.LineQuery; 
+	import com.troyworks.geom.d1.LineQuery;		
 
 	public class CompoundLine1D extends Line1D
 	{

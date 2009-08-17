@@ -2,7 +2,7 @@
  * This is similar to EventProxyOptionalArgs and Delegate.
  * 
  * This class actus like a wire between an event and a myriad of other outputs, functions, events. 
- * It's a good glue for decoupling.
+ * It's a good glue for decoupling or passing additional argumenets.
  * 
  *  Event->Function
  *  Event-> new Event
@@ -28,10 +28,10 @@
  * Later:
  *   function onSoundLoaded(event:Event ):void {
 
-       if(event is EventProxyOptionalArgs){
-          var oArgs:Array = EventProxyOptionalArgs(event).args;
-          trace("OptionalArgs " + oArgs.length + " " + oArgs.join());
-        }
+if(event is EventProxyOptionalArgs){
+var oArgs:Array = EventProxyOptionalArgs(event).args;
+trace("OptionalArgs " + oArgs.length + " " + oArgs.join());
+}
  *  }
  *  
  *  evt.target.addEventListener(MouseEvent.CLICK, EventAdapter.create(this[fnName], [arg1,arg2]));
@@ -53,7 +53,7 @@ package com.troyworks.events {
 	import flash.events.Event;
 
 	public class EventAdapter {
-		public var id:String = "";
+		public var id : String = "";
 
 		/////////// function callback ///////////
 		private var _fn : Function;
@@ -66,6 +66,7 @@ package com.troyworks.events {
 
 		public var bubbles : Boolean = true;
 		public var cancelable : Boolean = true;
+		private var includeEvent : Boolean = false;
 
 		public function EventAdapter(functionToCall : Function = null, callbackArguments : Array = null) {
 			_fn = functionToCall;
@@ -103,12 +104,13 @@ package com.troyworks.events {
 		 *   evA.initAsRedispatcher(someEventDispatcher, DataChangeEvent);
 		 *     Tny.onCallBack = evA.dispatchEvent; 
 		 */
-		public static function create(functionToCall : Function, callbackArguments : Array, includeEvent : Boolean = false) : Function {
+		public static function create(functionToCall : Function, callbackArguments : Array = null, includeEvent : Boolean = false) : Function {
 			//trace("EventAdapter.create");
 			var res : EventAdapter = new EventAdapter(functionToCall, callbackArguments);
+			res.includeEvent = includeEvent;
 			if(includeEvent) {
 				return res.dispatchEvent;
-			}else {
+			} else {
 				return res.callFunction;
 			}
 		}
@@ -117,9 +119,17 @@ package com.troyworks.events {
 		 * for a given event, call a function with the arguments
 		 * this was constructed with.
 		 */
-		public function callFunction(evt : Event = null) : * {
+		public function callFunction(evt : Object = null) : * {
 			//trace("EventAdapter.callFunction");
-			return _fn.apply(null, args);
+			if(evt != null && evt is Event && !includeEvent) {
+				return _fn.apply(null, args);
+			} else {
+				if(args != null && args.length > 0) {
+					return _fn.apply(null, args.concat(arguments));
+				} else {
+					return _fn.apply(null, arguments);
+				}
+			}
 		}
 
 		/* for a given event, 
@@ -142,14 +152,14 @@ package com.troyworks.events {
 			}else if(evtFactory != null) {
 				trace("using evtFactory");
 				revt = evtFactory() as Event;
-			}else {
+			} else {
 				trace("relaying event");
 				revt = evt;
 			}
 			if(revt is EventWithArgs && args != null) {
 				(revt as EventWithArgs).args = args;
 				aargs = [revt];
-			}else {
+			} else {
 				aargs = args.concat();
 				aargs.unshift(revt);
 			}

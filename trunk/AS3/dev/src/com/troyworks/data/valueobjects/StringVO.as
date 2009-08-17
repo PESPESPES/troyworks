@@ -1,21 +1,23 @@
-package com.troyworks.data.valueobjects
-{
-	public class StringVO extends ValueObject
-	{
+package com.troyworks.data.valueobjects {
+
+	public class StringVO extends ValueObject {
 		private var _val : String = "";
-		
-		public function StringVO (val:String, func:Function = null)
-		{
+
+		public function StringVO(val : String, func : Function = null) {
 			super(func);
 			_val = val;
 		}
-		
-		public function set value(newVal : String):void {
+
+		public function set value(newVal : String) : void {
+			if(!isWriteable) {
+				return;
+			}
+			
 			if(constraint != null) {
 				newVal = constraint(newVal);
 			}
 			if (_val != newVal) {
-				onChanged(newVal,_val);
+				onChanged(newVal, _val);
 				_val = newVal;
 			}
 		}
@@ -27,6 +29,5 @@ package com.troyworks.data.valueobjects
 		override public function toString() : String {
 			return _val;
 		}
-
 	}
 }
