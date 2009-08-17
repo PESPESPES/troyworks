@@ -1,6 +1,7 @@
 ﻿package mdl {
+	import flash.display.DisplayObject;	
 	import flash.display.MovieClip;	
-	
+
 	import com.troyworks.data.Default;	
 
 	import flash.filters.GlowFilter;	
@@ -67,6 +68,7 @@
 		public var isGeorgi_Glashow : Boolean = false; //GUT
 		public var isE6 : Boolean = false; //GUT
 		public var isE8 : Boolean = false;
+		public var isGUT : Boolean = false;
 
 		///////////////////////////////////////////////
 		public var coords : Array = new Array();
@@ -148,51 +150,58 @@
 
 		
 		public function redrawUI() : void {
-			if(modl != null && modl.isGUTmode) {
-				trace(id +  " drawing with GUT color " + gutcolor);
-				gutshape.draw(ui, gutcolor);
-			
+			(ui.getChildByName("shape") as Sprite).graphics.clear();
+			if(modl != null && modl.isGUTmode ) {
+				//	trace(id + " drawing with GUT color " + gutcolor + " isGUT" + isGUT);
+				gutshape.draw(ui.getChildByName("shape") as Sprite, gutcolor);
 			} else {
-				trace(id +  " drawing with NORMAL color " + ncolor);
-				nshape.draw(ui, ncolor);
+				/////////// NOT GUT mode //////////
+				//////// draw normal ////////////
+				nshape.draw(ui.getChildByName("shape") as Sprite, ncolor);
 			}
-				labelMC.gotoAndStop(int(name));
+			
+		
+			//	trace("going to LABEL " + name);
+			labelMC.gotoAndStop(int(name));
 		}
 
 		public function updateUI() : void {
 			if(ui != null) {
+				//trace("updateUI" + ui.getChildByName("shape").name);
+				var shape : DisplayObject = ui.getChildByName("shape");
 				///////////////// FOCUSED /////////////////////
 				if(isFocused) {
 					var ary : Array = ui.getChildByName("shape").filters;
 					ary.push(HOVER_FILTER);
-					ui.getChildByName("shape").filters = ary;
+					shape.filters = ary;
 					//		ui.alpha = 1;
 				} else {
 					//////////////// NOT FOCUSED ////////////////////////
-					//trace("updatingUI " + _selectedState);
+					//	trace("updatingUI " + _selectedState);
 					switch(_selectedState) {	
 						case RESULT:
-							ui.getChildByName("shape").filters = [RESULT_FILTER];
+							shape.filters = [RESULT_FILTER];
 							//	ui.alpha = 1;
 							break;
 			
 						case SELECTED_FIRST:
-							//	trace("SELECTED FIRST!");
-							ui.getChildByName("shape").filters = [SELECTED_FIRST_FILTER];
+							trace("SELECTED FIRST! " + shape.filters.length + " " + shape.visible + " " + shape.alpha + " " + shape.stage + " " + shape.parent.name + " " + shape.parent.parent.name);
+							shape.filters = [SELECTED_FIRST_FILTER];
+							//shape.alpha = .5;
 							//	clip.visible = false;
 							//	ui.alpha = 1;
 							break;
 						case SELECTED_SECOND:
-							//		trace("SELECTED SECOND");
-							ui.getChildByName("shape").filters = [SELECTED_SECOND_FILTER];
+							trace("SELECTED SECOND");
+							shape.filters = [SELECTED_SECOND_FILTER];
 							//	ui.alpha = 1;
 							break;
 						case SELECTED_SECOND_POSSIBLE:
-							ui.getChildByName("shape").filters = [SELECTED_SECOND_POSSIBLE_FILTER];
+							shape.filters = [SELECTED_SECOND_POSSIBLE_FILTER];
 							//	ui.alpha = ( modl.secondClicked == null) ? 1 : .3;
 							break;
 						case NOT_SELECTED:
-							ui.getChildByName("shape").filters = [];
+							shape.filters = [];
 							//	ui.alpha = (modl.firstClicked == null&& modl.secondClicked == null) ? 1 : .02;
 							break;	
 						default:
@@ -202,6 +211,8 @@
 				}
 				/////////////////// UI ////////////////////
 			// UI.setAxisLabel(ui.getChildByName(lbl), 
+			} else {
+				trace("UI is null");
 			}
 		}
 
@@ -314,14 +325,14 @@
 			res.isGeorgi_Glashow = xml.@gg == "1";
 			res.isE6 = xml.@e6 == "1";
 			res.isE8 = xml.@e8 == "1";
-			//	trace("new E8Particle  " + res.name + " sm " + res.isStandardModel + " ps " + res.isPati_Salam  + " gg " +res.isGeorgi_Glashow + " e6 " + res.isE6 + " e8 "+ res.isE8);
-			if(false){
-			res.gutname = Default.getString(new String(xml.@gutname), res.nname); 
-			res.gutlabel = Default.getString(new String(xml.@gutlabel), res.nlabel);
-			var co : Number = Default.getNumberFromString(String(xml.@gutcolor), res.ncolor);
-			res.gutcolorObj = Colors.parse(String(co));
-			res.gutcolor = res.gutcolorObj.rgb;
-			res.gutshape = RenderShape.parse(Default.getString(new String(xml.@gutsymbol), xml.@symbol));
+			trace("new E8Particle  " + res.name + " sm " + res.isStandardModel + " ps " + res.isPati_Salam + " gg " + res.isGeorgi_Glashow + " e6 " + res.isE6 + " e8 " + res.isE8);
+			if(false) {
+				res.gutname = Default.getString(new String(xml.@gutname), res.nname); 
+				res.gutlabel = Default.getString(new String(xml.@gutlabel), res.nlabel);
+				var co : Number = Default.getNumberFromString(String(xml.@gutcolor), res.ncolor);
+				res.gutcolorObj = Colors.parse(String(co));
+				res.gutcolor = res.gutcolorObj.rgb;
+				res.gutshape = RenderShape.parse(Default.getString(new String(xml.@gutsymbol), xml.@symbol));
 			}
 			//DEFAULT TO THE NORMAL COLORS //////
 			res.gutname = res.nname; 

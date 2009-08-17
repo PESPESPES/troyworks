@@ -496,7 +496,7 @@ import com.troyworks.core.cogs.CogEvent
 				{
 					//this.my_video.play ();
 					this.tran (this.s11_platran
-					return ntran			}
+					return null;			}
 				//	case SIG_INIT :
 				//	{
 				//		return new Function();
@@ -522,12 +522,12 @@ import com.troyworks.core.cogs.CogEvent
 				{
 					//this.my_video.pause ();
 					this.tran (this.s13_pausetrandle);
-					returtran;
+					return null;
 				}
 				case GOTOANDSTOP_EVT :
 				{
 					this.tran (this.s10_pausedAtranning);
-					returntran
+					return null;
 				}
 				//	case SIG_INIT :
 				//	{
@@ -559,7 +559,7 @@ import com.troyworks.core.cogs.CogEvent
 				{
 					//this.my_video.play ();
 					this.tran (this.s11_playing);
-	tranturn null;
+	return null;
 				}
 				/tran SIG_INIT :
 				//	{
@@ -587,11 +587,11 @@ import com.troyworks.core.cogs.CogEvent
 					//this.my_video.stop ();
 					this.tran (this.s10_pausedAtBegintran
 					return null;
-				}tranase PLAY_EVT :
+				}case PLAY_EVT :
 				{
 					//this.my_video.play ();
 					this.tran (this.s11_playing);
-					tran null;
+					return null;
 				}
 				//	case ItranT :
 				//	{

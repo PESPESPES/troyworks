@@ -408,7 +408,7 @@ package com.troyworks.controls.tmediaplayer.ui {
 	//		base_mc.shell_mc.ph_mc.height =height;// base_mc._oheight;
 		}
 		/*.................................................................*/
-		function s0_viewAssetsLoaded(e : CogEventntntnt) : Function
+		function s0_viewAssetsLoaded(e : CogEventntnt) : Function
 		{
 			this.onFunctionEnter ("s0_viewAssetsLoaded-", e, []);
 			switch (e.sig)

@@ -44,18 +44,18 @@ package mdl {
 		private var _curcoords : Coordinates;
 		private var _lastcoords : Coordinates;
 		private var _isGUTmode : Boolean;
-		
+
 		public function set isGUTmode( value : Boolean ) : void {
-		        _isGUTmode = value;
+			_isGUTmode = value;
 		}
-		
+
 		public function get isGUTmode( ) : Boolean {
-		        return _isGUTmode;
+			return _isGUTmode;
 		}
-		
+
 		
 		public function set curcoords( desCoord : Coordinates ) : void {
-			if(desCoord == null){
+			if(desCoord == null) {
 				trace("WARNING curcords cannot be set to null");
 				return;
 			}
@@ -69,7 +69,7 @@ package mdl {
 						///////// FIRST SETUP is E8 no translation needed ////////
 					} else {
 						trace("=== COORD CHANGE ========================================================");
-						trace("Model.curcoords CHANGE to '" + desCoord.internalName + "' from '" + _lastcoords.internalName +"'");
+						trace("Model.curcoords CHANGE to '" + desCoord.internalName + "' from '" + _lastcoords.internalName + "'");
 						trace("=========================================================================");
 						///////////// TRANSLATING betwen Coordinates /////////////
 						var hv : Array;
@@ -106,7 +106,7 @@ package mdl {
 								fn = transform_gutcoords_To_e8coords;
 							}
 						}
-						if(fn == null){
+						if(fn == null) {
 							throw new Error("Error invalid coordinate change");
 						}
 			
@@ -191,7 +191,7 @@ package mdl {
 			H1.d1 = H.d1;
 			H1.d2 = H.d2;
 			H1.d3 = -0.7071 * H.d3 + 0.7071 * H.d4;
-			H1.d4 = 0.5477 * H.d3 + 0.5477 * H.d4 + 0.3651 * H.d6 + 0.3651 * H.d7 + 0.3651 * H.d7;
+			H1.d4 = 0.5477 * H.d3 + 0.5477 * H.d4 + 0.3651 * H.d6 + 0.3651 * H.d7 + 0.3651 * H.d8;
 			H1.d5 = H.d5;
 			H1.d6 = -0.4472 * H.d3 - 0.4472 * H.d4 + 0.4472 * H.d6 + 0.4472 * H.d7 + 0.4472 * H.d8;
 			H1.d7 = -0.7071 * H.d6 + 0.7071 * H.d7;
@@ -200,7 +200,7 @@ package mdl {
 			V1.d1 = V.d1;
 			V1.d2 = V.d2;
 			V1.d3 = -0.7071 * V.d3 + 0.7071 * V.d4;
-			V1.d4 = 0.5477 * V.d3 + 0.5477 * V.d4 + 0.3651 * V.d6 + 0.3651 * V.d7 + 0.3651 * V.d7;
+			V1.d4 = 0.5477 * V.d3 + 0.5477 * V.d4 + 0.3651 * V.d6 + 0.3651 * V.d7 + 0.3651 * V.d8;
 			V1.d5 = V.d5;
 			V1.d6 = -0.4472 * V.d3 - 0.4472 * V.d4 + 0.4472 * V.d6 + 0.4472 * V.d7 + 0.4472 * V.d8;
 			V1.d7 = -0.7071 * V.d6 + 0.7071 * V.d7;
@@ -362,12 +362,20 @@ package mdl {
 			while(guTdA.length > 0) {
 				var gtid : int = new int(guTdA.pop());
 				trace('gtid ' + gtid);
-				gutIDx[gtid] = true;
+				gutIDx[gtid] = "X";
+			}
+			guTdA = String(GUTconfig.@hids).split(",");
+			while(guTdA.length > 0) {
+				 gtid = new int(guTdA.pop());
+				trace('gtid ' + gtid);
+				gutIDx[gtid] = "H";
 			}
 			 
 			var GUTparticle : EightDimensionParticle = EightDimensionParticle.XMLFactory(GUTconfig.p[0]);
-			GUTparticle.modl = this;	
-			trace("GUTconfig IDs " + GUTparticle.name);
+			GUTparticle.modl = this;
+			var GUTparticle2 : EightDimensionParticle = EightDimensionParticle.XMLFactory(GUTconfig.p[1]);
+			GUTparticle2.modl = this;		
+			trace("GUTconfig IDs " + GUTparticle.name + " " + GUTparticle.gutcolor + " " );
 			
 			//////////////////////////////////////////////////////
 			//   POINT SYSTEMS 
@@ -388,7 +396,7 @@ package mdl {
 				trace("  looking for e8 " + psys[i].@name);
 				if(psys[i].@name == "E8") {
 					trace("E8 PointSystem Found ");
-					curPointSystem = PointSystem.XMLFactory(psys[i], gutIDx, GUTparticle);
+					curPointSystem = PointSystem.XMLFactory(psys[i], gutIDx, GUTparticle, GUTparticle2);
 					e8PointSystem = curPointSystem;
 					curPointSystem.addEventListener(Model.COORDS_CHANGED, redispatchEvent);
 					curPointSystem.addEventListener(Model.ROTATIONS_CHANGED, redispatchEvent);
@@ -402,10 +410,10 @@ package mdl {
 			n = psys.length();
 			for (;i < n; ++i) {
 				
-			    trace("---------------------AA-------------------");
+				trace("---------------------AA-------------------");
 				if(psys[i].@name != "E8") {
 					trace("---------------------BB-------------------");
-					curPointSystem = PointSystem.XMLFactory(psys[i], gutIDx, GUTparticle);
+					curPointSystem = PointSystem.XMLFactory(psys[i], gutIDx, GUTparticle, GUTparticle2);
 					trace("---------------------CC-------------------");
 					trace("PointSystem Found " + curPointSystem.name);
 					trace("PointSystem Found Subset of e8");

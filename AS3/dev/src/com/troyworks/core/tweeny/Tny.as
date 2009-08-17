@@ -88,6 +88,7 @@ trace("onENTER_FRAME " + obj.difficulty + " " + obj.sillyNess);
  */
 
 package com.troyworks.core.tweeny {
+	import flash.utils.Timer;	
 	import flash.events.IEventDispatcher;	
 	import flash.events.Event;	
 	import flash.display.MovieClip;	
@@ -246,6 +247,8 @@ package com.troyworks.core.tweeny {
 			ie.addEventListener(EventName, onPulse);
 			if(ie is DisplayObject) {
 				fps = (ie as DisplayObject).stage.frameRate;
+			}else if(ie is Timer){
+				fps = 1000/(ie as Timer).delay;
 			}
 		}
 
@@ -394,8 +397,11 @@ package com.troyworks.core.tweeny {
 					isMovieClip = true;
 				}
 				addPulse(null);
-				//	trace("setting target " + v.name + " " + v);
+			//	trace("setting target " + v.name + " " + v);
 				transform.matrix = trg.transform.matrix.clone();
+			///	trace("width " + height);trace("width " + height);
+			//	trace(" transform.matrix " + transform.matrix);
+				graphics.drawRect(0, 0, trg.width, trg.height);
 				colorTransform = new ColorTransform();
 				v.transform.colorTransform.concat(colorTransform);
 				soundTransform = new SoundTransform();
@@ -474,7 +480,7 @@ package com.troyworks.core.tweeny {
 				st = getTimer() + dl;
 				t = -dl ;//+ (Math.random() * fd); // if we have a delay, setup the delay as a percentage of the time (as we increment in percent)
 			}
-			trace("t " + t + " " + dl + " " + d + " dur " + dur);
+			//trace("t " + t + " " + dl + " " + d + " dur " + dur);
 	
 //			trace("ts " + ts);
 		}
@@ -497,7 +503,7 @@ package com.troyworks.core.tweeny {
 		 * onPulse, this is to avoid startup of animation overhead.
 		 * **/
 		public function onPulse(evt : Object = null) : void {
-			//trace("Tny.Render pulse-----------");
+		//	trace("Tny.Render pulse-----------");
 			//PROP LISTING trace(p.join(","));
 
 			//	trace(trg.name +" onPulse "+ t + "% " + d + " " + isActive + " " + trg + " " + ts );
@@ -549,7 +555,7 @@ package com.troyworks.core.tweeny {
 			//trace(" t " + t + " " + dd);
 			if(t >= (d - (fd * .5))) {
 				// finished
-				trace(trg.name +" isFinishing "+ t + "% " + d  + " "  +(getTimer() - st) );
+				//trace(trg.name +" isFinishing "+ t + "% " + d  + " "  +(getTimer() - st) );
 
 				isFinished = true;
 			//	trace(isFinished +" isFinished set? ");
@@ -563,7 +569,8 @@ package com.troyworks.core.tweeny {
 			var pc : Number = Math.min(t / d, 1);
 			tt = ease(pc, 0, 1, 1);
 			var ak : Number;
-				trace(trg.name +" active2 "+ pc+ "% " + t +"/" + d +"=  " + tt );	
+			
+			//	trace(trg.name +" active2 "+ pc+ "% " + t +"/" + d +"=  " + tt );	
 			while(--j > -1) {
 				k = p[j];
 				///////////////TRACE///////////////////
@@ -602,16 +609,18 @@ package com.troyworks.core.tweeny {
 					z = this.soundTransform;
 					continue;			
 				}else if(k === USRP_START) {
-					//trace("setting up user Prop" + trg + " " + usrA + " " + usrZ);
+				//	trace("setting up user Prop trg:" + trg +typeof(trg)+ " " + usrA + " " + usrZ);
 					c = trg;
 					a = usrA;
 					z = usrZ;
+					continue;			
+					
 				}
 				/////////// CALC //////////////
 				//C = A + (D*t);
 				if(isNaN(Number(k))) {
 					ak = a[k];
-					//trace("calc '" + k +"' " + c[k] + " " + ak + " " + z[k] + " @ " + tt);
+				//	trace("calc '" + k +"' " + c[k] + " " + ak + " " + z[k] + " @ " + tt);
 					c[k] = ak + ((z[k] - ak) * tt);
 					//trace("pcalc '" + k +"' " + c[k]);
 					if(roundOutput) {
@@ -627,7 +636,7 @@ package com.troyworks.core.tweeny {
 					_lm = trg.transform.matrix;
 					trg.transform.matrix = c as Matrix;
 				}else if(k === COLORTRANSFORM_END) {
-					//		trace("finising ColorTransform----------" + trg.transform.colorTransform.alphaMultiplier );
+							trace("finising ColorTransform----------" + trg.transform.colorTransform.alphaMultiplier );
 					_lc = trg.transform.colorTransform;
 					trg.transform.colorTransform = c as ColorTransform;
 					trg.visible = trg.transform.colorTransform.alphaMultiplier > .15;

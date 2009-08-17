@@ -1,21 +1,23 @@
-package com.troyworks.data.valueobjects
-{
-	public class BooleanVO extends ValueObject
-	{
+package com.troyworks.data.valueobjects {
+
+	public class BooleanVO extends ValueObject {
 		private var _val : Boolean = false;
-		
-		public function BooleanVO(val : Boolean, func:Function = null)
-		{
+
+		public function BooleanVO(val : Boolean, func : Function = null) {
 			super(func);
 			_val = val;
 		}
 
-		public function set value(newVal : Boolean):void {
+		public function set value(newVal : Boolean) : void {
+			if(!isWriteable) {
+				return;
+			}
+			
 			if(constraint != null) {
 				newVal = constraint(newVal);
 			}
 			if (_val != newVal) {
-				onChanged(newVal,_val);
+				onChanged(newVal, _val);
 				_val = newVal;
 			}			
 		}

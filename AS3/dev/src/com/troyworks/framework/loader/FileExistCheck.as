@@ -28,6 +28,13 @@ package com.troyworks.framework.loader {
 	 * CREATED :: Nov 8, 2008
 	 * DESCRIPTION ::
 	 *
+	 * tracker.load(analyticsURL);
+				tracker.callback = 	onCalledGoogle;
+	 *	public function onCalledGoogle(mediaURL:String, _exists:Boolean, sizeInBytes:Number):void{
+			trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+			trace("XXXXXX   CALLED GOOGLE     " + mediaURL + " "+ _exists + "           XXXXX");
+			trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+		}
 	 */
 	public class FileExistCheck {
 

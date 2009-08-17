@@ -80,6 +80,7 @@ package com.troyworks.util {
 			if(bindViewPostInit){
 				bindView(target, view, notOneOfFilter, isOneOfFilter);
 			}
+			trace("InitObject.onFinishedInit" + callback + " for " + view.name);
 			if(callback != null) {
 				callback();
 			}

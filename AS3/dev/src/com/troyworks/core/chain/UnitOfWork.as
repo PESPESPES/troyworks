@@ -51,9 +51,10 @@ package com.troyworks.core.chain {
 		public var checkInterval : Number = 1000 / 12;
 
 		private var _parentUnit : IUnit;
-		public var parallelAllChildrenStarted : Boolean = false; 
+		public var parallelAllChildrenStarted : Boolean = false;
+		public  var isLeafTask : Boolean = false; 
 
-		public function UnitOfWork(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE, smName = "Chain") {
+		public function UnitOfWork(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE, smName:String = "Chain") {
 			super(initState, smName, false);
 			mode = aMode;
 			_smName = smName + "_" + (mode == SEQUENTIAL_MODE) ? SEQUENTIAL_WORKER : PARALLEL_WORKER;
@@ -175,7 +176,7 @@ package com.troyworks.core.chain {
 
 		protected function notifyProgress() : void {
 			
-			trace(_smName + "#" + _smID + ".UnitOfWork.notifyProgress");
+			trace(_smName + "#" + _smID + ".UnitOfWork.notifyProgress " + totalPerformed +" / " +totalWork);
 			var evt : PlayheadEvent = new PlayheadEvent(EVT_PROGRESS);
 			
 			evt.percentageDone = totalPerformed / totalWork;
@@ -249,7 +250,10 @@ package com.troyworks.core.chain {
 				requestTran(s__doing);
 			}
 		}
-
+		public function startWorkNoChildren(evt:Event = null):void{
+				initStateMachine();
+				requestTran(s__doing);
+		}
 		public function onChildCompleted(evt : Event = null) : void {
 			//called when a child has broadcast the COMPLETE event
 			var i : int = 0;
@@ -299,7 +303,7 @@ package com.troyworks.core.chain {
 					return null;
 					
 				case SIG_CALLBACK:
-			
+					if(!isLeafTask){
 					if(toDo == null && finished.length == 0) {
 						//FINISHED LOADING LIST
 						trace(_smName + "#" + _smID + ".FINISHED EMPTY WORKLIST");
@@ -313,7 +317,7 @@ package com.troyworks.core.chain {
 						trace(_smName + "#" + _smID + ".FINISHED LOADING CHILD");
 						startWork();
 					}
-				
+					}
 					return null;	
 				case SIG_INIT :
 					return s__haventStarted;

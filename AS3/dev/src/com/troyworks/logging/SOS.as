@@ -7,7 +7,7 @@ package com.troyworks.logging {
 	 */
 	import flash.events.SecurityErrorEvent;	
 	import flash.events.ProgressEvent;	
-	//import flash.events.DatCogEventntntnt;	
+	//import flash.events.DatCogEventntnt;	
 	import flash.events.Event;	
 	import flash.events.IEventDispatcher;	
 	import flash.events.IOErrorEvent;

@@ -176,14 +176,41 @@ package com.troyworks.data {
 
 		public function getNextInLoop(times : int = 1) : Object {
 
-			//trace("ary " + ary);
+			trace("getNextInLoop before ");
+			super.filter(ArrayUtil.forEachTraceName);
 			var cur : Object;
 			while(times--) { 
 				cur = super.shift();
-				//	trace("cur " + cur);
+				//	trace("cur " + super);
 				super.push(cur);
 			}
-			//trace("ary " + ary);
+			trace("after");
+			super.filter(ArrayUtil.forEachTraceName);
+			return cur;
+		}
+
+		public function goForwardInLoopToItem(obj : Object) : Object {
+
+			trace("goForwardInLoopToItem before ");
+			super.filter(ArrayUtil.forEachTraceName);
+			
+			var cur : Object;
+			var sanity:Number = this.length;
+			while(sanity-->0) {
+				if(obj == this[0]) {
+					cur = this[0];
+					break;
+				} else {
+					cur = super.shift();
+					trace("cur " + cur);
+					super.push(cur);
+				}
+			}
+			if(cur == null){
+				trace("goForwardInLoopToItem couldn't find item");
+			}
+				trace("after");
+			super.filter(ArrayUtil.forEachTraceName);
 			return cur;
 		}
 
@@ -196,6 +223,24 @@ package com.troyworks.data {
 				cur = super.pop();
 				//	trace("cur " + cur);
 				super.unshift(cur);
+			}
+			//trace("ary " + ary);
+			return cur;
+		}
+
+		public function goBackwardInLoopToItem(obj : Object) : Object {
+
+			//trace("ary " + ary);
+			var cur : Object;
+			while(true) {
+				cur = this[this.length - 1];
+				if(obj == cur ) {
+					break;
+				} else {
+					cur = super.pop();
+					//	trace("cur " + cur);
+					super.unshift(cur);
+				}
 			}
 			//trace("ary " + ary);
 			return cur;
@@ -297,7 +342,7 @@ package com.troyworks.data {
 		//look for a reference and splice from array
 		public function removeFromCollectionItem(aValue_obj : Object) : Number {
 			var tIndexOfMatch_num : Number = getLastIndexOf(aValue_obj);
-			trace("found item at "+ tIndexOfMatch_num);
+			trace("found item at " + tIndexOfMatch_num);
 			if(tIndexOfMatch_num != -1) {
 				super.splice(tIndexOfMatch_num, 1);
 			}
@@ -359,7 +404,7 @@ package com.troyworks.data {
 		}
 
 		/*
-		 * return a random item from inside this set
+		 * return a random item from inside this set (non destructively)
 		 */
 		public function getRandomElement(from : * = null, to : * = null, aThatsNot : Array = null, aThatsIsOneOf : Array = null) : Object {
 			//	trace("getRandomElement from " + from + " to " + to+ " aThatsNot " + aThatsNot);
@@ -367,10 +412,10 @@ package com.troyworks.data {
 			if (length == 0) {
 				return null;
 			}
-			if (isNaN(from ) || from == null) {
+			if (isNaN(from) || from == null) {
 				from = 0;
 			}
-			if (isNaN(to ) || to == null) {
+			if (isNaN(to) || to == null) {
 				to = this.length;
 			}
 		
@@ -378,8 +423,8 @@ package com.troyworks.data {
 			var rndI : Number;
 			var res : Object = null;
 			//rndI = offset + int(Math.random() * len);//Math.round(Math.random() * len);
-			rndI =from +Math.floor(Math.random() * (to - from + 1)) ;
-			trace("ArrayX.getRandomElement " + from + " to " + to + " =" + rndI + "of  "+ length);
+			rndI = from + Math.floor(Math.random() * (to - from)) ;
+			//trace("ArrayX.getRandomElement " + from + " to " + to + " =" + rndI + "of  " + length);
 			//rndI = offset + Math.round(Math.random() * len);
 			///////////range check//////////////
 			//rndI = Math.min(Math.max(0, rndI), length);

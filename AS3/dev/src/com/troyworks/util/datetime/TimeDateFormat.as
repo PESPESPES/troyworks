@@ -6,7 +6,7 @@
 
 package com.troyworks.util.datetime {
 
-	public class TimeDateFormat {
+import flash.profiler.showRedrawRegions;	public class TimeDateFormat {
 		public var lastDate : Date = null;
 
 		/*
@@ -76,15 +76,18 @@ package com.troyworks.util.datetime {
 			var res : TimeQuantity = TimeQuantity.parseRelativeTime(val);
 			return res.hours + ":" + res.minutes + ":" + res.seconds + "." + res.milliseconds;
 		}
-		public static function toStopWatchString(val:Number) : String{
+		public static function toStopWatchString(val:Number, includeHours:Boolean = false) : String{
 			var res:TimeQuantity = TimeQuantity.parseRelativeTime(val);
-			return padTo(res.minutes,2,"0")+":"+ padTo(res.seconds,2,"0");
+			if(includeHours){
+				return padTo(res.minutes,2,"0")+":"+ padTo(res.seconds,2,"0");
+			}else{
+				return (res.hours)+":"+padTo(res.minutes,2,"0")+":"+ padTo(res.seconds,2,"0");
+			}
 		}
 		
 		public function toDateTimeString(val:Number) : String{
 			var res:TimeQuantity = TimeQuantity.parseRelativeTime(val);
-			return res.years+"-"+padTo(res.months,2,"0")+"-"+padTo(res.days,2,"0")+" "+ 
-			padTo(res.hours,2,"0")+":"+padTo(res.minutes,2,"0")+":"+ padTo(res.seconds,2,"0");
+			return res.years+"-"+padTo(res.months,2,"0")+"-"+padTo(res.days,2,"0")+" "+ padTo(res.hours,2,"0")+":"+padTo(res.minutes,2,"0")+":"+ padTo(res.seconds,2,"0");
 		}
 		
 		public function toClockString(val:Number) : String{

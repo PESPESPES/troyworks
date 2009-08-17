@@ -6,7 +6,7 @@
 
 package com.troyworks.controls.tuitools {
 	import com.troyworks.events.EventWithArgs;	
-	
+
 	import flash.events.Event;	
 
 	import com.troyworks.core.Signals;
@@ -95,6 +95,7 @@ package com.troyworks.controls.tuitools {
 
 		public var allowClickToReplaceRegistrationPoint : Boolean = false;
 		private var hideRegistrationPointOnMove : Boolean = true;
+		private var rpIdx : Object = new Object();
 
 		public function DisplayObjTool(toOff : Boolean = false) {
 			super();
@@ -109,10 +110,15 @@ package com.troyworks.controls.tuitools {
 			trace("setClipToManipulate " + mc);
 			if(mc != _clip) {
 				if(_clip != null) {
+					//////////// CLEAR out old one ///////////////
 					if(keyP != null) {
 						keyP.disable();
 						keyP = null;
 					}
+					//	if(rpIdx[_clip.name]!= null){
+					trace("caching registration point");
+					rpIdx[UIUtil.getAnchorPath(_clip)] = new Point(rp.x, rp.y);
+					//	}
 					/////// remove listeners ////////////
 					_clip.stage.removeEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
 					_clip.removeEventListener(MouseEvent.CLICK, onClick);
@@ -125,7 +131,14 @@ package com.troyworks.controls.tuitools {
 				if(mc != null) {
 					b = mc.getBounds(mc);
 					//setRegistration(0, 0);
-					setRegistration(b.x + b.width / 2, b.y + b.height / 2);
+					var ap : String = UIUtil.getAnchorPath(mc);
+					if(rpIdx[ap] != null) {
+						trace("found Cached Registration Point");
+						setRegistration(rpIdx[ap].x, rpIdx[ap].y);
+					} else {
+						trace("no found Cached Registration Point");
+						setRegistration(b.x + b.width / 2, b.y + b.height / 2);
+					}
 					keyP = new KeyBoardProxy(mc.stage, this);
 					keyP.enable();
 				
@@ -144,7 +157,12 @@ package com.troyworks.controls.tuitools {
 						_b.visible = true;
 						_br.visible = true;
 					}
-				}else {
+					tran(_currentState);
+//					_currentState(SIG_EXIT.createPrivateEvent());
+//					_currentState(SIG_EXIT.createPrivateEvent());
+					positionControls();
+					
+				} else {
 					///////// settting to null clip ///////
 					if(_tl != null) {
 						_tl.visible = false;
@@ -157,7 +175,7 @@ package com.troyworks.controls.tuitools {
 						_br.visible = false;
 					}
 				}
-			}else {
+			} else {
 				//ignore
 				trace("ignoring setClipToManipulate ");
 			}
@@ -171,10 +189,11 @@ package com.troyworks.controls.tuitools {
 				this.registrationPoint.removeEventListener(MouseEvent.MOUSE_DOWN, onRPMouseDown);
 				this.registrationPoint.removeEventListener(MouseEvent.MOUSE_MOVE, onRPMouseDown);
 			}
-			this.registrationPoint = registrationPoint;
-			this.registrationPoint.addEventListener(MouseEvent.MOUSE_DOWN, onRPMouseDown);
-			
-			registrationPoint.visible = false;
+			if(registrationPoint != null) {
+				this.registrationPoint = registrationPoint;
+				this.registrationPoint.addEventListener(MouseEvent.MOUSE_DOWN, onRPMouseDown);
+				this.registrationPoint.visible = false;
+			}
 			enableControls();
 		}
 
@@ -184,41 +203,48 @@ package com.troyworks.controls.tuitools {
 			this.registrationPoint.stage.addEventListener(MouseEvent.MOUSE_MOVE, onRPMouseMove);
 			this.registrationPoint.stage.addEventListener(MouseEvent.MOUSE_UP, onRPMouseUp);
 			//this.registrationPoint.removeEventListener(MouseEvent.MOUSE_DOWN, onRPMouseDown);
-			var evtA:EventWithArgs = new EventWithArgs("REQUEST_HAND_CURSOR_MODE");
+			var evtA : EventWithArgs = new EventWithArgs("REQUEST_HAND_CURSOR_MODE");
 			evtA.args = ["holdOnTop"];
 			_clip.stage.dispatchEvent(evtA);
 			onRPMouseMove();
 		}
 
-		public function onRPMouseMove(evt : Event= null) : void {
+		public function onRPMouseMove(evt : Event = null) : void {
 			trace("onRPMouseMove ");
+			if(registrationPoint != null) {
 			
-			registrationPoint.x = registrationPoint.parent.mouseX;
-			registrationPoint.y = registrationPoint.parent.mouseY;
+				registrationPoint.x = registrationPoint.parent.mouseX;
+				registrationPoint.y = registrationPoint.parent.mouseY;
+			}
 			//setRegistration(_clip.mouseX, _clip.mouseY);
 		}
 
 		public function onRPMouseUp(evt : Event) : void {
 			trace("onRPMouseUp ");
-			this.registrationPoint.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onRPMouseMove);
-			this.registrationPoint.stage.removeEventListener(MouseEvent.MOUSE_UP, onRPMouseUp);
+			if(registrationPoint != null) {
+			
+				this.registrationPoint.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onRPMouseMove);
+				this.registrationPoint.stage.removeEventListener(MouseEvent.MOUSE_UP, onRPMouseUp);
+			}
 			setRegistration(_clip.mouseX, _clip.mouseY);
-			var evtA:EventWithArgs = new EventWithArgs("REQUEST_HAND_CURSOR_MODE");
-			evtA.args =[null];
+			var evtA : EventWithArgs = new EventWithArgs("REQUEST_HAND_CURSOR_MODE");
+			evtA.args = [null];
 			userHasPlacedRegistration = true;
 			_clip.stage.dispatchEvent(evtA);
 		}
 
 		public function setUIFreeScaleHandles(tl : Sprite, t : Sprite, tr : Sprite,  l : Sprite,r : Sprite,bl : Sprite,b : Sprite,br : Sprite) : void {
 			//trace("setUIFreeScaleHandles "+ arguments.join(","));
-			_tl = tl;
-			_t = t;
-			_tr = tr;
-			_l = l;
-			_r = r;
-			_bl = bl;
-			_b = b;
-			_br = br;
+			if(_tl != null) {
+				_tl = tl;
+				_t = t;
+				_tr = tr;
+				_l = l;
+				_r = r;
+				_bl = bl;
+				_b = b;
+				_br = br;
+			}
 			if(_clip != null) {
 				positionControls();
 			}
@@ -242,42 +268,50 @@ package com.troyworks.controls.tuitools {
 			scale_btn.visible = true;
 			rotate_btn.visible = true;
 			move_btn.visible = true;
-			scale_btn.y = bnds.bottom;
-			rotate_btn.y = bnds.bottom;
-			move_btn.y = bnds.bottom;
-			scale_btn.x = bnds.left;
-			rotate_btn.x = scale_btn.x + scale_btn.width + 5 ;
-			move_btn.x = rotate_btn.x + rotate_btn.width + 5;
+			if(false) {
+				scale_btn.y = bnds.bottom;
+				rotate_btn.y = bnds.bottom;
+				move_btn.y = bnds.bottom;
+				scale_btn.x = bnds.left;
+				rotate_btn.x = scale_btn.x + scale_btn.width + 5 ;
+				move_btn.x = rotate_btn.x + rotate_btn.width + 5;
+			}
 			//if(_currentState == s_MoveTool || _currentState == s_ScaleTool){
-			_tl.y = bnds.topLeft.y;
-			_tl.x = bnds.topLeft.x;
+			if(_tl != null) {
+				_tl.y = bnds.topLeft.y;
+				_tl.x = bnds.topLeft.x;
 					
-			_t.y = bnds.top;
-			_t.x = bnds.x + bnds.width / 2;
+				_t.y = bnds.top;
+				_t.x = bnds.x + bnds.width / 2;
 					
-			_tr.y = bnds.top;
-			_tr.x = bnds.right;
+				_tr.y = bnds.top;
+				_tr.x = bnds.right;
 
-			_l.y = bnds.y + bnds.height / 2;
-			_l.x = bnds.left;
+				_l.y = bnds.y + bnds.height / 2;
+				_l.x = bnds.left;
 
-			_r.y = bnds.y + bnds.height / 2;
-			_r.x = bnds.right;
+				_r.y = bnds.y + bnds.height / 2;
+				_r.x = bnds.right;
 
-			_bl.y = bnds.bottom;
-			_bl.x = bnds.left;
+				_bl.y = bnds.bottom;
+				_bl.x = bnds.left;
 
-			_b.y = bnds.bottom;
-			_b.x = bnds.x + bnds.width / 2;
+				_b.y = bnds.bottom;
+				_b.x = bnds.x + bnds.width / 2;
 					
-			_br.y = bnds.bottomRight.y;
-			_br.x = bnds.bottomRight.x;
+				_br.y = bnds.bottomRight.y;
+				_br.x = bnds.bottomRight.x;
+			}
+			var evtA : EventWithArgs = new EventWithArgs("positionImageControls", true, true);
+			evtA.args = [rp.clone()];
+			_clip.stage.dispatchEvent(evtA);
+			
 				//}
 		}
 
 		public function updateRegistrationPointView() : void {
 			if(registrationPoint != null) {
-				var a : Point = registrationPoint.parent.globalToLocal(_clip.localToGlobal(rp));
+				var a : Point = registrationPoint.parent.globalToLocal(_clip.localToGlobal(rp.clone()));
 				registrationPoint.x = a.x;
 				registrationPoint.y = a.y;
 				//registrationPoint.visible = true;
@@ -285,7 +319,8 @@ package com.troyworks.controls.tuitools {
 		}
 
 		private function hideControls() : void {
-			scale_btn.visible = false;
+			trace("hiding controls ");
+			//	scale_btn.visible = false;
 			rotate_btn.visible = false;
 			move_btn.visible = false;
 		}
@@ -303,43 +338,50 @@ package com.troyworks.controls.tuitools {
 			scale_btn.removeEventListener(MouseEvent.CLICK, requestScaleTool);
 			rotate_btn.removeEventListener(MouseEvent.CLICK, requestRotateTool);
 			move_btn.removeEventListener(MouseEvent.CLICK, requestMoveTool);
-			registrationPoint.visible = false;
+			if(registrationPoint != null) {
+			
+				registrationPoint.visible = false;
+			}
 		}
 
 		private function enableFreeScaleControls() : void {
-			_tl.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_t.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_tr.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_l.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_r.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_bl.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_b.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_br.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+			if(_tl != null) {
+				_tl.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_t.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_tr.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_l.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_r.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_bl.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_b.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_br.addEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+			}
 		}
 
 		private function onFreeScaleControlClicked(event : MouseEvent = null) : void {
 			var opposite : Sprite;
 			var tg : Sprite = Sprite(event.target);
 			trace("onFreeScaleControlClicked " + tg.name + " " + _tl.name);
-			if(tg == _tl) {
-				trace("opposite bottom right");
-				opposite = _br;
-			}else if (tg == _t) {
-				opposite = _b;
-			}else if (tg == _tr) {
-				opposite = _bl;
-			}else if (tg == _r) {
-				opposite = _l;
-			}else if (tg == _br) {
-				opposite = _tl;
-			}else if (tg == _b) {
-				opposite = _t;
-			}else if (tg == _bl) {
-				opposite = _tr;
-			}else if (tg == _l) {
-				opposite = _r;
-			}else {
-				trace("no valid control click");
+			if(_tl != null) {
+				if(tg == _tl) {
+					trace("opposite bottom right");
+					opposite = _br;
+				}else if (tg == _t) {
+					opposite = _b;
+				}else if (tg == _tr) {
+					opposite = _bl;
+				}else if (tg == _r) {
+					opposite = _l;
+				}else if (tg == _br) {
+					opposite = _tl;
+				}else if (tg == _b) {
+					opposite = _t;
+				}else if (tg == _bl) {
+					opposite = _tr;
+				}else if (tg == _l) {
+					opposite = _r;
+				} else {
+					trace("no valid control click");
+				}
 			}
 			trace("opposite is " + opposite.name);
 			var p1 : Point = new Point(opposite.x, opposite.y);
@@ -352,14 +394,16 @@ package com.troyworks.controls.tuitools {
 		}
 
 		private function releaseFreeScaleControls() : void {
-			_tl.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_t.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_tr.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_l.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_r.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_bl.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_b.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
-			_br.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+			if(_tl != null) {
+				_tl.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_t.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_tr.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_l.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_r.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_bl.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_b.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+				_br.removeEventListener(MouseEvent.MOUSE_DOWN, onFreeScaleControlClicked);
+			}
 		}
 
 		public function onMouseMove(evt : MouseEvent) : void {
@@ -454,22 +498,22 @@ package com.troyworks.controls.tuitools {
 		}
 
 		public function get x2() : Number {
-			var p : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp));
+			var p : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp.clone()));
 			return p.x;
 		}
 
 		public function set x2(value : Number) : void {
-			var p : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp));
+			var p : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp.clone()));
 			_clip.x += value - p.x;
 		}
 
 		public function get y2() : Number {
-			var p : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp));
+			var p : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp.clone()));
 			return p.y;
 		}
 
 		public function set y2(value : Number) : void {
-			var p : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp));
+			var p : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp.clone()));
 			_clip.y += value - p.y;
 		}
 
@@ -516,7 +560,7 @@ package com.troyworks.controls.tuitools {
 		public function get mouseX2() : Number {
 			if(_clip is InteractiveObject) {
 				return Math.round(InteractiveObject(_clip).mouseX - rp.x);
-			}else {
+			} else {
 				return 0;
 			}
 		}
@@ -524,17 +568,17 @@ package com.troyworks.controls.tuitools {
 		public function get mouseY2() : Number {
 			if(_clip is InteractiveObject) {
 				return Math.round(InteractiveObject(_clip).mouseY - rp.y);
-			}else {
+			} else {
 				return 0;
 			}
 		}
 
 		public function setProperty2(prop : String, n : Number) : void {
-			var a : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp));
+			var a : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp.clone()));
 
 			_clip[prop] = n;
 
-			var b : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp));
+			var b : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp.clone()));
 
 			_clip.x -= (b.x - a.x);
 			_clip.y -= (b.y - a.y);
@@ -572,7 +616,7 @@ package com.troyworks.controls.tuitools {
 			trace("s_NoTool");
 			switch(evt.sig) {
 				case SIG_ENTRY:
-					hideControls();
+					//	hideControls();
 					break;
 				case SIG_EXIT:
 			
@@ -591,14 +635,18 @@ package com.troyworks.controls.tuitools {
 					move_btn.filters = selectedFilters;
 					rotate_btn.filters = [];
 					enableFreeScaleControls();
-					registrationPoint.visible = false;
+					if(registrationPoint) {
+						registrationPoint.visible = false;
+					}
 					break;
 				case SIG_EXIT:
 					scale_btn.filters = [];
 					move_btn.filters = [];
 					rotate_btn.filters = [];
 					releaseFreeScaleControls();
-					registrationPoint.visible = false;
+					if(registrationPoint) {
+						registrationPoint.visible = false;
+					}
 					break;
 				case MOUSE_DOWN:
 					trace("mouse down");
@@ -726,7 +774,7 @@ package com.troyworks.controls.tuitools {
 					sx = (_clip.parent.mouseX - registrationPoint.x) ;
 					sy = (_clip.parent.mouseY - registrationPoint.y);
 					sRot = Math.atan2(sx, sy);
-					if(hideRegistrationPointOnMove){
+					if(hideRegistrationPointOnMove) {
 						registrationPoint.visible = false;
 					}
 					break;
@@ -748,9 +796,9 @@ package com.troyworks.controls.tuitools {
 					break;
 				case MOUSE_UP:
 					trace("rotate mouse up");
-					if(hideRegistrationPointOnMove){
-					registrationPoint.visible = true;
-				}
+					if(hideRegistrationPointOnMove) {
+						registrationPoint.visible = true;
+					}
 					//hideControls();
 					//releaseControls();
 					break;
@@ -767,27 +815,33 @@ package com.troyworks.controls.tuitools {
 					rotate_btn.filters = [];
 					enableFreeScaleControls();
 					updateRegistrationPointView();
-					registrationPoint.visible = true;
+					if(registrationPoint) {
+						registrationPoint.visible = true;
+					}
 					break;
 				case SIG_EXIT:
 					scale_btn.filters = [];
 					move_btn.filters = [];
 					rotate_btn.filters = [];
 					releaseFreeScaleControls();
-					registrationPoint.visible = false;
+					if(registrationPoint) {
+						registrationPoint.visible = false;
+					}
 					break;
 				case MOUSE_CLICK:
-				if(allowClickToReplaceRegistrationPoint) {
-					var exitTime : Number = (clickTime + clickMSTime );
-					var curTime : Number = getTimer();
-					trace("mouse Click " + clickTime + " " + exitTime);
-					if( curTime < exitTime) {
-						registrationPoint.x = registrationPoint.parent.mouseX;
-						registrationPoint.y = registrationPoint.parent.mouseY;
-						setRegistration(_clip.mouseX, _clip.mouseY);
-						userHasPlacedRegistration = true;
+					if(allowClickToReplaceRegistrationPoint) {
+						var exitTime : Number = (clickTime + clickMSTime );
+						var curTime : Number = getTimer();
+						trace("mouse Click " + clickTime + " " + exitTime);
+						if( curTime < exitTime) {
+							if(registrationPoint) {
+								registrationPoint.x = registrationPoint.parent.mouseX;
+								registrationPoint.y = registrationPoint.parent.mouseY;
+							}
+							setRegistration(_clip.mouseX, _clip.mouseY);
+							userHasPlacedRegistration = true;
+						}
 					}
-				}
 					break;
 				case MOUSE_DOWN:
 					trace("scale mouse down");
@@ -817,7 +871,7 @@ package com.troyworks.controls.tuitools {
 					sy = (_clip.parent.mouseY );
 					//_clip.parent.graphics.clear();
 
-					var pp : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp));
+					var pp : Point = _clip.parent.globalToLocal(_clip.localToGlobal(rp.clone()));
 					trace("rp " + rp.x + " " + pp.x);
 					var dxS : Number = ((sx - pp.x )) ;
 					var dyS : Number = 0;
@@ -843,9 +897,9 @@ package com.troyworks.controls.tuitools {
 					itmpdistFromStartToRp = Math.sqrt(dxS * dxS + dyS * dyS);
 					//FTScaleRegulator.transform.matrix = _clip.transform.matrix;
 					visualize();
-					if(hideRegistrationPointOnMove){
-					registrationPoint.visible = false;
-				}
+					if(hideRegistrationPointOnMove) {
+						registrationPoint.visible = false;
+					}
 					break;
 				case MOUSE_MOVE:
 					//	trace("scale mouse move");
@@ -877,9 +931,9 @@ package com.troyworks.controls.tuitools {
 					positionControls();
 					break;
 				case MOUSE_UP:
-				if(hideRegistrationPointOnMove){
-					registrationPoint.visible = true;
-				}
+					if(hideRegistrationPointOnMove) {
+						registrationPoint.visible = true;
+					}
 					trace("scale mouse up FTScaleRegulator" + FTScaleRegulator) ;
 					if(FTScaleRegulator && FTScaleRegulator.parent != null) {
 						_clip.parent.removeChild(FTScaleRegulator);
