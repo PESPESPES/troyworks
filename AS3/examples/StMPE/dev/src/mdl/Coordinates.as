@@ -17,7 +17,8 @@ package mdl {
 		public var _curRotation : Rotations;
 		public var rotations : Array;
 		public var isDefault : Boolean;
-		public var order : Number = 0;
+		public var order : Number = 0; // order in the drop down list
+		public var lblstart:Number = 0; //the place in the array of labels where to start from
 
 		public function Coordinates() {
 			super();
@@ -55,6 +56,7 @@ package mdl {
 			res.internalName = String(xml.@id);
 			res.name = String(xml.@name);
 			res.order = Number(xml.@order);
+			res.lblstart = Number(xml.@lblstart);
 			trace(" Coordinate " + res.name + " isDefault?" + res.isDefault);
 			res.coordLabels = String(xml.@coordlbl).split(",");
 			trace(" coordinate lables\r " + res.coordLabels.join("\r\t"));

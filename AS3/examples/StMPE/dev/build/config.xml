@@ -15,7 +15,7 @@
 		<presets></presets>
 		<coordinates>
 		<system name="Math Coordinates" id="e8coords"
-				coordlbl=":!:S,:i!:T,U,V,iw,x,y,z" order="3" default="true">
+				coordlbl=":!:S,:i!:T,U,V,iw,x,y,z" order="3" default="true" lblstart="17">
 				<rotations>
 					<r name="standard model"
 						hv="0,0;0,0;-.89,0;.22,.86;0,0;-.29,.25;-.15,.25;-.22,.37" h="2"
@@ -38,10 +38,10 @@
 				</rotations>
 			</system>
 			<system name="Physics Coordinates" id="smcoords"
-				coordlbl=":!:S,:i!:T,W,Y,iw,X,g^3,g^8" order="1">
+				coordlbl=":!:S,:i!:T,W,Y,iw,X,g^3,g^8" order="1" lblstart="1">
 			</system>
 			<system name="GUT Coordinates" id="gutcoords"
-				coordlbl=":!:S,:i!:T,W,:W^1:,iw,:B^:,g^3,g^8" order="2">
+				coordlbl=":!:S,:i!:T,W,:W^1:,iw,:B^:,g^3,g^8" order="2" lblstart="9">
 			</system>
 	
 		</coordinates><!-- 240 or 72 -->
