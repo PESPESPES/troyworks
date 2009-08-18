@@ -302,40 +302,8 @@
 			}
 		}
 
-		
-		public static function setAxisLabel(label : MovieClip, text : String) : void {
-			//	trace("setAxisLabel to " + text);
-			var ary : Array = text.split(":");
-			var prefix : String = "";
-			var index : String = "";
-			var postfix : String = "";
-			
-			if(ary.length == 3) {
-				prefix = ary[0];
-				index = ary[1];
-				postfix = ary[2];
-			}else if(ary.length == 1) {
-				index = ary[0];	
-			}
-			
-			if(prefix.indexOf("/") > -1) {
-				label.prefix.text = prefix.split("/").join("\r");
-				// "1/2";
-				label.prefixHalf_mc.visible = true;
-			} else {
-				label.prefix.text = "";
-				label.prefixHalf_mc.visible = false;
-			}
-			if(index.indexOf("^") > -1) {
-				ary = index.split("^");
-				label.index_txt.text = ary[0];
-				//"!";
-				label.expo.text = ary[1];//"3";
-			} else {
-				label.index_txt.text = index;
-				label.expo.text = "";
-			}
-			label.postsub.text = postfix;//"5";
+		public static function setAxisLabel(label : MovieClip, lblPos : Number) : void {
+			label.gotoAndStop(lblPos);
 		}
 
 		private function onCoordComboBoxChanged(e : Event = null) : void {
@@ -356,44 +324,44 @@
 				trace("curCoordinate " + modl.coords);//.curCoordinate.name);
 			
 				
-			/*for(var i:int= 0; i < coords_cmb.dataProvider.length; i++){
+				/*for(var i:int= 0; i < coords_cmb.dataProvider.length; i++){
 				var o:Object = coords_cmb.dataProvider.getItemAt(i);
 				trace("found data item " + o.name);
 				if(o == modl.coords ){
-					trace("FOUND CURRENT COORD!");
-					coords_cmb.selectedIndex = i;
+				trace("FOUND CURRENT COORD!");
+				coords_cmb.selectedIndex = i;
 						
 				}
-			}*/
+				}*/
 				coords_cmb.enabled = (coords_cmb.dataProvider.length > 0);
-			trace("UI.modl.coords " + modl.coords);
-			if(modl.coords) {
-				coords_cmb.selectedIndex = coords_cmb.dataProvider.getItemIndex(modl.coords);//.curCoordinate);
+				trace("UI.modl.coords " + modl.coords);
+				if(modl.coords) {
+					coords_cmb.selectedIndex = coords_cmb.dataProvider.getItemIndex(modl.coords);//.curCoordinate);
+
+					trace("bottom_panel.interactionsHeader_mc.aDim_lbl " + modl.coords.coordLabels[0]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.aDim_lbl, modl.coords.lblstart +0);
+				setAxisLabel(a_btn.dimension_lbl, modl.coords.lblstart +0);
 			
-				trace("bottom_panel.interactionsHeader_mc.aDim_lbl " + modl.coords.coordLabels[0]);
-				setAxisLabel(bottom_panel.interactionsHeader_mc.aDim_lbl, modl.coords.coordLabels[0]);
-				setAxisLabel(a_btn.dimension_lbl, modl.coords.coordLabels[0]);
-			
-				setAxisLabel(bottom_panel.interactionsHeader_mc.bDim_lbl, modl.coords.coordLabels[1]);
-				setAxisLabel(b_btn.dimension_lbl, modl.coords.coordLabels[1]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.bDim_lbl,  modl.coords.lblstart +1);
+				setAxisLabel(b_btn.dimension_lbl,  modl.coords.lblstart +1);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.cDim_lbl, modl.coords.coordLabels[2]);
-				setAxisLabel(c_btn.dimension_lbl, modl.coords.coordLabels[2]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.cDim_lbl,  modl.coords.lblstart +2);
+				setAxisLabel(c_btn.dimension_lbl, modl.coords.lblstart +2);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.dDim_lbl, modl.coords.coordLabels[3]);
-				setAxisLabel(d_btn.dimension_lbl, modl.coords.coordLabels[3]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.dDim_lbl, modl.coords.lblstart +3);
+				setAxisLabel(d_btn.dimension_lbl, modl.coords.lblstart +3);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.eDim_lbl, modl.coords.coordLabels[4]);
-				setAxisLabel(e_btn.dimension_lbl, modl.coords.coordLabels[4]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.eDim_lbl,modl.coords.lblstart +4);
+				setAxisLabel(e_btn.dimension_lbl, modl.coords.lblstart +4);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.fDim_lbl, modl.coords.coordLabels[5]);
-				setAxisLabel(f_btn.dimension_lbl, modl.coords.coordLabels[5]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.fDim_lbl,modl.coords.lblstart +5);
+				setAxisLabel(f_btn.dimension_lbl, modl.coords.lblstart +5);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.gDim_lbl, modl.coords.coordLabels[6]);
-				setAxisLabel(g_btn.dimension_lbl, modl.coords.coordLabels[6]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.gDim_lbl, modl.coords.lblstart +6);
+				setAxisLabel(g_btn.dimension_lbl,modl.coords.lblstart +6);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.hDim_lbl, modl.coords.coordLabels[7]);
-				setAxisLabel(h_btn.dimension_lbl, modl.coords.coordLabels[7]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.hDim_lbl, modl.coords.lblstart +7);
+				setAxisLabel(h_btn.dimension_lbl,modl.coords.lblstart +7);
 			
 
 				/////////////////////////////////////////////////////////////
@@ -414,13 +382,13 @@
 					trace("p1 " + p1);
 					trace("p1.ui " + p1.ui);
 					if(p1.ui != null) {
-						setAxisLabel(p1.ui.getChildByName("lbl") as MovieClip, modl.coords.coordLabels[i]);
+						setAxisLabel(p1.ui.getChildByName("lbl") as MovieClip,modl.coords.lblstart +i);
 					}
 					////////////// p2 ////////////////////
 
 					p2 = pary[1] as EightDimensionParticle;
 					if(p2.ui != null) {		
-						setAxisLabel(p2.ui.getChildByName("lbl") as MovieClip, modl.coords.coordLabels[i]);
+						setAxisLabel(p2.ui.getChildByName("lbl") as MovieClip, modl.coords.lblstart +i);
 					}				
 				}	
 			
@@ -445,7 +413,7 @@
 				trace("UPDATE THE VIEW .......................");
 			
 				updateView();
-			}
+				}
 			}catch(err:Error){
 					trace("ERROR " + err.getStackTrace());
 			}
@@ -721,6 +689,7 @@
 				p1 = pary[0] as EightDimensionParticle;
 				pntUI = new Sprite();
 				lbl = new lbl2Def();
+				lbl.scaleX = lbl.scalY = 1.1;
 				lbl.gotoAndStop(int(p1.name));
 				//setAxisLabel(lbl, modl.coords.coordLabels[i]);
 				lbl.name = "lbl";
@@ -731,6 +700,7 @@
 				p2 = pary[1] as EightDimensionParticle;
 				pntUI = new Sprite();
 				lbl = new lbl2Def();
+				lbl.scaleX = lbl.scalY = 1.1;
 				lbl.gotoAndStop(int(p1.name));
 				//setAxisLabel(lbl, modl.coords.coordLabels[i]);
 				lbl.name = "lbl";
@@ -1105,6 +1075,7 @@
 			updateDetailCoordinate(p.curCoords.d6Lbl, mc.f_txt, mc.fc_mc);
 			updateDetailCoordinate(p.curCoords.d7Lbl, mc.g_txt, mc.gc_mc);
 			updateDetailCoordinate(p.curCoords.d8Lbl, mc.h_txt, mc.hc_mc);
+		
 		
 		/*
 			mc.c_txt.text = p.curCoords.d3Lbl;
