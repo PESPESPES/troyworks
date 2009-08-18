@@ -17,6 +17,7 @@ package mdl {
 		public var _curRotation : Rotations;
 		public var rotations : Array;
 		public var isDefault : Boolean;
+		public var order : Number = 0;
 
 		public function Coordinates() {
 			super();
@@ -25,7 +26,8 @@ package mdl {
 		public function get label() : String {
 			return name;
 		}
-		public function get data():String{
+
+		public function get data() : String {
 			return internalName;
 		}
 
@@ -52,6 +54,7 @@ package mdl {
 			res.id = id;
 			res.internalName = String(xml.@id);
 			res.name = String(xml.@name);
+			res.order = Number(xml.@order);
 			trace(" Coordinate " + res.name + " isDefault?" + res.isDefault);
 			res.coordLabels = String(xml.@coordlbl).split(",");
 			trace(" coordinate lables\r " + res.coordLabels.join("\r\t"));

@@ -44,6 +44,7 @@ package mdl {
 		private var _curcoords : Coordinates;
 		private var _lastcoords : Coordinates;
 		private var _isGUTmode : Boolean;
+		private var _lastPointSystem : PointSystem;
 
 		public function set isGUTmode( value : Boolean ) : void {
 			_isGUTmode = value;
@@ -59,8 +60,8 @@ package mdl {
 				trace("WARNING curcords cannot be set to null");
 				return;
 			}
-			if(_curcoords != desCoord) {
-				
+			if(_curcoords != desCoord ) {
+
 				if(_curcoords != null) {
 					_lastcoords = _curcoords;
 				}
@@ -86,6 +87,8 @@ package mdl {
 							}else if(desCoord.internalName == gutcoords) {
 								trace("FN using transform_e8coords_To_gutcoords");
 								fn = transform_e8coords_To_gutcoords;
+							} else {
+								fn = no_transform;
 							}
 						} else if(_lastcoords.internalName == smcoords) {
 							trace("Going from smcoords");
@@ -95,6 +98,8 @@ package mdl {
 							}else if(desCoord.internalName == gutcoords) {
 								trace("FN using transform_smcoords_To_gutcoords");
 								fn = transform_smcoords_To_gutcoords;
+							} else {
+								fn = no_transform;
 							}
 						} else if(_lastcoords.internalName == gutcoords) {
 							trace("Going from gutcoords");
@@ -104,47 +109,89 @@ package mdl {
 							}else if(desCoord.internalName == e8coords) {
 								trace("FN using transform_gutcoords_To_e8coords");
 								fn = transform_gutcoords_To_e8coords;
+							} else {
+								fn = no_transform;
 							}
 						}
 						if(fn == null) {
 							throw new Error("Error invalid coordinate change");
 						}
-			
+						trace("A CAMERA H " + camera.H.toString());
+						trace("A CAMERA V " + camera.V.toString());
 						hv = fn(camera.H, camera.V);
+						trace("B CAMERA H " + camera.H.toString());
+						trace("B CAMERA V " + camera.V.toString());
+						//if( coords) {
 						i = 0;
-						n = curPointSystem.curCoordinate.rotations.length;
-						trace("transform " + n + " rotations");
+						n = coords.rotations.length;
+						trace("transform " + n + " rotations " + " in  " + coords.name);
+						if(n == 0) {
+							throw new Error("Error invalid coordinate change...missing rotations! last " + _lastcoords.name + " cur " + coords.name);
+						}
 						//for(i = 0; i < n;i++) {
-						while( curPointSystem.curCoordinate.rotations.length > 0) {
+						while( coords.rotations.length > 0) {
 							trace("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-							trace(" adjusting rotation " + i);
-							cr = curPointSystem.curCoordinate.rotations.shift() as Rotations;
+							
+							cr = coords.rotations.shift() as Rotations;
+							trace(" adjusting rotation " + i + " " + cr.name + " " + cr.label);
 							crhv = fn(cr.H, cr.V);
-							cr.isE8 = true;
+							//cr.isE8 = true;
 							cr.H = crhv[0];
 							cr.V = crhv[1];
 							desCoord.rotations.push(cr);
-							if(curPointSystem.curCoordinate.curRotation == cr) {
-								trace("Found DESIred rotations");
+							if(coords.curRotation == cr) {
+								trace("XXXXXXXXXXXXXXXXXXXXXXX Found DESIred rotations XXXXXXXXXXXXXXXXXXXXX");
 								desCoord.curRotation = cr; 
 							}
 						}
+					
+						/*	var coord:Coordinates;
+						for(i = 0; i <  curPointSystem.coordinates.length; i++){
+						trace("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+							
+						coord = curPointSystem.coordinates[i] as Coordinates;
+						trace(" adjusting ccord " + i + " " + coord.name + " " + coord.label);
+						//crhv = fn(cr.H, cr.V);
+						//cr.isE8 = true;
+						//coord..H = crhv[0];
+						//cr.V = crhv[1];
+						
+						}*/
 						cr = curUserRotation;
 						if(cr != null) {
-							crhv = transform_smcoords_To_e8coords(cr.H, cr.V);
+							crhv = fn(cr.H, cr.V);//transform_smcoords_To_e8coords(cr.H, cr.V);
 							cr.H = crhv[0];
 							cr.V = crhv[1];
-							cr.isE8 = true;
+							//cr.isE8 = true;
 						}
 				
 				 
 						trace("hv " + hv);
 						camera.H = hv[0] as EightDimensionVector;
 						camera.V = hv[1] as EightDimensionVector;
-						desCoord.curRotation = curPointSystem.curCoordinate.curRotation;			
+						desCoord.curRotation = coords.curRotation;		
+					}	
+					//}
+					i = 0;
+					if(curPointSystem && curPointSystem.particles) {
+						n = curPointSystem.particles.length;
+						var cp : EightDimensionParticle;
+						trace(" particles " + n);
+						for (;i < n; ++i) {
+							
+							cp = curPointSystem.particles[i] as EightDimensionParticle;
+							cp.setCurrentCoordinates(desCoord.id);
+							cp = curPointSystem.camera_points[i] as EightDimensionParticle;
+							cp.setCurrentCoordinates(desCoord.id);
+						}
 					}
-					trace(curPointSystem.curCoordinate.id + " " + desCoord.id);
-					curPointSystem.curCoordinate = desCoord ;
+					/////////    dispatach changed //////////////////
+					dispatchEvent(new Event(Model.COORDS_CHANGED));
+					//dispatchEvent(new Event(Model.ROTATIONS_CHANGED));
+					trace("XXXXXXXXXXXXXXXXXXX DESIRED CURRENT COORDINATES XXXXXXXXXXXXXXXXXXXXXXXXXXX");
+					//trace(coords.id + " " + desCoord.id);
+					//trace(coords.name + " " + desCoord.name);
+					//coords = desCoord ;
 					_curcoords = desCoord;
 		
 					dispatchEvent(new Event(COORDS_CHANGED));
@@ -152,6 +199,9 @@ package mdl {
 				}catch(er : Error) {
 					throw new Error("Error changing rotations " + er.getStackTrace());
 				}
+			} else {
+				trace("!!!!!!!!!!!!!!!!!!!!!!!!! NO CHANGE IN COORDINATE SYSTEM!!!!!!!!!!!!!!!!!!!!!" + desCoord.name);
+				dispatchEvent(new Event(ROTATIONS_CHANGED));
 			}
 		}
 
@@ -171,8 +221,16 @@ package mdl {
 		}
 
 		public function set curPointSystem(val : PointSystem) : void {
+			_lastPointSystem = _curPointSystem;
 			_curPointSystem = val;
-			curcoords = val.curCoordinate;
+			if(_lastPointSystem) {
+				trace("set curPointSystem to " + val.name + " from " + _lastPointSystem.name);
+			//	_curcoords = null;
+			//	curcoords = _lastPointSystem.curCoordinate;
+			} else {
+			//	curcoords = val.curCoordinate;
+			}
+			//trace(" curcoords == " + _curcoords.name);
 			//dispatach changed
 			dispatchEvent(new Event(POINTS_CHANGED));
 			dispatchEvent(new Event(COORDS_CHANGED));
@@ -180,6 +238,9 @@ package mdl {
 		}
 
 		// transformations of H and V during coordinate changes
+		public function no_transform(H : EightDimensionVector ,V : EightDimensionVector  ) : Array {
+			return [H, V];
+		}
 
 		public function transform_e8coords_To_smcoords( H : EightDimensionVector ,V : EightDimensionVector  ) : Array {
 			trace("transform_e8coords_To_smcoords H " + H + " V" + V);
@@ -366,7 +427,7 @@ package mdl {
 			}
 			guTdA = String(GUTconfig.@hids).split(",");
 			while(guTdA.length > 0) {
-				 gtid = new int(guTdA.pop());
+				gtid = new int(guTdA.pop());
 				trace('gtid ' + gtid);
 				gutIDx[gtid] = "H";
 			}
@@ -375,7 +436,7 @@ package mdl {
 			GUTparticle.modl = this;
 			var GUTparticle2 : EightDimensionParticle = EightDimensionParticle.XMLFactory(GUTconfig.p[1]);
 			GUTparticle2.modl = this;		
-			trace("GUTconfig IDs " + GUTparticle.name + " " + GUTparticle.gutcolor + " " );
+			trace("GUTconfig IDs " + GUTparticle.name + " " + GUTparticle.gutcolor + " ");
 			
 			//////////////////////////////////////////////////////
 			//   POINT SYSTEMS 
@@ -396,11 +457,11 @@ package mdl {
 				trace("  looking for e8 " + psys[i].@name);
 				if(psys[i].@name == "E8") {
 					trace("E8 PointSystem Found ");
-					curPointSystem = PointSystem.XMLFactory(psys[i], gutIDx, GUTparticle, GUTparticle2);
+					curPointSystem = PointSystem.XMLFactory(psys[i], gutIDx, GUTparticle, GUTparticle2, this);
 					e8PointSystem = curPointSystem;
 					curPointSystem.addEventListener(Model.COORDS_CHANGED, redispatchEvent);
 					curPointSystem.addEventListener(Model.ROTATIONS_CHANGED, redispatchEvent);
-					pointSystems.push(curPointSystem); 
+				//	pointSystems.push(curPointSystem); 
 				} 
 			}
 	
@@ -413,7 +474,7 @@ package mdl {
 				trace("---------------------AA-------------------");
 				if(psys[i].@name != "E8") {
 					trace("---------------------BB-------------------");
-					curPointSystem = PointSystem.XMLFactory(psys[i], gutIDx, GUTparticle, GUTparticle2);
+					curPointSystem = PointSystem.XMLFactory(psys[i], gutIDx, GUTparticle, GUTparticle2, this);
 					trace("---------------------CC-------------------");
 					trace("PointSystem Found " + curPointSystem.name);
 					trace("PointSystem Found Subset of e8");
@@ -431,7 +492,7 @@ package mdl {
 					curPointSystem.trialities = e8PointSystem.trialities;
 					curPointSystem.interactions = e8PointSystem.interactions;
 					curPointSystem.axises = e8PointSystem.axises;
-					curPointSystem.curCoordinate = e8PointSystem.curCoordinate;
+					//		coords = e8PointSystem.curCoordinate;
 					if(curPointSystem.name == "Standard Model") {
 						stPointSystem = curPointSystem;
 					} 
@@ -439,16 +500,30 @@ package mdl {
 					curPointSystem.addEventListener(Model.ROTATIONS_CHANGED, redispatchEvent);
 				
 					pointSystems.push(curPointSystem);
-				} 
+				} else {
+					pointSystems.push(e8PointSystem);
+				}
 			}
-
-
+			i = 0;
+			n = curPointSystem.coordinates.length;
+			for (;i < n; ++i) {
+				trace("curPointSystem.coordinates." + curPointSystem.coordinates[i].label);
+			}
+			curPointSystem.coordinates.sortOn("order", Array.NUMERIC);
+			i = 0;
+			n = curPointSystem.coordinates.length;
+			for (;i < n; ++i) {
+				trace("curPointSystem.coordinates." + curPointSystem.coordinates[i].label);
+			}
+			curcoords = curPointSystem.coordinates[0];
+			//		curPointSystem
 			///////// SET CURRENT POINTSYSTEM ///////////
 			curPointSystem = e8PointSystem;//stPointSystem;//pointSystems[0];
 
+					
 			trace("CURRENT POINTSYS " + curPointSystem.name);
 			trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-			trace("curPointSystem.curCoordinate " + curPointSystem.curCoordinate.name);
+			trace("coords " + coords.name);
 			trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 				
 			// dispatchEvent(new Event(POINTS_CHANGED));
