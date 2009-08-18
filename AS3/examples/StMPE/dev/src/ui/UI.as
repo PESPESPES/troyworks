@@ -157,7 +157,7 @@
 			bottom_panel.selection2.visible = false;
 			//deselect2Btn.visible = false;
 			bottom_panel.selection3.visible = false;
-			bottom_panel.selection4.visible = false;
+			//	bottom_panel.selection4.visible = false;
 			bottom_panel.delectAllBtn.addEventListener(MouseEvent.CLICK, onDeselectAllClick);
 			//deselect2Btn.addEventListener(MouseEvent.CLICK, onDeselectSecond);
 			rotateHVMode_Btn.addEventListener(MouseEvent.CLICK, selectRotateHVMode);
@@ -211,7 +211,7 @@
 					//modl.coords = Model.smcoords;
 					modl.isGUTmode = false;
 					break;					
-				case "E6":
+				case "E6 / SO(10)":
 					trace("E6 POINTS");
 					curPointFilter.isE8 = false;
 					curPointFilter.isE6 = true;
@@ -222,7 +222,7 @@
 					modl.isGUTmode = true;
 					break;
 				
-				case "Georgi-Glashow":
+				case "Georgi-Glashow SU(5)":
 					trace("Georgi Glashow POINTS");
 					curPointFilter.isE8 = false;
 					curPointFilter.isE6 = false;
@@ -260,9 +260,8 @@
 			var n : int = ary.length;
 			
 			for (;i < n; ++i) {
-			//	trace("poinChagne " + ary[i].name + " " + ary[i].isGUT);
+				//	trace("poinChagne " + ary[i].name + " " + ary[i].isGUT);
 				EightDimensionParticle(ary[i]).redrawUI();
-				
 			}
 			pointFadeDownTny.alpha = 1;
 			pointFadeDownTny.duration = 0;
@@ -290,7 +289,7 @@
 		}
 
 		private function onModelPointsChanged(e : Event = null) : void {
-			trace("onModelPointsChanged " + modl);
+			trace("UI.onModelPointsChanged " + modl);
 			
 			if(modl != null && modl.pointSystems != null && modl.pointSystems.length > 0 && points_cmb != null) {
 				points_cmb.dataProvider = new DataProvider(modl.pointSystems);
@@ -351,38 +350,50 @@
 		}
 
 		private function onModelCoordinatesChanged(e : Event = null) : void {
-
-			coords_cmb.dataProvider = new DataProvider(modl.curPointSystem.coordinates);
-			trace("UI.onModelCoordinatesChanged " + coords_cmb.dataProvider.length);
-			coords_cmb.enabled = (coords_cmb.dataProvider.length > 0);
-			trace("UI.modl.curPointSystem.curCoordinate " + modl.curPointSystem.curCoordinate);
-			if(modl.curPointSystem.curCoordinate) {
-				coords_cmb.selectedIndex = coords_cmb.dataProvider.getItemIndex(modl.curPointSystem.curCoordinate);
+			try {
+				coords_cmb.dataProvider = new DataProvider(modl.curPointSystem.coordinates);
+				trace("UI.onModelCoordinatesChanged " + coords_cmb.dataProvider.length);
+				trace("curCoordinate " + modl.coords);//.curCoordinate.name);
 			
-				trace("bottom_panel.interactionsHeader_mc.aDim_lbl " + modl.curPointSystem.curCoordinate.coordLabels[0]);
-				setAxisLabel(bottom_panel.interactionsHeader_mc.aDim_lbl, modl.curPointSystem.curCoordinate.coordLabels[0]);
-				setAxisLabel(a_btn.dimension_lbl, modl.curPointSystem.curCoordinate.coordLabels[0]);
+				
+			/*for(var i:int= 0; i < coords_cmb.dataProvider.length; i++){
+				var o:Object = coords_cmb.dataProvider.getItemAt(i);
+				trace("found data item " + o.name);
+				if(o == modl.coords ){
+					trace("FOUND CURRENT COORD!");
+					coords_cmb.selectedIndex = i;
+						
+				}
+			}*/
+				coords_cmb.enabled = (coords_cmb.dataProvider.length > 0);
+			trace("UI.modl.coords " + modl.coords);
+			if(modl.coords) {
+				coords_cmb.selectedIndex = coords_cmb.dataProvider.getItemIndex(modl.coords);//.curCoordinate);
 			
-				setAxisLabel(bottom_panel.interactionsHeader_mc.bDim_lbl, modl.curPointSystem.curCoordinate.coordLabels[1]);
-				setAxisLabel(b_btn.dimension_lbl, modl.curPointSystem.curCoordinate.coordLabels[1]);
+				trace("bottom_panel.interactionsHeader_mc.aDim_lbl " + modl.coords.coordLabels[0]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.aDim_lbl, modl.coords.coordLabels[0]);
+				setAxisLabel(a_btn.dimension_lbl, modl.coords.coordLabels[0]);
+			
+				setAxisLabel(bottom_panel.interactionsHeader_mc.bDim_lbl, modl.coords.coordLabels[1]);
+				setAxisLabel(b_btn.dimension_lbl, modl.coords.coordLabels[1]);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.cDim_lbl, modl.curPointSystem.curCoordinate.coordLabels[2]);
-				setAxisLabel(c_btn.dimension_lbl, modl.curPointSystem.curCoordinate.coordLabels[2]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.cDim_lbl, modl.coords.coordLabels[2]);
+				setAxisLabel(c_btn.dimension_lbl, modl.coords.coordLabels[2]);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.dDim_lbl, modl.curPointSystem.curCoordinate.coordLabels[3]);
-				setAxisLabel(d_btn.dimension_lbl, modl.curPointSystem.curCoordinate.coordLabels[3]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.dDim_lbl, modl.coords.coordLabels[3]);
+				setAxisLabel(d_btn.dimension_lbl, modl.coords.coordLabels[3]);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.eDim_lbl, modl.curPointSystem.curCoordinate.coordLabels[4]);
-				setAxisLabel(e_btn.dimension_lbl, modl.curPointSystem.curCoordinate.coordLabels[4]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.eDim_lbl, modl.coords.coordLabels[4]);
+				setAxisLabel(e_btn.dimension_lbl, modl.coords.coordLabels[4]);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.fDim_lbl, modl.curPointSystem.curCoordinate.coordLabels[5]);
-				setAxisLabel(f_btn.dimension_lbl, modl.curPointSystem.curCoordinate.coordLabels[5]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.fDim_lbl, modl.coords.coordLabels[5]);
+				setAxisLabel(f_btn.dimension_lbl, modl.coords.coordLabels[5]);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.gDim_lbl, modl.curPointSystem.curCoordinate.coordLabels[6]);
-				setAxisLabel(g_btn.dimension_lbl, modl.curPointSystem.curCoordinate.coordLabels[6]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.gDim_lbl, modl.coords.coordLabels[6]);
+				setAxisLabel(g_btn.dimension_lbl, modl.coords.coordLabels[6]);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.hDim_lbl, modl.curPointSystem.curCoordinate.coordLabels[7]);
-				setAxisLabel(h_btn.dimension_lbl, modl.curPointSystem.curCoordinate.coordLabels[7]);
+				setAxisLabel(bottom_panel.interactionsHeader_mc.hDim_lbl, modl.coords.coordLabels[7]);
+				setAxisLabel(h_btn.dimension_lbl, modl.coords.coordLabels[7]);
 			
 
 				/////////////////////////////////////////////////////////////
@@ -403,13 +414,13 @@
 					trace("p1 " + p1);
 					trace("p1.ui " + p1.ui);
 					if(p1.ui != null) {
-						setAxisLabel(p1.ui.getChildByName("lbl") as MovieClip, modl.curPointSystem.curCoordinate.coordLabels[i]);
+						setAxisLabel(p1.ui.getChildByName("lbl") as MovieClip, modl.coords.coordLabels[i]);
 					}
 					////////////// p2 ////////////////////
 
 					p2 = pary[1] as EightDimensionParticle;
 					if(p2.ui != null) {		
-						setAxisLabel(p2.ui.getChildByName("lbl") as MovieClip, modl.curPointSystem.curCoordinate.coordLabels[i]);
+						setAxisLabel(p2.ui.getChildByName("lbl") as MovieClip, modl.coords.coordLabels[i]);
 					}				
 				}	
 			
@@ -427,7 +438,7 @@
 					updateDetails(bottom_panel.selection3, modl.result1);
 				}
 				if(modl.result2) {
-					updateDetails(bottom_panel.selection4, modl.result2);
+			//		updateDetails(bottom_panel.selection4, modl.result2);
 				}
 				trace("UPDATE THE MODEL ROTATIONS .......................");
 				onModelRotationsChanged(null, true);
@@ -435,9 +446,13 @@
 			
 				updateView();
 			}
+			}catch(err:Error){
+					trace("ERROR " + err.getStackTrace());
+			}
 		}
 
 		private function openSaveRotation(e : Event = null) : void {
+			trace("openSaveRotation ");
 			if(modl.curUserRotation != null) {
 				saveRotationRequester_mc.panel_mc.input_txt.text = modl.curUserRotation.name; 
 				saveRotationRequester_mc.visible = true;
@@ -447,15 +462,15 @@
 		private function saveRotation(e : Event = null) : void {
 			trace("saveRotation ");
 			if(saveRotationRequester_mc.visible ) {
-				modl.curUserRotation.name = saveRotationRequester_mc.input_txt.text;
+				modl.curUserRotation.name = saveRotationRequester_mc.panel_mc.input_txt.text;
 				saveRotationRequester_mc.visible = false; 
 			}
 			if(modl.curUserRotation != null) {
 				if(modl.curUserRotation.name.indexOf("*") > -1) {
 					modl.curUserRotation.name = modl.curUserRotation.name.split("*").join('');
 				} 
-				modl.curPointSystem.curCoordinate.rotations.push(modl.curUserRotation);
-				modl.curPointSystem.curCoordinate.curRotation = modl.curUserRotation;
+				modl.coords.rotations.push(modl.curUserRotation);
+				modl.coords.curRotation = modl.curUserRotation;
 				modl.curUserRotation = null;
 				onModelRotationsChanged();
 			}
@@ -464,8 +479,8 @@
 		private function deleteRotation(e : Event = null) : void {
 			trace("delete Rotation ");
 			i = 0;				
-			n = modl.curPointSystem.curCoordinate.rotations.length;
-			var ary : Array = modl.curPointSystem.curCoordinate.rotations;
+			n = modl.coords.rotations.length;
+			var ary : Array = modl.coords.rotations;
 			
 			for(;i < n;++i) {
 				if(ary[i] == rotations_lb.selectedItem) {
@@ -490,17 +505,17 @@
 			trace("CMB settingModelRotation to " + rotations_lb.selectedItem.name);
 			e.stopImmediatePropagation();
 			rotationsHaveChanged = true;
-			modl.curPointSystem.curCoordinate.curRotation = Rotations(rotations_lb.selectedItem);
+			modl.coords.curRotation = Rotations(rotations_lb.selectedItem);
 		}
 
 		private function onModelRotationsChanged(e : Event = null, skip : Boolean = false) : void {
-			//trace("onModelRotationsChanged");
+			trace("UI.onModelRotationsChanged");
 			//return;
-			if(!modl.curPointSystem.curCoordinate) {
+			if(!modl.coords) {
 				return;
 			}
 
-			var dp : DataProvider = new DataProvider(modl.curPointSystem.curCoordinate.rotations);
+			var dp : DataProvider = new DataProvider(modl.coords.rotations);
 			//var userRotation : Rotations = new Rotations();
 			//userRotation.name = "My New Rotation";
 			if(modl.curUserRotation != null) {
@@ -508,12 +523,12 @@
 			}
 			rotations_lb.dataProvider = dp;
 			rotations_lb.enabled = (rotations_lb.dataProvider.length > 0);
-			rotations_lb.selectedIndex = rotations_lb.dataProvider.getItemIndex(modl.curPointSystem.curCoordinate.curRotation); 
+			rotations_lb.selectedIndex = rotations_lb.dataProvider.getItemIndex(modl.coords.curRotation); 
 			
 			if(skip) {
 				return;
 			}
-			//	var hv : Array = modl.curPointSystem.curCoordinate.curRotation.hv;
+			//	var hv : Array = modl.coords.curRotation.hv;
 
 			a_btn.indicator_mc.H_btn.addEventListener(MouseEvent.CLICK, onH_Click);
 			a_btn.indicator_mc.V_btn.addEventListener(MouseEvent.CLICK, onV_Click);
@@ -549,7 +564,7 @@
 			h_btn.indicator_mc.HV_btn.addEventListener(MouseEvent.CLICK, onHV_Click);
 			
 			//////////// PASS BY VALUE NOT REFERNECE!! ////////////
-			var cr : Rotations = modl.curPointSystem.curCoordinate.curRotation;
+			var cr : Rotations = modl.coords.curRotation;
 			if(cr) {
 				modl.camera.H.d1 = cr.H.d1;
 				modl.camera.V.d1 = cr.V.d1;
@@ -575,8 +590,8 @@
 				modl.camera.H.d8 = cr.H.d8;
 				modl.camera.V.d8 = cr.V.d8;
 			
-				modl.curXaxis = Dimension.DIMS[modl.curPointSystem.curCoordinate.curRotation.selectedHAxisIdx];
-				modl.curYaxis = Dimension.DIMS[modl.curPointSystem.curCoordinate.curRotation.selectedVAxisIdx];
+				modl.curXaxis = Dimension.DIMS[modl.coords.curRotation.selectedHAxisIdx];
+				modl.curYaxis = Dimension.DIMS[modl.coords.curRotation.selectedVAxisIdx];
 			} else {
 				trace("ERROR rotations is blank ");
 			}
@@ -707,7 +722,7 @@
 				pntUI = new Sprite();
 				lbl = new lbl2Def();
 				lbl.gotoAndStop(int(p1.name));
-				//setAxisLabel(lbl, modl.curPointSystem.curCoordinate.coordLabels[i]);
+				//setAxisLabel(lbl, modl.coords.coordLabels[i]);
 				lbl.name = "lbl";
 				pntUI.addChild(lbl);
 				p1.ui = pntUI;
@@ -717,7 +732,7 @@
 				pntUI = new Sprite();
 				lbl = new lbl2Def();
 				lbl.gotoAndStop(int(p1.name));
-				//setAxisLabel(lbl, modl.curPointSystem.curCoordinate.coordLabels[i]);
+				//setAxisLabel(lbl, modl.coords.coordLabels[i]);
 				lbl.name = "lbl";
 				pntUI.visible = false;
 				pntUI.addChild(lbl);
@@ -814,6 +829,8 @@
 			//points_cmb.selectedIndex  =points_cmb.length;
 			
 			//onModelPointsChanged();
+			modl.curPointSystem = modl.pointSystems[0];
+		
 			
 			////////////////UPDATE VIEW  //////////////////////
 			onCoordComboBoxChanged();
@@ -884,7 +901,7 @@
 			if(modl.result2 != null) {
 				modl.result2.selectedState = EightDimensionParticle.NOT_SELECTED;
 				modl.result2 = null;
-				bottom_panel.selection4.visible = false;
+				//bottom_panel.selection4.visible = false;
 			} 
 			updateView();
 		}
@@ -917,7 +934,7 @@
 			if(modl.result2 != null) {
 				modl.result2.selectedState = EightDimensionParticle.NOT_SELECTED;
 				modl.result2 = null;
-				bottom_panel.selection4.visible = false;
+			//	bottom_panel.selection4.visible = false;
 			} 
 			updateView();
 		}
@@ -965,7 +982,7 @@
 					if(modl.result2 != null) {
 						modl.result2.selectedState = EightDimensionParticle.NOT_SELECTED;
 						modl.result2 = null;
-						bottom_panel.selection4.visible = false;
+					//	bottom_panel.selection4.visible = false;
 					}
 					modl.firstClicked = p;
 					updateDetails(bottom_panel.selection1, p);
@@ -1006,7 +1023,7 @@
 								modl.result1.selectedState = EightDimensionParticle.RESULT;
 								updateDetails(bottom_panel.selection3, res[0]);
 								bottom_panel.selection3.visible = true;
-								bottom_panel.selection4.visible = false;
+							//	bottom_panel.selection4.visible = false;
 							}else if(res.length == 2) {
 								//two result particle interactions
 								modl.result1 = res[0] as EightDimensionParticle;
@@ -1017,7 +1034,7 @@
 								updateDetails(bottom_panel.selection3, res[0]);
 								updateDetails(bottom_panel.selection4, res[1]);
 								bottom_panel.selection3.visible = true;
-								bottom_panel.selection4.visible = true;
+							//	bottom_panel.selection4.visible = true;
 							}
 						} else {
 							trace("found no iteractions for pair");
@@ -1028,7 +1045,7 @@
 						//updateDetails(selection3, p);
 						//updateDetails(selection4, p);
 						bottom_panel.selection3.visible = true;
-						bottom_panel.selection4.visible = true;
+					//	bottom_panel.selection4.visible = true;
 					}
 				}
 				updateView();
@@ -1427,14 +1444,14 @@
 				userRotation.H.d8 = H.d8;
 				userRotation.V.d8 = V.d8;
 				//userRotation.hv = [[H.d1, V.d1],[H.d2, V.d2],[H.d3, V.d3],[H.d4, V.d4],[H.d5, V.d5],[H.d6, V.d6],[H.d7, V.d7],[H.d8, V.d8]];
-				userRotation.name = "last rotation";//"My " + modl.curPointSystem.curCoordinate.curRotation.name + " *";
+				userRotation.name = "last rotation";//"My " + modl.coords.curRotation.name + " *";
 				userRotation.selectedHAxisIdx = modl.curXaxis.d - 1;
 				userRotation.selectedVAxisIdx = modl.curYaxis.d - 1;
 				userRotation.isUser = true;
 				userRotation.isDirty = true;
 				userRotation.isSaved = false;
 				modl.curUserRotation = userRotation;
-				modl.curPointSystem.curCoordinate.curRotation = userRotation; 
+				modl.coords.curRotation = userRotation; 
 				onModelRotationsChanged();
 			} else {
 				///////// PASS BY VALUE NOT REFERENCE!!!!////////////
@@ -1463,9 +1480,9 @@
 				modl.curUserRotation.V.d8 = V.d8;
 				modl.curUserRotation.selectedHAxisIdx = modl.curXaxis.d - 1;
 				modl.curUserRotation.selectedVAxisIdx = modl.curYaxis.d - 1;
-				//modl.curUserRotation.name = "My " + modl.curPointSystem.curCoordinate.curRotation.name + " *";
+				//modl.curUserRotation.name = "My " + modl.coords.curRotation.name + " *";
 				//modl.curUserRotation.hv = [[H.d1, V.d1],[H.d2, V.d2],[H.d3, V.d3],[H.d4, V.d4],[H.d5, V.d5],[H.d6, V.d6],[H.d7, V.d7],[H.d8, V.d8]];
-				modl.curPointSystem.curCoordinate.curRotation = modl.curUserRotation;
+				modl.coords.curRotation = modl.curUserRotation;
 				modl.curUserRotation.isDirty = true;
 				modl.curUserRotation.isSaved = false;
 			}
@@ -1544,8 +1561,10 @@
 					isE6 = curPointFilter.isE6 && pobj.isE6;
 					isGeorgi_Glashow = curPointFilter.isGeorgi_Glashow && pobj.isGeorgi_Glashow;
 					isPati_Salam = curPointFilter.isPati_Salam && pobj.isPati_Salam;
+				//	trace(" isPati_Salam "+ curPointFilter.isPati_Salam + " " + pobj.isPati_Salam);
 					isStandardModel = curPointFilter.isStandardModel && pobj.isStandardModel;
-					isGUT = pobj.isGUT && modl.isGUTmode;
+					//trace(" isStandardModel "+ curPointFilter.isStandardModel + " " + pobj.isStandardModel);
+					//isGUT = pobj.isGUT && modl.isGUTmode;
 					 
 					//spobj = modl.curPointSystem.camera_points[i]; 
 					clip = pobj.ui; 
@@ -1587,7 +1606,8 @@
 						clip.visible = true;
 						}*/
 						//trace("isE8 " + isE8 + " isStandardModel " + isStandardModel + " " + curPointFilter.isStandardModel);
-						if(isE8 || isE6 || isGeorgi_Glashow || isPati_Salam || isStandardModel && isGUT ) {
+//						if(  (!isGUT && (isE8 || isStandardModel  )) || (isGUT &&(isE6 || isGeorgi_Glashow || isPati_Salam )) ) {
+						if(  isE8 || isStandardModel  || isGUT  ||isE6 || isGeorgi_Glashow || isPati_Salam ) {
 							//FADING UP
 							//trace("showing " + pobj.label + " " + pointFadeUpTny.target.alpha);
 							if(clip.alpha <= pointFadeUpTny.target.alpha) {
@@ -1596,7 +1616,7 @@
 						//clip.visible = true;
 						} else {
 							//FADING DOWN
-							//trace("hiding " + pobj.label + " " + pointFadeDownTny.target.alpha);
+						//	trace("hiding " + pobj.label + " " + pointFadeDownTny.target.alpha);
 							if(clip.alpha >= pointFadeDownTny.target.alpha) {
 								clip.alpha = pointFadeDownTny.target.alpha;
 							}

@@ -1,9 +1,8 @@
 ﻿package mdl {
-	import com.troyworks.data.Default;	
-
-	import flash.utils.Dictionary;	
+	import com.troyworks.data.Default;
+	
 	import flash.events.EventDispatcher;
-	import flash.events.Event;	
+	import flash.utils.Dictionary;		
 
 	/**
 	 * @author Troy Gardner
@@ -35,7 +34,7 @@
 			super();
 		}
 
-		public function get curCoordinate() : Coordinates {
+		/*public function get curCoordinate() : Coordinates {
 			return _curCoordinate ;
 		}
 
@@ -57,9 +56,9 @@
 			/////////    dispatach changed //////////////////
 			dispatchEvent(new Event(Model.COORDS_CHANGED));
 			//dispatchEvent(new Event(Model.ROTATIONS_CHANGED));
-		}
+		}*/
 
-		public static function XMLFactory(xml : XML, gutIDx : Dictionary, GUTparticle : EightDimensionParticle, GUTparticle2 : EightDimensionParticle) : PointSystem {
+		public static function XMLFactory(xml : XML, gutIDx : Dictionary, GUTparticle : EightDimensionParticle, GUTparticle2 : EightDimensionParticle, mdlx:Model) : PointSystem {
 			//	trace("!!!!!!!!!!!!!!!XMLFactory!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			//	trace(xml.toXMLString());
 			//	trace("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -191,18 +190,19 @@
 				for (;i < n; ++i) {
 					//	trace("Coord " + i + " " + coords[i].toXMLString());
 					co = Coordinates.XMLFactory(coords[i], ps, i);
-					//trace("Coord obj " + co);
+					trace("Coord obj " + co.label);
 					co.addEventListener(Model.ROTATIONS_CHANGED, ps.redispatchEvent);
 					ps.coordinates.push(co);
 					if(co.isDefault) {
 						trace("isDefault " + co);
-						curCord = co;
+						mdlx.curcoords  = co;
 					}
 				}
 			
-				ps.curCoordinate = ps.coordinates[0];
+				//ps.curCoordinate = ps.coordinates[0];
+				//mdlx.curcoords =  ps.coordinates[0];
 				//ps.curCoordinate = curCord;//
-				trace("CUR COORDI " + ps.curCoordinate);
+				//trace("CUR COORDI " + ps.curCoordinate);
 			}
 			
 			///////////////////////////////////////////////////////////////////////
