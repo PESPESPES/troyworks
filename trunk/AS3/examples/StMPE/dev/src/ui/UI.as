@@ -339,83 +339,83 @@
 					coords_cmb.selectedIndex = coords_cmb.dataProvider.getItemIndex(modl.coords);//.curCoordinate);
 
 					trace("bottom_panel.interactionsHeader_mc.aDim_lbl " + modl.coords.coordLabels[0]);
-				setAxisLabel(bottom_panel.interactionsHeader_mc.aDim_lbl, modl.coords.lblstart +0);
-				setAxisLabel(a_btn.dimension_lbl, modl.coords.lblstart +0);
+					setAxisLabel(bottom_panel.interactionsHeader_mc.aDim_lbl, modl.coords.lblstart + 0);
+					setAxisLabel(a_btn.dimension_lbl, modl.coords.lblstart + 0);
 			
-				setAxisLabel(bottom_panel.interactionsHeader_mc.bDim_lbl,  modl.coords.lblstart +1);
-				setAxisLabel(b_btn.dimension_lbl,  modl.coords.lblstart +1);
+					setAxisLabel(bottom_panel.interactionsHeader_mc.bDim_lbl, modl.coords.lblstart + 1);
+					setAxisLabel(b_btn.dimension_lbl, modl.coords.lblstart + 1);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.cDim_lbl,  modl.coords.lblstart +2);
-				setAxisLabel(c_btn.dimension_lbl, modl.coords.lblstart +2);
+					setAxisLabel(bottom_panel.interactionsHeader_mc.cDim_lbl, modl.coords.lblstart + 2);
+					setAxisLabel(c_btn.dimension_lbl, modl.coords.lblstart + 2);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.dDim_lbl, modl.coords.lblstart +3);
-				setAxisLabel(d_btn.dimension_lbl, modl.coords.lblstart +3);
+					setAxisLabel(bottom_panel.interactionsHeader_mc.dDim_lbl, modl.coords.lblstart + 3);
+					setAxisLabel(d_btn.dimension_lbl, modl.coords.lblstart + 3);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.eDim_lbl,modl.coords.lblstart +4);
-				setAxisLabel(e_btn.dimension_lbl, modl.coords.lblstart +4);
+					setAxisLabel(bottom_panel.interactionsHeader_mc.eDim_lbl, modl.coords.lblstart + 4);
+					setAxisLabel(e_btn.dimension_lbl, modl.coords.lblstart + 4);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.fDim_lbl,modl.coords.lblstart +5);
-				setAxisLabel(f_btn.dimension_lbl, modl.coords.lblstart +5);
+					setAxisLabel(bottom_panel.interactionsHeader_mc.fDim_lbl, modl.coords.lblstart + 5);
+					setAxisLabel(f_btn.dimension_lbl, modl.coords.lblstart + 5);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.gDim_lbl, modl.coords.lblstart +6);
-				setAxisLabel(g_btn.dimension_lbl,modl.coords.lblstart +6);
+					setAxisLabel(bottom_panel.interactionsHeader_mc.gDim_lbl, modl.coords.lblstart + 6);
+					setAxisLabel(g_btn.dimension_lbl, modl.coords.lblstart + 6);
 
-				setAxisLabel(bottom_panel.interactionsHeader_mc.hDim_lbl, modl.coords.lblstart +7);
-				setAxisLabel(h_btn.dimension_lbl,modl.coords.lblstart +7);
+					setAxisLabel(bottom_panel.interactionsHeader_mc.hDim_lbl, modl.coords.lblstart + 7);
+					setAxisLabel(h_btn.dimension_lbl, modl.coords.lblstart + 7);
 			
 
-				/////////////////////////////////////////////////////////////
-				// UPDATE THE AXISES PARTICLES 
-				/////////////////////////////////////////////////////////////
-				i = 0;				
-				n = modl.curPointSystem.axises.length;
-				var p1 : EightDimensionParticle;
-				var p2 : EightDimensionParticle;
-				var pary : Array;
-				trace("UPDATE THE AXISES PARTICLES.. " + n + " .....................");
-				/////////// /////////////////////
-				for(;i < n;++i) {
-					trace("UPDATE THE AXISES PARTICLES i " + i);
-					pary = modl.curPointSystem.axises[i] as Array;
-					////////////// p1 ////////////////////
-					p1 = pary[0] as EightDimensionParticle;
-					trace("p1 " + p1);
-					trace("p1.ui " + p1.ui);
-					if(p1.ui != null) {
-						setAxisLabel(p1.ui.getChildByName("lbl") as MovieClip,modl.coords.lblstart +i);
+					/////////////////////////////////////////////////////////////
+					// UPDATE THE AXISES PARTICLES 
+					/////////////////////////////////////////////////////////////
+					i = 0;				
+					n = modl.curPointSystem.axises.length;
+					var p1 : EightDimensionParticle;
+					var p2 : EightDimensionParticle;
+					var pary : Array;
+					trace("UPDATE THE AXISES PARTICLES.. " + n + " .....................");
+					/////////// /////////////////////
+					for(;i < n;++i) {
+						trace("UPDATE THE AXISES PARTICLES i " + i);
+						pary = modl.curPointSystem.axises[i] as Array;
+						////////////// p1 ////////////////////
+						p1 = pary[0] as EightDimensionParticle;
+						trace("p1 " + p1);
+						trace("p1.ui " + p1.ui);
+						if(p1.ui != null) {
+							setAxisLabel(p1.ui.getChildByName("lbl") as MovieClip, modl.coords.lblstart + i);
+						}
+						////////////// p2 ////////////////////
+
+						p2 = pary[1] as EightDimensionParticle;
+						if(p2.ui != null) {		
+							setAxisLabel(p2.ui.getChildByName("lbl") as MovieClip, modl.coords.lblstart + i);
+						}				
+					}	
+			
+					/////////////////////////////////////////////////////////////
+					// UPDATE THE SELECTED PARTICLES 
+					/////////////////////////////////////////////////////////////
+					trace("UPDATE THE SELECTD PARTICLES.......................");
+					if(modl.firstClicked) {
+						updateDetails(bottom_panel.selection1, modl.firstClicked);
 					}
-					////////////// p2 ////////////////////
-
-					p2 = pary[1] as EightDimensionParticle;
-					if(p2.ui != null) {		
-						setAxisLabel(p2.ui.getChildByName("lbl") as MovieClip, modl.coords.lblstart +i);
-					}				
-				}	
-			
-				/////////////////////////////////////////////////////////////
-				// UPDATE THE SELECTED PARTICLES 
-				/////////////////////////////////////////////////////////////
-				trace("UPDATE THE SELECTD PARTICLES.......................");
-				if(modl.firstClicked) {
-					updateDetails(bottom_panel.selection1, modl.firstClicked);
-				}
-				if(modl.secondClicked) {
-					updateDetails(bottom_panel.selection2, modl.secondClicked);
-				}
-				if(modl.result1) {
-					updateDetails(bottom_panel.selection3, modl.result1);
-				}
-				if(modl.result2) {
+					if(modl.secondClicked) {
+						updateDetails(bottom_panel.selection2, modl.secondClicked);
+					}
+					if(modl.result1) {
+						updateDetails(bottom_panel.selection3, modl.result1);
+					}
+					if(modl.result2) {
 			//		updateDetails(bottom_panel.selection4, modl.result2);
 				}
-				trace("UPDATE THE MODEL ROTATIONS .......................");
-				onModelRotationsChanged(null, true);
-				trace("UPDATE THE VIEW .......................");
+					trace("UPDATE THE MODEL ROTATIONS .......................");
+					onModelRotationsChanged(null, true);
+					trace("UPDATE THE VIEW .......................");
 			
-				updateView();
+					updateView();
 				}
-			}catch(err:Error){
-					trace("ERROR " + err.getStackTrace());
+			}catch(err : Error) {
+				trace("ERROR " + err.getStackTrace());
 			}
 		}
 
@@ -960,8 +960,36 @@
 					bottom_panel.selection1.visible = true;
 					i = 0;
 					n = p.outboundParticleLinks.length;
+					var p2 : EightDimensionParticle;
+					var tmp1 : EightDimensionParticle;
+					var tmp2 : EightDimensionParticle;
+					var key : String;
+					var res : Array;
 					for (;i < n; ++i) {
-						(p.outboundParticleLinks[i] as EightDimensionParticle).selectedState = EightDimensionParticle.SELECTED_SECOND_POSSIBLE;
+						p2 = (p.outboundParticleLinks[i] as EightDimensionParticle);
+						key = modl.firstClicked.id + "," + p2.id;
+						var itnvis : Boolean = false; 
+						trace("looking for " + key + " in interactions");
+						res = modl.curPointSystem.interactions[key] as Array;
+						if(res != null) {
+							trace("found " + res.length + " interactions for " + key + " " + res);
+							if(res.length == 1) {
+								//single result particle interactions
+								tmp2= (res[0] as EightDimensionParticle);
+								itnvis = tmp2.ui.visible;
+							}else if(res.length == 2) {
+								//two result particle interactions
+								tmp1 = (res[0] as EightDimensionParticle);
+								tmp2 = (res[1] as EightDimensionParticle);
+								itnvis = tmp1.ui.visible && tmp2.ui.visible;
+							}
+						} else {
+							trace("found no iteractions for pair");
+							//TODO notify no interactions found
+						}
+						if(p2.ui.visible && itnvis) {
+							p2.selectedState = EightDimensionParticle.SELECTED_SECOND_POSSIBLE;
+						}
 					}
 				} else {
 					// has first click
@@ -982,9 +1010,9 @@
 						modl.secondClicked.selectedState = EightDimensionParticle.SELECTED_SECOND;
 						bottom_panel.selection2.visible = true;
 						//deselect2Btn.visible = true;
-						var key : String = modl.firstClicked.id + "," + modl.secondClicked.id;
+						key = modl.firstClicked.id + "," + modl.secondClicked.id;
 						trace("looking for " + key + " in interactions");
-						var res : Array = modl.curPointSystem.interactions[key] as Array;
+						res  = modl.curPointSystem.interactions[key] as Array;
 						if(res != null) {
 							trace("found " + res.length + " interactions for " + key + " " + res);
 							if(res.length == 1) {
@@ -1532,7 +1560,7 @@
 					isE6 = curPointFilter.isE6 && pobj.isE6;
 					isGeorgi_Glashow = curPointFilter.isGeorgi_Glashow && pobj.isGeorgi_Glashow;
 					isPati_Salam = curPointFilter.isPati_Salam && pobj.isPati_Salam;
-				//	trace(" isPati_Salam "+ curPointFilter.isPati_Salam + " " + pobj.isPati_Salam);
+					//	trace(" isPati_Salam "+ curPointFilter.isPati_Salam + " " + pobj.isPati_Salam);
 					isStandardModel = curPointFilter.isStandardModel && pobj.isStandardModel;
 					//trace(" isStandardModel "+ curPointFilter.isStandardModel + " " + pobj.isStandardModel);
 					//isGUT = pobj.isGUT && modl.isGUTmode;
@@ -1577,8 +1605,8 @@
 						clip.visible = true;
 						}*/
 						//trace("isE8 " + isE8 + " isStandardModel " + isStandardModel + " " + curPointFilter.isStandardModel);
-//						if(  (!isGUT && (isE8 || isStandardModel  )) || (isGUT &&(isE6 || isGeorgi_Glashow || isPati_Salam )) ) {
-						if(  isE8 || isStandardModel  || isGUT  ||isE6 || isGeorgi_Glashow || isPati_Salam ) {
+						//						if(  (!isGUT && (isE8 || isStandardModel  )) || (isGUT &&(isE6 || isGeorgi_Glashow || isPati_Salam )) ) {
+						if(  isE8 || isStandardModel || isGUT || isE6 || isGeorgi_Glashow || isPati_Salam ) {
 							//FADING UP
 							//trace("showing " + pobj.label + " " + pointFadeUpTny.target.alpha);
 							if(clip.alpha <= pointFadeUpTny.target.alpha) {
@@ -1587,7 +1615,7 @@
 						//clip.visible = true;
 						} else {
 							//FADING DOWN
-						//	trace("hiding " + pobj.label + " " + pointFadeDownTny.target.alpha);
+							//	trace("hiding " + pobj.label + " " + pointFadeDownTny.target.alpha);
 							if(clip.alpha >= pointFadeDownTny.target.alpha) {
 								clip.alpha = pointFadeDownTny.target.alpha;
 							}
@@ -1731,7 +1759,7 @@
 					///////////////////////////////////////////////////////////
 					//   VISUALIZE THE RAYS
 					///////////////////////////////////////////////////////////
-					if(modl.secondClicked != null) {
+					if(modl.secondClicked != null && modl.result1 != null && modl.result1.ui.visible) {
 						viewport.graphics.lineStyle(10, EightDimensionParticle.SELECTED_FIRST_COLOR, .5);
 						viewport.graphics.moveTo(modl.firstClicked.ui.x, modl.firstClicked.ui.y);	
 						viewport.graphics.lineTo(modl.secondClicked.ui.x, modl.secondClicked.ui.y);
