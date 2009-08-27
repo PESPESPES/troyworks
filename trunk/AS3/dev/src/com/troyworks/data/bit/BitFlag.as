@@ -100,7 +100,7 @@
 			}
 			return output;
 		};
-		public static function generateBinary():String
+		public static function generateBinary(arguments:Array):String
 		{
 			var ky:Array = new Array (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			for (var i:uint = 0; i < arguments.length; i ++)
@@ -109,7 +109,7 @@
 				//since Flash uses 32 bits make sure we range check
 				if (index > 0 && index < 33)
 				{
-					ky [32 - index] = 1;
+					ky [31 - index] = 1;
 					//flash is big-endian
 	
 				}
