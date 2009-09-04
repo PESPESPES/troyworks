@@ -76,12 +76,15 @@
 		public static function toBinary (bits:uint,bitMask:Number= NaN):String
 		{
 		//	trace("toBinary " +arguments[0] + " " + arguments[1] );
-			var output:String = "";
-			var i:int = 0;
-			var n:int =32;
-			for (; i < n; ++i){
+			
+			if (bits == 0) return "00000000000000000000000000000001";
+			
+			var output:String = "0";
+			var i:int;
+			var n:int = 32;
+			for (i = 1; i < n; ++i){
 				if(!isNaN(bitMask)){
-					trace("bitMask isn't null");
+//					trace("bitMask isn't null");
 					if((bitMask&1)){
 						output = (bits & 1) + output;
 					}else {
@@ -96,10 +99,24 @@
 				// store the binary one's place digit
 				bits >>= 1;
 				// shift temp right one binary digit
-	
 			}
 			return output;
 		};
+		
+		public static function toDecimal(bits:String):Number
+		{
+			var i:Number;
+			var b:Number;
+			var result:Number = 0;
+			for (i=0; i < bits.length; i++)
+			{
+				b = Number(bits.charAt(bits.length - 2 - i));
+				result += b*Math.pow(2, i);
+			}
+			return result;
+		}
+		
+		
 		public static function generateBinary(arguments:Array):String
 		{
 			var ky:Array = new Array (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
