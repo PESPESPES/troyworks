@@ -3,6 +3,8 @@ package com.troyworks.controls.ttextfield {
 	 * Automatically styles a textfield (useful for when inside buttons and components).
 	 * @author Troy Gardner
 	 */
+	import com.troyworks.framework.ui.FontManager;	
+	
 	import flash.display.MovieClip;
 	import flash.text.TextField;
 	public class AutoLabel extends MovieClip{

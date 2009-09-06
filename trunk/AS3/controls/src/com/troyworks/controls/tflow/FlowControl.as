@@ -12,7 +12,6 @@
 	import flash.display.DisplayObjectContainer;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
-	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
@@ -24,7 +23,8 @@
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
-	import flash.utils.Dictionary;		
+	import flash.utils.Dictionary;
+	import flash.utils.getQualifiedClassName;		
 
 	//import fl.controls.RadioButton;	
 	/**
@@ -91,7 +91,7 @@
 	 * 2) copy this into a class and have your Document level class use the following
 	 *
 	package {
-	import com.troyworks.ui.*;
+	import com.troyworks.controls.tflow.FlowControl;
 	public dynamic class UI extends FlowControl{
 	public function UI(){
 	super();
@@ -116,7 +116,7 @@
 	 */
 	dynamic public class FlowControl extends MovieClip {
 		//public var output_txt : TextField;
-		public var lastFrame : int = -1;
+		public var rlastFrame : String = null;
 		public var framesRendered : int = 0;
 		public var errorFilter : GlowFilter = new GlowFilter(0xFF0000, 80);
 
@@ -170,6 +170,7 @@
 		public var flowControlHasInited : Boolean = false;
 		public var version : Number = 1.2;
 		public var fcIsInited:Boolean = false;
+		public var isBusyNavigating:Boolean = false;
 
 		//	public static var trace : Function = TraceAdapter.SOSTracer;
 
@@ -258,7 +259,8 @@
 				var vw = view.loaderInfo.width; 
 				trace("loaderInfo GOOD");
 			}catch(er : Error) {
-				trace("ER loadingInfo not loaded yet" + er.getStackTrace());
+//				trace(" " + er.mses);
+	//			trace("ER loadingInfo not loaded yet" + er.getStackTrace());
 				framesToWait++;
 				return false;
 			}
@@ -390,13 +392,14 @@
 	
 			//view.addEventListener("next", requestNextFrame);
 			view.addEventListener("nextFrame", requestNextFrame);
-	
+			view.addEventListener("lastFrame", requestLastFrame);
+			
 			//view.addEventListener("prev", requestPrevFrame);
 			view.addEventListener("prevFrame", requestPrevFrame);
 			
 			view.addEventListener("nextScene", requestNextScene);
 			view.addEventListener("prevScene", requestPrevScene);
-			
+
 			view.addEventListener("FlowControlEnableKeyboardNavigation", enableFlowControlKeyboardNavigation );
 			view.addEventListener("FlowControlDisableKeyboardNavigation", disableFlowControlKeyboardNavigation);
 			
@@ -433,7 +436,9 @@
 		
 		//////////////////////FADE /////////////////////////////////
 		protected function startFadeUP(event : Event = null) : void {
-			trace("FlowControl.startFadeUP");
+			trace("FlowControl.startFadeUP " + view.currentFrame);
+			rlastFrame = String( view.currentFrame);
+			isBusyNavigating = true;
 			fadeClipTny.alpha = 1;
 			fadeClipTny.onComplete = onFadedUP;
 			fadeClipTny.duration = .5;
@@ -462,6 +467,7 @@
 		protected function onFadedDown(event : Event = null) : void {
 			trace("onFadedDown");
 			fadeClip.visible = false;
+			isBusyNavigating = false;
 		}
 
 		////////////////////// EVENTS /////////////////////////////////
@@ -476,13 +482,15 @@
 		///////////////////  WATCHING CHILDREN ////////////////////////
 		protected function onChildAdded(event : Event) : void {
 			var dO : DisplayObject = DisplayObject(event.target);
-			var isButton : Boolean = dO is SimpleButton;
+			var stn:String = getQualifiedClassName(dO);
+			var isButton : Boolean = stn =="fl.controls::Button"  || stn =="flash.display::SimpleButton"; 
 			var isMC : Boolean = dO is MovieClip;
+			
 			//var isButton : Boolean = getdO; 
 			 
 			// || dO is RadioButton;
 			if(debugShowChildAdded) {
-				trace("Sketch.onChildAdded " + dO.name + " " + isButton);
+				trace("FlowControl.onChildAdded " + dO.name + " " + isButton+  " " +stn );
 			}
 			if((isButton || isMC ) && validDo(dO)) {
 				setupGoto(dO, dO.name);
@@ -510,7 +518,9 @@
 
 		protected function onChildRemoved(event : Event) : void {
 			var dO : DisplayObject = DisplayObject(event.target);
-			var isButton : Boolean = dO is SimpleButton;
+			var stn:String = getQualifiedClassName(dO);
+			var isButton : Boolean = stn =="fl.controls::Button"  || stn =="flash.display::SimpleButton"; 
+		
 			// || dO is RadioButton;
 			if(debugShowChildAdded) {
 				trace("Sketch.onChildRemoved " + dO.name + " " + isButton);
@@ -525,7 +535,7 @@
 		}
 
 		public function onFrameChanged() : void {
-			trace("============ onFrameChanged =============" + currentFrame + " " + lastFrame);
+			trace("============ onFrameChanged =============" + currentFrame + " " + rlastFrame);
 	
 			//bind ui items
 			var i : int = 0;
@@ -533,7 +543,10 @@
 
 			for (;i < n; ++i) {
 				var dO : DisplayObject = getChildAt(i);
-				var isButton : Boolean = dO is SimpleButton;
+				//trace(describeType(dO));
+				var stn:String = getQualifiedClassName(dO);
+				var isButton : Boolean = stn =="fl.controls::Button"  || stn =="flash.display::SimpleButton"; 
+		
 				//var isRadio : Boolean = false;
 				//dO is RadioButton;	
 				trace(i + " " + dO.name + " " + isButton);
@@ -567,9 +580,11 @@
 				fnName = frame.split("_")[0];
 				evtTr = null;
 				if (view[fnName] is Function) {
-					trace("Found FUnction" + view[fnName]);
-					ie.addEventListener(MouseEvent.CLICK, this[fnName]);
+					trace("Found FUnction " +fnName +" "  + view[fnName]);
+					ie.addEventListener(MouseEvent.CLICK, view[fnName]);
 //					ie.addEventListener(MouseEvent.CLICK, EventAdapter.create(this[fnName], []));
+				}else{
+					trace("WARNING: skippng FUnction " + fnName);
 				}
 			}else if(frame.indexOf("play_") == 0) {
 				ary = frame.split("_");
@@ -594,7 +609,10 @@
 			}else if(frame == "prevScene_" ) {
 				evtTr.evtType = "prevScene";					
 			}else if(frame == "nextScene_" ) {
-				evtTr.evtType = "nextScene";					
+				evtTr.evtType = "nextScene";	
+			}else if(frame == "lastFrame"){
+				evtTr.evtType = "lastFrame";
+				//evtTr.args =["$lastframe"];
 			}else {
 				ary = frame.split("_");
 				trace(" gotoAndStop " + frame + "  '" + ary.join("','") + "'");
@@ -622,7 +640,7 @@
 			//	if(evtTr != null && evtTr.evtType == null){
 			//	throw new Error("FlowControl.setupGoto cannot have null evnType");
 			//}
-			if(!ignoreClick) {
+			if(!ignoreClick && evtTr) {
 				evtTr.id = view.name + "+" + evtTr.evtType;
 				evtIdx[evtTr.id] = evtTr;
 				ie.addEventListener(event, evtTr.dispatchEvent);
@@ -733,7 +751,16 @@
 		///////////////////////////////////////////////////////////////////
 		//                      NAVIGATION SECTION 
 		////////////////////////////////////////////////////////////////////
-
+		protected function requestLastFrame(event : Event = null) : void {
+			trace("requestLastFrame " + rlastFrame);
+			if(rlastFrame) {
+				nextAction = EventAdapter.create(view.gotoAndStop, [rlastFrame], false);
+				startFadeUP();
+				if(event != null) {
+					event.stopImmediatePropagation(); // consumed
+				}
+			}
+		}
 		protected function requestNextFrame(event : Event = null) : void {
 			trace("requestNextFrame");
 			if(view.currentFrame < view.totalFrames) {

@@ -146,7 +146,7 @@
 		}
 		public static function getEndsBetweenQuery(minVal:Number, maxVal:Number):LineQuery{
 			var qry:LineQuery = new LineQuery(minVal, NaN,maxVal);
-			qry.name = "startingBetween"+minVal+"And" + maxVal;
+			qry.name = "endingBetween"+minVal+"And" + maxVal;
 			qry.maxRelationToMin = LineQuery.GREATER_THAN_OR_EQUAL_TO;
 			qry.maxRelationToMax = LineQuery.LESS_THAN;
 			return qry;
