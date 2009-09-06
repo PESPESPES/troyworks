@@ -1,17 +1,18 @@
 ﻿package com.troyworks.geom.d1 {
 /**
-*  A 1 dimensional line.
-*  
-*  A point bound between two points on a line (inclusive or non-inclusive)
-*  where length is the Z- A.
-* 
-* eg.:     A[......C.......]Z
-* 
-* Useful for volume slider like application models.
-* 
-* @author Troy Gardner
-* @version 0.1
-*/	import com.troyworks.data.DataChangedEvent;	
+	 *  A 1 dimensional line.
+	 *  
+	 *  A point bound between two points on a line (inclusive or non-inclusive)
+	 *  where length is the Z- A.
+	 * 
+	 * eg.:     A[......C.......]Z
+	 * 
+	 * Useful for volume slider like application models.
+	 * 
+	 * @author Troy Gardner
+	 * @version 0.1
+	 */	
+	import com.troyworks.data.DataChangedEvent;	
 	import com.troyworks.framework.BaseObject; 
 
 	public class Line1D extends  BaseObject {
@@ -42,39 +43,42 @@
 		}
 
 		public function set A(val : Point1D) : void {
-			if(_A != null){
+			if(_A != null) {
 				_A.removeEventListener(DataChangedEvent.DATA_CHANGE, onAChanged);
 			}
 			var dce : DataChangedEvent = new DataChangedEvent(DataChangedEvent.DATA_CHANGE);
 			dce.oldVal = _A;
 			dce.currentVal = val;
 			_A = val;
-			if(_A != null){
+			if(_A != null) {
 				_A.addEventListener(DataChangedEvent.DATA_CHANGE, onAChanged);
 			}
 			dispatchEvent(dce);
 		}
-		public function onAChanged(evt:DataChangedEvent):void{
+
+		public function onAChanged(evt : DataChangedEvent) : void {
 			calc();
 		}
+
 		public function get Z() : Point1D {
 			return _B ;
 		}
 
 		public function set Z(val : Point1D) : void {
-				if(_B != null){
+			if(_B != null) {
 				_B.removeEventListener(DataChangedEvent.DATA_CHANGE, onBChanged);
 			}
 			var dce : DataChangedEvent = new DataChangedEvent(DataChangedEvent.DATA_CHANGE);
 			dce.oldVal = _B;
 			dce.currentVal = val;
 			_B = val;
-			if(_B != null){
+			if(_B != null) {
 				_B.addEventListener(DataChangedEvent.DATA_CHANGE, onBChanged);
 			}
 			dispatchEvent(dce);
 		}
-		public function onBChanged(evt:DataChangedEvent):void{
+
+		public function onBChanged(evt : DataChangedEvent) : void {
 			calc();
 		}
 
@@ -111,7 +115,7 @@
 			} else if (aV && !bV && lV) {
 				var b : Point1D = new Point1D("Z", (A.position + length));
 				Z = b;
-			}else {
+			} else {
 				trace("!!!!!!!!!!!!!!!!!!!!!!!!Line1D..can't calc! " + name + " A:" + A + " Z:" + Z + " len:" + length);
 			}
 			//	trace("Line1D.calc2 "+ name + " A:" + A + " Z:" + Z + " len:" + length);
@@ -129,7 +133,7 @@
 		}
 
 		override public function toString() : String {
-			return name+" from " + A + " to " + Z + " (" + length + ") " + name ;
+			return name + " from " + A + " to " + Z + " (" + length + ") " + name ;
 		}
 	}
 }

@@ -25,7 +25,7 @@ package com.troyworks.util.datetime {
 	 *  
 	 */
 	 
-	 	/*
+	/*
 	 * This is a utility for working in relative time or abstract durations, in millisecond precision.
 	 * 
 	 * Relative time differs from Calendar time as it's concerned with abstract
@@ -119,31 +119,31 @@ package com.troyworks.util.datetime {
 
 			var res : TimeQuantity = (tdutil == null) ? new TimeQuantity(dateTime) : tdutil;
 				
-				
+			tdutil._curTimeQtyMS = dateTime;
 			
 			if(res.bin_years && r >= ONE_YEAR) {
 				res._years = Math.floor(r / TimeQuantity.ONE_YEAR) * rs;
 				r = r % TimeQuantity.ONE_YEAR;
-			}else {
+			} else {
 				res._years = 0;
 			}
 			if(res.bin_months && r >= ONE_MONTH) {
 				res._months = Math.floor(r / TimeQuantity.ONE_MONTH) * rs;
 				r = r % TimeQuantity.ONE_MONTH;
-			}else {
+			} else {
 				res._months = 0;
 			}
 			
 			if(res.bin_weeks && r >= ONE_WEEK) {
 				res._weeks = Math.floor(r / TimeQuantity.ONE_WEEK) * rs;
 				r = r % TimeQuantity.ONE_WEEK;
-			}else {
+			} else {
 				res._weeks = 0;
 			}
 			if(res.bin_days && r >= ONE_DAY) {	
 				res._days = Math.floor(r / TimeQuantity.ONE_DAY) * rs;
 				r = r % TimeQuantity.ONE_DAY;
-			}else {
+			} else {
 				res._days = 0;
 			}
 
@@ -151,26 +151,26 @@ package com.troyworks.util.datetime {
 			if(res.bin_hours && r >= ONE_HOUR) {	
 				res._hours = Math.floor(r / TimeQuantity.ONE_HOUR) * rs;
 				r = r % TimeQuantity.ONE_HOUR;	
-			}else {
+			} else {
 				res._hours = 0;
 			}
 
 			if(res.bin_minutes && r >= ONE_MINUTE) {	
 				res._minutes = Math.floor(r / TimeQuantity.ONE_MINUTE) * rs;
 				r = r % TimeQuantity.ONE_MINUTE;
-			}else {
+			} else {
 				res._minutes = 0;
 			}
 
 			if(res.bin_seconds && r >= ONE_SECOND) {
 				res._seconds = Math.floor(r / TimeQuantity.ONE_SECOND) * rs;
 				r = r % TimeQuantity.ONE_SECOND;
-			}else {
+			} else {
 				res._seconds = 0;
 			}
 			if(res.bin_milliseconds) {
 				res._milliseconds = r * rs;
-			}else {
+			} else {
 				res._milliseconds = 0;
 			}
 			return res;
@@ -201,7 +201,7 @@ package com.troyworks.util.datetime {
 			
 			if(ms == 0) {
 				_curTimeQtyMS -= _milliseconds;
-			}else {
+			} else {
 				_curTimeQtyMS += ms;
 			}
 	
@@ -210,7 +210,7 @@ package com.troyworks.util.datetime {
 
 		public function get seconds() : Number {
 			
-		//	trace("get seconds " + _seconds);
+			//	trace("get seconds " + _seconds);
 			return _seconds ;//_curTimeQtyMS / ONE_SECOND;
 		}
 
@@ -219,7 +219,7 @@ package com.troyworks.util.datetime {
 			
 			if(s == 0) {
 				_curTimeQtyMS -= _seconds * ONE_SECOND;
-			}else {
+			} else {
 				_curTimeQtyMS += s * ONE_SECOND;
 			}
 			endChangeTransation(); 
@@ -234,7 +234,7 @@ package com.troyworks.util.datetime {
 			
 			if(min == 0) {
 				_curTimeQtyMS -= _minutes * ONE_MINUTE;
-			}else {
+			} else {
 				_curTimeQtyMS += min * ONE_MINUTE;
 			}
 			endChangeTransation(); 
@@ -249,7 +249,7 @@ package com.troyworks.util.datetime {
 			
 			if(h == 0) {
 				_curTimeQtyMS -= _hours * ONE_HOUR;
-			}else {
+			} else {
 				_curTimeQtyMS += h * ONE_HOUR;
 			}
 			endChangeTransation(); 
@@ -264,7 +264,7 @@ package com.troyworks.util.datetime {
 			
 			if(d == 0) {
 				_curTimeQtyMS -= _days * ONE_DAY;
-			}else {
+			} else {
 				_curTimeQtyMS += d * ONE_DAY;
 			}
 			endChangeTransation(); 
@@ -279,7 +279,7 @@ package com.troyworks.util.datetime {
 			
 			if(w == 0) {
 				_curTimeQtyMS -= _weeks * ONE_WEEK;
-			}else {
+			} else {
 				_curTimeQtyMS += w * ONE_WEEK;
 			}
 			endChangeTransation(); 
@@ -295,7 +295,7 @@ package com.troyworks.util.datetime {
 			
 			if(m == 0) {
 				_curTimeQtyMS -= _months * ONE_MONTH;
-			}else {
+			} else {
 				_curTimeQtyMS += m * ONE_MONTH;
 			}
 			endChangeTransation(); 
@@ -311,13 +311,14 @@ package com.troyworks.util.datetime {
 			
 			if(y == 0) {
 				_curTimeQtyMS -= _years * ONE_YEAR;
-			}else {
+			} else {
 				_curTimeQtyMS += y * ONE_YEAR;
 			}
 			endChangeTransation(); 
 		}
 
 		private function endChangeTransation() : void {
+			trace("endChangeTransation " + _curTimeQtyMS);
 			TimeQuantity.parseRelativeTime(_curTimeQtyMS, this);
 			var devt : DataChangedEvent = new DataChangedEvent(CHANGED);
 			
@@ -327,6 +328,7 @@ package com.troyworks.util.datetime {
 		}
 
 		private function startChangeRequest() : void {		
+			
 			
 			_lastTimeQtyMS = _curTimeQtyMS;
 			

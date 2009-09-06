@@ -1,8 +1,7 @@
-package  { 
-	class com.troyworks.ui.EditableTextField extends TextField
-	import flash.text.TextField;
-	import flash.text.TextFormat;
-	{
+package  com.troyworks.controls.ttextfield{ 
+	public class EditableTextField extends TextField{
+		import flash.text.TextField;
+
 		public var history : Array;
 		public var historyIdx : Number;
 		public var onKilledFocusCallback : Function;
