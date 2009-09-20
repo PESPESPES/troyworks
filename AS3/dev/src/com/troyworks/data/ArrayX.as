@@ -176,23 +176,23 @@ package com.troyworks.data {
 
 		public function getNextInLoop(times : int = 1) : Object {
 
-			trace("getNextInLoop before ");
-			super.filter(ArrayUtil.forEachTraceName);
+		//	trace("getNextInLoop before ");
+		//	super.filter(ArrayUtil.forEachTraceName);
 			var cur : Object;
 			while(times--) { 
 				cur = super.shift();
 				//	trace("cur " + super);
 				super.push(cur);
 			}
-			trace("after");
-			super.filter(ArrayUtil.forEachTraceName);
+		//	trace("after");
+		//	super.filter(ArrayUtil.forEachTraceName);
 			return cur;
 		}
 
 		public function goForwardInLoopToItem(obj : Object) : Object {
 
-			trace("goForwardInLoopToItem before ");
-			super.filter(ArrayUtil.forEachTraceName);
+		//	trace("goForwardInLoopToItem before ");
+		//	super.filter(ArrayUtil.forEachTraceName);
 			
 			var cur : Object;
 			var sanity:Number = this.length;
@@ -209,8 +209,8 @@ package com.troyworks.data {
 			if(cur == null){
 				trace("goForwardInLoopToItem couldn't find item");
 			}
-				trace("after");
-			super.filter(ArrayUtil.forEachTraceName);
+			//	trace("after");
+			//super.filter(ArrayUtil.forEachTraceName);
 			return cur;
 		}
 
@@ -511,7 +511,7 @@ package com.troyworks.data {
 		}
 
 		/* if the array is a collection of numbers return the closest numeric value*/
-		public function snapToClosest(num : Number) : Number {
+		public function snapToClosest(num : Number, returnIndex:Boolean = false) : Number {
 			var range : Array = this;
 			num = Math.round(num);
 			var index : Number = Math.floor(range.length / 2);
@@ -535,12 +535,12 @@ package com.troyworks.data {
 			// the boundary conditions, which is always the tricky part
 			// of searching and sorting
 			if (range[index] < num && range[index + 1] - num < num - range[index]) {
-				return range[index + 1];
+				return (returnIndex)? index +1 :range[index + 1];
 			} 
 			else if (range[index] > num && num - range[index - 1] < range[index] - num) {
-				return range[index - 1];
+				return (returnIndex)? index -1:range[index - 1];
 			}
-			return range[index];
+			return (returnIndex)? index :range[index];
 		}
 
 		/* create a shallow copy of this array) just a copy of the index of references to the original arrays content
