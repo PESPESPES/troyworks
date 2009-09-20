@@ -60,57 +60,74 @@ package com.troyworks.data.valueobjects {
 	 *  Boolean data type
 	 *  
 	 *  
-var constraint:NumberRangeConstraint = new NumberRangeConstraint(0,100);
+	var constraint:NumberRangeConstraint = new NumberRangeConstraint(0,100);
 
-var mood:NumberVO= new NumberVO(50, constraint.constrainToRange); // initial value is 50.
+	var mood:NumberVO= new NumberVO(50, constraint.constrainToRange); // initial value is 50.
 
- * 
- *  mood.addEventListener( DataChangedEvent.PRE_DATA_CHANGE, onPrecommitCheck);
-    mood.addEventListener( DataChangedEvent.DATA_CHANGE, onPostcommitCheck);
- * 
-//Cancel the value from actually being commited, in this case the post commit event won't take place.
+	 * 
+	 *  mood.addEventListener( DataChangedEvent.PRE_DATA_CHANGE, onPrecommitCheck);
+	mood.addEventListener( DataChangedEvent.DATA_CHANGE, onPostcommitCheck);
+	 * 
+	//Cancel the value from actually being commited, in this case the post commit event won't take place.
 
-function onPrecommitCheck(evt:DataChangedEvent):void{
-        trace("onPrecommitCheck");
-        evt.stopPropagation();
-        trace(evt);
+	function onPrecommitCheck(evt:DataChangedEvent):void{
+	trace("onPrecommitCheck");
+	evt.stopPropagation();
+	trace(evt);
  
 
-}
+	}
 
-function onPostcommitCheck(evt:DataChangedEvent):void{
+	function onPostcommitCheck(evt:DataChangedEvent):void{
 
-        trace("onPostcommitCheck");
+	trace("onPostcommitCheck");
 
-        trace(evt);
+	trace(evt);
 
-}
+	}
 
 	 */
 
 	public class ValueObject extends EventDispatcher {
-		public var name:String = "ValueObject";
+		public var name : String = "ValueObject";
 		public var constraint : Function = null;
 		public var triggers : Array = new Array();
 		//used when synchroizing
 		public var isDirty : Boolean = false;
-		public var isWriteable:Boolean = true;
+		public var isWriteable : Boolean = true;
+
 		public static const PRE_DATA_CHANGE : String = DataChangedEvent.PRE_DATA_CHANGE;
 		public static const DATA_CHANGE : String = DataChangedEvent.DATA_CHANGE;
 
-		public function ValueObject(func:Function = null) {
+		public function ValueObject(func : Function = null) {
 			super();
 			constraint = func;
 		}
+
 		/*
 		 * 
-			var rFilter1:NumberRangeBooleanFilter = new NumberRangeBooleanFilter(95,100, true, true);
-			mood.addOnValueChangedAction(rFilter1, onRangeSuperHappy);
+		var rFilter1:NumberRangeBooleanFilter = new NumberRangeBooleanFilter(95,100, true, true);
+		mood.addOnValueChangedAction(rFilter1, onRangeSuperHappy);
 		 */
 		public function addOnValueChangedAction(rangeFilter : Filter, fn : Function) : void {
 			triggers.push({gaurd:rangeFilter, fn:fn});
 		}
 
+		private var _dispatchEventsEnabled : Boolean ;
+
+		public function set dispatchEventsEnabled( value : Boolean  ) : void {
+			if(_dispatchEventsEnabled != value) {
+				_dispatchEventsEnabled = value;
+				//dispatchEvent(new Event(Event.CHANGE, true, true));
+			}
+		}
+
+		public function get dispatchEventsEnabled( ) : Boolean {
+			return _dispatchEventsEnabled;
+		}
+
+		
+		
 		public function removeOnValueChangedAction(rangeFilter : Filter = null, fn : Function = null) : Boolean {
 			var tr : Object = null;
 			var remove : Boolean = false;
@@ -132,19 +149,21 @@ function onPostcommitCheck(evt:DataChangedEvent):void{
 			return false;
 		}
 
-		protected function onChanged(currentVal : *, oldVal : *, phase : String = DATA_CHANGE) : DataChangedEvent {
-			var evt : DataChangedEvent;
-			if(phase == PRE_DATA_CHANGE) {
-				evt = new DataChangedEvent(PRE_DATA_CHANGE, true, true);
-			}else if(phase == DATA_CHANGE) {
-				evt = new DataChangedEvent(DATA_CHANGE, true, false);
+		protected function onChanged(currentVal : *, oldVal : *, phase : String = null) : DataChangedEvent {
+			if(dispatchEventsEnabled) {
+				var evt : DataChangedEvent;
+				if(phase == PRE_DATA_CHANGE) {
+					evt = new DataChangedEvent(PRE_DATA_CHANGE, true, true);
+				}else if(phase == DATA_CHANGE || phase == null) {
+					evt = new DataChangedEvent(DATA_CHANGE, true, false);
+				}
+				evt.oldVal = oldVal;
+				evt.currentVal = currentVal;
+				if(phase == DATA_CHANGE) {
+					isDirty = true;
+				}
+				dispatchEvent(evt);
 			}
-			evt.oldVal = oldVal;
-			evt.currentVal = currentVal;
-			if(phase == DATA_CHANGE) {
-				isDirty = true;
-			}
-			dispatchEvent(evt);
 			if(phase == DATA_CHANGE) {
 				///////////
 				for (var i : int = 0;i < triggers.length; i++) {

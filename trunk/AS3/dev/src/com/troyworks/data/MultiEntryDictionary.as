@@ -1,5 +1,5 @@
 package  com.troyworks.data{ 
-	class MultiEntryDictionary extends Object
+	public class MultiEntryDictionary extends Object
 	{
 		///////////////////////////////
 		// Stores things as one type multiple values
