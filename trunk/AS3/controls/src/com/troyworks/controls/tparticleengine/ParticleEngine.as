@@ -61,7 +61,7 @@ package com.troyworks.controls.tparticleengine {
 	
 	//////////////////////// LEVEL 0 STATES////////////////////////////
 		/*.................................................................*/
-		public function s0CogEventssCogEventoaCogEvent: CogEvent) : Function
+		public function s0_viewAssetsUnLoaded(e: CogEvent) : Function
 		{
 			this.onFunctionEnter ("s0_viewAssetsUnLoaded-", e, []);
 			switch (e.sig)
@@ -86,7 +86,7 @@ package com.troyworks.controls.tparticleengine {
 			return s_root;
 		}
 		/*.................................................................*/
-		public funCogEvents0_vCogEventetsLCogEvente : CogEvent) : Function
+		public function s0_viewAssetsLoaded(e: : CogEvent) : Function
 		{
 			this.onFunctionEnter ("s0_viewAssetsLoaded-", e, []);
 			switch (e.sig)
@@ -129,7 +129,13 @@ package com.troyworks.controls.tparticleengine {
 				}
 			}
 			return s0_viewAssetsLoaded;
-		}	/*................................................................CogEventpublic fCogEventn s1_creCogEventiew(e : CogEvent) : Function
+		}	
+		/*................................................................
+		 * 
+		 */
+		public function s1_creatingView (e : CogEvent) : Function
+
+		 
 		{
 			this.onFunctionEnter ("s1_creatingView-", e, []);
 					switch (e.sig)

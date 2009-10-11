@@ -25,6 +25,7 @@
 	import com.troyworks.framework.loader.Test_SWFLoaderUnit;
 	import com.troyworks.util.datetime.*;
 	import com.troyworks.geom.d1.*;
+	import com.troyworks.util.*;
 
 	/*************************************************
 	 *  This is the 'main' TestRunner extends Sprite so it
@@ -106,7 +107,9 @@
 				//testRunner.addTest(Test_TimeQuantity);
 				//testRunner.addTest(Test_Point1D);
 				//testRunner.addTest(Test_Line1D);
-				testRunner.addTest(Test_CompoundLine1D);
+				//testRunner.addTest(Test_TDate);
+				testRunner.addTest(Test_XORcipher);
+				//testRunner.addTest(Test_CompoundLine1D);
 				////////RUN TEST //////////////
 
 				if(testRunner.hasTests){
@@ -141,7 +144,7 @@
 				testRunner2.addEventListener(Event.COMPLETE, onAllTestComplete);
 				testRunner2.addEventListener(Event.CHANGE, onProgress);
 				///////////////////////////////////////////
-				testRunner2.addTest(Test_Hsm);
+			//	testRunner2.addTest(Test_Hsm);
 			//	testRunner2.addTest(Test_PlaceHolderUnitOfWork);
 			//testRunner2.addTest(SampleTest);
 				//	testRunner2.addTest(Test_SWFLoaderUnit);

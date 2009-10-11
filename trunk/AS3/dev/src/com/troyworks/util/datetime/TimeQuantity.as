@@ -168,7 +168,7 @@ package com.troyworks.util.datetime {
 			} else {
 				res._seconds = 0;
 			}
-			if(res.bin_milliseconds) {
+			if(res.bin_milliseconds && r >= 1) {
 				res._milliseconds = r * rs;
 			} else {
 				res._milliseconds = 0;
@@ -188,6 +188,12 @@ package com.troyworks.util.datetime {
 			startChangeRequest();
 			_curTimeQtyMS = ms;
 			endChangeTransation(); 
+		}
+		public function zero():void{
+			startChangeRequest();
+			_curTimeQtyMS = 0;
+			endChangeTransation(); 
+			
 		}
 
 		
@@ -334,6 +340,39 @@ package com.troyworks.util.datetime {
 			
 		
 			dispatchEvent(new Event(START_CHANGE));
+		}
+		override public function toString() : String {
+			var res:Array = new Array();
+			if(bin_years && years != 0) {
+				res.push(years + " YEARS");
+			}
+			if(bin_months && months != 0) {
+				res.push(months + " MONTHS");
+			}
+			if(bin_weeks && weeks != 0) {
+				res.push(weeks + " WEEKS");
+			}
+			if(bin_days && days != 0) {	
+				res.push(days + " DAYS");
+			}
+		
+			///////////////////////////////////////////
+			if(bin_hours && hours != 0) {	
+				res.push(hours + " HOURS");
+			}
+		
+			if(bin_minutes && minutes != 0) {	
+				res.push(minutes + " MINUTES");
+			}
+		
+			if(bin_seconds && seconds != 0) {
+				res.push(seconds + " SECONDS");
+			}
+			if(bin_milliseconds  && milliseconds != 0) {
+				res.push(milliseconds  + " MS");
+			}
+			return res.join(" ");
+			
 		}
 	}
 }
