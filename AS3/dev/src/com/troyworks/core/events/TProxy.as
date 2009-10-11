@@ -1,4 +1,4 @@
-package com.troyworks.core.events {
+﻿package com.troyworks.core.events {
 	import com.troyworks.util.Trace; 
 	import com.troyworks.util.DesignByContract;
 	/**
@@ -93,8 +93,8 @@ package com.troyworks.core.events {
 	    fProxy.id = id;
 	    fProxy.obj = aScopeObj;
 	    fProxy.fn = fFunction;
-	    fProxy.rcallee = arguments.callee;
-	 	 fProxy.rcaller = arguments.caller;
+	    fProxy.rcallee = arguments.callee; 
+	 	// fProxy.rcaller = arguments.caller; // NO longer supported in AS3
 	    fProxy.typeName = className;
 	
 	    return fProxy;

@@ -6,7 +6,7 @@
 
 package com.troyworks.util.datetime {
 
-import flash.profiler.showRedrawRegions;	public class TimeDateFormat {
+	public class TimeDateFormat {
 		public var lastDate : Date = null;
 
 		/*
@@ -76,31 +76,32 @@ import flash.profiler.showRedrawRegions;	public class TimeDateFormat {
 			var res : TimeQuantity = TimeQuantity.parseRelativeTime(val);
 			return res.hours + ":" + res.minutes + ":" + res.seconds + "." + res.milliseconds;
 		}
-		public static function toStopWatchString(val:Number, includeHours:Boolean = false) : String{
-			var res:TimeQuantity = TimeQuantity.parseRelativeTime(val);
-			if(includeHours){
-				return padTo(res.minutes,2,"0")+":"+ padTo(res.seconds,2,"0");
-			}else{
-				return (res.hours)+":"+padTo(res.minutes,2,"0")+":"+ padTo(res.seconds,2,"0");
+
+		public static function toStopWatchString(val : Number, includeHours : Boolean = false) : String {
+			var res : TimeQuantity = TimeQuantity.parseRelativeTime(val);
+			if(includeHours) {
+				return padTo(res.minutes, 2, "0") + ":" + padTo(res.seconds, 2, "0");
+			} else {
+				return (res.hours) + ":" + padTo(res.minutes, 2, "0") + ":" + padTo(res.seconds, 2, "0");
 			}
 		}
-		
-		public function toDateTimeString(val:Number) : String{
-			var res:TimeQuantity = TimeQuantity.parseRelativeTime(val);
-			return res.years+"-"+padTo(res.months,2,"0")+"-"+padTo(res.days,2,"0")+" "+ padTo(res.hours,2,"0")+":"+padTo(res.minutes,2,"0")+":"+ padTo(res.seconds,2,"0");
+
+		public function toDateTimeString(val : Number) : String {
+			var res : TimeQuantity = TimeQuantity.parseRelativeTime(val);
+			return res.years + "-" + padTo(res.months, 2, "0") + "-" + padTo(res.days, 2, "0") + " " + padTo(res.hours, 2, "0") + ":" + padTo(res.minutes, 2, "0") + ":" + padTo(res.seconds, 2, "0");
 		}
-		
-		public function toClockString(val:Number) : String{
-			var res:TimeQuantity = TimeQuantity.parseRelativeTime(val);
-			return res.hours +":"+ res.minutes+":"+ res.seconds;
+
+		public function toClockString(val : Number) : String {
+			var res : TimeQuantity = TimeQuantity.parseRelativeTime(val);
+			return res.hours + ":" + res.minutes + ":" + res.seconds;
 		}
-		
-		 public function toString(val:Number) : String{
-			var res:TimeQuantity = TimeQuantity.parseRelativeTime(val);
-			return res.hours +":"+ res.minutes+":"+ res.seconds+"."+ res.milliseconds;
+
+		public function toString(val : Number) : String {
+			var res : TimeQuantity = TimeQuantity.parseRelativeTime(val);
+			return res.hours + ":" + res.minutes + ":" + res.seconds + "." + res.milliseconds;
 		}
+
 		
-	
 		
 		//
 		// PiXELWiT Number Suffix function.
@@ -150,8 +151,7 @@ import flash.profiler.showRedrawRegions;	public class TimeDateFormat {
 						return dayNameEN[day];
 						break;	
 				}
-			}
-			else {
+			} else {
 				return null;
 			}
 		}
@@ -183,8 +183,7 @@ import flash.profiler.showRedrawRegions;	public class TimeDateFormat {
 						return monthNameEN[month];
 						break;	
 				}
-			}
-			else {
+			} else {
 				return null;
 			}
 		}

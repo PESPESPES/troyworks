@@ -520,7 +520,7 @@ package com.troyworks.data {
 			var proceed : Boolean = true;
 			while (proceed) {
 				if (num == range[index]) {
-					return num;
+					return (returnIndex)? index :range[index];;
 				}
 				increment -= Math.round(increment / 2);
 				if (num > range[index]) {

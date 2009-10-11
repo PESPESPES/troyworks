@@ -1,7 +1,7 @@
-package com.troyworks.util.datetime {
+﻿package com.troyworks.util.datetime {
 	import com.troyworks.data.DataChangedEvent;
 	import com.troyworks.util.DesignByContract;
-	
+
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;	
@@ -49,7 +49,7 @@ package com.troyworks.util.datetime {
 				innerDate = new Date();
 			}else if(arguments.length == 1) {
 				innerDate = new Date(yearOrTimevalue);
-			}else {
+			} else {
 				innerDate = new Date(yearOrTimevalue, month, date, hour, millisecond, millisecond, millisecond);
 			}
 			//super.setProxiedObject(innerDate);
@@ -93,32 +93,80 @@ package com.troyworks.util.datetime {
 		//////////////////////////// MODIFIERS ////////////////////////////////////////////////
 		public function decrementYear(num : Number = NaN) : Number {
 			var by : Number = (isNaN(num)) ? 1 : num ;
-			return setFullYear(innerDate.getFullYear() - by);
+			return setUTCFullYear(innerDate.getUTCFullYear() - by);
 		}
 
 		public function incrementYear(num : Number = NaN) : Number {
 			var by : Number = (isNaN(num)) ? 1 : num ;
-			return setFullYear(innerDate.getFullYear() + by);
+			return setUTCFullYear(innerDate.getUTCFullYear() + by);
 		}
 
 		public function decrementMonth(num : Number = NaN) : Number {
 			var by : Number = (isNaN(num)) ? 1 : num ;
-			return setMonth(innerDate.getMonth() - by);
+			return setUTCMonth(innerDate.getUTCMonth() - by);
 		}
 
 		public function incrementMonth(num : Number = NaN) : Number {
 			var by : Number = (isNaN(num)) ? 1 : num ;
-			return setMonth(innerDate.getMonth() + by);
+			return setUTCMonth(innerDate.getUTCMonth() + by);
 		}
-		
+
+		public function decrementWeek(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setUTCDate(innerDate.getUTCDate() - (by * 7));
+		}
+
+		public function incrementWeek(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setUTCDate(innerDate.getUTCDate() + (by * 7));
+		}
+
 		public function decrementDay(num : Number = NaN) : Number {
 			var by : Number = (isNaN(num)) ? 1 : num ;
-			return setDate(innerDate.getDate() - by);
+			return setUTCDate(innerDate.getUTCDate() - by);
 		}
 
 		public function incrementDay(num : Number = NaN) : Number {
 			var by : Number = (isNaN(num)) ? 1 : num ;
-			return setDate(innerDate.getDate() + by);
+			return setUTCDate(innerDate.getUTCDate() + by);
+		}
+
+		public function decrementHour(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setUTCHours(innerDate.getUTCHours() - by);
+		}
+
+		public function incrementHour(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setUTCHours(innerDate.getUTCHours() + by);
+		}
+
+		public function decrementMinutes(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setUTCMinutes(innerDate.getUTCMinutes() - by);
+		}
+
+		public function incrementMinutes(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setUTCMinutes(innerDate.getUTCMinutes() + by);
+		}
+				public function decrementSeconds(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setUTCSeconds(innerDate.getUTCSeconds() - by);
+		}
+
+		public function incrementSeconds(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setUTCSeconds(innerDate.getUTCSeconds() + by);
+		}
+		public function decrementMilliseconds(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setUTCMilliseconds(innerDate.getUTCMilliseconds() - by);
+		}
+
+		public function incrementMilliseconds(num : Number = NaN) : Number {
+			var by : Number = (isNaN(num)) ? 1 : num ;
+			return setUTCMilliseconds(innerDate.getUTCMilliseconds() + by);
 		}
 
 		public function gotoTodaysDate() : void {
@@ -586,7 +634,7 @@ package com.troyworks.util.datetime {
 		}
 
 		public function getDayOfYear() : Number {
-			var onejan:Date = new Date(this.getFullYear(), 0, 1);
+			var onejan : Date = new Date(this.getFullYear(), 0, 1);
 			return Math.ceil((innerDate.time - onejan.time) / 86400000);
 		} 
 
@@ -707,7 +755,7 @@ package com.troyworks.util.datetime {
 		public function isBeforeDate(date : *, byDuration : Number = 0, inclusive : Boolean = false) : Boolean {
 			if(inclusive) {
 				return  date.time <= (innerDate.time - byDuration);
-			}else {
+			} else {
 				return  date.time < (innerDate.time - byDuration);
 			}
 		}
@@ -715,7 +763,7 @@ package com.troyworks.util.datetime {
 		public function isAfterDate(date : *, byDuration : Number = 0, inclusive : Boolean = false) : Boolean {
 			if(inclusive) {
 				return  (innerDate.time + byDuration) <= date.time ;
-			}else {
+			} else {
 				return  (innerDate.time + byDuration) < date.time ;
 			}
 		}
@@ -724,7 +772,7 @@ package com.troyworks.util.datetime {
 			
 			if(inclusive) {
 				return  (innerDate.time - byDuration) <= date.time <= (innerDate.time + byDuration) ;
-			}else {
+			} else {
 				return  (innerDate.time - byDuration) < date.time < (innerDate.time + byDuration) ;
 			}
 		}
@@ -825,7 +873,7 @@ package com.troyworks.util.datetime {
 
 		/*Indicates whether an object has a specified property defined. Object */ 
 		public function  isPrototypeOf(theClass : Object) : Boolean {
-			return innerDate.hasOwnProperty(propertyIsEnumerable);
+			return innerDate.isPrototypeOf(theClass);
 		}  
 
 		/*Indicates whether an instance of the Object class is in the prototype chain of the object specified as the parameter. Object*/ 

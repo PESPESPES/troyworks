@@ -1,8 +1,10 @@
 package com.troyworks.controls.tparticleengine {
+	import flash.display.DisplayObject;	
+	
 	import com.troyworks.util.Trace; 
 
 	import flash.geom.Rectangle;
-	//import com.troyworks.framework.ui.DraggableClip;
+	//import com.troyworks.framework.ui.DisplayObject;
 	//import com.troyworks.framework.ui.layout.Bounds2;
 	import com.troyworks.geom.d2.Rect2D;
 	import com.troyworks.ui.LayoutHelper;
@@ -68,7 +70,7 @@ package com.troyworks.controls.tparticleengine {
 				clips.push(_mc);
 			}
 		}
-		function onEnterFrame():void
+		private function onEnterFrame():void
 		{
 			for(var i:Number = 0;i<numOfParticles;i++)
 			{
@@ -88,7 +90,7 @@ package com.troyworks.controls.tparticleengine {
 			}
 		}
 	
-		function springTo(pA : PhysicsParticle, pB : PhysicsParticle) : void{
+		public function springTo(pA : PhysicsParticle, pB : PhysicsParticle) : void{
 			trace("springTo");
 			var dx : Number = pA.x - pB.x;
 			var dy : Number = pA.y - pB.y;
@@ -100,7 +102,7 @@ package com.troyworks.controls.tparticleengine {
 			pA.v.x *= friction;
 			pA.v.y *= friction;
 		}
-		function gravitate(pA : PhysicsParticle, pB : PhysicsParticle) : void{
+		public function gravitate(pA : PhysicsParticle, pB : PhysicsParticle) : void{
 			trace("gravitate");
 			var dx : Number = pA.x - pB.x;
 			var dy : Number = pA.y - pB.y;
@@ -114,8 +116,8 @@ package com.troyworks.controls.tparticleengine {
 			pB.v.x += ax /pB.mass;
 			pB.v.y += ay/ pB.mass;
 		}
-		function drag(p : PhysicsParticle) : void{
-			var ball : DraggableClip = DraggableClip(p.view);
+		public function drag(p : PhysicsParticle) : void{
+			var ball : DisplayObject = DisplayObject(p.view);
 			p.a.x = 0;
 			p.a.y = 0;
 			p.v.x = 0;
@@ -125,7 +127,7 @@ package com.troyworks.controls.tparticleengine {
 			p.cp.x = ball.x;
 			p.cp.y = ball.y;
 		}
-		function rotate(x : Number, y : Number, sine : Number, cosine : Number, reverse : Boolean) : Object
+		public function rotate(x : Number, y : Number, sine : Number, cosine : Number, reverse : Boolean) : Object
 	{
 			var result : Object = new Object();
 			if(reverse)
@@ -140,7 +142,7 @@ package com.troyworks.controls.tparticleengine {
 			}
 			return result;
 		}
-		function checkCollision(ball0 : MovieClip, ball1 : MovieClip) : void
+		public function checkCollision(ball0 : MovieClip, ball1 : MovieClip) : void
 	{
 			var dx : Number = ball1.x - ball0.x;
 			var dy : Number = ball1.y - ball0.y;
@@ -195,8 +197,8 @@ package com.troyworks.controls.tparticleengine {
 					ball1.vy = vel1F.y;
 			}
 		}
-		function checkBounds(p : PhysicsParticle) : void{
-			var ball : DraggableClip = DraggableClip(p.view);
+		public function checkBounds(p : PhysicsParticle) : void{
+			var ball : DisplayObject = DisplayObject(p.view);
 			var b : Bounds2 = new Bounds2(ball.getBounds(this));
 				///////// check x ///////////////
 				if(b.xMax > bounds.right){
@@ -229,7 +231,7 @@ package com.troyworks.controls.tparticleengine {
 			ball.x = p.x;
 			ball.y = p.y;
 		}
-		function applyGravity(p : PhysicsParticle) : void{
+		public function applyGravity(p : PhysicsParticle) : void{
 			p.v.y += gravity;
 		}
 	}

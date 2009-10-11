@@ -38,6 +38,14 @@
 			}
 		}
 
+		public function get Aposition() : Number {
+			return _A.position ;
+		}
+
+		public function get Bposition() : Number {
+			return _B.position ;
+		}
+
 		public function get A() : Point1D {
 			return _A ;
 		}
@@ -133,7 +141,14 @@
 		}
 
 		override public function toString() : String {
-			return name + " from " + A + " to " + Z + " (" + length + ") " + name ;
+			return name + " from " + A + " to " + Z + " (" + length + ") " ;
+		}
+
+		public function toUTCString() : String {
+			var startDate : Date = new Date(Aposition);
+			var endDate : Date = new Date(Bposition);
+				
+			return name + " from " + startDate.toUTCString() + " to " + endDate.toUTCString() + " (" + length + ") " ;
 		}
 	}
 }

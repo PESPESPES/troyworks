@@ -59,6 +59,7 @@
 	nextFrame_    - goes to next frame
 	prev         - goes to previous frame
 	prevFrame_   - goes to previous frame
+	lastFrame - goes to the last active frame (a history)
 	nextScene_  - goes to next scene
 	prevScene_ - goes to previous scene
 	play_   - starts playing

@@ -1,5 +1,5 @@
-﻿package com.troyworks.controls.tparticleengine { 
-	import com.troyworks.geom.d3.Point3D;
+﻿package com.troyworks.controls.tparticleengine {	import flash.display.DisplayObject; 
+	import com.troyworks.geom.d3.Point3D;
 	/**
 	 * @author Troy Gardner
 	 */
@@ -13,7 +13,7 @@
 		public var mass:Number = 1;	
 		public var targetP:Point3D;
 		
-		public var view:MovieClip;
+		public var view:DisplayObject;
 		
 		public function PhysicsParticle() {
 			lp = new Point3D(0,0,0,0);
