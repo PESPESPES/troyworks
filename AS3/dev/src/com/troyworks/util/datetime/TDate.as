@@ -38,20 +38,41 @@
 		protected var monthDays : Number = NaN;
 		protected var monthWeeks : Number = NaN;
 		protected var weekArray : Array;
-		private var innerDate : Date;
+
 		private var lastDate : Date;
 
 		
-		
-		public function TDate(yearOrTimevalue : Object = null, month : Number = NaN, date : Number = 1, hour : Number = 0, minute : Number = 0, second : Number = 0, millisecond : Number = 0) {
-			super();
-			if(arguments.length == 0) {
-				innerDate = new Date();
-			}else if(arguments.length == 1) {
-				innerDate = new Date(yearOrTimevalue);
-			} else {
-				innerDate = new Date(yearOrTimevalue, month, date, hour, millisecond, millisecond, millisecond);
+		private var innerDate : Date;
+
+		public function TDate(yearOrTimevalue : Number = NaN, month : Number = NaN, date : Number = NaN, hour : Number = 0, min : Number = 0, sec : Number = 0, ms : Number = 0) {
+ 
+			//innerDate = new Date(yearOrTimevalue, month, date, hour, min);
+			trace("new TDate " + arguments.length);
+			var va:int = 0;
+			for(var i:int = 0; i < arguments.length; i++){
+			   if(!isNaN(arguments[i])){
+			   	va++;	
+			   }
 			}
+			if(va == 0) {
+				innerDate = new Date();
+			}else if(va == 1) {
+				innerDate = new Date(yearOrTimevalue);
+			}else if(va == 2) {
+				innerDate = new Date(yearOrTimevalue, month);
+			}else if(va == 3) {
+				innerDate = new Date(yearOrTimevalue, month, date);
+			}else if(va == 4) {
+				innerDate = new Date(yearOrTimevalue, month, date, hour);
+			}else if(va == 5) {
+				innerDate = new Date(yearOrTimevalue, month, date, hour, min);
+			}else if(va == 6) {
+				innerDate = new Date(yearOrTimevalue, month, date, hour, min, sec);
+			} else {
+				innerDate = new Date(yearOrTimevalue, month, date, hour, min, sec, ms);
+			}
+		//	innerDate = new Date(yearOrTimevalue, month, date, hour, min);
+			
 			//super.setProxiedObject(innerDate);
 			//REQUIRE(arguments.length < 7, "TDate has invalid arguments, more than 7 passed!" + arguments.join(","));
 			//TEventDispatcher.initialize(this);
@@ -150,7 +171,8 @@
 			var by : Number = (isNaN(num)) ? 1 : num ;
 			return setUTCMinutes(innerDate.getUTCMinutes() + by);
 		}
-				public function decrementSeconds(num : Number = NaN) : Number {
+
+		public function decrementSeconds(num : Number = NaN) : Number {
 			var by : Number = (isNaN(num)) ? 1 : num ;
 			return setUTCSeconds(innerDate.getUTCSeconds() - by);
 		}
@@ -159,6 +181,7 @@
 			var by : Number = (isNaN(num)) ? 1 : num ;
 			return setUTCSeconds(innerDate.getUTCSeconds() + by);
 		}
+
 		public function decrementMilliseconds(num : Number = NaN) : Number {
 			var by : Number = (isNaN(num)) ? 1 : num ;
 			return setUTCMilliseconds(innerDate.getUTCMilliseconds() - by);
@@ -318,9 +341,9 @@
 		}
 
 		public function set time(newTime : Number) : void {
-			startChangeTransaction();
+		//	startChangeTransaction();
 			innerDate.time = newTime;
-			endChangeTransaction();
+		//	endChangeTransaction();
 		}
 
 		
@@ -418,7 +441,8 @@
 		/*Sets the seconds, according to local time, and returns the new time in milliseconds. Date*/ 
 		public function  setTime(millisecond : Number) : Number {
 			startChangeTransaction();
-			var res : Number = innerDate.setTime.apply(this, arguments);
+			var res : Number = innerDate.setTime(time);
+			//innerDate.setTime.apply(this, arguments);
 			endChangeTransaction();
 			return res;
 		} 	
@@ -478,7 +502,7 @@
 			return res;
 		}
 
-		/*	public function setYear(value : Number) : Number {
+	/*	public function setYear(value : Number) : Number {
 		startChangeTransaction();
 		var res : Number = innerDate.setYear.apply(this, arguments);
 		endChangeTransaction();
@@ -718,14 +742,14 @@
 		
 		public function clone() : TDate {
 			//needed to get around type checking in FDT/Mtasc
-			var res : TDate = new TDate(innerDate.valueOf());
+			var res : TDate = new TDate(innerDate.time);
 			return res;
 		}
 
 		public function cloneAsDate() : Date {
 			//needed to get around type checking in FDT/Mtasc
 			//	var f : Function = Date;
-			var res : Date = new Date(innerDate.valueOf());
+			var res : Date = new Date(innerDate.time);
 			return res;
 		}
 
