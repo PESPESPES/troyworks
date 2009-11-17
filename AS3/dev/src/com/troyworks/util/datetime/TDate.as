@@ -441,7 +441,9 @@
 		/*Sets the seconds, according to local time, and returns the new time in milliseconds. Date*/ 
 		public function  setTime(millisecond : Number) : Number {
 			startChangeTransaction();
-			var res : Number = innerDate.setTime(time);
+			
+			//var res : Number = innerDate.setTime(time);	//incorrect---> use following 
+			var res : Number = innerDate.setTime(millisecond);
 			//innerDate.setTime.apply(this, arguments);
 			endChangeTransaction();
 			return res;
