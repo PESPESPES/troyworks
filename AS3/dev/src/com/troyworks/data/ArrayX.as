@@ -513,21 +513,25 @@ package com.troyworks.data {
 		/* if the array is a collection of numbers return the closest numeric value*/
 		public function snapToClosest(num : Number, returnIndex:Boolean = false) : Number {
 			var range : Array = this;
-			num = Math.round(num);
+			//num = Math.round(num);
 			var index : Number = Math.floor(range.length / 2);
 			//pick half way pt.
 			var increment : Number = index;
 			var proceed : Boolean = true;
+		//	trace('start index ', index,range[index]);
 			while (proceed) {
 				if (num == range[index]) {
 					return (returnIndex)? index :range[index];;
 				}
 				increment -= Math.round(increment / 2);
 				if (num > range[index]) {
+				//	trace("increment " + num + "> " + range[index]);
 					index += increment;
 				} else {
+				//	trace("decrement " + num + "< " + range[index]);
 					index -= increment;
 				}
+			//	trace("index ", index,range[index]);
 				proceed = increment > 0;
 			} 
 			//while

@@ -1,4 +1,6 @@
 package com.troyworks.util.datetime {
+	import flash.utils.Dictionary;	
+
 	import com.troyworks.geom.d1.LineQuery;	
 	import com.troyworks.geom.d1.CompoundLine1D;	
 	import com.troyworks.data.ArrayX;	
@@ -76,20 +78,27 @@ package com.troyworks.util.datetime {
 	public class EventFactory {
 
 		public var eventType : String = "Normal";
-		public var trackStartDate : TDate = new TDate();
-		public var trackEndDate : TDate = new TDate();
+		public var trackStartDate : TDateTZ;
+		public var trackEndDate : TDateTZ;
 		public var duration : TimeQuantity = new TimeQuantity();
 
-		public var curEventDate : TDate = new TDate();
+		public var curEventDate : TDateTZ;
 		public var incrementBy : TimeQuantity = new TimeQuantity();
 		public var blackOutDates : Array; //TODO
 		//TODO add line for visualization and bounds checking
 		//TODO add simple vs composite versions
 		//TODO add Boolean/SQL  AND, OR, NOT
 		public var SCHEDULE_MAX_ITEMS : int = 100;
-
+		private var zones:Dictionary;
 		public function EventFactory() {
 			super();
+		}
+
+		public function init(zones : Dictionary, timeZone : String = "") {
+			this.zones = zones; 
+			trackStartDate = new TDateTZ(zones, timeZone);
+			trackEndDate = new TDateTZ(zones, timeZone);
+			curEventDate = new TDateTZ(zones, timeZone);
 		}
 
 		public function getSerializationString() : String {
@@ -140,7 +149,7 @@ package com.troyworks.util.datetime {
 		}
 
 		public function getSchedule(dateFrom : Date = null, dateTo : Date = null) : ArrayX {
-			curEventDate = trackStartDate.clone();
+			curEventDate = trackStartDate.cloneAsTZ();
 			var res : ArrayX = new ArrayX();
 			var i : int = 1;
 			var curLin : Line1D;
@@ -191,18 +200,18 @@ package com.troyworks.util.datetime {
 		}
 
 		public function getNextEvent(now : Date = null) : * {
-			var C : TDate = new TDate();
+			var C : Date = new Date();
 			if(now) {
 				C.time = now.time;
 			}
-			var A : TDate = new TDate();
+			var A : Date = new Date();
 			A.time = C.time - duration.time;
 			
 			
-			var Z : TDate = new TDate();
+			var Z : Date = new Date();
 			Z.time = C.time + duration.time;
 		
-			curEventDate = trackStartDate.clone();
+			curEventDate = trackStartDate.cloneAsTZ();
 	
 			var i : int = 1;
 			var curLin : Line1D;
