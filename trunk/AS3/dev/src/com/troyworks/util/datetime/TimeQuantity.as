@@ -189,11 +189,11 @@ package com.troyworks.util.datetime {
 			_curTimeQtyMS = ms;
 			endChangeTransation(); 
 		}
-		public function zero():void{
+
+		public function zero() : void {
 			startChangeRequest();
 			_curTimeQtyMS = 0;
 			endChangeTransation(); 
-			
 		}
 
 		
@@ -202,15 +202,17 @@ package com.troyworks.util.datetime {
 			return _milliseconds ;//_curTimeQtyMS;
 		}
 
+		
 		public function set milliseconds(ms : Number) : void {
 			startChangeRequest();
-			
-			if(ms == 0) {
-				_curTimeQtyMS -= _milliseconds;
-			} else {
-				_curTimeQtyMS += ms;
-			}
-	
+			_curTimeQtyMS -= _milliseconds; //zero
+			_curTimeQtyMS = ms;
+			endChangeTransation(); 
+		}
+
+		public function addMilliseconds(ms : Number) : void {
+			startChangeRequest();
+			_curTimeQtyMS += ms;
 			endChangeTransation(); 
 		}
 
@@ -222,12 +224,14 @@ package com.troyworks.util.datetime {
 
 		public function set seconds(s : Number) : void {
 			startChangeRequest();
-			
-			if(s == 0) {
-				_curTimeQtyMS -= _seconds * ONE_SECOND;
-			} else {
-				_curTimeQtyMS += s * ONE_SECOND;
-			}
+			_curTimeQtyMS -= _seconds * ONE_SECOND; //zero
+			_curTimeQtyMS = s * ONE_SECOND;
+			endChangeTransation(); 
+		}
+
+		public function addSeconds(s : Number) : void {
+			startChangeRequest();
+			_curTimeQtyMS += s * ONE_SECOND;
 			endChangeTransation(); 
 		}
 
@@ -238,11 +242,14 @@ package com.troyworks.util.datetime {
 		public function set minutes(min : Number) : void {
 			startChangeRequest();
 			
-			if(min == 0) {
-				_curTimeQtyMS -= _minutes * ONE_MINUTE;
-			} else {
-				_curTimeQtyMS += min * ONE_MINUTE;
-			}
+			_curTimeQtyMS -= _minutes * ONE_MINUTE;
+			_curTimeQtyMS = min * ONE_MINUTE;
+			endChangeTransation(); 
+		}
+
+		public function set addMinutes(min : Number) : void {
+			startChangeRequest();			
+			_curTimeQtyMS += min * ONE_MINUTE;
 			endChangeTransation(); 
 		}
 
@@ -252,12 +259,14 @@ package com.troyworks.util.datetime {
 
 		public function set hours(h : Number) : void {
 			startChangeRequest();
-			
-			if(h == 0) {
-				_curTimeQtyMS -= _hours * ONE_HOUR;
-			} else {
-				_curTimeQtyMS += h * ONE_HOUR;
-			}
+			_curTimeQtyMS -= _hours * ONE_HOUR; //zero
+			_curTimeQtyMS = h * ONE_HOUR;
+			endChangeTransation(); 
+		}
+
+		public function addHours(h : Number) : void {
+			startChangeRequest();
+			_curTimeQtyMS += h * ONE_HOUR;
 			endChangeTransation(); 
 		}
 
@@ -268,11 +277,14 @@ package com.troyworks.util.datetime {
 		public function set days(d : Number) : void {
 			startChangeRequest();
 			
-			if(d == 0) {
-				_curTimeQtyMS -= _days * ONE_DAY;
-			} else {
-				_curTimeQtyMS += d * ONE_DAY;
-			}
+			_curTimeQtyMS -= _days * ONE_DAY;
+			_curTimeQtyMS = d * ONE_DAY;
+			endChangeTransation(); 
+		}
+
+		public function addDays(d : Number) : void {
+			startChangeRequest();			
+			_curTimeQtyMS += d * ONE_DAY;
 			endChangeTransation(); 
 		}
 
@@ -283,14 +295,18 @@ package com.troyworks.util.datetime {
 		public function set weeks(w : Number) : void {
 			startChangeRequest();
 			
-			if(w == 0) {
-				_curTimeQtyMS -= _weeks * ONE_WEEK;
-			} else {
-				_curTimeQtyMS += w * ONE_WEEK;
-			}
+			_curTimeQtyMS -= _weeks * ONE_WEEK;
+			_curTimeQtyMS = w * ONE_WEEK;
 			endChangeTransation(); 
 		}
 
+		public function addWeeks(w : Number) : void {
+			startChangeRequest();
+			_curTimeQtyMS += w * ONE_WEEK;
+			endChangeTransation(); 
+		}
+
+		
 		public function get months() : Number {
 			
 			return _months ;// _curTimeQtyMS / ONE_MONTH;
@@ -298,31 +314,32 @@ package com.troyworks.util.datetime {
 
 		public function set months(m : Number) : void {
 			startChangeRequest();
-			
-			if(m == 0) {
-				_curTimeQtyMS -= _months * ONE_MONTH;
-			} else {
-				_curTimeQtyMS += m * ONE_MONTH;
-			}
+			_curTimeQtyMS -= _months * ONE_MONTH;
+			_curTimeQtyMS = m * ONE_MONTH;
+			endChangeTransation(); 
+		}
+
+		public function addMonths(m : Number) : void {
+			startChangeRequest();			
+			_curTimeQtyMS += m * ONE_MONTH;
 			endChangeTransation(); 
 		}
 
 		public function get years() : Number {
-			
 			return _years ;// _curTimeQtyMS / ONE_YEAR;
 		}
 
 		public function set years(y : Number) : void {
 			startChangeRequest();
-			
-			if(y == 0) {
-				_curTimeQtyMS -= _years * ONE_YEAR;
-			} else {
-				_curTimeQtyMS += y * ONE_YEAR;
-			}
+			_curTimeQtyMS -= _years * ONE_YEAR; //zero
+			_curTimeQtyMS = y * ONE_YEAR;
 			endChangeTransation(); 
 		}
-
+		public function addYears(y : Number) : void {
+			startChangeRequest();
+			_curTimeQtyMS += y * ONE_YEAR;
+			endChangeTransation(); 
+		}
 		private function endChangeTransation() : void {
 			trace("endChangeTransation " + _curTimeQtyMS);
 			TimeQuantity.parseRelativeTime(_curTimeQtyMS, this);
@@ -341,8 +358,9 @@ package com.troyworks.util.datetime {
 		
 			dispatchEvent(new Event(START_CHANGE));
 		}
+
 		override public function toString() : String {
-			var res:Array = new Array();
+			var res : Array = new Array();
 			if(bin_years && years != 0) {
 				res.push(years + " YEARS");
 			}
@@ -368,11 +386,10 @@ package com.troyworks.util.datetime {
 			if(bin_seconds && seconds != 0) {
 				res.push(seconds + " SECONDS");
 			}
-			if(bin_milliseconds  && milliseconds != 0) {
-				res.push(milliseconds  + " MS");
+			if(bin_milliseconds && milliseconds != 0) {
+				res.push(milliseconds + " MS");
 			}
 			return res.join(" ");
-			
 		}
 	}
 }
