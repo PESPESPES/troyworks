@@ -144,6 +144,7 @@ package com.troyworks.util.datetime {
 			var res : ArrayX = new ArrayX();
 			var i : int = 1;
 			var curLin : Line1D;
+			trace("incrementBy=>"+incrementBy)
 			while(true) {
 				if(trackStartDate.time <= curEventDate.time && curEventDate.time <= trackEndDate.time) {
 					
@@ -151,6 +152,10 @@ package com.troyworks.util.datetime {
 					trace(i++ + " " + curEventDate.toTimeString());//+ " " + curEventDate.time + " " + trackEndDate.time);
 					curLin = new Line1D(eventType, NaN, curEventDate.time, duration.time);
 					res.push(curLin);
+					///////////////////Debug Injection ///////////////////////////					
+					//if (i == 10){break;}
+					///////////////////End Injection  ////////////////////////////
+					
 					//////////////////// INCREMENT /////////////////////////////
 					if(incrementBy.years != 0) {
 						//	trace("incrementing years " + incrementBy.years);
@@ -160,6 +165,9 @@ package com.troyworks.util.datetime {
 						//	trace("incrementing months " + incrementBy.months);
 
 						curEventDate.incrementMonth(incrementBy.months);	
+					}
+					if(incrementBy.days != 0){
+						curEventDate.incrementDay(incrementBy.days);
 					}
 					if(incrementBy.weeks != 0) {
 						//	trace("incrementing weeks " + incrementBy.weeks);
@@ -208,7 +216,7 @@ package com.troyworks.util.datetime {
 			var curLin : Line1D;
 			var bestMatch : Line1D;
 			while(true) {
-				if(trackStartDate.time <= curEventDate.time && curEventDate.time <= trackEndDate.time) {
+				if(trackStartDate.time <= curEventDate.time && curEventDae.time <= trackEndDate.time) {
 					
 					//if(dateFrom == null || dateFrom != null)
 					trace(i++ + " " + curEventDate.toTimeString());//+ " " + curEventDate.time + " " + trackEndDate.time);
