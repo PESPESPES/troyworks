@@ -9,7 +9,7 @@ package com.troyworks.data {
 	 * 
 	 * The metaphor is that the array passed in is a type of particle.
 	 * Each position in the array is a bin the values can be whatever.
- 	 * e.g.
+	 * e.g.
 	 * 
 	 * 0= "A"
 	 * 1= "B"
@@ -24,8 +24,8 @@ package com.troyworks.data {
 	 * to create different effects.
 	 * 
 	 * A useful approach is setting the weights via an equasion (e.g. an easing equasion)
-     *
- 	 * This beats the RandomizedPlayList approach for many things, as frequently we want to 
+	 *
+	 * This beats the RandomizedPlayList approach for many things, as frequently we want to 
 	 * have some things more frequent than others, rather than just purely something we can't
 	 * predict. 
 	 *
@@ -34,13 +34,13 @@ package com.troyworks.data {
 	 *  
 	 * EXAMPLE
 	 * 		var a : ArrayX = new ArrayX("A","B", "C");
-			var wts : Array = new Array(60, 30, 10);
-			var weightor:ArrayWeighting = new ArrayWeighting();
-			weightor.c = a;
-			weightor.setWeights(wts);
-			var res:ArrayX = weightor.getWeightedRandom(null, 1000);
-			// NOTE percentages are approximate, there is some random variation.		 
-			//A found 591 total of 1000 = 59.1 % (desired 60%)
+	var wts : Array = new Array(60, 30, 10);
+	var weightor:ArrayWeighting = new ArrayWeighting();
+	weightor.c = a;
+	weightor.setWeights(wts);
+	var res:ArrayX = weightor.getWeightedRandom(null, 1000);
+	// NOTE percentages are approximate, there is some random variation.		 
+	//A found 591 total of 1000 = 59.1 % (desired 60%)
 	 * 		//B found 331 total of 1000 = 33.1 % (desired 30%)
 	 * 		//C found 78 total of 1000 = 7.8 %  (desired 10%)
 	 * @author Troy Gardner
@@ -73,20 +73,21 @@ package com.troyworks.data {
 		public function getWeights() : Array {
 			return wts;	
 		}
-		
+
 		public function setWeights(wts : Array) : void {
 			
 			this.wts = wts;
 			W = new Array();
 			sum_of_wts = 0;
 			for (var i : Number = 0;i < wts.length; i++) {
-				//	trace("sum of wts1 " + sum_of_wts);
+				trace("sum of wts1 " + sum_of_wts);
 				sum_of_wts = sum_of_wts + wts[i];
-				//	trace("sum of wts2 " + sum_of_wts);
+				trace("sum of wts2 " + sum_of_wts);
 				W[i] = sum_of_wts;
 			}
 		//	trace("sum_of_wts " + sum_of_wts + "  array:" + W);
 		}
+
 		public function multiplyWeightsBy(val : Number = 1, startIdx : Number = 0, upperIdx : Number = NaN) : void {
 			var i : int = startIdx;
 			var n : int = isNaN(upperIdx) ? wts.length : upperIdx;
@@ -132,8 +133,8 @@ package com.troyworks.data {
 		}
 
 		
-
-
+		
+		
 		/*****************************************
 		 * for a given bunch of elements, e.g. A, B,C
 		 * and a given bunch of weightws e. 60, 30, 10
@@ -145,22 +146,23 @@ package com.troyworks.data {
 			var a : Array = (overrideSource == null) ? c : overrideSource;
 			var res : ArrayX = new ArrayX();
 			var i : int = 0;
-			var n : int =W.length; 
+			var n : int = W.length; 
 			while(res.length < quantityToGenerate) {
 				var passes : Boolean = false;		
 				////////////evaluate /////////////
 				while(!passes) {
 					var R : Number = Math.random() * sum_of_wts;
-					//    trace("threshold "+ R + "-----------");
+					// trace("threshold "+ R + "-----------");
 					//for(var i : int = 0;i < W.length; i++) {
-						for (;i < n; ++i) {
+					i = 0;
+					for (;i < n; ++i) {
 						var cr : Number = W[i];
 						if (R <= cr) {
 							
 							if(!allowImmediateRepeats && (lastR == R)) {
-								trace("skipping repeat");
-							}else {
-								//trace("adding " + a[i]);
+							//	trace("skipping repeat");
+							} else {
+								//	trace("adding " + a[i]);
 								res.push(a[i]);
 								lastR = R;
 								passes = true;

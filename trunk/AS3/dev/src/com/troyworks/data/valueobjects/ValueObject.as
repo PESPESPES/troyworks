@@ -151,10 +151,12 @@ package com.troyworks.data.valueobjects {
 
 		protected function onChanged(currentVal : *, oldVal : *, phase : String = null) : DataChangedEvent {
 			if(dispatchEventsEnabled) {
+				trace("dispatchEventsEnabled " + phase);
 				var evt : DataChangedEvent;
 				if(phase == PRE_DATA_CHANGE) {
 					evt = new DataChangedEvent(PRE_DATA_CHANGE, true, true);
 				}else if(phase == DATA_CHANGE || phase == null) {
+					trace("DATA CHANGE phase");
 					evt = new DataChangedEvent(DATA_CHANGE, true, false);
 				}
 				evt.oldVal = oldVal;
@@ -164,6 +166,7 @@ package com.troyworks.data.valueobjects {
 				}
 				dispatchEvent(evt);
 			}
+			trace("POST dispatchEventsEnabled");
 			if(phase == DATA_CHANGE) {
 				///////////
 				for (var i : int = 0;i < triggers.length; i++) {

@@ -1,84 +1,81 @@
-﻿package com.troyworks.core.cogs
-{
+﻿package com.troyworks.core.cogs {
 	import com.troyworks.core.cogs.Hsm;
 	import com.troyworks.core.cogs.CogEvent;
 	import com.troyworks.util.DesignByContract;
 	import com.troyworks.util.DesignByContractEvent;
-	public class HsmTrans extends Fsm
-	{
-		
-			var hsm:Hsm;
-			///////////////////////////
-			//s= state
-			var s : Function;
-			//t = state
-			var t : Function;
-			var lca : Number;
-			var cont : Number;
-			var e : Number = 0;
-			var f : Number = 0;
-			///////////////////
-			var lastState:Function;
-			
-			var targetState:Function;
-			var mySource:Function;
-			var myTopState:Function;
-			
+
+	public class HsmTrans extends Fsm {
+
+		var hsm : Hsm;
+		///////////////////////////
+		//s= state
+		var s : Function;
+		//t = state
+		var t : Function;
+		var lca : Number;
+		var cont : Number;
+		var e : Number = 0;
+		var f : Number = 0;
+		///////////////////
+		var lastState : Function;
+
+		var targetState : Function;
+		var mySource : Function;
+		var myTopState : Function;
+
 		//an empty array with nulls as placeholders
 		protected var entry : Array = [null, null, null, null, null, null, null, null, null, null, null];
 		protected var exitry : Array = [null, null, null, null, null, null, null, null, null, null, null];
-		public function HsmTrans(hsm:Hsm, startFromState:Function, destinationState:Function){
+
+		public function HsmTrans(hsm : Hsm, startFromState : Function, destinationState : Function) {
 			super();
 			DesignByContract.initialize(this);
-			_initState= s_unRouted;
+			_initState = s_unRouted;
 			mySource = startFromState;
 			targetState = destinationState;
 		}
+
 		/////////////////////////////////////
-		function s_unRouted(event:CogEvent):void {
-			
+		function s_unRouted(event : CogEvent) : void {
 		}
-		function s_discoveringRoute(event:CogEvent):void{
-			if(targetState != hsm.s_root){
+
+		function s_discoveringRoute(event : CogEvent) : void {
+			if(targetState != hsm.s_root) {
 				return;
 			}
 			//TODO move this over from HSM
 		}
 
-		function s_performingExit(event:CogEvent):void{
+		function s_performingExit(event : CogEvent) : void {
 			/* now we have the list of operations for this transition  proceed through the chain and exit each one
-			* [0] child
-			* [1] parent
-			* [2] grandparent
-			*/
-			if (f > 0)
-			{
-				while ((s = Function (exitry [ -- f ])) != null)
-				{
+			 * [0] child
+			 * [1] parent
+			 * [2] grandparent
+			 */
+			if (f > 0) {
+				while ((s = Function(exitry[ --f ])) != null) {
 					//	trace ("Exiting " + s.call (this, TRACE_EVT))
 					/* retrace exot
-					* path in reverse order */
+					 * path in reverse order */
 					//_global.outText ("preExit4");
-					s.call (this, CogEvent.getExitEvent());
+					s.call(this, CogEvent.getExitEvent());
 					//_global.outText ("postExit4");
 					/* enter */
 				}
 			}
-	
 		}
-		function s_performingEnter(event:CogEvent):void{
+
+		function s_performingEnter(event : CogEvent) : void {
 			/* now we are in the LCA of source__ and target, proceed through the chain and enter each one  in
-			* [0] target
-			* [1] target's parent
-			* [2] targets's grandparent
-			*/
-			if (e > 0)
-			{
-				while ((s = Function (entry [ -- e])) != null)
-				{
+			 * [0] target
+			 * [1] target's parent
+			 * [2] targets's grandparent
+			 */
+			if (e > 0) {
+				while ((s = Function(entry[ --e])) != null) {
 					/* retrace entry path in reverse order */
 					//_global.outText ("preEnter4");
-					s.call (this, CogEvent.getEnterEvent());
+					s.call(this, CogEvent.getEnterEvent());
 					//_global.outText ("postEnter4");
 					/* enter */
 				}
@@ -89,10 +86,9 @@
 			// currentState == result  and null = consumed the event
 			//
 			//myCurState = targ;
-	
-			
 		}
-				/******************************************
+
+		/******************************************
 		 * This is the workhorse of the statemachine, processing the
 		 * transitions between various states to other states. It's command is the state(function)
 		 * to transition to from the current state(function)
@@ -252,7 +248,7 @@
 						//trace"multi level");
 						//trace ("*Fig 4.7 (e),(f), (g), (h) (sp.. == tp..)* -  transition to sibling(s) EXIT and ENTER chain  ");
 						//ENTER LIST from target
-						for (s = tS;s != null && s != s_root; s = s.call(this, EVT_EMPTY)) {
+						for (s = tS;s != null && s != s_root;s = s.call(this, EVT_EMPTY)) {
 							//trace ("checking enter list from targets's parent"  + s.call (this, TRACE_EVT));
 							if (s == sS ) {
 								//found it, target is GRANDCHILD
@@ -269,7 +265,7 @@
 							LCA = entry[0];
 						}
 						//EXIT LIST from source
-						for (s = sS;s != null && s != s_root; s = s.call(this, EVT_EMPTY)) {
+						for (s = sS;s != null && s != s_root;s = s.call(this, EVT_EMPTY)) {
 							//trace ("checking exit list from activestate/source " + s.call (this, TRACE_EVT));
 							if (s == tS || s == LCA) {
 								//found it, target is GRANDPARENT
@@ -311,14 +307,14 @@
 				//
 				////////////////////////////////////////////////////////////////////
 				if(transOptions.doInitDiscovery) {
-	//traceace("INIT ROUTING----------------");
+					//traceace("INIT ROUTING----------------");
 					if ( !tIsPA) {
 						s = tS;
 						tp = s.call(this, EVT_EMPTY);
 						while (true) {
 							t = s.call(this, EVT_INIT);
-							if(t == null){
-								throw new Error("error in statemachine topology, EVT_INIT " +  getStateName(s) + " returned null");
+							if(t == null) {
+								throw new Error("error in statemachine topology, EVT_INIT " + getStateName(s) + " returned null");
 							}else if (t == tp || t == s_root) {
 								//reached destination, no init state to process
 								break;
@@ -333,7 +329,7 @@
 						}
 					}
 					postEnter.reverse(); //for multi level init
-				}else {
+				} else {
 					trace("SKIP INIT ROUTING");
 				}
 				//CAPTURE List and save it for later
@@ -371,7 +367,7 @@
 			var msg : String;
 			var handled : Object = null;
 			if (f > 0 || preExit.length > 0) {
-				for (i = 0;i < exitry.length; i++) {
+				for (i = 0;i < exitry.length;i++) {
 					s = exitry[i];
 					/* retrace exit path in reverse order */
 					msg = "EXITING " + getStateName(s);
@@ -379,7 +375,7 @@
 					handled = s.call(this, CogEvent.getExitEvent());
 					if(handled == null) {
 						transitionLog.push(msg + " HANDLED");
-					}else {
+					} else {
 						transitionLog.push(msg + " NOT HANDLED");
 					}
 					finalState = s.call(this, EVT_EMPTY);
@@ -400,7 +396,7 @@
 			 */
 			if (e > 0 || postEnter.length > 0) {
 				/* retrace entry path in reverse order */
-				for (i = 0;i < entry.length; i++) {
+				for (i = 0;i < entry.length;i++) {
 					s = entry[i];
 					
 
@@ -412,7 +408,7 @@
 						handled = s.call(this, CogEvent.getEnterEvent());
 						if(handled == null) {
 							transitionLog.push(msg + " HANDLED");
-						}else {
+						} else {
 							transitionLog.push(msg + " NOT HANDLED");
 						}
 					}
@@ -431,7 +427,7 @@
 				myCurState = finalState;
 				dispatchEvent(SIG_GETOPTS.createPrivateEvent());
 				onInternalStateChanged();
-			}else {
+			} else {
 				trace("WARNING, no statetransition performed");
 			}
 			///// Check if there are additional transitions to peform, that might have 

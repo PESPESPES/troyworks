@@ -1,4 +1,5 @@
 package com.troyworks.util.datetime {
+	import com.troyworks.geom.d1.CompoundLine1D;	
 	import com.troyworks.geom.d1.Line1D;	
 	import com.troyworks.data.ArrayX;	
 	import com.troyworks.apps.tester.SynchronousTestSuite;
@@ -188,94 +189,148 @@ package com.troyworks.util.datetime {
 		return res;
 		}*/
 		/*public function test_EventFactoryConfigMultiEntry() : Boolean {
-			var res : Boolean = true;
-			var evtLIVE : EventFactory = new EventFactory();
-			var evtREPLAY1 : EventFactory = new EventFactory();
-			var evtREPLAY2 : EventFactory = new EventFactory();
-			var evtDOWNLOAD : EventFactory = new EventFactory();
-			var evtBLACKOUT : EventFactory = new EventFactory();
-			//////////// SET ORIGIN DATE////////////
-			evtLIVE.trackStartDate.setUTCMonth(8);
-			evtLIVE.trackStartDate.setUTCDate(2);
-			evtLIVE.trackStartDate.setUTCFullYear(2009);
-			evtLIVE.trackEndDate.setUTCMonth(10);
-			evtLIVE.trackEndDate.setUTCDate(3);
-			evtLIVE.trackEndDate.setUTCFullYear(2009);
-			//////////// SET ORIGIN TIME////////////
-			evtLIVE.trackStartDate.setUTCHours(20);
-			evtLIVE.trackStartDate.setUTCMinutes(0);
-			evtLIVE.trackStartDate.setUTCSeconds(0);
-			evtLIVE.trackEndDate.setUTCHours(20);
-			evtLIVE.trackEndDate.setUTCMinutes(0);
-			evtLIVE.trackEndDate.setUTCSeconds(0);
-			evtLIVE.incrementBy.weeks = 1;
-			evtLIVE.duration.hours = 4;
-			evtLIVE.eventType = "LIVE";
-			var config : String = evtLIVE.getSerializationString(); 
-			trace("CONFIG= " + config);
-			//////////// ECHO1 ///////////////////////
-			evtREPLAY1.setSerializationString(config, "REPLAY1");
-			evtREPLAY1.trackStartDate.setUTCDate(evtLIVE.trackStartDate.getUTCDate() + 1);
-			evtREPLAY1.trackStartDate.setUTCHours(6);
-			evtREPLAY1.trackEndDate.setUTCHours(6);
-			evtREPLAY1.trackEndDate.setUTCDate(evtLIVE.trackEndDate.getUTCDate() + 1);
-			//////////// ECHO2 ///////////////////////
-			evtREPLAY2.setSerializationString(config, "REPLAY2");
-			evtREPLAY2.trackStartDate.setUTCDate(evtLIVE.trackStartDate.getUTCDate() + 3);
-			evtREPLAY2.trackStartDate.setUTCHours(12);
-			evtREPLAY2.trackEndDate.setUTCHours(12);
-			evtREPLAY2.trackEndDate.setUTCDate(evtLIVE.trackEndDate.getUTCDate() + 3);
-			//////////// ECHO3 ///////////////////////
-			evtREPLAY2.setSerializationString(config, "DOWNLOAD");
-			evtREPLAY2.duration.zero();
-			evtREPLAY2.duration.hours = 24;
-			evtREPLAY2.toString();
-			evtREPLAY2.trackStartDate.setUTCDate(evtLIVE.trackStartDate.getUTCDate() + 4);
-			evtREPLAY2.trackStartDate.setUTCHours(0);
-			evtREPLAY2.trackEndDate.setUTCHours(0);
-			evtREPLAY2.trackEndDate.setUTCDate(evtLIVE.trackEndDate.getUTCDate() + 4);
-			var resX : ArrayX = evtLIVE.getSchedule();
-			resX.appendArray(evtREPLAY1.getSchedule());
-			resX.appendArray(evtREPLAY2.getSchedule());
-			resX.sortOn(["Aposition"], [Array.NUMERIC]);
-			trace("YOUR SCHEDULE IS========================= ");
-			for (var i : int = 0;i < resX.length; i++) {
-				var cLine : Line1D = resX[i] as Line1D;
-				trace(i + "  " + cLine.toUTCString());
-			}
-			return res;
+		var res : Boolean = true;
+		var evtLIVE : EventFactory = new EventFactory();
+		var evtREPLAY1 : EventFactory = new EventFactory();
+		var evtREPLAY2 : EventFactory = new EventFactory();
+		var evtDOWNLOAD : EventFactory = new EventFactory();
+		var evtBLACKOUT : EventFactory = new EventFactory();
+		//////////// SET ORIGIN DATE////////////
+		evtLIVE.trackStartDate.setUTCMonth(8);
+		evtLIVE.trackStartDate.setUTCDate(2);
+		evtLIVE.trackStartDate.setUTCFullYear(2009);
+		evtLIVE.trackEndDate.setUTCMonth(10);
+		evtLIVE.trackEndDate.setUTCDate(3);
+		evtLIVE.trackEndDate.setUTCFullYear(2009);
+		//////////// SET ORIGIN TIME////////////
+		evtLIVE.trackStartDate.setUTCHours(20);
+		evtLIVE.trackStartDate.setUTCMinutes(0);
+		evtLIVE.trackStartDate.setUTCSeconds(0);
+		evtLIVE.trackEndDate.setUTCHours(20);
+		evtLIVE.trackEndDate.setUTCMinutes(0);
+		evtLIVE.trackEndDate.setUTCSeconds(0);
+		evtLIVE.incrementBy.weeks = 1;
+		evtLIVE.duration.hours = 4;
+		evtLIVE.eventType = "LIVE";
+		var config : String = evtLIVE.getSerializationString(); 
+		trace("CONFIG= " + config);
+		//////////// ECHO1 ///////////////////////
+		evtREPLAY1.setSerializationString(config, "REPLAY1");
+		evtREPLAY1.trackStartDate.setUTCDate(evtLIVE.trackStartDate.getUTCDate() + 1);
+		evtREPLAY1.trackStartDate.setUTCHours(6);
+		evtREPLAY1.trackEndDate.setUTCHours(6);
+		evtREPLAY1.trackEndDate.setUTCDate(evtLIVE.trackEndDate.getUTCDate() + 1);
+		//////////// ECHO2 ///////////////////////
+		evtREPLAY2.setSerializationString(config, "REPLAY2");
+		evtREPLAY2.trackStartDate.setUTCDate(evtLIVE.trackStartDate.getUTCDate() + 3);
+		evtREPLAY2.trackStartDate.setUTCHours(12);
+		evtREPLAY2.trackEndDate.setUTCHours(12);
+		evtREPLAY2.trackEndDate.setUTCDate(evtLIVE.trackEndDate.getUTCDate() + 3);
+		//////////// ECHO3 ///////////////////////
+		evtREPLAY2.setSerializationString(config, "DOWNLOAD");
+		evtREPLAY2.duration.zero();
+		evtREPLAY2.duration.hours = 24;
+		evtREPLAY2.toString();
+		evtREPLAY2.trackStartDate.setUTCDate(evtLIVE.trackStartDate.getUTCDate() + 4);
+		evtREPLAY2.trackStartDate.setUTCHours(0);
+		evtREPLAY2.trackEndDate.setUTCHours(0);
+		evtREPLAY2.trackEndDate.setUTCDate(evtLIVE.trackEndDate.getUTCDate() + 4);
+		var resX : ArrayX = evtLIVE.getSchedule();
+		resX.appendArray(evtREPLAY1.getSchedule());
+		resX.appendArray(evtREPLAY2.getSchedule());
+		resX.sortOn(["Aposition"], [Array.NUMERIC]);
+		trace("YOUR SCHEDULE IS========================= ");
+		for (var i : int = 0;i < resX.length; i++) {
+		var cLine : Line1D = resX[i] as Line1D;
+		trace(i + "  " + cLine.toUTCString());
+		}
+		return res;
 		}*/
-				public function test_EventFactoryConfigMultiEntry() : Boolean {
+		/*		public function test_EventFactoryConfigMultiEntry() : Boolean {
+		var res : Boolean = true;
+		var evtLIVE : EventFactory = new EventFactory();
+			
+		//////////// SET ORIGIN DATE////////////
+		evtLIVE.trackStartDate.setUTCMonth(8);
+		evtLIVE.trackStartDate.setUTCDate(2);
+		evtLIVE.trackStartDate.setUTCFullYear(2009);
+		evtLIVE.trackEndDate.setUTCMonth(10);
+		evtLIVE.trackEndDate.setUTCDate(3);
+		evtLIVE.trackEndDate.setUTCFullYear(2009);
+		//////////// SET ORIGIN TIME////////////
+		evtLIVE.trackStartDate.setUTCHours(20);
+		evtLIVE.trackStartDate.setUTCMinutes(0);
+		evtLIVE.trackStartDate.setUTCSeconds(0);
+		evtLIVE.trackEndDate.setUTCHours(20);
+		evtLIVE.trackEndDate.setUTCMinutes(0);
+		evtLIVE.trackEndDate.setUTCSeconds(0);
+		evtLIVE.incrementBy.weeks = 1;
+		evtLIVE.duration.hours = 4;
+		evtLIVE.eventType = "LIVE";
+		var resX : ArrayX = evtLIVE.getSchedule();
+		resX.sortOn(["Aposition"], [Array.NUMERIC]);
+		trace("YOUR SCHEDULE IS========================= ");
+		for (var i : int = 0;i < resX.length; i++) {
+		var cLine : Line1D = resX[i] as Line1D;
+		trace(i + "  " + cLine.toUTCString());
+		}
+		trace("NEXT Enry " +  evtLIVE.getNextEvent(null).toUTCString());
+			
+			
+		return res;
+		}*/
+		public function test_Line1D_Clone() : Boolean {
 			var res : Boolean = true;
-			var evtLIVE : EventFactory = new EventFactory();
+			var l1 : Line1D = new Line1D("FirstLine", 1, 2, 3);
+			var l2 : Line1D = l1.clone() as Line1D;
+			REQUIRE(l2 is Line1D, "Line2 must be of type line1D");
+			REQUIRE(l1.name == l2.name, "Line1D.name must match");
+			REQUIRE(l1.type == l2.type, "Line1D.type must match");
+			REQUIRE(l1.Aposition == l2.Aposition, "Line1D.Aposition must match");
+			REQUIRE(l1.Bposition == l2.Bposition, "Line1D.Bposition must match");
+			REQUIRE(l1.length == l2.length, "Line1D.Bposition must match");
+			REQUIRE(l1.A.name == l2.A.name, "Line1D.A.name must match");
+			REQUIRE(l1.Z.name == l2.Z.name, "Line1D.Z.name must match");
+			return res;
+		}
+
+		public function test_ComputLine1D_Clone() : Boolean {
+			var res : Boolean = true;
+			var l1 : CompoundLine1D = new CompoundLine1D("QA Website");
 			
-			//////////// SET ORIGIN DATE////////////
-			evtLIVE.trackStartDate.setUTCMonth(8);
-			evtLIVE.trackStartDate.setUTCDate(2);
-			evtLIVE.trackStartDate.setUTCFullYear(2009);
-			evtLIVE.trackEndDate.setUTCMonth(10);
-			evtLIVE.trackEndDate.setUTCDate(3);
-			evtLIVE.trackEndDate.setUTCFullYear(2009);
-			//////////// SET ORIGIN TIME////////////
-			evtLIVE.trackStartDate.setUTCHours(20);
-			evtLIVE.trackStartDate.setUTCMinutes(0);
-			evtLIVE.trackStartDate.setUTCSeconds(0);
-			evtLIVE.trackEndDate.setUTCHours(20);
-			evtLIVE.trackEndDate.setUTCMinutes(0);
-			evtLIVE.trackEndDate.setUTCSeconds(0);
-			evtLIVE.incrementBy.weeks = 1;
-			evtLIVE.duration.hours = 4;
-			evtLIVE.eventType = "LIVE";
-			var resX : ArrayX = evtLIVE.getSchedule();
-			resX.sortOn(["Aposition"], [Array.NUMERIC]);
-			trace("YOUR SCHEDULE IS========================= ");
-			for (var i : int = 0;i < resX.length; i++) {
-				var cLine : Line1D = resX[i] as Line1D;
-				trace(i + "  " + cLine.toUTCString());
-			}
-			trace("NEXT Enry " +  evtLIVE.getNextEvent(null).toUTCString());
+			var testSafari : CompoundLine1D = new CompoundLine1D("test safari");
+			var testSafari10 : Line1D = new Line1D(" test flash10", 2, 0, 100);
+			var testSafari9 : Line1D = new Line1D(" test flash9", 2, 0, 100);
+			var testSafari8 : Line1D = new Line1D(" test flash8", 2, 0, 100);
+			testSafari.addChild(testSafari10);
+			testSafari.addChild(testSafari9);
+			testSafari.addChild(testSafari8);
 			
+			var testFireFox : CompoundLine1D = new CompoundLine1D("test FireFox");
+			var testFireFox10 : Line1D = new Line1D(" test flash10", 2, 0, 100);
+			var testFireFox9 : Line1D = new Line1D(" test flash9", 2, 0, 100);
+			var testFireFox8 : Line1D = new Line1D(" test flash8", 2, 0, 100);
+			testFireFox.addChild(testFireFox10);
+			testFireFox.addChild(testFireFox9);
+			testFireFox.addChild(testFireFox8);
 			
+			l1.addChild(testSafari);
+			l1.addChild(testFireFox);
+			var l2 : CompoundLine1D = l1.clone() as CompoundLine1D;
+			REQUIRE(l2 is Line1D, "Line2 must be of type Line1D");
+			REQUIRE(l2 is CompoundLine1D, "Line2 must be of type CompoundLine1D");
+			REQUIRE(l1.children.length == l2.children.length, "Line1D.children.length must match");
+			REQUIRE(l1.name == l2.name, "Line1D.name must match");
+			REQUIRE(l1.type == l2.type, "Line1D.type must match");
+			REQUIRE(l1.Aposition == l2.Aposition, "Line1D.Aposition must match");
+			REQUIRE(l1.Bposition == l2.Bposition, "Line1D.Bposition must match");
+			REQUIRE(l1.length == l2.length, "Line1D.Bposition must match");
+			REQUIRE(l1.A.name == l2.A.name, "Line1D.A.name must match");
+			REQUIRE(l1.Z.name == l2.Z.name, "Line1D.Z.name must match");
+			trace("REFERENCE " + l1);
+			trace("CLONE " + l2);
+			l2.A.position += 10;
+			trace("TRANSLATED " + l2);
 			return res;
 		}
 	}

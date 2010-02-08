@@ -74,7 +74,7 @@ package com.troyworks.util.datetime {
 
 		public static function formatToString(val : Number) : String {
 			var res : TimeQuantity = TimeQuantity.parseRelativeTime(val);
-			return res.hours + ":" + res.minutes + ":" + res.seconds + "." + res.milliseconds;
+			return res.hours + ":" + padTo(res.minutes, 2, "0") + ":" + padTo(res.seconds, 2, "0") + "." + res.milliseconds;
 		}
 
 		public static function toStopWatchString(val : Number, includeHours : Boolean = false) : String {
@@ -91,14 +91,41 @@ package com.troyworks.util.datetime {
 			return res.years + "-" + padTo(res.months, 2, "0") + "-" + padTo(res.days, 2, "0") + " " + padTo(res.hours, 2, "0") + ":" + padTo(res.minutes, 2, "0") + ":" + padTo(res.seconds, 2, "0");
 		}
 
-		public function toClockString(val : Number) : String {
+		public function toClockString(val : Number, includeSeconds : Boolean = true) : String {
 			var res : TimeQuantity = TimeQuantity.parseRelativeTime(val);
-			return res.hours + ":" + res.minutes + ":" + res.seconds;
+			if(includeSeconds) {
+				return res.hours + ":" + padTo(res.minutes, 2, "0") + ":" + padTo(res.seconds, 2, "0");
+			} else {
+				return res.hours + ":" + padTo(res.minutes, 2, "0");
+			}
+		}
+		public function toAMPMClockString(time : Number, includeSeconds : Boolean = false) : String {
+		//	var res : TimeQuantity = TimeQuantity.parseRelativeTime(val);
+		var val:Date = new Date(time);
+			var hrs:String;
+			var ampm:String;
+			if(val.hours == 0 ){
+				hrs = "12";
+			}else if(val.hours >= 13){
+				hrs = val.hours-12 + "";
+			}else{
+				hrs = val.hours +"";
+			}
+			if(val.hours < 12){
+				ampm = "AM";
+			}else{
+				ampm = "PM";
+			}
+			if(includeSeconds) {
+				return hrs+ ":" + padTo(val.minutes, 2, "0") + ":" + padTo(val.seconds, 2, "0") +ampm;
+			} else {
+				return hrs + ":" + padTo(val.minutes, 2, "0") + ampm;
+			}
 		}
 
 		public function toString(val : Number) : String {
 			var res : TimeQuantity = TimeQuantity.parseRelativeTime(val);
-			return res.hours + ":" + res.minutes + ":" + res.seconds + "." + res.milliseconds;
+			return res.hours + ":" + padTo(res.minutes, 2, "0") + ":" + padTo(res.seconds, 2, "0") + "." + padTo(res.milliseconds, 3, "0");
 		}
 
 		

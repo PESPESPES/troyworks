@@ -11,7 +11,10 @@
 	 * 
 	 * @author Troy Gardner
 	 * @version 0.1
-	 */	
+	 */
+	import flash.net.registerClassAlias;	
+	import flash.utils.ByteArray;	
+
 	import com.troyworks.data.DataChangedEvent;	
 	import com.troyworks.framework.BaseObject; 
 
@@ -24,18 +27,19 @@
 		protected var _B : Point1D = null;
 		public var length : Number = NaN;
 		public var data : Object;
-
+		private static const REG:* = registerClassAlias("com.troyworks.geom.d1.Line1D",Line1D);
 		////////////
 		public function Line1D(obj : Object = null, type : Number = NaN, start : Number = NaN, length : Number = NaN, end : Number = NaN) {	
 			super();
 			//trace("new Line1D ");
 			//	trace("new Line1D " + name + " start " + start + " len " + length + " end " + end);
-
+			//if(arguments.length > 0){
 			if (obj is XML) {
 				initFromXML(obj as XML);
 			} else {
 				init(String(obj), type, start, length, end);
 			}
+			//}
 		}
 
 		public function get Aposition() : Number {
@@ -149,6 +153,16 @@
 			var endDate : Date = new Date(Bposition);
 				
 			return name + " from " + startDate.toUTCString() + " to " + endDate.toUTCString() + " (" + length + ") " ;
+		}
+		public function clone():Object{
+			var copier : ByteArray = new ByteArray();
+			copier.writeObject(this);
+			copier.position = 0;
+			return(copier.readObject());
+		
+		// var res:Line1D = new Line1D(new String(name),type+0,A.position+0,length +0,Z.position+0);
+		
+		// return res;
 		}
 	}
 }

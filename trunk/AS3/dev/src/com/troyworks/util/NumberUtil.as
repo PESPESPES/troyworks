@@ -47,8 +47,8 @@ package com.troyworks.util {
 			var r:Number = v %to;
 			var bin:Number = (v-r);
 		 */		public static function snap(src : Number, range : Number, base : Number = 0) : Number {
-			var dif = (src - base) % range;
-			var n = src - dif;
+			var dif:Number = (src - base) % range;
+			var n:Number = src - dif;
 			if (dif != 0) {
 				if (dif >= range / 2) {
 					n += range;

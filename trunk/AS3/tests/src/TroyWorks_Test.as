@@ -1,10 +1,11 @@
 ﻿package {
+	import com.troyworks.data.ArrayX;	
 	import com.troyworks.apps.tester.SampleTest;	
 	
 	import flash.display.MovieClip;	
 
 	import com.troyworks.core.chain.Test_PlaceHolderUnitOfWork;	
-	import com.troyworks.core.patterns.*
+	import com.troyworks.core.patterns.*;
 	import com.troyworks.apps.tester.TestEvent;	
 	import com.troyworks.apps.tester.AsynchTestRunner;	
 	import com.troyworks.apps.tester.SimpleTestRunner;	
@@ -51,7 +52,7 @@
 			trace("TroyWorks_Test()");
 			eventSprite = new Sprite();
 			addChild(eventSprite);
-
+			test_ArrayX_snapToClosest360();
 			
 			addEventListener(Event.ENTER_FRAME, onProgress);	
 
@@ -60,8 +61,44 @@
 
 			//	startAsynchTests();
 		}
-
-		
+public function test_ArrayX_snapToClosest360() : Boolean {
+			var a1 : ArrayX = new ArrayX();
+			var cnt:int = 36;
+			while(cnt--){
+				a1.push(cnt*10);
+			}
+			a1.sort(Array.NUMERIC);
+			trace("set " + a1);
+			var base:int = 20;
+			var i:int = 10;
+			var res:Boolean; 
+			while(i--){
+				trace("closest " + (base+i) + " " + a1.snapToClosest((base+i)));
+			}
+			//var passFilter : Boolean = (a1.toString() == "B,C" && r == "A");
+			//trace("  pass shift: " + passFilter);
+			//trace("  res is " + a1 + " returned " + r);
+			return res;//passFilter;
+		}
+		/*public function test_ArrayX_snapToClosest() : Boolean {
+			var a1 : ArrayX = new ArrayX();
+			var cnt:int = 10;
+			while(cnt--){
+				a1.push(cnt*10);
+			}
+			a1.sort(Array.NUMERIC);
+			trace("set " + a1);
+			var base:int = 20;
+			var i:int = 10;
+			var res:Boolean; 
+			while(i--){
+				trace("closest " + (base+i) + " " + a1.snapToClosest((base+i)));
+			}
+			//var passFilter : Boolean = (a1.toString() == "B,C" && r == "A");
+			//trace("  pass shift: " + passFilter);
+			//trace("  res is " + a1 + " returned " + r);
+			return res;//passFilter;
+		}*/
 		public function onProgress(event : Event = null) : void {
 			
 			eventSprite.graphics.clear();
@@ -108,7 +145,7 @@
 				//testRunner.addTest(Test_Point1D);
 				//testRunner.addTest(Test_Line1D);
 				//testRunner.addTest(Test_TDate);
-				testRunner.addTest(Test_XORcipher);
+				//testRunner.addTest(Test_XORcipher);
 				//testRunner.addTest(Test_CompoundLine1D);
 				////////RUN TEST //////////////
 
@@ -145,6 +182,8 @@
 				testRunner2.addEventListener(Event.CHANGE, onProgress);
 				///////////////////////////////////////////
 			//	testRunner2.addTest(Test_Hsm);
+			
+			testRunner2.addTest(Test_Fsm);
 			//	testRunner2.addTest(Test_PlaceHolderUnitOfWork);
 			//testRunner2.addTest(SampleTest);
 				//	testRunner2.addTest(Test_SWFLoaderUnit);

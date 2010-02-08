@@ -1,19 +1,17 @@
 ﻿package com.troyworks.core.cogs {
+	import flash.xml.XMLNode;
+	import flash.xml.XMLNodeType;
+
+	import com.troyworks.util.DesignByContract;
+
 	import flash.events.Event;
-	import flash.events.IEventDispatcher;
-	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
+	import flash.utils.Dictionary;
 	import flash.utils.Timer;
 	import flash.utils.describeType;
 	import flash.utils.getTimer;
-	import flash.xml.*;
+	import flash.utils.setTimeout;
 
-	import com.troyworks.core.cogs.*;
-	import com.troyworks.util.DesignByContract;
-
-	import flash.utils.Dictionary;
-	import flash.utils.setTimeout;	
-	
 	public class Hsm extends StateMachine implements IStateMachine, IFiniteStateMachine, IHeirarchicalStateMachine, IStackableStateMachine {
 
 		
@@ -138,6 +136,7 @@
 		 * set the attributes as necessary
 		 * *********************************/
 		protected function onConstructed() : void {
+			trace("HSM.onConstructed//////////////////");
 			if(topology == null) {
 				discoverTopology(this);
 			} else {
@@ -172,7 +171,7 @@
 		 *
 		 ****************************************/
 		protected function discoverTopology(base : Object, cacheResults : Boolean = true) : void {
-			trace("HSM.discoverTopology with namespace ");
+			trace("HSM.discoverTopology with namespace!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ");
 			if(cacheResults && topology != null) {
 				return;
 			}
@@ -181,6 +180,7 @@
 			//trace("s_idx " + s_Idx);
 			//			
 			var type : XML = describeType(base);
+			//trace("type!!!!" + type);
 			////use namespace  COG;
 			//trace("dtype '" + type.toString() +"'");
 			//	trace(" DTYPE \r" +type.toString().split(">").join("").split("<").join(""));
@@ -213,7 +213,7 @@
 			}
 			///////////// BUILD LINKED TREE /////////////////
 			for (var i:Object in s_Idx) {
-				//trace("testing " + i);
+				trace("testing " + i);
 				if (i == "s_initial") {
 					XMLNode(s_Idx["s_root"].xml).appendChild(s_Idx[i].xml);
 				} else if (i != "s_root" ) {
@@ -222,7 +222,7 @@
 				
 					//trace(s_Idx[i] + " -> " + parentName);
 					if(parentName == null) {
-						throw new Error("invalid Statemachine Topology " + i + " has null parent, check return value");
+						throw new Error("invalid Statemachine Topology " + i  + " " +  s_Idx[i] + " has null parent, check return value");
 					}
 					var kidNode : XMLNode = XMLNode(s_Idx[i].xml);
 					XMLNode(s_Idx[parentName].xml).appendChild(kidNode);

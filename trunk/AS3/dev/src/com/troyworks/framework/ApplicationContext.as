@@ -1,4 +1,5 @@
 package com.troyworks.framework {
+	import com.troyworks.util.DesignByContractEvent;	
 	import com.troyworks.core.events.IEventOracle;
 	import com.troyworks.logging.ILogger;
 	import com.troyworks.util.DesignByContract; 
@@ -107,8 +108,8 @@ package com.troyworks.framework {
 		 * this function is useful for setting breakpoints 
 		 * when an assert or require fails.
 		 */
-		public function onAssertFailed(msg : String, critical:Boolean) : void{
-			dbclog.push (msg);
+		public function onAssertFailed(evt : DesignByContractEvent) : void{
+			dbclog.push (evt.message + " " + evt.fatal);
 			trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
