@@ -112,13 +112,13 @@ package com.troyworks.util.swfconnect {
 				outboundLC.addEventListener(StatusEvent.STATUS, onGuestIDNegotiationSendStatus);
 				
 				/////////// CONNECT To Shared Memory AS GUEST and wait//////////
-				currentConnectionID = generateChannelID(guestInboundID);
+				currentConnectionID = generateChanneLID(guestInboundID);
 				
 				//wait for callback
 				inboundLC.addEventListener(StatusEvent.STATUS, onGuestIDNegotiationSendStatus);
-				inboundLC.connect(generateChannelID(guestInboundID));
+				inboundLC.connect(generateChanneLID(guestInboundID));
 				trace("-------------------------------");
-				trace("inboundLC now listening on " + generateChannelID(guestInboundID) + " for call from HOST");
+				trace("inboundLC now listening on " + generateChanneLID(guestInboundID) + " for call from HOST");
 				trace("-------------------------------");
 				connectGUEST_to_HOST();
 			}
@@ -133,7 +133,7 @@ package com.troyworks.util.swfconnect {
 		 * a domain and 1 of 20 slots in a minute for both host and guest
 		 *  to try connecting to
 		 */
-		public function generateChannelID(id : String) : String {
+		public function generateChanneLID(id : String) : String {
 			if(id.indexOf("_TMP") == -1 ){
 				return id;
 			}
@@ -168,14 +168,14 @@ package com.troyworks.util.swfconnect {
 		//////////////////////////////// ID NEGOTIATION //////////////////////////////
 		public function lookForGuestConnection(fromID : String) : void {
 	
-			var myChannel : String = generateChannelID(hostInboundID);
+			var myChannel : String = generateChanneLID(hostInboundID);
 			
 			//	trace("fromID " + fromID + " curUID " + curUID);
 			if(curUID != null && fromID != curUID) {
 				trace("ignoring request still in one progress");
 				return;
 			}
-			trace("\rsending as Host to " + generateChannelID(guestInboundID) + " call me back on " + myChannel);
+			trace("\rsending as Host to " + generateChanneLID(guestInboundID) + " call me back on " + myChannel);
 			try {
 	
 				if(lastConnectionID != myChannel) {
@@ -211,7 +211,7 @@ package com.troyworks.util.swfconnect {
 		/* attempt for the guest to call out to the host since it's a single direction connection */
 		private function connectGUEST_to_HOST() : void {
 			try {
-				outboundLC.send(generateChannelID(hostInboundID), "onNewGuestConnected", generateChannelID(guestInboundID), myUID);
+				outboundLC.send(generateChanneLID(hostInboundID), "onNewGuestConnected", generateChanneLID(guestInboundID), myUID);
 			} catch(e : ArgumentError) {
 				trace("connectGUEST_to_HOST ERROR: " + e);
 			}
@@ -219,9 +219,9 @@ package com.troyworks.util.swfconnect {
 
 		/* attempt for the host to call out to the guest since it's a single direction connection */
 		private function connectHOST_to_GUEST() : void {
-			trace(" ping guest>>>>" + generateChannelID(guestInboundID));
+			trace(" ping guest>>>>" + generateChanneLID(guestInboundID));
 			try {
-				outboundLC.send(generateChannelID(guestInboundID), "onHostConnected", generateChannelID(hostInboundID), myUID);
+				outboundLC.send(generateChanneLID(guestInboundID), "onHostConnected", generateChanneLID(hostInboundID), myUID);
 				outboundLC_used = true;
 			} catch(e : ArgumentError) {
 				trace("connectHOST_to_GUEST ERROR: " + e);
@@ -305,7 +305,7 @@ package com.troyworks.util.swfconnect {
 			trace("Hey " + myUID + ", " + fromUID + " is still alive");
 		}
 		private function sendKeepAlive() : void {
-			trace(" keepAlive>>>>" + generateChannelID(guestInboundID));
+			trace(" keepAlive>>>>" + generateChanneLID(guestInboundID));
 			try {
 				outboundLC.send(((isHost)?guestInboundID : hostInboundID), "keepAlive", myUID);
 				outboundLC_used = true;
@@ -327,10 +327,10 @@ package com.troyworks.util.swfconnect {
 		
 		//////////////////////////////////////////////////////////////
 		/* called from the remote host ~182 line*/
-		public function onHostConnected(channelID : String = null, fromGID : String = null) : void {
+		public function onHostConnected(channeLID : String = null, fromGID : String = null) : void {
 
 			trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-			trace(myUID + ".onHostConnected " + fromGID + " on " + channelID);
+			trace(myUID + ".onHostConnected " + fromGID + " on " + channeLID);
 			trace(">>>>>>>>>>>>>>>>>>>> " + connectionsState + ">>>>>>>>>>>>>>>>>>>>>>>>>>>");
 			
 			dispatchEvent(new Event(EVT_HOST_CONNECTED));
@@ -346,9 +346,9 @@ package com.troyworks.util.swfconnect {
 		}
 
 		/* called from the remote guest  ~115 line */
-		public function onNewGuestConnected(channelID : String = null, fromGID : String = null) : void {
+		public function onNewGuestConnected(channeLID : String = null, fromGID : String = null) : void {
 			trace("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-			trace(myUID + ".onNewGuestConnected ( " + fromGID + ") on " + channelID);
+			trace(myUID + ".onNewGuestConnected ( " + fromGID + ") on " + channeLID);
 			trace("<<<<<<<<<<<<<<< " + connectionsState + "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 			dispatchEvent(new Event(EVT_GUEST_CONNECTED));
 			guestInboundID = fromGID;

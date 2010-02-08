@@ -43,6 +43,8 @@ package com.troyworks.util
 	 */
 	public function construct( type:Class, parameters:Array ):*
 	{
+		//trace("construct " + type + " pars " + parameters.length);
+		//trace("Params " + parameters.join(","));
 		switch( parameters.length )
 		{
 			case 0:

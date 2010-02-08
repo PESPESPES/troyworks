@@ -119,7 +119,7 @@ package com.troyworks.util.datetime {
 
 			var res : TimeQuantity = (tdutil == null) ? new TimeQuantity(dateTime) : tdutil;
 				
-			tdutil._curTimeQtyMS = dateTime;
+			res._curTimeQtyMS = dateTime;
 			
 			if(res.bin_years && r >= ONE_YEAR) {
 				res._years = Math.floor(r / TimeQuantity.ONE_YEAR) * rs;

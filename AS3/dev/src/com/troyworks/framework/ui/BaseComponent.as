@@ -1,5 +1,16 @@
-package com.troyworks.framework.ui { 
-	 /*
+package com.troyworks.framework.ui {	
+	import com.troyworks.util.Trace;
+
+	import flash.events.Event;
+
+	import com.troyworks.core.cogs.CogEvent;
+	import com.troyworks.core.cogs.CogSignal;
+	import com.troyworks.core.cogs.Hsm;
+
+	import flash.display.MovieClip;
+	import flash.display.Sprite;
+
+	/*
 	* This serves as a base class that extends the Statemachine+ Event Engine and MovieClip
 	* and adds common functionality to most components
 	* like  access to preloading, eventDispatcher
@@ -16,23 +27,15 @@ package com.troyworks.framework.ui {
 	* @author Troy Gardner
 	* @version
 	 */
-	import flash.display.Sprite;	
-	import flash.display.DisplayObject;	
 	
-	import com.troyworks.core.cogs.CogEvent;	
-	import com.troyworks.core.cogs.Hsm;	
-	import com.troyworks.core.cogs.CogSignal;	
-	import com.troyworks.framework.IApplication;
 
 	
 	//parent chain: HsmfE (statemachine + events)->MovieClip->Object
-	import flash.display.MovieClip;
 	public class BaseComponent extends Hsm implements IHaveChildrenComponents {
 		//public var app : IApplication;
 		// the base component supports
 		// preloading, transition in, active, transition out to inactive,
 		// those that have status provide it
-		public var view : Sprite;
 		public static var EVT_LOADED : String = "EVT_LOADED";
 		public static var EVT_READY : String = "EVT_READY";
 		public static var EVT_TRANSIN : String = "EVT_";
@@ -64,6 +67,20 @@ package com.troyworks.framework.ui {
 				initStateMachine();
 			}
 		}
+		public var _view : Sprite;
+		
+		public function set view( value : Sprite ) : void {
+				if(_view != value){
+		    	    _view = value;
+			          dispatchEvent(new Event(Event.CHANGE, true, true));
+		        }
+		}
+		
+		public function get view( ) : Sprite {
+		        return _view;
+		}
+		
+		
 		public function onLoad(init : Boolean = true) : void
 		{
 			
@@ -485,7 +502,7 @@ package com.troyworks.framework.ui {
 		/*..PSEUDOSTATE...............................................................*/
 		public function s_initial(e : CogEvent) : Function
 		{
-			//trace("************************* s_initial " + util.Trace.me(e)+" ******************");
+			trace("************************* s_initial " + Trace.me(e, "CogEvent")+" ******************");
 	//		onFunctionEnter ("s_initial-", e, []);
 			switch(e.sig)
 			{
@@ -499,6 +516,7 @@ package com.troyworks.framework.ui {
 		/*.................................................................*/
 		public function s0_viewAssetsUnLoaded(e : CogEvent) : Function
 		{
+			trace("************************* s0_viewAssetsUnLoaded " + Trace.me(e, "CogEvent")+" ******************");
 			//this.onFunctionEnter ("s0_viewAssetsUnLoaded-", e, []);
 			switch(e.sig)
 			{

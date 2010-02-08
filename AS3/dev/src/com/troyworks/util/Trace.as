@@ -149,24 +149,24 @@ package com.troyworks.util {
 		////////////////////////////////////////////////////////////////////////
 		public static function me(clasObj : Object, txt : String, showNested : Boolean = true, showType : Boolean = true, showValue : Boolean = true) : String {
 			if(clasObj == null) {
-				throw new Error("invalid arg , clasObj cannot be null");
+				throw new Error("Trace.me passed invalid arg , clasObj cannot be null");
 			}
 			/* strips class during clone, but only gets public variables */
 			var objStruct : Object = clone(clasObj);
 			depth = 0;
 			//	trace("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			var res : Array = Trace.meAsArray(objStruct, txt, showNested, showType, showValue, depth);
-			//trace(res);
+			//trace("RES " +res);
 			depth = 0;
 			return res.join('\r');
 		};
 
-		public static function traceByteArray(bA : ByteArray) :void{
-			var o:Object;
+		public static function traceByteArray(bA : ByteArray) : void {
+			var o : Object;
 			var cnt : int = 0;
 			var cnm : String;
 
-			var o2:Object;
+			var o2 : Object;
 			var cnt2 : int = 0;
 			var cnm2 : String;
 			try {
@@ -199,7 +199,7 @@ package com.troyworks.util {
 			}
 		}
 
-		public static function traceBits(bA : ByteArray):void {
+		public static function traceBits(bA : ByteArray) : void {
 			trace("TraceBits--------------------");
 			for(var i : int = 0;i < bA.length; i++) {
 				bA.position = i;
@@ -221,7 +221,7 @@ package com.troyworks.util {
 			trace("XXXXXXXXXXXXX Listing Signals and Events XXXXXXXXXXXXXXXXXXXXXXX");
 			trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-			var res:Array = new Array();
+			var res : Array = new Array();
 			for(var i:String in aObj) {
 				trace(" i " + i + " " + aObj[i]);
 				var obj : Object = aObj[i];
@@ -262,7 +262,7 @@ package com.troyworks.util {
 				return null;
 			}
 			//this is used to prevent infinite loops
-			var res:Array = new Array();
+			var res : Array = new Array();
 			if(objStruct.$$_id_ == null) {
 				objStruct.$$_id_ = IDz++;
 				//_global.ASSetPropFlags (objStruct, "$$_id_", 1);
@@ -279,7 +279,7 @@ package com.troyworks.util {
 					for(var i:String in history) {
 						trace("   " + cnt++ + " history check of " + i); 
 						//check to make sure we aren't looping
-						var com:Object = history[i].$$_id_;
+						var com : Object = history[i].$$_id_;
 						if(com === objStruct.$$_id_) {
 							trace(i + "ERRROR HIT INFINITE LOOP With TraceID " + " " + com + " _id_: " + history[i]._id_ + " at " + cnt);
 							//res.push("hit circular reference");
@@ -297,31 +297,59 @@ package com.troyworks.util {
 			//	return res;
 			}
 			}
-			var text:String = (txt == null) ? "" : txt;
-			res.push("[[[[ " + text + ".displayObjmeAsArray() START  nested: " + showNested + " ]]]]");
+			var text : String = (txt == null) ? "" : txt;
 			//trace("11b " + objStruct._id_);
+			var snam : Array = new Array();
+			var name : String; 
+			for (name in objStruct) {
+				snam.push(name);
+			}
+			snam.sort(Array.CASEINSENSITIVE);
+		
 
-			for (var name:String in objStruct) {
-				//trace("11b2 "+  objStruct._id_ + " name " + name);
-				var n:Object = objStruct[name];
-				//trace(" 11b3  "+  objStruct._id_ +" " +  n + " name " + name);
+			var ii : int = 0;
+			var nn : int = snam.length;
+			for (;ii < nn; ++ii) {
+
+				name = snam[ii];
+
+				//	trace("11b2 "+  objStruct._id_ + " name " + name);
+				var n : Object = objStruct[name];
+				//	trace(" 11b3  "+  objStruct._id_ +" " +  n + " name " + name);
 
 
 				//			trace("  11b4 " +  objStruct._id_ +" " + name +" " + n);
-				var l:Object = Trace.buildLine("\t\t+- ", n, name, showNested, showType, showValue);
-				//		trace("   line " + l);
+				var l : Object = Trace.buildLine("\t\t+- ", n, name, showNested, showType, showValue);
+				//	trace("   line " + l);
 				res.push(l);
 				// trace("showing nested?: " + showNested);
 				if (showNested) {
+					var s : Array = new Array();
 					for (var prop:String in objStruct[name]) {
-						var p:Object = objStruct[name][prop];
-						var m:String = Trace.buildLine("\t\t\t+-- ", p, prop, showNested, showType, showValue);
-						//			trace("    line2 "+ m);
-						res.push(m);
+					
+						if(!(objStruct[name][prop] is Function)) {
+							
+							var p : Object = objStruct[name][prop];
+							
+						//	("propNp ", prop, typeof(objStruct[name][prop]), name, p);
+							var m : String = Trace.buildLine("\t\t\t+-- ", p, prop, showNested, showType, showValue);
+							if(m != "") {
+								//	trace("    line2 '"+ m+"'");
+								s.push(m);
+							}
+						}
+					}
+					if(s.length > 0) {
+						s.sort(Array.CASEINSENSITIVE);
+					//	trace("SUB " + s.join(","));
+						res.push(s.join("\r"));
 					}
 				}
 			}
+			//res.sort(Array.CASEINSENSITIVE);
 			//		trace(objStruct._id_ +"   ZZ /////////////////////////////////////////////////");
+			res.unshift("[[[[ " + text + ".displayObjmeAsArray() START  nested: " + showNested + " ]]]]");
+		
 			res.push("   [[[[ " + text + ".displayObjmeAsArray() END ]]]]");
 			return res;
 		} 
@@ -336,21 +364,24 @@ package com.troyworks.util {
 			return res;
 		}
 
-		public static function buildLine(prefix : String, obj : Object, name : String, showNested : Boolean, showType : Boolean, showValue : Boolean) : String {
-			//trace("prefix" + prefix + " obj " + obj + " name " + name +" showNe " + showNested + " showType "+showType);
-			if(obj == null) {
-				return"";
-			}
+		public static function buildLine(prefix : String, val : Object, name : String, showNested : Boolean, showType : Boolean, showValue : Boolean) : String {
+			//trace("prefix" + prefix + " val " + val + " name " + name +" showNe " + showNested + " showType "+showType);
+		//	if(val == null) {
+			//	return"";
+				//return  (prefix + name + tn + ((showValue == false) ? "" : " = NULL"));
+		//	}
 			
 			var res : String = "";
-			var etype : String = getExtendedType(obj);
+			var etype : String = getExtendedType(val);
 			var tn : String = (showType == false) ? "" : ":" + etype;
 			var sn : String = null;
 			
 			if(SKIP_ARRAYS && etype != "Array") {
 				sn = "-skipped array";
-			}else {
-				sn = obj.toString();
+			} else if(val == null) {
+				sn ="null";
+			}else{
+					sn = val.toString();
 			}
 			if (sn == "") {
 				sn = "-empty-";
@@ -373,7 +404,7 @@ package com.troyworks.util {
 		}
 
 		public static function getExtendedType(pObj : Object) : String {
-			trace(typeof (pObj));
+			//trace(typeof (pObj));
 			if(pObj == null)
 			return "?";
 			if (typeof (pObj) == 'string')

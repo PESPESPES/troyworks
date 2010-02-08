@@ -143,9 +143,9 @@ package com.troyworks.core.cogs {
 			return null;
 		}
 
-		public function requestTran(state : Function, transOptions : TransitionOptions = null, crossAction : Function = null) : void {
+		public function requestTran(state : Function, transOptions : TransitionOptions = null, crossAction : Function = null) : void{
 			throw new Error("StateMachine.requestTran cannot be called directly, use a valid subclass");
-			return null;
+			return;
 		}
 
 		

@@ -87,6 +87,7 @@ package com.troyworks.util.datetime {
 		//TODO add simple vs composite versions
 		//TODO add Boolean/SQL  AND, OR, NOT
 		public var SCHEDULE_MAX_ITEMS : int = 100;
+		public var timetemplate:Line1D;
 
 		public function EventFactory() {
 			super();
@@ -144,7 +145,7 @@ package com.troyworks.util.datetime {
 			var res : ArrayX = new ArrayX();
 			var i : int = 1;
 			var curLin : Line1D;
-			trace("incrementBy=>"+incrementBy)
+			trace("incrementBy=>"+incrementBy);
 			while(true) {
 				if(trackStartDate.time <= curEventDate.time && curEventDate.time <= trackEndDate.time) {
 					
@@ -216,7 +217,7 @@ package com.troyworks.util.datetime {
 			var curLin : Line1D;
 			var bestMatch : Line1D;
 			while(true) {
-				if(trackStartDate.time <= curEventDate.time && curEventDae.time <= trackEndDate.time) {
+				if(trackStartDate.time <= curEventDate.time && curEventDate.time <= trackEndDate.time) {
 					
 					//if(dateFrom == null || dateFrom != null)
 					trace(i++ + " " + curEventDate.toTimeString());//+ " " + curEventDate.time + " " + trackEndDate.time);

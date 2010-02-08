@@ -501,7 +501,7 @@ package com.troyworks.data {
 
 		/* shuffle fisher yates */
 		public function shuffleFY() : ArrayX {
-			for (var j : int, x : Object, i : int = this.length;i; j = int(Math.random() * i), x = this[--i], this[i] = this[j], this[j] = x);
+	//		for (var j : int, x : Object, i : int = this.length;i; j = int(Math.random() * i), x = this[--i], this[i] = this[j], this[j] = x);
 			return this;
 		}
 
