@@ -1,4 +1,4 @@
-package com.troyworks.controls.tcalendar { 
+﻿package com.troyworks.controls.tcalendar { 
 	/**
 	 * @author Troy Gardner
 	 */
@@ -39,7 +39,7 @@ package com.troyworks.controls.tcalendar {
 		}
 
 		public function updateUI() : void {
-			if(calendar.selectedDate.getDate() == myDate) {
+			if(calendar.dateVO.value.getDate() == myDate) {
 				isSelected_mc.visible = true;
 			} else {
 				isSelected_mc.visible = false;

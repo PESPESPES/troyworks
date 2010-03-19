@@ -712,7 +712,7 @@ package com.troyworks.controls.tcalendar {
 				} else {
 					cDay.isSelected_mc.visible = false;
 				}
-				if( myDate == todaysDate.getDate()) {
+				if( cDay.myDate == todaysDate.getDate()) {
 					cDay.isToday_mc.visible = true;
 				} else {
 					cDay.isToday_mc.visible = false;
