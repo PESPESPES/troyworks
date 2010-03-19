@@ -1,4 +1,6 @@
 package com.troyworks.framework { 
+	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	/*
 	* This serves as a base class for the TroyWorks framework
 	* and adds common functionality to most components
@@ -17,13 +19,13 @@ package com.troyworks.framework {
 	import flash.events.EventDispatcher;
 	import flash.utils.getQualifiedClassName;
 	
-	public class BaseObject extends EventDispatcher
-	{
+	public class BaseObject extends EventDispatcher implements IEventDispatcher	{
 	
 		// REQUIRED by DesignByContract
 		public var ASSERT : Function;
 		public var REQUIRE : Function;
 		public var log:Function;
+		public var dispatchEventsEnabled:Boolean = true;
 
 		public function BaseObject ()
 		{
@@ -37,5 +39,11 @@ package com.troyworks.framework {
 		override public function toString():String{
 			return getQualifiedClassName(this);
 		}
+		
+		override public function dispatchEvent(event : Event) : Boolean {
+			// TODO: Auto-generated method stub
+			return (dispatchEventsEnabled)? super.dispatchEvent(event):false;
+		}		
+
 	}
 }

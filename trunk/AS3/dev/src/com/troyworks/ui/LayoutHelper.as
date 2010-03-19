@@ -72,7 +72,7 @@ package com.troyworks.ui {
 			CY = m_bounds.y + m_bounds.height / 2;
 			tmpX = m_bounds.x;
 			tmpY = m_bounds.y;
-		
+			trace("tmpY 1 " + tmpY);
 			// in circular the radius things are placed on, in spiral the inital radius
 		}
 
@@ -85,7 +85,8 @@ package com.troyworks.ui {
 			tmpI = 0;
 			tmpJ = 0;
 			var nu : Number = Math.sqrt(numberOfClips);
-			
+			tmpX = m_bounds.x;
+			tmpY = m_bounds.y;
 			tmpI_MAX = Math.ceil(nu);
 			tmpJ_MAX = Math.floor(nu);
 			wspace = m_bounds.width / tmpI_MAX;
@@ -98,11 +99,11 @@ package com.troyworks.ui {
 					break;
 				
 				case CIRCULAR :
-					hradius = wradius = (Math.min(m_bounds.width ,m_bounds.height) * .8) / 2;
+					hradius = wradius = (Math.min(m_bounds.width, m_bounds.height) * .8) / 2;
 					break;
 				case SPIRAL :
 					hradius = (m_bounds.height * .9) / 2;
-					cradius = (m_bounds.width * .3)/2;
+					cradius = (m_bounds.width * .3) / 2;
 					// radius step
 					rstep = (hradius - cradius) / numberOfClips;
 					break;
@@ -144,7 +145,7 @@ package com.troyworks.ui {
 					break;
 				case GRID :
 					tmpX = m_bounds.left + (wspace * tmpI++);
-					
+					trace("tmpY 2 " + tmpY);
 					p.x = tmpX;
 					p.y = tmpY;	
 					if(tmpI == tmpI_MAX) {
@@ -158,13 +159,13 @@ package com.troyworks.ui {
 				case CIRCULAR :
 					p.x = Math.sin(deg) * wradius + CX;
 					p.y = Math.cos(deg) * hradius + CY;
-				//	trace(" circular " + p.x + " " + p.y);
+					//	trace(" circular " + p.x + " " + p.y);
 					deg += step;
 					break;
 				case SPIRAL :
 					p.x = Math.sin(deg) * cradius + CX;
 					p.y = Math.cos(deg) * cradius + CY;
-				//	trace(" SPIRAL " + p.x + " " + p.y);
+					//	trace(" SPIRAL " + p.x + " " + p.y);
 					deg += step;
 					cradius += rstep;
 					break;

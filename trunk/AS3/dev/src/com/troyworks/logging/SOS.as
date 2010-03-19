@@ -104,6 +104,7 @@ package com.troyworks.logging {
 		
 		public function showMessage(key : String ="com.troyworks.logging.sos", sMessage : Object = "") : void{
 			if(!_csock.connected && !_msock.connected){
+				trace("skipping sending message not connected yet");
 				return;
 			}
 			if(sMessage.indexOf("</")>-1){

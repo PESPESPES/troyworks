@@ -1,4 +1,6 @@
 package com.troyworks.data {
+	import flash.net.registerClassAlias;
+
 	import com.troyworks.util.construct;	
 
 	import flash.utils.Dictionary;
@@ -11,17 +13,24 @@ package com.troyworks.data {
 	 * unnecessary object creation and garbage collection.
 	 */
 	public class ObjectPoolSingleton {
+		[transient];
 		private var pools : Dictionary = new Dictionary();
-
+		
 		private static var _instance : ObjectPoolSingleton;
-
+		[transient];
+		private var inPool:Dictionary = new Dictionary(true);
+		private static const REG : * = registerClassAlias("com.troyworks.data.ObjectPoolSingleton", ObjectPoolSingleton);
+		[RemoteClass(alias="com.troyworks.data.ObjectPoolSingleton")]
+		
 		private static function hidden() : void {
 		}
-		public function ObjectPoolSingleton(h : Function) {
+
+		public function ObjectPoolSingleton(h : Function = null) {
 			if (h !== hidden) {
-				throw new Error("ObjectPoolSingleton and can only be accessed through ObjectPoolSingleton.getInstance()");
+		//incompatible with serialization		throw new Error("ObjectPoolSingleton and can only be accessed through ObjectPoolSingleton.getInstance()");
 			}
 		}
+
 		public static function getInstance() : ObjectPoolSingleton {
 			if( _instance == null ) {
 				_instance = new ObjectPoolSingleton(hidden);
@@ -30,20 +39,22 @@ package com.troyworks.data {
 		}
 
 		
-
-		private function getPool( type : Class ) : Array {
-			return type in pools ? pools[type] : pools[type] = new Array();
+		
+		private function getPool( type : Class ) : ArrayX {
+			return type in pools ? pools[type] : pools[type] = new ArrayX();
 		}
+
 		/**
 		 * preallocate a pool of objects (typically used at startup times)
 		 * aggressive cache allocation.
 		 */
-		public function prefill(count:int, type:Class, ...parameters ) : void{
+		public function prefill(count : int, type : Class, ...parameters ) : void {
 			var pool : Array = getPool(type);
-			while(count--){
-			pool.push(construct(type, parameters));
+			while(count--) {
+				pool.push(construct(type, parameters));
 			}
 		}
+
 		/**
 		 * Get an object of the specified type. If such an object exists in the pool then 
 		 * it will be returned. If such an object doesn't exist, a new one will be created.
@@ -56,13 +67,15 @@ package com.troyworks.data {
 		 * parameters in their constructor.
 		 */
 		public function getObject( type : Class, ...parameters ) : * {
-		//	trace("getPool " + type);
-			var pool : Array = getPool(type);
+			trace("POOL.getPool " + type);
+			var pool : ArrayX = getPool(type);
 			if( pool.length > 0 ) {
-			//	trace("GETTING FROM POOL");
-				return pool.shift();
+				trace("GETTING FROM POOL " + pool.length);
+				var object:* = pool.shift();
+				inPool[object] = false;
+				return object ;
 			} else {
-				//trace("CONSTRUCTING NEW");
+				trace("CONSTRUCTING NEW");
 				return construct(type, parameters);
 			}
 		}
@@ -82,8 +95,14 @@ package com.troyworks.data {
 				var typeName : String = getQualifiedClassName(object);
 				type = getDefinitionByName(typeName) as Class;
 			}
-			var pool : Array = getPool(type);
-			pool.push(object);
+			var pool : ArrayX = getPool(type);
+			//if(!pool.contains(object)) {
+			if(!inPool[object]){
+				//avoid adding a pooled object twice
+				trace("POOL.disposeObject " + object);
+				inPool[object] = true;
+				pool.push(object);
+			}
 		}
 	}
 }

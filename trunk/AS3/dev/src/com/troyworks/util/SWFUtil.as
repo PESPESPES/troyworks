@@ -5,42 +5,41 @@ package com.troyworks.util {
 	import flash.system.System;
 	import flash.system.Capabilities;
 
-	class SWFUtil {
+	public class SWFUtil {
 		public static var currentOS : String = null;
 		private static var getURLPath : String;
+
 		//private static var pathSeparator : String;
 
 		//		var request:URLRequest = new URLRequest(ath : String = null;
 		public static function isFullyLoaded(_mc : MovieClip) : Boolean {
 			//					var _mc = eval (clipPath);
-			return (_mc.totalFrames != null && _mc.totalFrames > 0 && _mc.framesLoaded >= _mc.totalFrames) ? true : false;
+			return (_mc.hasOwnProperty("totalFrames") && _mc.totalFrames > 0 && _mc.framesLoaded >= _mc.totalFrames) ? true : false;
 		}
 
 		public static function hasStartedLoading(_mc : MovieClip) : Boolean {
 			//var _mc = eval (clipPath);
-			return (_mc.totalFrames != null && _mc.totalFrames > 0) ? true : false;
+			return (_mc.hasOwnProperty("totalFrames") && _mc.totalFrames > 0) ? true : false;
 		}
 
 		public static function inBrowser() : Boolean {
-			var s = Capabilities.playerType;
+			var s : String = Capabilities.playerType;
 			return (s == "PlugIn" || s == "ActiveX") ? true : false;
 		}
-		public static function get pathSeparator () : String
-				{
-					var sSep : String;
-					var osN = SWFUtil.getOSName ();
-					if (osN == "win")
-					{
-						sSep = "\\";
-					} else if (osN == "mac")
-					{
-						sSep = ":";
-					} else
-					{
-						sSep = "/";
-					}
-					return sSep;
-				};
+
+		public static function get pathSeparator() : String {
+			var sSep : String;
+			var osN : String = SWFUtil.getOSName();
+			if (osN == "win") {
+				sSep = "\\";
+			} else if (osN == "mac") {
+				sSep = ":";
+			} else {
+				sSep = "/";
+			}
+			return sSep;
+		};
+
 		/* used to indicate if a swf or a string is on the web via looking if the url/string contains 
 		 * 'http://'
 		 */
@@ -48,11 +47,23 @@ package com.troyworks.util {
 			var res : Boolean = false;
 			var path : String = null;
 			if(o is MovieClip) {
-				path = MovieClip(o)._url;
+				path = MovieClip(o).loaderInfo.url;
 			}else if(o is String) {
 				path = String(o);
 			}
-			res = path.indexOf("http://") > -1; 
+			res = path.indexOf("http://") == 0 || path.indexOf("https://") == 0; 
+			return res;
+		}
+
+		public static function onDesktop(o : Object) : Boolean {
+			var res : Boolean = false;
+			var path : String = null;
+			if(o is MovieClip) {
+				path = MovieClip(o).loaderInfo.url;
+			}else if(o is String) {
+				path = String(o);
+			}
+			res = path.indexOf("file://") == 0; 
 			return res;
 		}
 
@@ -62,20 +73,29 @@ package com.troyworks.util {
 			var point : Object = null;
 			var _ary : Array = new Array();
 			if(points is Array  ) {
-				_ary = Array(points);
+				_ary = points as Array;
 			}else if(points is Object) {
 				_ary.push(point);
-			}else {
+			} else {
 				point = new Object();
 				point.x = 0;
 				point.y = 0;
 				_ary.push(point);
 			}
-			for(var i in _ary) {
+			for(var i:Object in _ary) {
 				point = _ary[i];
 				from.localToGlobal(point as Point);
 				to.globalToLocal(point as Point);
 			}
+		}
+		/* takes something like http://www.somepath.com/somefolder/someswf.swf and returns http://www.somepath.com/somefolder/ */ 
+		public static function getPathToSWF(_mc : DisplayObject) : String {
+			var flashURL : String = unescape(_mc.loaderInfo.url);
+				var a : Number = flashURL.lastIndexOf("/");
+			if (a == -1) {
+				a = flashURL.lastIndexOf("\\");
+			}
+			return flashURL.substring(0, a+1);
 		}
 
 		public static function getURLCleaned(_mc : DisplayObject) : String {
@@ -86,27 +106,29 @@ package com.troyworks.util {
 				if (a == -1) {
 					a = flashURL.lastIndexOf("\\");
 				}
-				var pathSep : String = SWFUtil.pathSeparator;
-				//trace ("path separator: '" + pathSep + "'");
+				//	var pathSep : String = SWFUtil.pathSeparator;
+				//	trace ("path separator: '" + pathSep + "'");
 				/////////
 				var cleanedPath : String = "";
+				var pathFromRoot : String;
+				var di : Number;
 				if (flashURL.indexOf("|") != -1) {
 					var indexOfDriveSep : Number = flashURL.indexOf("|", 0);
 					var driveLetter : String = flashURL.substring(indexOfDriveSep - 1, indexOfDriveSep);
-					var pathFromRoot : String = flashURL.substring(indexOfDriveSep + 1, a + 1);
+					pathFromRoot = flashURL.substring(indexOfDriveSep + 1, a + 1);
 					//	trace ("'" + driveLetter + "' - '" + pathFromRoot + "'");
 					cleanedPath = driveLetter + ":" + pathFromRoot;
-					var di : Number = cleanedPath.lastIndexOf("/", (cleanedPath.length - 2));
+					di = cleanedPath.lastIndexOf("/", (cleanedPath.length - 2));
 					//	trace (" ON A PC !!!!!!!!!!!!");
 					SWFUtil.currentOS = "PC";
 					cleanedPath = SWFUtil.formatPath(cleanedPath, "win");
 				} else if (flashURL.indexOf("///") != -1) {
 					//	DirectorUtils.instance.sendAlert("Assuming Mac...");
 					// assume mac
-					var pathFromRoot : String = flashURL.substring(flashURL.indexOf("///") + 3, a + 1);
+					pathFromRoot = flashURL.substring(flashURL.indexOf("///") + 3, a + 1);
 					//	trace("'"+driveLetter +"' - '" + pathFromRoot+"'");
 					cleanedPath = pathFromRoot.split("/").join(":");
-					var di : Number = cleanedPath.lastIndexOf(":", (cleanedPath.length - 2));
+					di = cleanedPath.lastIndexOf(":", (cleanedPath.length - 2));
 					//	trace (" ON A MAC !!!!!!!!!!!!");
 					SWFUtil.currentOS = "MAC";
 					cleanedPath = SWFUtil.formatPath(cleanedPath, "mac");
@@ -159,7 +181,7 @@ package com.troyworks.util {
 				//find first number
 				var operSys : String = Capabilities.os;
 				var majorVersion : Number = 0;
-				for (var i : Number = 0;i < operSys.length; i++) {
+				for (var i : Number = 0;i < operSys.length;i++) {
 					if ( !isNaN(parseInt(operSys.substr(i, 1)))) {
 						majorVersion = Number(operSys.substring(i, operSys.indexOf(".")));
 						break;
@@ -180,13 +202,13 @@ package com.troyworks.util {
 		}
 
 		public static function getParentPath(path : String) : String {
-			var a = Math.max(path.lastIndexOf("/", path.length - 2), path.lastIndexOf("\\", path.length - 2));
+			var a : int = Math.max(path.lastIndexOf("/", path.length - 2), path.lastIndexOf("\\", path.length - 2));
 			return path.substring(0, a + 1);
 		}
 
 		public static function getPathSeparator() : String {
 			var sSep : String;
-			var osN = SWFUtil.getOSName();
+			var osN : String = SWFUtil.getOSName();
 			if (osN == "win") {
 				sSep = "\\";
 			} else if (osN == "mac") {
@@ -212,10 +234,10 @@ package com.troyworks.util {
 			//			}
 			var firstSlashPast : Number = str.indexOf("/", "http://".length);
 			if (firstSlashPast != -1) {
-				var a = str.substring(0, firstSlashPast);
-				var b = str.substring(firstSlashPast, str.length);
+				var a : String = str.substring(0, firstSlashPast);
+				//var b = str.substring(firstSlashPast, str.length);
 				return a;
-			}else {
+			} else {
 				return str;
 			}
 		}

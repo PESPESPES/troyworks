@@ -163,8 +163,8 @@ package com.troyworks.ui {
 		}
 
 		/* get a DisplayObject object by the linkageID from the UI.fla */
-		public static function getDisplayObjectByLinkageID(soundLinkageId : String) : DisplayObject {
-			var cls : Class = ApplicationDomain.currentDomain.getDefinition(soundLinkageId) as Class;
+		public static function getDisplayObjectByLinkageID(linkageID : String) : DisplayObject {
+			var cls : Class = ApplicationDomain.currentDomain.getDefinition(linkageID) as Class;
 			var dO : DisplayObject = new cls() as DisplayObject;;
 			return dO;
 		}
