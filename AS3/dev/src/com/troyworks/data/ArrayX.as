@@ -9,10 +9,19 @@ package com.troyworks.data {
 	 * that permit shuffling and shifting of child values, searching, swapping, getting a random element
 	 * It's very useful, at a modest size.
 	 * 
-	 * NOTE that IExternalizable does not work with classes that extend Array, so ArrayX is written
-	 * to the stream as an Array, and returned as an Array.
 	 * 
-	 *  so you much override serialization in your class like 
+	 * NOTE
+	 * due to LAME limitations in Flash 9 (still true in  10.1). You can't store this class
+	 * in any serialization using AMF..sharedoOjbect, RemoteObject etc.  This is not the fault of ArrayX
+	 * but rather some true of any classes that extend Array.
+	 * 
+	 * registerClassAlias is normally used, but in this case it's ignored. 
+	 * 
+	 * As well IExternalizable is normally used, but in this case it's ignored.
+	 *  
+	 * so ArrayX is written to the stream as an Array, and returned as an Array.
+	 * 
+	 * so you much override serialization in your class like 
 	 * 
 	 * var ar:Array = readObject() as Array;
 	 * var ax:ArrayX = new ArrayX();
@@ -37,10 +46,9 @@ package com.troyworks.data {
 	public dynamic class ArrayX extends Array implements IExternalizable {
 		//implements IArray {
 		private static const REG : * = registerClassAlias("com.troyworks.data.ArrayX", ArrayX);
-
 		[RemoteClass(alias="com.troyworks.data.ArrayX")]
 		public static const serialVersionUID : Number = 1;
-
+		
 		public function ArrayX(...args) {
 			super();
 			var n : uint = args.length;
@@ -60,12 +68,12 @@ package com.troyworks.data {
 		}
 
 		public function readExternal(input : IDataInput) : void {
-			
+			trace("readExternal");
 			//	var d:Object = input.readObject();
 			
 			//var sv:Number = d["serialVersionUID"] as Number ;
 			var sv : Number = input.readObject() as Number ;
-			trace("readExternal " + sv);
+			//trace("readExternal " + sv);
 			/////////////// COMMON TO ALL VERSIONS ///////////////////////////
 /*			if(serialVersionUID == 1 || serialVersionUID == 2 || serialVersionUID == 3){
 				 name = d["name"] ;
@@ -196,7 +204,7 @@ package com.troyworks.data {
 			
 			var cur : Object;
 			var sanity:Number = this.length;
-			while(sanity-->0) {
+			while((sanity--) >0) {
 				if(obj == this[0]) {
 					cur = this[0];
 					break;
@@ -336,13 +344,15 @@ package com.troyworks.data {
 		};
 
 		public function removeFromCollectionAll() : void {
+			if(this.length > 0){
 			super.splice(0, this.length);
+			}
 		} 
 
 		//look for a reference and splice from array
 		public function removeFromCollectionItem(aValue_obj : Object) : Number {
 			var tIndexOfMatch_num : Number = getLastIndexOf(aValue_obj);
-			trace("found item at " + tIndexOfMatch_num);
+			//trace("found item to remove at " + tIndexOfMatch_num);
 			if(tIndexOfMatch_num != -1) {
 				super.splice(tIndexOfMatch_num, 1);
 			}
@@ -662,13 +672,13 @@ package com.troyworks.data {
 		 *  returns true if so.
 		 */
 		public function contains(aValue_obj : Object) : Boolean {
-			trace("ArrayX.contains( " + aValue_obj + " )" + length);
+		//	trace("ArrayX.contains( " + aValue_obj + " )" + length);
 			var res : Boolean = false;
-			trace(" this " + this);
+		//	trace(" this " + this);
 			for (var i : Number = 0;i < this.length; i++) {
-				trace(" Ak " + i + " v= " + this[i] + ":" + this[i].length + " =? " + aValue_obj);
+				//trace(" Ak " + i + " v= " + this[i] + " =? " + aValue_obj);
 				if (this[i] == aValue_obj) {
-					trace("  contains it " + aValue_obj);
+					//trace("  contains it " + aValue_obj);
 					res = true;
 					break;
 				}

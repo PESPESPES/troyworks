@@ -263,11 +263,11 @@ package com.troyworks.util {
 			}
 			//this is used to prevent infinite loops
 			var res : Array = new Array();
-			if(objStruct.$$_id_ == null) {
-				objStruct.$$_id_ = IDz++;
+		//	if(objStruct.$$_id_ == null) {
+		//		objStruct.$$_id_ = IDz++;
 				//_global.ASSetPropFlags (objStruct, "$$_id_", 1);
 			//	trace("issued a new ID + " + objStruct.$$_id_ + " " + objStruct._id_);  
-			}
+			//}
 			//	trace(objStruct._id_ +"  " + objStruct.$$_id_ +" AA \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
 			if(history != null) {
 				var hitLoop : Boolean = false;
@@ -279,14 +279,14 @@ package com.troyworks.util {
 					for(var i:String in history) {
 						trace("   " + cnt++ + " history check of " + i); 
 						//check to make sure we aren't looping
-						var com : Object = history[i].$$_id_;
-						if(com === objStruct.$$_id_) {
-							trace(i + "ERRROR HIT INFINITE LOOP With TraceID " + " " + com + " _id_: " + history[i]._id_ + " at " + cnt);
+				//		var com : Object = history[i].$$_id_;
+				//		if(com === objStruct.$$_id_) {
+					//		trace(i + "ERRROR HIT INFINITE LOOP With TraceID " + " " + com + " _id_: " + history[i]._id_ + " at " + cnt);
 							//res.push("hit circular reference");
-							throw new Error("Trace.me hit circular reference");
-							hitLoop = true;
-							return res;
-						}
+					//		throw new Error("Trace.me hit circular reference");
+					//		hitLoop = true;
+					//		return res;
+					//	}
 					}
 					if(history != null) {
 						//	trace("----adding to history.add(" + objStruct._id_ +":"+ getExtendedType(objStruct)+")  #" + history.length);

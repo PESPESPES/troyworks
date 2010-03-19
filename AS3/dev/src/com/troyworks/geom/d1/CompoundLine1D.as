@@ -80,7 +80,9 @@
 			//this.children.filter(qry.passesMinAndMaxCheck);			
 			for (;i < n; ++i) {
 				var c : Line1D = this.children[i] as Line1D;
+				c.A.dispatchEventsEnabled = false;
 				c.A.position += delta;
+				c.A.dispatchEventsEnabled = true;
 			}
 			calc();
 		}

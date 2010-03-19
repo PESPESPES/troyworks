@@ -1,4 +1,7 @@
-package com.troyworks.framework.loader { 
+package com.troyworks.framework.loader {	
+	import flash.display.Loader;
+	import flash.display.DisplayObject;
+ 
 	/**
 	 * This is a utility to calculate the bitrate of a downloaded file, rewritten from AS3.0
 	 * to be generic for loader objects
@@ -68,8 +71,8 @@ package com.troyworks.framework.loader {
 		public var curTime : Number;
 
 		public var percentLoaded : Number;
-		private var _loaderInf:LoaderInfo;
-		public var clearListenersOnComplete:Boolean = true;
+		private var _loaderInf : LoaderInfo;
+		public var clearListenersOnComplete : Boolean = true;
 
 		public static const NOT_STARTED : String = "NOT_STARTED";
 		public static const NO_BYTES : String = "NO_BYTES";
@@ -77,12 +80,19 @@ package com.troyworks.framework.loader {
 		public static const FINISHED : String = "FINISHED";
 
 		public var curstate : String = NOT_STARTED;
+		private var myContent : DisplayObject;
 
-		public function LoaderUtil(loaderInf : LoaderInfo) {
+		public function LoaderUtil(loader : Object) {
 			super();
-			loaderInf.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-			loaderInf.addEventListener(Event.OPEN, openStreamHandler);
-			_loaderInf = loaderInf;
+			if(loader is LoaderInfo) {
+				_loaderInf == LoaderInfo(loader);
+			}else if(loader is Loader) {
+				_loaderInf = loader.contentLoaderInfo;//loaderInf;
+			}
+			
+			_loaderInf.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+			_loaderInf.addEventListener(Event.OPEN, openStreamHandler);
+			_loaderInf.addEventListener(Event.COMPLETE, completeHandler);
 		}
 
 		public function getCanStartPlayingWhileStreaming(duration : Number, safety : Number) : Boolean {
@@ -116,22 +126,22 @@ package com.troyworks.framework.loader {
 			lastTime = curTime; 
 			curTime = getTimer();
 				
-		//	trace("LoaderUtil@"+curstate + " progressHandler " + evt.toString());
+			//	trace("LoaderUtil@"+curstate + " progressHandler " + evt.toString());
 			switch(curstate) {
 				case  NOT_STARTED:
 					//shouldn't hit this
 					break;
 				case  NO_BYTES:
 					if(evt.bytesTotal > 0) {
-						totalBytesToLoad =evt.bytesTotal; 
+						totalBytesToLoad = evt.bytesTotal; 
 						curstate = BYTES_STARTED;
 						startRecieveAtTime = getTimer();
 						latencyMS = startRecieveAtTime - startLoadAtTime;
 						trace("latencyMS " + latencyMS);
 					}
 					if(curBytesLoaded >= 0) {
-			//			trace("updating first");
-						lastBytesLoaded =0;
+						//			trace("updating first");
+						lastBytesLoaded = 0;
 						updateProgress();
 					}
 					break;
@@ -151,11 +161,11 @@ package com.troyworks.framework.loader {
 			/////////////////////////////////////////////
 			//this check is necessary as the browser delivers to the flash player
 			//in buckets
-		//	trace("LoaderUtil.curB " + curBytesLoaded + " last "+ lastBytesLoaded);
+			//	trace("LoaderUtil.curB " + curBytesLoaded + " last "+ lastBytesLoaded);
 			if(curBytesLoaded > lastBytesLoaded) {
-			//	trace("LoaderUtil.change in bytes");
+				//	trace("LoaderUtil.change in bytes");
 				percentLoaded = curBytesLoaded / totalBytesToLoad;
-		//		trace("LoaderUtil.updatePercentage****************");
+				//		trace("LoaderUtil.updatePercentage****************");
 				//TODO: notify of update to Kbps
 				Kbps = getKbps(lastTime, curTime, curBytesLoaded - lastBytesLoaded);
 				bytesLoadedSinceLastCheck = curBytesLoaded - lastBytesLoaded;
@@ -164,11 +174,11 @@ package com.troyworks.framework.loader {
 					//        finished successfully         //
 					//////////////////////////////////////////
 					curstate = "FINISHED";
-					dispatchEvent(new Event(Event.COMPLETE));
+					//	dispatchEvent(new Event(Event.COMPLETE));
 					finishedRecieveAtTime = getTimer();
 					Kbps = getKbps(startLoadAtTime, finishedRecieveAtTime, totalBytesToLoad);
 					trace("LoaderUtil.found " + Kbps + " Kbps");
-							//onCallBack(Kbps, latencyMS);
+					//onCallBack(Kbps, latencyMS);
 					if(clearListenersOnComplete) {
 						_loaderInf.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
 						_loaderInf.removeEventListener(Event.OPEN, openStreamHandler);	
@@ -177,8 +187,22 @@ package com.troyworks.framework.loader {
 			}
 		}
 
+		public function completeHandler(evt : Event) : void {
+			trace("LoaderUtil.completeHandler");
+			
+			myContent = evt.target.content;
+			dispatchEvent(evt);
+			if(clearListenersOnComplete) {
+				_loaderInf.removeEventListener(Event.COMPLETE, completeHandler);
+			}
+		}
+
 		public function getPercentLoaded() : String {
 			return Math.round(percentLoaded) + "%";
+		}
+
+		public function get content() : DisplayObject {
+			return myContent;
 		}
 
 		/*http://www.sonify.org/home/feature/remixology/019_bandwidthdetection/page2.html

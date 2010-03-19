@@ -275,7 +275,7 @@ package com.troyworks.core.tweeny {
 		}
 
 		public function staticInit() : void {
-			trace("Tny.staticInit");
+		//	trace("Tny.staticInit");
 			SND_PROPS = addVarsOf(new SoundTransform(), SNDTRANSFORM_START, SNDTRANSFORM_END, new Array());
 			COLOR_PROPS = addVarsOf(new ColorTransform(), COLORTRANSFORM_START, COLORTRANSFORM_END, new Array());
 			MATRIX_PROPS = addVarsOf(new Matrix(), MATRIXTRANSFORM_START, MATRIXTRANSFORM_END, new Array());
@@ -337,7 +337,7 @@ package com.troyworks.core.tweeny {
 		}
 
 		public function addMatrixSupport() : void {
-			trace("Tny.addMatrixSupport");
+	//		trace("Tny.addMatrixSupport");
 			addProps(MATRIX_PROPS);
 		}
 
@@ -464,7 +464,7 @@ package com.troyworks.core.tweeny {
 			/*	if(isNaN(dur)){
 			return;
 			}*/
-			//trace("duration " + dur);
+			trace("duration " + dur);
 			isActive = true;
 			hasStarted = false;
 			isFinished = false;
@@ -479,7 +479,7 @@ package com.troyworks.core.tweeny {
 				// so duration will be frames: = dur (in seconds)* fps;
 				// increment equals duration/ fps/
 
-				trace("duration " + dur + " at  " + fps + " fps");
+				//trace("duration " + dur + " at  " + fps + " fps");
 				fd = 1000 / fps;
 				d = (dur * 1000) - fd; 
 				// how many frames it will take to get there, keeping in mind that the start frame and end frame take up space.
@@ -511,7 +511,7 @@ package com.troyworks.core.tweeny {
 		 * onPulse, this is to avoid startup of animation overhead.
 		 * **/
 		public function onPulse(evt : Object = null) : void {
-			//	trace("Tny.Render pulse-----------");
+		
 			//PROP LISTING trace(p.join(","));
 
 			//	trace(trg.name +" onPulse "+ t + "% " + d + " " + isActive + " " + trg + " " + ts );
@@ -527,6 +527,7 @@ package com.troyworks.core.tweeny {
 				//trace(trg.name +" wait  ----- "+ t);
 				return;
 			}else if(t >= 0 && !hasStarted) {
+				//	trace(trg.name + " Tny.Render pulse-----------");
 				//start
 				/*	if(quantized){
 				t = 0;
