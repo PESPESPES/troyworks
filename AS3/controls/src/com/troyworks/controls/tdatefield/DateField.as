@@ -1,4 +1,4 @@
-package com.troyworks.controls.tdatefield {
+﻿package com.troyworks.controls.tdatefield {
 	import com.troyworks.data.valueobjects.TDateVO;
 	import com.troyworks.controls.tcalendar.Calendar;
 	import com.troyworks.core.cogs.CogEvent;
@@ -25,11 +25,14 @@ package com.troyworks.controls.tdatefield {
 		public var calView : Sprite;
 		public var calViewClass : Class;
 	
+		private var bufferDate:TDate;
 
 		public function DateField(initialState : String = "s_initial", hsmfName : String = "DateField", aInit : Boolean = false) {
 			
 			super(initialState, "DateField", aInit);
 			trace("DateField();.........................");
+			bufferDate = new TDate();
+			bufferDate.setTime(new Date().getTime());
 		}
 
 		override public function set view( value : Sprite ) : void {
@@ -47,7 +50,8 @@ package com.troyworks.controls.tdatefield {
 		}
 
 		public function onSelectedDateChanged(evt:Event =null) : void {
-			var selected : String = (cal.dateVO.value.getMonth() + 1) + "/" + cal.dateVO.value.getDate() + "/" + cal.dateVO.value.getFullYear() + " @ "  + cal.hour_txt.text;
+			var temp:TDate = (cal)?cal.dateVO.value:bufferDate;
+			var selected : String = (temp.getMonth() + 1) + "/" + temp.getDate() + "/" + temp.getFullYear() + " @ "  + temp.hours+":"+temp.minutes;
 			trace("DateField.selected date *CHANGE*" + selected);
 			input_txt.text = selected;
 			calView.visible = false;
@@ -57,7 +61,8 @@ package com.troyworks.controls.tdatefield {
 
 		public function onUserSelectedDate(bypassEvent : Boolean) : void {
 			trace("DateField.onUserSelectedDate");
-			var selected : String = (cal.dateVO.value.getMonth() + 1) + "/" + cal.dateVO.value.getDate() + "/" + cal.dateVO.value.getFullYear();
+			var temp:TDate = (cal)?cal.dateVO.value:bufferDate;
+			var selected : String = (temp.getMonth() + 1) + "/" + temp.getDate() + "/" + temp.getFullYear();
 			trace("DateField.selected date *CHANGE*" + selected);
 			input_txt.text = selected;
 	
@@ -81,16 +86,25 @@ package com.troyworks.controls.tdatefield {
 		}
 
 		public function getSelectedDate() : TDate {
-			return cal.dateVO.value;
+			if (cal)
+				return cal.dateVO.value;
+			else
+				return bufferDate;
 		}
 
 		public function setSelectedDate(date : Date) : void {
-			trace("DateField.setSelectedDateCHANGE");
+			trace("DateField.setSelectedDateCHANGE = "+date.getTime());
 			var t : TDate = new TDate();
-			t.setTime(date.getTime());
-			cal.dateVO.value = t;
+			t.setTime(date.getTime());			
+			if (cal)
+				cal.dateVO.value = t;
+			else
+				bufferDate = t;
+			onSelectedDateChanged();
+			/*
 			var e : Event = new Event(Event.CHANGE);
 			dispatchEvent(e);
+			*/
 		}
 
 		public function onSetFocus(evt : Event = null) : void {
@@ -154,6 +168,8 @@ package com.troyworks.controls.tdatefield {
 					cal.initStateMachine();
 					cal.addEventListener("DATE_SELECTED",onSelectedDateChanged);
 					calView.visible = false;
+					cal.dateVO.value = bufferDate;
+					onSelectedDateChanged();
 					//cal.selectedDate.addEventListener(Event.CHANGE, onUserSelectedDate);
 					//cal.gotoTodaysDate();
 					//snapshotDimensions(cal);
