@@ -14,7 +14,7 @@
 		public static  const EVTD_COG_PROTECTED_EVENT:String = "EVTD_COG_PROTECTED_EVENT";
 		public static  const EVTD_COG_PUBLIC_EVENT:String = "EVTD_COG_PUBLIC_EVENT";
 		
-		private var _sig:CogSignal;
+		protected var _sig:CogSignal;
 		private var _startTime:Number;
 		private var _endTime:Number;
 		private var duration:Number;

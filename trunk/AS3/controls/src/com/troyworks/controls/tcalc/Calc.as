@@ -90,8 +90,7 @@ package com.troyworks.controls.tcalc {
 		}
 
 		public function reset() : void {
-			var e : CalcEvt = new CalcEvt();
-			e.sig = SIG_C;
+			var e : CalcEvt = new CalcEvt(SIG_C.name,SIG_C);
 			dispatchEvent(e);
 		}
 
