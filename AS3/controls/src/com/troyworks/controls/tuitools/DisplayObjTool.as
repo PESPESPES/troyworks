@@ -5,16 +5,16 @@
  */
 
 package com.troyworks.controls.tuitools {
+	import flash.filters.DropShadowFilter;
+	import flash.display.DisplayObjectContainer;
 	import com.troyworks.events.EventWithArgs;	
 
 	import flash.events.Event;	
 
 	import com.troyworks.core.Signals;
 	import com.troyworks.core.cogs.*;
-	import com.troyworks.core.cogs.Fsm;
 	import com.troyworks.core.cogs.proxies.KeyBoardProxy;
 	import com.troyworks.ui.UIUtil;
-	import com.troyworks.util.NumberUtil;
 
 	import flash.display.DisplayObject;
 	import flash.display.InteractiveObject;
@@ -29,7 +29,7 @@ package com.troyworks.controls.tuitools {
 
 	public class DisplayObjTool extends Fsm {
 		public var tools : Array = ["none", "move", "scale", "rotate"]; 
-		private var _view : MovieClip;
+		//private var _view : Sprite;
 		private var _clip : DisplayObject;
 		private var _SHIFT_is_down : Boolean = false;
 
@@ -98,12 +98,48 @@ package com.troyworks.controls.tuitools {
 		private var rpIdx : Object = new Object();
 
 		public function DisplayObjTool(toOff : Boolean = false) {
-			super();
-			_initState = s_initial;
+			super("s_initial","DisplayObjTool");
 		}
 
-		public function setView(mc : MovieClip) : void {
+		/*public function setView(mc : Sprite) : void {
 			_view = mc;
+		}*/
+
+		public function createBuiltInUI(scope:DisplayObjectContainer) : void {
+			_tl = new  Sprite();
+			_t = new  Sprite();
+			_tr = new  Sprite();
+			_l = new  Sprite();
+			_r = new  Sprite();
+			_bl = new  Sprite();
+			_b = new  Sprite();
+			_br = new  Sprite();
+			drawControl(_tl, scope);
+			drawControl(_t, scope);
+			drawControl(_tr, scope);
+			drawControl(_l, scope);
+			drawControl(_r, scope);
+			drawControl(_bl, scope);
+			drawControl(_b, scope);
+			drawControl(_br, scope);
+			this.scale_btn = new  Sprite();
+			this.rotate_btn = new  Sprite();
+			this.move_btn = new  Sprite();
+			this.registrationPoint = new  Sprite();
+			this.registrationPoint.graphics.lineStyle(1, 0);
+			this.registrationPoint.graphics.beginFill(0xFF0000, .6);
+			this.registrationPoint.graphics.drawCircle(0, 0, 5);
+			scope.addChild(this.registrationPoint);
+			
+		}
+
+		protected function drawControl(dO : Sprite, scope:DisplayObjectContainer) : void {
+			dO.graphics.lineStyle(1, 0);
+			dO.graphics.beginFill(0xCCCCCC, .6);
+			dO.graphics.drawCircle(0, 0, 5);
+			dO.buttonMode = true;
+			dO.filters = [new DropShadowFilter(4,45,.6)];
+			scope.addChild(dO);
 		}
 
 		public function setClipToManipulate(mc : DisplayObject) : void {
@@ -143,6 +179,7 @@ package com.troyworks.controls.tuitools {
 					keyP.enable();
 				
 					trace("adding setClipToManipulate ");
+					
 					_clip.addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
 					_clip.addEventListener(MouseEvent.CLICK, onClick);
 					_clip.addEventListener(MouseEvent.MOUSE_DOWN, onPress);
@@ -158,10 +195,9 @@ package com.troyworks.controls.tuitools {
 						_br.visible = true;
 					}
 					tran(_currentState);
-//					_currentState(SIG_EXIT.createPrivateEvent());
-//					_currentState(SIG_EXIT.createPrivateEvent());
+					//					_currentState(SIG_EXIT.createPrivateEvent());
+					//					_currentState(SIG_EXIT.createPrivateEvent());
 					positionControls();
-					
 				} else {
 					///////// settting to null clip ///////
 					if(_tl != null) {
@@ -383,8 +419,10 @@ package com.troyworks.controls.tuitools {
 					trace("no valid control click");
 				}
 			}
-			trace("opposite is " + opposite.name);
+			trace("opposite is " + opposite.name + " " + _clip);
 			var p1 : Point = new Point(opposite.x, opposite.y);
+			trace(" _clip.globalToLocal " +  _clip.globalToLocal);
+			trace(" opposite.parent " +  opposite.parent);
 			var p : Point = _clip.globalToLocal(opposite.parent.localToGlobal(p1));
 			setRegistration(p.x, p.y);
 			//if(_clip.getBounds(_clip.parent).contains(_clip.parent.mouseX, _clip.parent.mouseY)){
@@ -468,14 +506,14 @@ package com.troyworks.controls.tuitools {
 			dispatchEvent(new CogEvent(CogEvent.EVTD_COG_PRIVATE_EVENT, MOUSE_CLICK));
 		}
 
-		function reportKeyDown(event : KeyboardEvent) : void {
+		public function reportKeyDown(event : KeyboardEvent) : void {
 			//	trace("Key Pressed: " + String.fromCharCode(event.charCode) +         " (key code: " + event.keyCode + " character code: "         + event.charCode + ")");
 			if (event.keyCode == Keyboard.SHIFT) {
 				_SHIFT_is_down = true;
 			}
 		}
 
-		function reportKeyUp(event : KeyboardEvent) : void {
+		public function reportKeyUp(event : KeyboardEvent) : void {
 			//	trace("Key Released: " + String.fromCharCode(event.charCode) +         " (key code: " + event.keyCode + " character code: " +         event.charCode + ")");
 			if (event.keyCode == Keyboard.SHIFT) {
 				_SHIFT_is_down = false;
@@ -604,6 +642,7 @@ package com.troyworks.controls.tuitools {
 		public function s_initial(evt : CogEvent) : void {
 			switch(evt.sig) {
 				case SIG_INIT:
+				trace('s_initial '+s_ScaleTool );
 					//			_initState=s_NoTool;
 					//tran(s_MoveTool);
 					//tran(s_RotateTool);

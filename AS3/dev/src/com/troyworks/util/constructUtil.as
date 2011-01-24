@@ -41,7 +41,7 @@ package com.troyworks.util
 	 * @param type The class to construct.
 	 * @param parameters An array of up to ten parameters to pass to the constructor.
 	 */
-	public function construct( type:Class, parameters:Array ):*
+	public function constructUtil( type:Class, parameters:Array ):*
 	{
 		//trace("construct " + type + " pars " + parameters.length);
 		//trace("Params " + parameters.join(","));

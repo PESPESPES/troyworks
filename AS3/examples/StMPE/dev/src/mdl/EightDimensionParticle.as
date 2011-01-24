@@ -14,6 +14,7 @@
 	 */
 	public class EightDimensionParticle extends Object {
 
+
 		private var _ui : Sprite;
 		public var uiTny : Tny;
 		public var modl : Model;
@@ -26,6 +27,11 @@
 		public var ncolor : Number;
 		public var ncolorObj : Colors;
 		public var nshape : RenderShape = RenderShape.M_CIRCLE;
+		public var participates:Number = 0;
+		public static const ISTATE_A:Number =1;
+		public static const ISTATE_B:Number =2;
+		public static const ISTATE_C:Number =4;
+		public static const ISTATE_D:Number =8;
 		//////// GUT (Grand Unified Theory) ////////////////////////
 		public var gutname : String;//="X"; 
 		public var gutlabel : String;//"X boson";
@@ -41,23 +47,30 @@
 		public var distFromCamera : Number = 0;
 
 		public static const HOVER_COLOR : Number = 0xFFCC33;
-		public static const SELECTED_FIRST_COLOR : Number = 0xFFFF00;
+		public static const SELECTED_FIRST_COLOR : Number = 0x333399;
 		public static const SELECTED_SECOND_POSSIBLE_COLOR : Number = 0x66FFFF ;
-		public static const SELECTED_SECOND_COLOR : Number = 0x333399;
+	//	public static const SELECTED_SECOND_POSSIBLE_COLOR2 : Number = 0x88FFFF ;
+		public static const SELECTED_SECOND_COLOR : Number = 0xFFFF00;
 		public static const RESULT_COLOR : Number = 0x66FF66;
 
-		public const HOVER_FILTER : GlowFilter = new GlowFilter(HOVER_COLOR, .6, 10, 10, 4, 1, true);
+		public const HOVER_FILTER : GlowFilter = new GlowFilter(HOVER_COLOR, .6, 10, 10, 4, 1, true, true);
 		public const SELECTED_FIRST_FILTER : GlowFilter = new GlowFilter(SELECTED_FIRST_COLOR, 1, 20, 20, 4);
 		public const SELECTED_SECOND_POSSIBLE_FILTER : GlowFilter = new GlowFilter(SELECTED_SECOND_POSSIBLE_COLOR, 1, 10, 10, 4);
-		public const SELECTED_SECOND_FILTER : GlowFilter = new GlowFilter(SELECTED_SECOND_COLOR, 1, 20, 20, 4);
-		public const RESULT_FILTER : GlowFilter = new GlowFilter(RESULT_COLOR, 1, 20, 20, 4);
-
+//		public const SELECTED_SECOND_POSSIBLE_FILTER2 : GlowFilter = new GlowFilter(SELECTED_SECOND_POSSIBLE_COLOR2, 1, 10, 10, 4);
+		
+		public const SELECTED_SECOND_FILTER : GlowFilter = new GlowFilter(SELECTED_SECOND_COLOR, 1, 30, 30, 4);
+		public const RESULT_FILTER : GlowFilter = new GlowFilter(RESULT_COLOR, 1, 30, 30, 4);
+		public const RESULT_FILTER2 : GlowFilter = new GlowFilter(RESULT_COLOR, 1, 10, 10, 4);
 		public var isFocused : Boolean = false;
 		public static const NOT_SELECTED : Number = 0;
 		public static const SELECTED_FIRST : Number = 1;
 		public static const SELECTED_SECOND_POSSIBLE : Number = 2;
+		
 		public static const SELECTED_SECOND : Number = 4;
 		public static const RESULT : Number = 8;
+		public static const POSSIBLE_RESULT : Number = 16;
+		public var firstClickSelectedState : Number = NOT_SELECTED;
+		
 		private var _selectedState : Number = NOT_SELECTED;
 		// dimension coordinates
 		public var outboundParticleLinks : Array = new Array();
@@ -154,12 +167,15 @@
 			if(modl != null && modl.isGUTmode ) {
 				//	trace(id + " drawing with GUT color " + gutcolor + " isGUT" + isGUT);
 				gutshape.draw(ui.getChildByName("shape") as Sprite, gutcolor);
+				gutshape.draw(ui.getChildByName("hover") as Sprite, gutcolor);
 			} else {
 				/////////// NOT GUT mode //////////
 				//////// draw normal ////////////
 				nshape.draw(ui.getChildByName("shape") as Sprite, ncolor);
+				gutshape.draw(ui.getChildByName("hover") as Sprite, gutcolor);
+				
 			}
-			
+			ui.getChildByName("hover").filters = [HOVER_FILTER];
 		
 			//	trace("going to LABEL " + name);
 			labelMC.gotoAndStop(int(name));
@@ -171,16 +187,22 @@
 				var shape : DisplayObject = ui.getChildByName("shape");
 				///////////////// FOCUSED /////////////////////
 				if(isFocused) {
-					var ary : Array = ui.getChildByName("shape").filters;
-					ary.push(HOVER_FILTER);
-					shape.filters = ary;
+					
+					ui.getChildByName("hover").visible = true;
 					//		ui.alpha = 1;
-				} else {
+				}else{
+					ui.getChildByName("hover").visible = false;
+				}
+				// else {*/
 					//////////////// NOT FOCUSED ////////////////////////
 					//	trace("updatingUI " + _selectedState);
 					switch(_selectedState) {	
 						case RESULT:
 							shape.filters = [RESULT_FILTER];
+							//	ui.alpha = 1;
+							break;
+						case POSSIBLE_RESULT:
+							shape.filters = [RESULT_FILTER2];
 							//	ui.alpha = 1;
 							break;
 			
@@ -193,7 +215,11 @@
 							break;
 						case SELECTED_SECOND:
 							trace("SELECTED SECOND");
-							shape.filters = [SELECTED_SECOND_FILTER];
+							if(firstClickSelectedState == POSSIBLE_RESULT){
+								shape.filters = [RESULT_FILTER];
+							}else{
+								shape.filters = [SELECTED_SECOND_FILTER];
+							}
 							//	ui.alpha = 1;
 							break;
 						case SELECTED_SECOND_POSSIBLE:
@@ -207,7 +233,7 @@
 						default:
 							trace("ERROR not selected ");
 							break;
-					}
+				//	}
 				}
 				/////////////////// UI ////////////////////
 			// UI.setAxisLabel(ui.getChildByName(lbl), 
@@ -675,7 +701,7 @@
 
 		public function toString() : String {
 			//			return this.d1 + " " + this.d2 + " " + this.d3;
-			return  "P" + name;
+			return  "P" + name  + " id:" + id;
 		}
 
 		public function toXMLString() : String {

@@ -4,4 +4,8 @@
     <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">TroyworksAS3Dev</AS3Classpath>
     <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">playerglobal.swc</AS3Classpath>
     <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">CS3CoreComponentsSWC.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">flex.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">framework.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">rpc.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">utilities.swc</AS3Classpath>
 </AS3Classpath>

@@ -26,7 +26,10 @@
 		protected var _C : Point1D = null;
 		protected var _B : Point1D = null;
 		public var length : Number = NaN;
+		public var depthInHeirarchy:int = 0;
 		public var data : Object;
+		public var parentLine:Line1D;
+		protected var spacer:String = "";
 		private static const REG:* = registerClassAlias("com.troyworks.geom.d1.Line1D",Line1D);
 		////////////
 		public function Line1D(obj : Object = null, type : Number = NaN, start : Number = NaN, length : Number = NaN, end : Number = NaN) {	
@@ -52,6 +55,22 @@
 
 		public function get A() : Point1D {
 			return _A ;
+		}
+		public function updateSpacer():void{
+				var d:int = getDepthInHeirchy();
+			var a:int= d;
+			var spacein:Array = new Array();
+			while(a--){
+				spacein.push("   ");
+			}
+			spacer = spacein.join('');
+		}
+		public function getDepthInHeirchy():Number{
+			if(parentLine){
+				return parentLine.getDepthInHeirchy()+ 1;
+			}else{
+				return depthInHeirarchy;
+			}
 		}
 
 		public function set A(val : Point1D) : void {
@@ -132,6 +151,21 @@
 			}
 			//	trace("Line1D.calc2 "+ name + " A:" + A + " Z:" + Z + " len:" + length);
 		}
+		// way to shift left and right //
+		public function shiftBy(shift:Number):void{
+			var aV : Boolean = (A != null) && (!isNaN(A.position));
+			var bV : Boolean = (Z != null) && (!isNaN(Z.position));
+			if(aV){
+				A.position += shift;
+			}
+			if(bV){
+				Z.position += shift;
+			}
+		}
+		public function toXML():XML{
+			var res:XML = new XML("<l name='"+name+"' type='"+ type + "' length='" +length  + "'/>");
+			return res;				
+		}
 
 		///////////////////////////////////////////////////////////////////////
 		/// This is used to deserialize from disk
@@ -145,7 +179,7 @@
 		}
 
 		override public function toString() : String {
-			return name + " from " + A + " to " + Z + " (" + length + ") " ;
+			return spacer +  name + " from " + A + " to " + Z + " (" + length + ") " ;
 		}
 
 		public function toUTCString() : String {

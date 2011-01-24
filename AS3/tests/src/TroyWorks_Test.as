@@ -1,7 +1,7 @@
 ﻿package {
 	import com.troyworks.data.ArrayX;	
 	import com.troyworks.apps.tester.SampleTest;	
-	
+
 	import flash.display.MovieClip;	
 
 	import com.troyworks.core.chain.Test_PlaceHolderUnitOfWork;	
@@ -52,52 +52,54 @@
 			trace("TroyWorks_Test()");
 			eventSprite = new Sprite();
 			addChild(eventSprite);
-			test_ArrayX_snapToClosest360();
-			
+			//test_ArrayX_snapToClosest360();
+
 			addEventListener(Event.ENTER_FRAME, onProgress);	
 
 			onProgress(null);
 			startSynchronousTests();
 
-			//	startAsynchTests();
+			startAsynchTests();
 		}
-public function test_ArrayX_snapToClosest360() : Boolean {
+
+		public function test_ArrayX_snapToClosest360() : Boolean {
 			var a1 : ArrayX = new ArrayX();
-			var cnt:int = 36;
-			while(cnt--){
-				a1.push(cnt*10);
+			var cnt : int = 36;
+			while(cnt--) {
+				a1.push(cnt * 10);
 			}
 			a1.sort(Array.NUMERIC);
 			trace("set " + a1);
-			var base:int = 20;
-			var i:int = 10;
-			var res:Boolean; 
-			while(i--){
-				trace("closest " + (base+i) + " " + a1.snapToClosest((base+i)));
+			var base : int = 20;
+			var i : int = 10;
+			var res : Boolean; 
+			while(i--) {
+				trace("closest " + (base + i) + " " + a1.snapToClosest((base + i)));
 			}
 			//var passFilter : Boolean = (a1.toString() == "B,C" && r == "A");
 			//trace("  pass shift: " + passFilter);
 			//trace("  res is " + a1 + " returned " + r);
 			return res;//passFilter;
 		}
+
 		/*public function test_ArrayX_snapToClosest() : Boolean {
-			var a1 : ArrayX = new ArrayX();
-			var cnt:int = 10;
-			while(cnt--){
-				a1.push(cnt*10);
-			}
-			a1.sort(Array.NUMERIC);
-			trace("set " + a1);
-			var base:int = 20;
-			var i:int = 10;
-			var res:Boolean; 
-			while(i--){
-				trace("closest " + (base+i) + " " + a1.snapToClosest((base+i)));
-			}
-			//var passFilter : Boolean = (a1.toString() == "B,C" && r == "A");
-			//trace("  pass shift: " + passFilter);
-			//trace("  res is " + a1 + " returned " + r);
-			return res;//passFilter;
+		var a1 : ArrayX = new ArrayX();
+		var cnt:int = 10;
+		while(cnt--){
+		a1.push(cnt*10);
+		}
+		a1.sort(Array.NUMERIC);
+		trace("set " + a1);
+		var base:int = 20;
+		var i:int = 10;
+		var res:Boolean; 
+		while(i--){
+		trace("closest " + (base+i) + " " + a1.snapToClosest((base+i)));
+		}
+		//var passFilter : Boolean = (a1.toString() == "B,C" && r == "A");
+		//trace("  pass shift: " + passFilter);
+		//trace("  res is " + a1 + " returned " + r);
+		return res;//passFilter;
 		}*/
 		public function onProgress(event : Event = null) : void {
 			
@@ -105,7 +107,7 @@ public function test_ArrayX_snapToClosest360() : Boolean {
 			
 			if(curStatusSize == 10) {
 				eventSprite.graphics.beginFill(0x000000);	
-			}else {
+			} else {
 				eventSprite.graphics.beginFill(0x666666);
 			}
 			curStatusSize += 5;
@@ -146,16 +148,14 @@ public function test_ArrayX_snapToClosest360() : Boolean {
 				//testRunner.addTest(Test_Line1D);
 				//testRunner.addTest(Test_TDate);
 				//testRunner.addTest(Test_XORcipher);
-				//testRunner.addTest(Test_CompoundLine1D);
+				testRunner.addTest(Test_CompoundLine1D);
 				////////RUN TEST //////////////
 
-				if(testRunner.hasTests){
+				if(testRunner.hasTests) {
 					testRunner.startTest();
-				}else{
+				} else {
 					onSychronousTestComplete(null);
 				}
-				
-				
 			} catch(e : Error) {
 				
 				trace("ERROR in startSynchronousTests " + e.toString());
@@ -181,15 +181,15 @@ public function test_ArrayX_snapToClosest360() : Boolean {
 				testRunner2.addEventListener(Event.COMPLETE, onAllTestComplete);
 				testRunner2.addEventListener(Event.CHANGE, onProgress);
 				///////////////////////////////////////////
-			//	testRunner2.addTest(Test_Hsm);
-			
-			testRunner2.addTest(Test_Fsm);
-			//	testRunner2.addTest(Test_PlaceHolderUnitOfWork);
-			//testRunner2.addTest(SampleTest);
+				//	testRunner2.addTest(Test_Hsm);
+
+				//testRunner2.addTest(Test_Fsm);
+				//	testRunner2.addTest(Test_PlaceHolderUnitOfWork);
+				//testRunner2.addTest(SampleTest);
 				//	testRunner2.addTest(Test_SWFLoaderUnit);
 						
 				////////RUN TEST //////////////
-				
+
 				trace("running tests");
 				testRunner2.initStateMachine();
 			} catch(e : Error) {
@@ -206,20 +206,19 @@ public function test_ArrayX_snapToClosest360() : Boolean {
 
 			var clr : Number = 0xff0000;
 			var testResults : XML = event.resultsXML;		
-			if(testResults == null){
+			if(testResults == null) {
 				
 				trace("////////// NO TEST RESULTS!!! ///////////////");
 				clr = 0x440000;
-			}else{		
-			trace("//////////// TEST RESULTS///////////////////" + testResults.@passedAll);
-			if (testResults.@passedAll == "true") {
-				// draw a green circle for passed
-				clr = 0x00ff00;
-			} else {
-				// draw a red circle for failed
-				clr = 0xcc0000;
-			}
-			
+			} else {		
+				trace("//////////// TEST RESULTS///////////////////" + testResults.@passedAll);
+				if (testResults.@passedAll == "true") {
+					// draw a green circle for passed
+					clr = 0x00ff00;
+				} else {
+					// draw a red circle for failed
+					clr = 0xcc0000;
+				}
 			}
 			eventSprite.graphics.clear();
 			eventSprite.graphics.beginFill(clr);

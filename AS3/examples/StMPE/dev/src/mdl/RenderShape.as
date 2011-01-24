@@ -1,4 +1,4 @@
-package mdl {
+﻿package mdl {
 	import flash.display.Sprite;	
 
 	/**
@@ -26,6 +26,39 @@ package mdl {
 		public static const L_TRIANGLE_DOWN : RenderShape = new RenderShape(1.2, "L_TRIANGLE_DOWN", "btri");
 
 		
+		// New constructors
+		public static const S_LEFT_UP_PARTICLE : RenderShape = new RenderShape(.75, "S_LEFT_UP_PARTICLE", "slup");
+		public static const M_LEFT_UP_PARTICLE : RenderShape = new RenderShape(.85, "M_LEFT_UP_PARTICLE", "mlup");
+		public static const B_LEFT_UP_PARTICLE : RenderShape = new RenderShape(  1, "B_LEFT_UP_PARTICLE", "blup");
+		
+		public static const S_LEFT_DOWN_PARTICLE : RenderShape = new RenderShape(.75, "S_LEFT_DOWN_PARTICLE", "sldp");
+		public static const M_LEFT_DOWN_PARTICLE : RenderShape = new RenderShape(.85, "M_LEFT_DOWN_PARTICLE", "mldp");
+		public static const B_LEFT_DOWN_PARTICLE : RenderShape = new RenderShape(  1, "B_LEFT_DOWN_PARTICLE", "bldp");
+		
+		public static const S_RIGHT_UP_PARTICLE : RenderShape = new RenderShape(.75, "S_RIGHT_UP_PARTICLE", "srup");
+		public static const M_RIGHT_UP_PARTICLE : RenderShape = new RenderShape(.85, "M_RIGHT_UP_PARTICLE", "mrup");
+		public static const B_RIGHT_UP_PARTICLE : RenderShape = new RenderShape(  1, "B_RIGHT_UP_PARTICLE", "brup");
+		
+		public static const S_RIGHT_DOWN_PARTICLE : RenderShape = new RenderShape(.75, "S_RIGHT_DOWN_PARTICLE", "srdp");
+		public static const M_RIGHT_DOWN_PARTICLE : RenderShape = new RenderShape(.85, "M_RIGHT_DOWN_PARTICLE", "mrdp");
+		public static const B_RIGHT_DOWN_PARTICLE : RenderShape = new RenderShape(  1, "B_RIGHT_DOWN_PARTICLE", "brdp");
+		
+		public static const S_LEFT_DOWN_ANTIPARTICLE : RenderShape = new RenderShape(.75, "S_LEFT_DOWN_ANTIPARTICLE", "slda");
+		public static const M_LEFT_DOWN_ANTIPARTICLE : RenderShape = new RenderShape(.85, "M_LEFT_DOWN_ANTIPARTICLE", "mlda");
+		public static const B_LEFT_DOWN_ANTIPARTICLE : RenderShape = new RenderShape(  1, "B_LEFT_DOWN_ANTIPARTICLE", "blda");
+		
+		public static const S_LEFT_UP_ANTIPARTICLE : RenderShape = new RenderShape(.75, "S_LEFT_UP_ANTIPARTICLE", "slua");
+		public static const M_LEFT_UP_ANTIPARTICLE : RenderShape = new RenderShape(.85, "B_LEFT_UP_ANTIPARTICLE", "mlua");
+		public static const B_LEFT_UP_ANTIPARTICLE : RenderShape = new RenderShape(  1, "B_LEFT_UP_ANTIPARTICLE", "blua");
+		
+		public static const S_RIGHT_DOWN_ANTIPARTICLE : RenderShape = new RenderShape(.75, "S_RIGHT_DOWN_ANTIPARTICLE", "srda");
+		public static const M_RIGHT_DOWN_ANTIPARTICLE : RenderShape = new RenderShape(.85, "M_RIGHT_DOWN_ANTIPARTICLE", "mrda");
+		public static const B_RIGHT_DOWN_ANTIPARTICLE : RenderShape = new RenderShape(  1, "B_RIGHT_DOWN_ANTIPARTICLE", "brda");
+		
+		public static const S_RIGHT_UP_ANTIPARTICLE : RenderShape = new RenderShape(.75, "S_RIGHT_UP_ANTIPARTICLE", "srua");
+		public static const M_RIGHT_UP_ANTIPARTICLE : RenderShape = new RenderShape(.85, "M_RIGHT_UP_ANTIPARTICLE", "mrua");
+		public static const B_RIGHT_UP_ANTIPARTICLE : RenderShape = new RenderShape(  1, "B_RIGHT_UP_ANTIPARTICLE", "brua");
+		
 		
 		
 		public var shape : String = "M_DIAMOND";
@@ -35,6 +68,23 @@ package mdl {
 		var radius : Number;
 		var scale : Number;
 		public var xmlName : String;
+		
+		public var glyphu = new Array(
+											  [-1/2 , -1/(2 * Math.sqrt(3))],
+											  [-1/4, 1/(4 * Math.sqrt(3))], 
+											  [-1/2 ,1/ Math.sqrt(3)], 
+											  [0 ,1/(Math.sqrt(3))], 
+											  [1/2 , -1/(2 * Math.sqrt(3))]
+   											);
+
+		public var glyphd = new Array(
+									  [-1/2 , -1/(2 * Math.sqrt(3))],
+									  [-3/4, 1/(4 * Math.sqrt(3))], 
+									  [-1/4 ,1/(4 * Math.sqrt(3))],
+									  [0 , 1/( Math.sqrt(3))],
+									  [1/2 , -1/(2 * Math.sqrt(3))]
+									);
+		public var glyphl:int = glyphu.length;
 
 		public function RenderShape( scale : Number = 1, shape : String = null, parseNam : String = null) {
 			this.scale = scale;
@@ -81,13 +131,79 @@ package mdl {
 				case "mutr":
 					return M_TRIANGLE_UP; 
 				case "butr":
-					return L_TRIANGLE_UP; 
+					return L_TRIANGLE_UP;
+					
+				
+				case "slup":
+						return S_LEFT_UP_PARTICLE;
+				case "mlup":
+						return M_LEFT_UP_PARTICLE;
+				case "blup":
+						return B_LEFT_UP_PARTICLE;
+				
+				
+				case "sldp":
+						return S_LEFT_DOWN_PARTICLE;
+				case "mldp":
+						return M_LEFT_DOWN_PARTICLE;
+				case "bldp":
+						return B_LEFT_DOWN_PARTICLE;
+						
+				
+				case "srup":
+						return S_RIGHT_UP_PARTICLE;
+				case "mrup":
+						return M_RIGHT_UP_PARTICLE;
+				case "brup":
+						return B_RIGHT_UP_PARTICLE;
+				
+				
+				case "srdp":
+						return S_RIGHT_DOWN_PARTICLE;
+				case "mrdp":
+						return M_RIGHT_DOWN_PARTICLE;
+				case "brdp":
+						return B_RIGHT_DOWN_PARTICLE;
+				
+				
+				case "slda":
+						return S_LEFT_DOWN_ANTIPARTICLE;
+				case "mlda":
+						return M_LEFT_DOWN_ANTIPARTICLE;
+				case "blda":
+						return B_LEFT_DOWN_ANTIPARTICLE;
+				
+				
+				case "slua":
+						return S_LEFT_UP_ANTIPARTICLE;
+				case "mlua":
+						return M_LEFT_UP_ANTIPARTICLE;
+				case "blua":
+						return B_LEFT_UP_ANTIPARTICLE;
+						
+				
+				case "srda":
+						return S_RIGHT_DOWN_ANTIPARTICLE;
+				case "mrda":
+						return M_RIGHT_DOWN_ANTIPARTICLE;
+				case "brda":
+						return B_RIGHT_DOWN_ANTIPARTICLE;
+						
+				
+				case "srua":
+						return S_RIGHT_UP_ANTIPARTICLE;
+				case "mrua":
+						return M_RIGHT_UP_ANTIPARTICLE;
+				case "brua":
+						return B_RIGHT_UP_ANTIPARTICLE;
+			
 			}
 			return M_CIRCLE; 
 		}
 
 		public function draw(canvas : Sprite, color : Number) : void {
 			radius = size / 2;	
+			canvas.graphics.clear();
 			canvas.graphics.lineStyle(0, 0x666666, 1, false);
 			canvas.graphics.beginFill(color);
 			var x : Number;
@@ -204,6 +320,115 @@ package mdl {
 					canvas.graphics.lineTo(x, y); 
 					 
 					break;
+					
+
+					case "S_RIGHT_DOWN_ANTIPARTICLE":
+					case "M_RIGHT_DOWN_ANTIPARTICLE":
+					case "B_RIGHT_DOWN_ANTIPARTICLE":
+	
+							x = canvas.width ;
+							y = canvas.height;
+							
+							canvas.graphics.moveTo(x - scale * size * glyphu[0][0]  ,y + scale * size * glyphu[0][1]);
+							
+							for(i = 0; i<glyphl; i++)
+								canvas.graphics.lineTo(x - scale * size * glyphu[i][0]  ,y + scale * size * glyphu[i][1]);
+							
+							break;
+					
+					case "S_RIGHT_UP_ANTIPARTICLE":
+					case "M_RIGHT_UP_ANTIPARTICLE":
+					case "B_RIGHT_UP_ANTIPARTICLE":
+					
+						
+					
+						x = canvas.width ;
+							y = canvas.height;
+							
+							canvas.graphics.moveTo(x - scale * size * glyphd[0][0]  ,y + scale * size * glyphd[0][1]);
+							for(i = 0; i<glyphl; i++)
+								canvas.graphics.lineTo(x - scale * size * glyphd[i][0]  ,y + scale * size * glyphd[i][1]);
+							
+							break;
+					case "S_LEFT_DOWN_ANTIPARTICLE":
+					case "M_LEFT_DOWN_ANTIPARTICLE":
+					case "B_LEFT_DOWN_ANTIPARTICLE":
+							x = canvas.width ;
+							y = canvas.height;
+							
+							canvas.graphics.moveTo(x + scale * size * glyphu[0][0]  ,y + scale * size * glyphu[0][1]);
+							
+							for(var i:int = 0; i<glyphl; i++)
+								canvas.graphics.lineTo(x + scale * size * glyphu[i][0]  ,y + scale * size * glyphu[i][1]);
+							
+							break;
+					
+					
+					case "S_LEFT_UP_ANTIPARTICLE":
+					case "M_LEFT_UP_ANTIPARTICLE":
+					case "B_LEFT_UP_ANTIPARTICLE":
+					
+							x = canvas.width ;
+							y = canvas.height;
+							
+							canvas.graphics.moveTo(x + scale * size * glyphd[0][0]  ,y + scale * size * glyphd[0][1]);
+							
+							for(i = 0; i<glyphl; i++)
+								canvas.graphics.lineTo(x + scale * size * glyphd[i][0]  ,y + scale * size * glyphd[i][1]);
+							
+							break;
+					
+					case "S_LEFT_UP_PARTICLE":
+					case "M_LEFT_UP_PARTICLE":
+					case "B_LEFT_UP_PARTICLE":
+					
+							x = canvas.width ;
+							y = canvas.height;
+							
+							canvas.graphics.moveTo(x + scale * size * glyphu[0][0]  ,y - scale * size * glyphu[0][1]);
+							for(i= 0; i<glyphl; i++)
+								canvas.graphics.lineTo(x + scale * size * glyphu[i][0]  ,y - scale * size * glyphu[i][1]);
+							
+							break;
+					
+					case "S_LEFT_DOWN_PARTICLE":
+					case "M_LEFT_DOWN_PARTICLE":
+					case "B_LEFT_DOWN_PARTICLE":
+					
+							x = canvas.width ;
+							y = canvas.height;
+							
+							canvas.graphics.moveTo(x + scale * size * glyphd[0][0]  ,y - scale * size * glyphd[0][1]);
+							for(i = 0; i<glyphl; i++)
+								canvas.graphics.lineTo(x + scale * size * glyphd[i][0]  ,y - scale * size * glyphd[i][1]);
+							break;
+					
+					case "S_RIGHT_UP_PARTICLE":
+					case "M_RIGHT_UP_PARTICLE":
+					case "B_RIGHT_UP_PARTICLE":
+					
+							x = canvas.width ;
+							y = canvas.height;
+							
+							canvas.graphics.moveTo(x - scale * size * glyphu[0][0]  ,y - scale * size * glyphu[0][1]);
+							for(i = 0; i<glyphl; i++)
+								canvas.graphics.lineTo(x - scale * size * glyphu[i][0]  ,y - scale * size * glyphu[i][1]);
+							
+							break;
+					
+					case "S_RIGHT_DOWN_PARTICLE":
+					case "M_RIGHT_DOWN_PARTICLE":
+					case "B_RIGHT_DOWN_PARTICLE":
+					
+							x = canvas.width ;
+							y = canvas.height;
+							
+							canvas.graphics.moveTo(x - scale * size * glyphd[0][0]  ,y - scale * size * glyphd[0][1]);
+							for(i = 0; i<glyphl; i++)
+								canvas.graphics.lineTo(x - scale * size * glyphd[i][0]  ,y - scale * size * glyphd[i][1]);
+							
+							break;
+
 			}
 			canvas.graphics.endFill();
 		}

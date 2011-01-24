@@ -1,9 +1,8 @@
 package com.troyworks.framework.loader {
 	import com.troyworks.core.events.PlayheadEvent;	
 	import com.troyworks.core.chain.UnitOfWork;	
-
 	import flash.events.Event;	
-
+	import com.troyworks.framework.loader.SoundLoaderUnit;
 	import com.troyworks.apps.tester.AsynchronousTestSuite;	
 
 	/**
@@ -25,8 +24,10 @@ package com.troyworks.framework.loader {
 			var chainA1 : SWFLoaderUnit; 
 			var chainA2 : SWFLoaderUnit; 
 			var chainA3 : SWFLoaderUnit; 
-			var chainA4 : TextLoaderUnit; 
 			
+			var chainA4 : TextLoaderUnit; 
+			var chainA5:SoundLoaderUnit;
+			var chainA6:SoundLoaderUnit;
 			trace("setting up Chain " + view);
 			switch(id) {
 				case 0:
@@ -87,7 +88,18 @@ package com.troyworks.framework.loader {
 					chainA4.mediaURL = "engines.txt";
 					
 					chainA.addChild(chainA4);
-					break;		
+					break;	
+				case 6:
+					chainA = UnitOfWork.makeParallelWorker();	
+					chainA5 = new SoundLoaderUnit();
+					chainA5.mediaURL = "C:\\DATA_SYNC\\My Documents\\My Music\\Assemblage 23 - Awake.mp3";
+					
+					chainA6 = new SoundLoaderUnit();
+					chainA6.mediaURL = "C:\\DATA_SYNC\\My Documents\\My Music\\Assemblage 23 - Bi-Polar.mp3";					
+					chainA.addChild(chainA5);
+					chainA.addChild(chainA6);
+					break;	
+						
 					
 			}
 			chainA.initStateMachine();
@@ -101,7 +113,7 @@ package com.troyworks.framework.loader {
 
 			
 			trace("a sTEST1----------------------");
-			var chainA : UnitOfWork = setupChain(5);
+			var chainA : UnitOfWork = setupChain(6);
 			chainA.addEventListener(UnitOfWork.EVT_COMPLETE, rtest_1);
 			chainA.startWork();
 			trace("CREAting chainA  " + chainA);

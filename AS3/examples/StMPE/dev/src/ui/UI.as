@@ -101,7 +101,7 @@
 		private var sinY : Number;
 		private var cosX : Number;
 		private var sinX : Number;
-		private var scale : Number = 172;
+		private var scale : Number = 172 * 1.05;// 172;
 		private var idxDButton : Dictionary;
 
 		var vpX : Number;
@@ -127,6 +127,11 @@
 		private var rotationsHaveChanged : Boolean = false;
 		private var pointFadeDownTny : Tny;
 		private var pointFadeUpTny : Tny;
+		///// for the photon hack /////////
+		var Ap : EightDimensionParticle;
+		var Bp : EightDimensionParticle;
+		var Cp : EightDimensionParticle;
+		var Dp : EightDimensionParticle;
 
 		public function UI() : void {
 			super();
@@ -259,7 +264,7 @@
 			var i : int = 0;
 			var n : int = ary.length;
 			
-			for (;i < n; ++i) {
+			for (;i < n;++i) {
 				//	trace("poinChagne " + ary[i].name + " " + ary[i].isGUT);
 				EightDimensionParticle(ary[i]).redrawUI();
 			}
@@ -407,7 +412,7 @@
 					}
 					if(modl.result2) {
 			//		updateDetails(bottom_panel.selection4, modl.result2);
-				}
+					}
 					trace("UPDATE THE MODEL ROTATIONS .......................");
 					onModelRotationsChanged(null, true);
 					trace("UPDATE THE VIEW .......................");
@@ -665,8 +670,8 @@
 			center = crss;
 			center.visible = false;
 			
-			vpX = viewport.background_mc.width / 2;
-			vpY = viewport.background_mc.height / 2;
+			vpX = (viewport.background_mc.width / 2) + 2; ///CENTER OFFSET
+			vpY = (viewport.background_mc.height / 2);
 			crss.x = vpX;
 			crss.y = vpY;
 			viewport.addChild(crss);
@@ -748,10 +753,13 @@
 				//trace("placing particle " + p.name);
 				var cnv : Sprite = new Sprite();
 				cnv.name = "shape";
+				var hover : Sprite = new Sprite();
+				hover.name = "hover";
 				
 				pntUI.mouseChildren = false;
 				pntUI.buttonMode = true;
 				pntUI.addChild(cnv);
+				pntUI.addChild(hover);
 				//	pntUI.cacheAsBitmap = true;
 				pntUI.addEventListener(MouseEvent.ROLL_OVER, rollOverChild);
 				pntUI.addEventListener(MouseEvent.ROLL_OUT, rollOutChild);
@@ -760,8 +768,8 @@
 				p.modl = modl; 
 				cp.modl = modl;
 			
-				pntUI.x = center.x + (p.curCoords.d1 * modl.zoom);
-				pntUI.y = center.y + (p.curCoords.d2 * modl.zoom);
+		//		pntUI.x = center.x + (p.curCoords.d1 * modl.zoom);
+		//		pntUI.y = center.y + (p.curCoords.d2 * modl.zoom);
 				pointsAr.push(p);
 				//viewport.addChild(pntUI);
 				cp.ui = pntUI; 
@@ -775,7 +783,7 @@
 				}
 			}
 			
-			pointsAr.sortOn("nsize", Array.NUMERIC);
+			pointsAr.sortOn("id", Array.NUMERIC | Array.DESCENDING);
 			while(pointsAr.length > 0) {
 				p = pointsAr.pop();
 				trace("p.size" + p.nsize);
@@ -884,7 +892,7 @@
 				modl.firstClicked.selectedState = EightDimensionParticle.NOT_SELECTED;
 				i = 0;
 				n = modl.firstClicked.outboundParticleLinks.length;
-				for (;i < n; ++i) {
+				for (;i < n;++i) {
 					(modl.firstClicked.outboundParticleLinks[i] as EightDimensionParticle).selectedState = EightDimensionParticle.NOT_SELECTED;
 				}
 				modl.firstClicked = null;
@@ -906,6 +914,30 @@
 				modl.result2 = null;
 			//	bottom_panel.selection4.visible = false;
 			} 
+			if(Ap) {
+				Ap.selectedState = EightDimensionParticle.NOT_SELECTED;
+			}
+			if(Bp) {
+				Bp.selectedState = EightDimensionParticle.NOT_SELECTED;
+			}
+			if(Cp) {
+				Cp.selectedState = EightDimensionParticle.NOT_SELECTED;
+			}
+			if(Dp) {
+				Dp.selectedState = EightDimensionParticle.NOT_SELECTED;
+			}
+			i = 0;
+			n = modl.curPointSystem.particles.length;
+			var ary : Array = modl.curPointSystem.particles;
+			
+			var p : EightDimensionParticle;
+			//trace("clicked Particle");
+			for (;i < n;++i) {
+				
+				p = ary[i];
+				p.selectedState = EightDimensionParticle.NOT_SELECTED;
+				p.firstClickSelectedState = EightDimensionParticle.NOT_SELECTED;
+			}
 			updateView();
 		}
 
@@ -918,11 +950,11 @@
 			var ary : Array = modl.curPointSystem.particles;
 			
 			var p : EightDimensionParticle;
-			trace("clicked Particle");
-			for (;i < n; ++i) {
-				trace(i + " " + ary[i].ui.name + "?=   " + s.name);
+			//trace("clicked Particle");
+			for (;i < n;++i) {
+				//	trace(i + " " + ary[i].ui.name + "?=   " + s.name);
 				if(ary[i].ui == s) {
-					trace("found Particle");
+					//	trace("found Particle");
 					p = ary[i];
 					break;
 				}
@@ -935,7 +967,7 @@
 						modl.firstClicked.selectedState = EightDimensionParticle.NOT_SELECTED;
 						i = 0;
 						n = modl.firstClicked.outboundParticleLinks.length;
-						for (;i < n; ++i) {
+						for (;i < n;++i) {
 							(modl.firstClicked.outboundParticleLinks[i] as EightDimensionParticle).selectedState = EightDimensionParticle.NOT_SELECTED;
 						}
 					}
@@ -958,84 +990,229 @@
 					updateDetails(bottom_panel.selection1, p);
 					modl.firstClicked.selectedState = EightDimensionParticle.SELECTED_FIRST;
 					bottom_panel.selection1.visible = true;
-					i = 0;
-					n = p.outboundParticleLinks.length;
+				
 					var p2 : EightDimensionParticle;
 					var tmp1 : EightDimensionParticle;
 					var tmp2 : EightDimensionParticle;
 					var key : String;
 					var res : Array;
-					for (;i < n; ++i) {
+					var revres : Array;
+					var revres2 : Array;
+					i = 0;
+					n = p.outboundParticleLinks.length;
+					
+					///  now that we have the first particle selected, what is the 2nd particle we can click on?
+					// iterate through the firstParticle.outgoing particles
+					//
+					for (;i < n;++i) {
+						
 						p2 = (p.outboundParticleLinks[i] as EightDimensionParticle);
-						key = modl.firstClicked.id + "," + p2.id;
-						var itnvis : Boolean = false; 
-						trace("looking for " + key + " in interactions");
-						res = modl.curPointSystem.interactions[key] as Array;
-						if(res != null) {
-							trace("found " + res.length + " interactions for " + key + " " + res);
-							if(res.length == 1) {
-								//single result particle interactions
-								tmp2= (res[0] as EightDimensionParticle);
-								itnvis = tmp2.ui.visible;
-							}else if(res.length == 2) {
-								//two result particle interactions
-								tmp1 = (res[0] as EightDimensionParticle);
-								tmp2 = (res[1] as EightDimensionParticle);
-								itnvis = tmp1.ui.visible && tmp2.ui.visible;
+						if(p != p2) {
+							
+						
+							key = modl.firstClicked.id + "," + p2.id;
+							var itnvis : Boolean = false; 
+							trace("looking for " + key + " in interactions");
+							res = modl.curPointSystem.interactions[key] as Array;
+							revres = modl.curPointSystem.reverseinteractions[key] as Array;
+							
+							/*revres2 = modl.curPointSystem.reverseinteractions2[key] as Array;
+							var res1vis : Boolean = revres[0].ui.visible;//modl.curPointSystem.particles[revres[0]];
+							var res2vis : Boolean = revres2[0].ui.visible;
+							if(revres != null && revres2 != null ) {
+							if(modl.firstClicked.id == revres2[1] && res2vis || !res1vis) {
+							revres = revres2;
 							}
-						} else {
-							trace("found no iteractions for pair");
+							//	res = revres;
+							}*/
+
+							if(res != null) {
+								//////// found interactions between firstClick and outgoing particle, mark and move on.
+								trace("found " + res.length + " interactions for " + key + " " + res);
+								if(res.length == 1) {
+									//single result particle interactions
+									tmp2 = (res[0] as EightDimensionParticle);
+									itnvis = tmp2.ui.visible;  // not all particles are viewable in all modes
+								}else if(res.length == 2) {
+									//two result particle interactions
+									tmp1 = (res[0] as EightDimensionParticle);
+									tmp2 = (res[1] as EightDimensionParticle);
+									itnvis = tmp1.ui.visible && tmp2.ui.visible; // not all particles are viewable in all modes 
+								}
+								if(p2.ui.visible && itnvis) {
+									p2.selectedState = EightDimensionParticle.SELECTED_SECOND_POSSIBLE;
+									p2.firstClickSelectedState = EightDimensionParticle.SELECTED_SECOND_POSSIBLE;
+								}
+							} else {
+								trace("found no primary iteractions for pair");
 							//TODO notify no interactions found
-						}
-						if(p2.ui.visible && itnvis) {
-							p2.selectedState = EightDimensionParticle.SELECTED_SECOND_POSSIBLE;
+							}
+						
+							if(revres != null) {
+								//////// found interactions between firstClick and outgoing particle, mark and move on.
+								trace("found " + revres.length + " interactions for " + key + " " + revres);
+								if(revres.length == 2) {
+									//single result particle interactions
+									tmp2 = (revres[0] as EightDimensionParticle);
+									itnvis = tmp2.ui.visible;  // not all particles are viewable in all modes
+								}else if(revres.length == 3) {
+									//two result particle interactions
+									tmp1 = (revres[0] as EightDimensionParticle);
+									tmp2 = (revres[1] as EightDimensionParticle);
+									itnvis = tmp1.ui.visible && tmp2.ui.visible; // not all particles are viewable in all modes 
+								}
+								if(p2.ui.visible && itnvis) {
+									if(true) {
+										p2.selectedState = EightDimensionParticle.SELECTED_SECOND_POSSIBLE;
+										p2.firstClickSelectedState = EightDimensionParticle.SELECTED_SECOND_POSSIBLE;
+									} else {
+										///////// Debugging ///////////
+										p2.selectedState = EightDimensionParticle.POSSIBLE_RESULT;
+										p2.firstClickSelectedState = EightDimensionParticle.POSSIBLE_RESULT;
+									}
+								}	
+							} else {
+								trace("found no reverse iteractions for pair");
+							//TODO notify no interactions found
+							}
 						}
 					}
 				} else {
-					// has first click
-					if(modl.secondClicked == null || p.selectedState == EightDimensionParticle.SELECTED_SECOND_POSSIBLE) {
+					/////////////////////////////////////////////
+					// has first click already , Process Second Click
+					/////////////////////////////////////////////
+					if(modl.secondClicked == null || p.selectedState == EightDimensionParticle.SELECTED_SECOND_POSSIBLE || p.selectedState == EightDimensionParticle.POSSIBLE_RESULT) {
+						///////////// CLEAR RESULTS /////////////
 						if(modl.secondClicked != null) {
-							modl.secondClicked.selectedState = EightDimensionParticle.SELECTED_SECOND_POSSIBLE;	
+							modl.secondClicked.selectedState = modl.secondClicked.firstClickSelectedState;//EightDimensionParticle.SELECTED_SECOND_POSSIBLE;	
 						}
 						if(modl.result1 != null) {
-							modl.result1.selectedState = EightDimensionParticle.NOT_SELECTED;
+							modl.result1.selectedState = modl.result1.firstClickSelectedState;//= EightDimensionParticle.NOT_SELECTED;
 							modl.result1 = null;
 						}
 						if(modl.result2 != null) {
-							modl.result2.selectedState = EightDimensionParticle.NOT_SELECTED;
+							modl.result2.selectedState = modl.result2.firstClickSelectedState;//= EightDimensionParticle.NOT_SELECTED;
 							modl.result2 = null;
 						}
+						///////////// CLEAR RESULTS /////////////
+						//p.selectedState = EightDimensionParticle.SELECTED_FIRST;
+						//if(modl.firstClicked.name =="241"){
 						modl.secondClicked = p;
+						//}
 						updateDetails(bottom_panel.selection2, p);
-						modl.secondClicked.selectedState = EightDimensionParticle.SELECTED_SECOND;
+						if(modl.secondClicked.firstClickSelectedState == EightDimensionParticle.SELECTED_SECOND_POSSIBLE) {
+							modl.secondClicked.selectedState = EightDimensionParticle.SELECTED_SECOND;							
+						} else {
+							modl.secondClicked.selectedState = EightDimensionParticle.SELECTED_SECOND;
+						}
+						//modl.secondClicked.selectedState = EightDimensionParticle.SELECTED_SECOND;
 						bottom_panel.selection2.visible = true;
 						//deselect2Btn.visible = true;
+						
+						
+						
+						//////////// FIND OUR INTERACTION ////////////////////////////////////
 						key = modl.firstClicked.id + "," + modl.secondClicked.id;
 						trace("looking for " + key + " in interactions");
-						res  = modl.curPointSystem.interactions[key] as Array;
+						res = modl.curPointSystem.interactions[key] as Array;
+						
+						/// This is our C+A, or C+B
+						revres = modl.curPointSystem.reverseinteractions[key] as Array;
+						revres2 = modl.curPointSystem.reverseinteractions2[key] as Array;
+						modl.curInteractionKey = null;
+						
+						/*trace(" res " + res);
+						trace(" revres " + revres[0].id);
+						trace(" revres2 " + revres2[0].id);
+						if(revres){
+						revres[0].selectedState = EightDimensionParticle.SELECTED_SECOND;
+						trace("OPTIONrevres " + modl.secondClicked.id + " " + revres[1]);
+						}
+						if(revres2){
+						revres2[0].selectedState = EightDimensionParticle.SELECTED_SECOND;
+						trace("OPTIONrevres2 " + modl.secondClicked.id + " " + revres2[1]);
+						}*/
+						/// when there is more than one interaction choose the one where 
+						// favor the second clicked as the result over the source
+						if(revres != null && revres2 != null ) {
+							var res1vis : Boolean = revres[0].ui.visible;//modl.curPointSystem.particles[revres[0]];
+							var res2vis : Boolean = revres2[0].ui.visible;
+							
+							if(modl.firstClicked.id == revres2[1] && res2vis || !res1vis) {
+								revres = revres2;
+							}
+							//	res = revres;
+						}
 						if(res != null) {
+							modl.curInteractionKey = key;
 							trace("found " + res.length + " interactions for " + key + " " + res);
 							if(res.length == 1) {
 								//single result particle interactions
-								modl.result1 = res[0] as EightDimensionParticle;
-								modl.result1.selectedState = EightDimensionParticle.RESULT;
-								updateDetails(bottom_panel.selection3, res[0]);
+								//	if(modl.firstClicked.name == "241") {
+								//		modl.result1 = modl.secondClicked;
+								//	} else {
+								modl.result1 = res[0] as EightDimensionParticle; 
+								//	}
+
+								
+								updateDetails(bottom_panel.selection3, modl.result1);
 								bottom_panel.selection3.visible = true;
 							//	bottom_panel.selection4.visible = false;
 							}else if(res.length == 2) {
 								//two result particle interactions
 								modl.result1 = res[0] as EightDimensionParticle;
-								modl.result1.selectedState = EightDimensionParticle.RESULT;
 								modl.result2 = res[1] as EightDimensionParticle;
-								modl.result2.selectedState = EightDimensionParticle.RESULT;
-								
-								updateDetails(bottom_panel.selection3, res[0]);
-								updateDetails(bottom_panel.selection4, res[1]);
+															
+								updateDetails(bottom_panel.selection3, modl.result1);
+								updateDetails(bottom_panel.selection4, modl.result2);
 								bottom_panel.selection3.visible = true;
 							//	bottom_panel.selection4.visible = true;
 							}
 						} else {
 							trace("found no iteractions for pair");
+							//TODO notify no interactions found
+						}
+						if(revres != null) {
+							trace("found " + revres.length + " reverse interactions for " + key + " = " + revres);
+							modl.curInteractionKey = key;
+							if(revres.length == 2) {
+								//	if(modl.firstClicked.name == "241") {
+								//		modl.result1 = modl.secondClicked;
+								//	} else {
+								modl.result1 = revres[0] as EightDimensionParticle; 
+								//	}
+								
+								//single result particle interactions
+								updateDetails(bottom_panel.selection3, modl.result1);
+								bottom_panel.selection3.visible = true;
+							//	bottom_panel.selection4.visible = false;
+							}else if(revres.length == 3) {
+								//two result particle interactions
+								modl.result1 = revres[0] as EightDimensionParticle;
+								//if(modl.firstClicked.name == "241") {
+								//	modl.result1 = modl.secondClicked;
+								//} else {
+								modl.result2 = revres[1] as EightDimensionParticle;
+								
+								if( modl.result1.ui.visible) {
+									updateDetails(bottom_panel.selection3, modl.result1);
+									bottom_panel.selection3.visible = true;
+								} else {
+									bottom_panel.selection3.visible = false;	
+								}
+								if( modl.result2.ui.visible) {
+									updateDetails(bottom_panel.selection4, modl.result2);
+									bottom_panel.result2.visible = true;
+								} else {
+									bottom_panel.result2.visible = false;	
+								}
+								
+								updateDetails(bottom_panel.selection4, modl.result2);
+								bottom_panel.selection3.visible = true;
+							//	bottom_panel.selection4.visible = true;
+							}
+						} else {
+							trace("found no reverse iteractions for pair");
 							//TODO notify no interactions found
 						}
 					} else {
@@ -1062,7 +1239,7 @@
 			
 			var p : EightDimensionParticle;
 			//	trace("rollOver Particle");
-			for (;i < n; ++i) {
+			for (;i < n;++i) {
 				//	trace(i + " " + ary[i].ui.name + "  ?=" + s.name);
 				if(ary[i].ui == s) {
 					
@@ -1138,7 +1315,7 @@
 			
 			var p : EightDimensionParticle;
 			//trace("rollOut Particle");
-			for (;i < n; ++i) {
+			for (;i < n;++i) {
 				//				trace(i + " " + ary[i].ui.name + "  ?= " + s.name);
 				if(ary[i].ui == s) {
 				
@@ -1150,7 +1327,6 @@
 				}
 			}
 			if(p != null) {
-				
 			}
 			//	mouseEvent.target.getChildAt(1).filters = mouseOverOFilters;
 		//				mouseEvent.target.scaleX /=2;
@@ -1759,20 +1935,243 @@
 					///////////////////////////////////////////////////////////
 					//   VISUALIZE THE RAYS
 					///////////////////////////////////////////////////////////
-					if(modl.secondClicked != null && modl.result1 != null && modl.result1.ui.visible) {
-						viewport.graphics.lineStyle(10, EightDimensionParticle.SELECTED_FIRST_COLOR, .5);
-						viewport.graphics.moveTo(modl.firstClicked.ui.x, modl.firstClicked.ui.y);	
-						viewport.graphics.lineTo(modl.secondClicked.ui.x, modl.secondClicked.ui.y);
-					}
-					if(modl.result1 != null && modl.result1.ui.visible) {
-						viewport.graphics.lineStyle(10, EightDimensionParticle.RESULT_COLOR, .5);
-					
-						viewport.graphics.moveTo(center.x, center.y);		
-						viewport.graphics.lineTo(modl.result1.ui.x, modl.result1.ui.y);
-						if(modl.result2 != null && modl.result2.ui.visible) {
-							viewport.graphics.moveTo(center.x, center.y);	
-							viewport.graphics.lineTo(modl.result2.ui.x, modl.result2.ui.y);
+					//modl.reverseLookup = true;
+					var newKey : String;
+					var rres : Array; 
+					try {
+						var aKey : String = modl.curInteractionKey;
+						var aRes : Array = modl.curPointSystem.interactions[aKey] as Array;
+					    
+						var bKey : String = modl.curInteractionKey.split(",")[0] + "," + String(modl.result1.id);
+						var bRes : Array = modl.curPointSystem.interactions[bKey] as Array;
+						
+						//	var b2Key : String = String(modl.result1.id) + "," + modl.curInteractionKey.split(",")[0];
+						//	var b2Res : Array = modl.curPointSystem.interactions[b2Key] as Array;
+
+						
+						var cKey : String = modl.curInteractionKey.split(",")[1] + "," + String(modl.result1.id);
+						var cRes : Array = modl.curPointSystem.interactions[cKey] as Array;
+						
+						//	var c2Key : String = String(modl.result1.id) + "," + modl.curInteractionKey.split(",")[1];
+						//	var c2Res : Array = modl.curPointSystem.interactions[c2Key] as Array;	
+
+						trace("selected " + modl.firstClicked.id + " " + modl.secondClicked.id);
+						trace("KEYSEARCH " + newKey + " r1 " + modl.result1.id);
+						trace(" aKey " + aKey + " " + aRes);
+						trace(" bKey " + bKey + " " + bRes);
+						//trace(" b2Key " + b2Key + " " + b2Res);
+						trace(" cKey " + cKey + " " + cRes);
+						//	trace(" c2Key " + c2Key + " " + c2Res);
+
+						if(aRes) {
+							trace("using a primary key");
+							//////// using a primary interaction
+							newKey = aKey;
+							rres = aRes;
+						} else {
+							//////// using a reverse interaction
+							trace("using a reverse key");
+
+							if(bRes && cRes) {
+								trace("using a reverse key, both in contest");
+								if (bRes[0] == modl.secondClicked  ) {
+									newKey = bKey;
+									rres = bRes;
+								} else if (cRes[0] == modl.secondClicked ) {
+									newKey = cKey;
+									rres = cRes;
+								} else {
+									trace("NO KEY FOUND1");
+								}
+							}else if (bRes) {
+								trace("using a reverse key1");
+								newKey = bKey;
+								rres = bRes;
+							}else if (cRes) {
+								trace("using a reverse key2");
+								newKey = cKey;
+								rres = cRes;
+							} else {
+								trace("NO KEY FOUND2");
+							}
 						}
+						
+						
+						///////////// once we've decided on a key /////////////////
+						var AB : Array = newKey.split(",");
+						if(Ap) {
+							Ap.selectedState = Ap.firstClickSelectedState;
+						}
+						if(Bp) {
+							Bp.selectedState = Bp.firstClickSelectedState;
+						}
+						if(Cp) {
+							Cp.selectedState = Cp.firstClickSelectedState;
+						}
+						if(Dp) {
+							Dp.selectedState = Dp.firstClickSelectedState;
+						}
+						Ap = modl.curPointSystem.particles[AB[0] - 1];
+						Bp = modl.curPointSystem.particles[AB[1] - 1];
+						
+						Cp = rres[0];
+						Dp = rres[1];
+						
+						if((Ap && Ap.name == "241") || (Bp && Bp.name == "241")) {
+							/////////////////// PHOTON HACK /////////////////
+							trace("Photon Hack Mode");
+							trace(" BEFORE: ", Ap, Bp, Cp, Dp);
+							var idOfPhoton : Number;
+							var photoP : EightDimensionParticle;
+							var a241StartKey : String;
+							if(Ap.name == "241") {
+								idOfPhoton = Ap.id;
+								photoP = Ap;
+								a241StartKey = "241," + Bp.id;
+							}
+							if(Bp.name == "241") {
+								idOfPhoton = Bp.id;
+								photoP = Bp;
+								a241StartKey = "241," + Ap.id;
+							}
+							aKey = a241StartKey;
+							aRes = modl.curPointSystem.interactions[aKey] as Array;
+							bRes = modl.curPointSystem.reverseinteractions[aKey] as Array;
+							cRes = modl.curPointSystem.reverseinteractions2[aKey] as Array;
+						
+							trace("3res ", aRes, bRes, cRes);
+					
+							/*	var aKeyP:Boolean = aKey.indexOf(String(idOfPhoton)) == -1;
+							var bKeyP:Boolean = bKey.indexOf(String(idOfPhoton)) == -1;
+							var cKeyP:Boolean = cKey.indexOf(String(idOfPhoton)) == -1;
+							if(aKeyP){
+							trace("using aKey");
+							newKey = aKey;	
+							}else if(bKeyP){
+							trace("using bKey");
+							newKey = bKey;	
+							}else if(cKeyP){
+							trace("using cKey");
+							newKey = cKey;	
+							}*/
+							AB = newKey.split(",");
+							Ap = aRes[0];//modl.curPointSystem.particles[AB[0] - 1];
+							Bp = bRes[0];// modl.curPointSystem.particles[AB[1] - 1];
+							//Cp = rres[0];
+							//Dp = rres[1];
+							trace(" AFTER: ", Ap, Bp, Cp, Dp);
+							////////////////////////// PHOTON HACK MODE /////////////////
+							/*if(Ap.name == "241"){
+							trace("retargetting A with C" + + Cp.id);
+							Ap = Cp;	
+							}
+							if(Bp.name == "241"){
+							trace("retargetting B with C " + Cp.id);
+							Bp = Cp;	
+							}*/
+							trace(Ap.id + " " + Bp.id + " " + Cp.id);
+							bottom_panel.selection3.visible = false;
+						//	bottom_panel.selection4.visible = false;
+							if(Ap != modl.firstClicked) {
+								trace("A is not first clicked");
+								//	Ap.selectedState = EightDimensionParticle.NOT_SELECTED;
+								Ap.selectedState = EightDimensionParticle.SELECTED_SECOND;
+							
+								if(Bp != modl.firstClicked && Bp != modl.secondClicked && Bp.ui.visible) {
+									trace("result1.SET1");		
+									modl.result1 = Bp;
+									updateDetails(bottom_panel.selection3, modl.result1);
+									bottom_panel.selection3.visible = true;
+								}
+							//	Ap.updateUI();
+							}
+							if(Bp != modl.firstClicked) {
+								trace("B is not first clicked");
+								//	Bp.selectedState = EightDimensionParticle.NOT_SELECTED;
+								Bp.selectedState = EightDimensionParticle.SELECTED_SECOND;
+								
+								if(Ap != modl.firstClicked && Ap != modl.secondClicked && Ap.ui.visible) {
+									trace("result1.SET2");
+									modl.result1 = Ap;
+									updateDetails(bottom_panel.selection3, modl.result1);
+									bottom_panel.selection3.visible = true;
+								}
+								
+							//	Bp.updateUI();
+							}
+							modl.firstClicked.selectedState = EightDimensionParticle.SELECTED_FIRST;
+							modl.firstClicked.updateUI();
+							//if selection1 == result/C particle  + selection2 == photon
+							// photon = green
+							// else selection1 !=result + selection2 == photon
+							// photon == yellow
+							if(photoP == modl.secondClicked) {
+								if(Bp.ui.visible && Cp.ui.visible) {
+									// || modl.firstClicked.id == cRes[1]) { 
+									//	photoP.selectedState = EightDimensionParticle.NOT_SELECTED;
+									photoP.selectedState = EightDimensionParticle.RESULT;
+									if(Bp != modl.firstClicked && Bp != modl.secondClicked && Bp.ui.visible) {
+										trace("result1.SET3");		
+										modl.result1 = Bp;
+										updateDetails(bottom_panel.selection3, modl.result1);
+										bottom_panel.selection3.visible = true; 	
+									}
+									
+								//	photoP.updateUI();
+								}
+							}
+							viewport.graphics.lineStyle(10, EightDimensionParticle.SELECTED_SECOND_COLOR, .5);
+							if(Bp.ui.visible) {
+								viewport.graphics.moveTo(photoP.ui.x, photoP.ui.y);	
+								viewport.graphics.lineTo(Bp.ui.x, Bp.ui.y);
+							}
+							if(Ap.ui.visible) {
+								viewport.graphics.moveTo(photoP.ui.x, photoP.ui.y);	
+								viewport.graphics.lineTo(Ap.ui.x, Ap.ui.y);
+							}
+						} else {
+							////////////////////////// NORMAL MODE /////////////////
+							modl.firstClicked.selectedState = EightDimensionParticle.SELECTED_FIRST;
+							modl.firstClicked.updateUI();
+							if(modl.secondClicked != null && modl.result1 != null && modl.result1.ui.visible) {
+								viewport.graphics.lineStyle(10, EightDimensionParticle.SELECTED_SECOND_COLOR, .5);
+								viewport.graphics.moveTo(Ap.ui.x, Ap.ui.y);	
+								viewport.graphics.lineTo(Bp.ui.x, Bp.ui.y);
+								if(Ap != modl.firstClicked) {
+									//Ap.selectedState = EightDimensionParticle.NOT_SELECTED;
+									Ap.selectedState = EightDimensionParticle.SELECTED_SECOND;
+									Ap.updateUI();
+								}
+								if(Bp != modl.firstClicked) {
+									//Bp.selectedState = EightDimensionParticle.NOT_SELECTED;
+									Bp.selectedState = EightDimensionParticle.SELECTED_SECOND;
+									Bp.updateUI();
+								}
+							}
+							if(modl.result1 != null && modl.result1.ui.visible) {
+								viewport.graphics.lineStyle(10, EightDimensionParticle.RESULT_COLOR, .5);
+					
+								viewport.graphics.moveTo(center.x, center.y);		
+								if(Cp && Cp.ui.visible) {
+									viewport.graphics.lineTo(Cp.ui.x, Cp.ui.y);
+									if(Cp != modl.firstClicked) {
+										//Cp.selectedState = EightDimensionParticle.NOT_SELECTED;
+										Cp.selectedState = EightDimensionParticle.RESULT;
+										Cp.updateUI();
+									}
+								} 
+								if(Dp && Dp.ui.visible) {
+									viewport.graphics.moveTo(center.x, center.y);	
+									viewport.graphics.lineTo(Dp.ui.x, Dp.ui.y);
+									if(Dp != modl.firstClicked) {
+										//Dp.selectedState = EightDimensionParticle.NOT_SELECTED;
+										Dp.selectedState = EightDimensionParticle.RESULT;
+										Dp.updateUI();
+									}
+								}
+							}
+						}
+					}catch(er23 : Error) {
 					}
 				}
 				if(false) {
@@ -1829,7 +2228,7 @@
 
 		function onSelectionChanged(evt : Event = null) : void {
 			if(allBtns != null) {
-				for (var i : int = 0;i < allBtns.length; i++) {
+				for (var i : int = 0;i < allBtns.length;i++) {
 					var cb : MovieClip = MovieClip(allBtns[i]);
 					var cd : Dimension = idxDButton[cb];
 					if (cd != modl.curXaxis && cd != modl.curYaxis) {
