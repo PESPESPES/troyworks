@@ -1,4 +1,6 @@
-package com.troyworks.controls.ttooltip { 
+package com.troyworks.controls.ttooltip {	
+	import flash.utils.setTimeout;
+ 
 		
 	/**
 	 * Non-Singleton Tool Tip class AS3 Style
@@ -45,7 +47,7 @@ package com.troyworks.controls.ttooltip {
 		public static var IDZ : int = 0;
 		private var scope : DisplayObjectContainer;
 		private var target : DisplayObject;
-		
+
 		private var _bf : BevelFilter;
 
 		public function TToolTip( myRoot : DisplayObjectContainer, font : Font = null, tipColor : uint = 0xFFFFFF, tipAlpha : Number = 1, tipShape : String = "roundTip", fontColor : uint = 0x000000, fontSize : int = 11, advRendering : Boolean = true) {
@@ -68,7 +70,7 @@ package com.troyworks.controls.ttooltip {
 			_adv = advRendering;
 			if(font == null) {
 				_format = new TextFormat("arial", fontSize, fontColor);
-			}else {
+			} else {
 				_format = new TextFormat(font.fontName, fontSize, fontColor);
 			}
 			//_bf = new BevelFilter(.5,45,0xFFFFFF,.8,0,.8,0, 0);
@@ -110,7 +112,7 @@ package com.troyworks.controls.ttooltip {
 
 			var len : int = tipShape.length;
 			this.graphics.beginFill(_tipColor, _tipAlpha);
-			for (var i : int = 0;i < len; i++) {
+			for (var i : int = 0;i < len;i++) {
 				if (i == 0) {
 					this.graphics.moveTo(tipShape[i][0], tipShape[i][1]);
 				} else if (tipShape[i].length == 2) {
@@ -120,7 +122,7 @@ package com.troyworks.controls.ttooltip {
 				}
 			}
 			this.graphics.endFill();
-//			this.filters = [_bf,_ds];
+			//			this.filters = [_bf,_ds];
 			this.filters = [_ds];
 			//
 
@@ -130,17 +132,38 @@ package com.troyworks.controls.ttooltip {
 			_orgY = label_txt.y;
 			this.addChild(label_txt);
 		}
-		public function tearDown(evt:Event = null):void{
-			trace("tearDown !!!!!!!!!!!!!!!!!!!!!!!!!" + evt.target.name);
-		  	scope.removeChild(this);
-		  	target.removeEventListener(Event.ENTER_FRAME,follow);
-		  	
+
+		public function tearDown(evt : Event = null) : void {
+			//			trace("tearDown !!!!!!!!!!!!!!!!!!!!!!!!!" + evt.target.name);
+			if(scope && this.parent == scope) {
+				scope.removeChild(this);
+			}
+			if(target) {
+				target.removeEventListener(Event.ENTER_FRAME, follow);
+			}
 		}
-		public function follow(evt:Event):void{
-			trace("following " + stage);
-			if(this.stage == null){
+
+		public function follow(evt : Event) : void {
+			//trace("following " + stage);
+			if(this.stage == null) {
 				tearDown();
 			}
+		}
+
+		public function showAtPosition(ax : int, ay : int, scope : DisplayObjectContainer, delay : Number = 0) : void {
+			//	var rect : Rectangle = dO.getBounds(scope);
+			this.x = ax;//rect.x + rect.width / 2;
+			y = ay + 3;
+			this.scope = scope;
+			createChildren();
+			setTimeout(addToScope, delay);
+		//	dO.addEventListener(Event.REMOVED, tearDown);
+		//	dO.addEventListener(Event.ENTER_FRAME,follow);
+		//	target = dO;
+		}
+
+		public function addToScope() : void {
+			scope.addChild(this);	
 		}
 
 		public function showAt(dO : DisplayObject, scope : DisplayObjectContainer) : void {
@@ -151,7 +174,7 @@ package com.troyworks.controls.ttooltip {
 			createChildren();
 			scope.addChild(this);
 			dO.addEventListener(Event.REMOVED, tearDown);
-			dO.addEventListener(Event.ENTER_FRAME,follow);
+			dO.addEventListener(Event.ENTER_FRAME, follow);
 			target = dO;
 		}
 	}

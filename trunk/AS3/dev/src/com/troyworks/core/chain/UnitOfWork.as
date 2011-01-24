@@ -241,13 +241,21 @@ package com.troyworks.core.chain {
 				//}
 				}
 				//_initState =s__doing;
+				if(!hsm_is_Active){
 				initStateMachine();
+				}
+				if(!isInState(s__doing) && !isInState(s___partiallyDone)&& !isInState(s_done) && !isInState(s__notDoneWithErrors)){
 				requestTran(s__doing);
+				}
 				return;				
 			}else {
 				//////////// LEAF/SOLO /////////////////////
+				if(!hsm_is_Active){
 				initStateMachine();
-				requestTran(s__doing);
+				}
+				if(!isInState(s__doing) && !isInState(s___partiallyDone)&& !isInState(s_done) && !isInState(s__notDoneWithErrors)){
+					requestTran(s__doing);
+				}
 			}
 		}
 		public function startWorkNoChildren(evt:Event = null):void{
@@ -368,6 +376,7 @@ package com.troyworks.core.chain {
 						//	if(totalWork > 0  && totalWork ==totalPerformed){
 						//		requestTran(s_done);						
 						//	}else{
+						trace("!!requestTran(s___partiallyDone)");
 						requestTran(s___partiallyDone);	
 					//	}
 					}else {

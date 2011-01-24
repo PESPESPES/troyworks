@@ -82,14 +82,15 @@ package com.troyworks.framework.loader {
 		public var curstate : String = NOT_STARTED;
 		private var myContent : DisplayObject;
 
-		public function LoaderUtil(loader : Object) {
+		public function LoaderUtil(loader : *) {
 			super();
 			if(loader is LoaderInfo) {
-				_loaderInf == LoaderInfo(loader);
-			}else if(loader is Loader) {
+				_loaderInf = LoaderInfo(loader);
+			}else if(loader is Loader) {			
 				_loaderInf = loader.contentLoaderInfo;//loaderInf;
+			}else{
+				throw new Error("ERROR unrecognized loaderInfo");
 			}
-			
 			_loaderInf.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			_loaderInf.addEventListener(Event.OPEN, openStreamHandler);
 			_loaderInf.addEventListener(Event.COMPLETE, completeHandler);

@@ -37,6 +37,7 @@ package mdl {
 		public var secondClicked : EightDimensionParticle;
 		public var result1 : EightDimensionParticle;
 		public var result2 : EightDimensionParticle;
+		public var curInteractionKey:String;
 		//////////////// COORDINATES /////////////////////
 		public static const e8coords : String = "e8coords";
 		public static const smcoords : String = "smcoords";
@@ -437,7 +438,21 @@ package mdl {
 			var GUTparticle2 : EightDimensionParticle = EightDimensionParticle.XMLFactory(GUTconfig.p[1]);
 			GUTparticle2.modl = this;		
 			trace("GUTconfig IDs " + GUTparticle.name + " " + GUTparticle.gutcolor + " ");
-			
+			//////////////////////////////////////////////////////
+			//   Colors
+			//////////////////////////////////////////////////////
+			var colorsCfg : XMLList = xml.colorConfig.children();
+			trace("Colors " + colorsCfg.toString());
+			var i : int;
+			var n : int;
+			i= 0;
+			n = colorsCfg.length();
+			trace(i + " " + n);
+			for (;i < n; ++i) {
+				trace(i + "  " + colorsCfg[i].@id + " == " + colorsCfg[i].@rgb);
+				var clr:Colors = Colors.parse(colorsCfg[i].@id);
+				clr.rgb = new Number(colorsCfg[i].@rgb);
+			}
 			//////////////////////////////////////////////////////
 			//   POINT SYSTEMS 
 			//////////////////////////////////////////////////////
@@ -446,8 +461,8 @@ package mdl {
 			var psys : XMLList = xml..pointSystem;
 			//trace("psys " + psys);
 
-			var i : int = 0;
-			var n : int = psys.length();
+			i= 0;
+			n = psys.length();
 			trace("Found " + n + " PointSystems ");
 			var e8PointSystem : PointSystem;
 			var stPointSystem : PointSystem;
@@ -491,6 +506,8 @@ package mdl {
 					curPointSystem.camera_points = e8PointSystem.camera_points;
 					curPointSystem.trialities = e8PointSystem.trialities;
 					curPointSystem.interactions = e8PointSystem.interactions;
+					curPointSystem.reverseinteractions = e8PointSystem.reverseinteractions;
+					curPointSystem.reverseinteractions2 = e8PointSystem.reverseinteractions2;
 					curPointSystem.axises = e8PointSystem.axises;
 					//		coords = e8PointSystem.curCoordinate;
 					if(curPointSystem.name == "Standard Model") {

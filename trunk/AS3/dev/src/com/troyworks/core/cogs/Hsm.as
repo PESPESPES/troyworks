@@ -371,7 +371,8 @@
 
 			return false;
 		}
-
+	/*hsm_callbackIn is needed to get around the single thread reenter a state issue we are supposed to have left issue.  this when off caused some nasty bugs that are hard to track down. e.g. you write a good statemachine, looks good then when running it starts doing wierd things during transitions that execute other transitions.
+	*/
 		public function hsm_callbackIn(ms : Number = 45) : void {
 			trace("hsm calling back in ============================");
 			//	var myTimer : Timer = new Timer(ms, 1);

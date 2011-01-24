@@ -1,13 +1,16 @@
 ﻿package com.troyworks.geom.d1 {
+	import flash.utils.Dictionary;
+
 	import com.troyworks.data.DataChangedEvent;	
-	
+
 	import flash.net.registerClassAlias;	
-	
+
 	import com.troyworks.geom.d1.LineQuery;		
 
 	public class CompoundLine1D extends Line1D {
 		public var children : Array = new Array();
-		private static const REG:* = registerClassAlias("com.troyworks.geom.d1.CompoundLine1D",CompoundLine1D);
+		private static const REG : * = registerClassAlias("com.troyworks.geom.d1.CompoundLine1D", CompoundLine1D);
+
 		////////////
 		public function CompoundLine1D(obj : Object = null, type : Number = NaN, start : Number = NaN, length : Number = NaN, end : Number = NaN) {	
 	
@@ -18,6 +21,8 @@
 		public function addChild(ch : Line1D) : void {
 			//trace
 			trace("addChild " + this.children.length);
+			ch.parentLine = this;
+			ch.updateSpacer();
 			this.children.push(ch);
 			//sort by starttime.
 			if (this.children.length > 1) {
@@ -50,35 +55,86 @@
 			return 0;
 		}
 
+		override public function calc() : void {
+			if (this.children.length > 1) {
+				//trace ("before sort:\r\t" + this.children.join("\t\r  "));
+				this.children.sort(this.order);
+				//trace ("after sort:\r\t" + this.children.join("\t\r  "));
+				this.A = this.children[0].A;
+				this.Z = this.children[this.children.length - 1].Z;
+			}
+		
+			super.calc(); 
+		}
+
 		public function getClips(qry : LineQuery) : Array {
 			//trace ("getClips ");
 			var res : Array = new Array();
 			var i : int = 0;
 			var n : int = this.children.length;
 			//this.children.filter(qry.passesMinAndMaxCheck);			
-			for (;i < n; ++i) {
+			for (;i < n;++i) {
 				var c : Line1D = this.children[i] as Line1D;
-			
+				if(c is CompoundLine1D) {
+					var child : Array = (c as CompoundLine1D).getClips(qry);
+					while(child.length > 0) {
+						res.push(child.pop());
+					}
+				}
 				var a : Boolean = qry.passesMinAndMaxCheck(c.A.position, c.Z.position);
 				//trace(qry);
 				if (a) {
 					res.push(c);
 				}
 			}
-			if (res.length == 0)
-			{
+			if (res.length == 0) {
 				//trace ("no clips found");
 				//return null;
 			}
 			return res;
 		}
+
+		override public function shiftBy(shift : Number) : void {
+			/*	var aV : Boolean = (A != null) && (!isNaN(A.position));
+			var bV : Boolean = (Z != null) && (!isNaN(Z.position));
+			if(aV){
+			A.position += shift;
+			}
+			if(bV){
+			Z.position += shift;
+			}*/
+			var i : int = 0;
+			var n : int = this.children.length;
+			//this.children.filter(qry.passesMinAndMaxCheck);
+			var points : Dictionary = new Dictionary(true);
+			var c : Line1D;		
+			//Collect all the points (in a unique way)
+			for (;i < n;++i) {
+				c = this.children[i] as Line1D;
+				points[c.A] = c.A;
+				points[c.Z] = c.Z;
+			}
+			// Shift the points
+			var pnt : Point1D;
+			
+			for each (pnt in points) {
+				//pnt.shiftBy(shift);
+				pnt.dispatchEventsEnabled = false;
+				pnt.position += shift;
+				pnt.dispatchEventsEnabled = true;
+//				trace(prop + " = " + points[prop]);
+			}
+			
+			calc();
+		}
+
 		override public function onAChanged(evt : DataChangedEvent) : void {
-			var delta:Number = (evt.currentVal as Number) -(evt.oldVal as Number);
+			var delta : Number = (evt.currentVal as Number) - (evt.oldVal as Number);
 			trace("onAChanged " + delta);
 			var i : int = 0;
 			var n : int = this.children.length;
 			//this.children.filter(qry.passesMinAndMaxCheck);			
-			for (;i < n; ++i) {
+			for (;i < n;++i) {
 				var c : Line1D = this.children[i] as Line1D;
 				c.A.dispatchEventsEnabled = false;
 				c.A.position += delta;
@@ -86,6 +142,7 @@
 			}
 			calc();
 		}
+
 		///////////////////////////////////////////////////////////////////////
 		/// This is used to deserialize from disk
 		override public function initFromXML(tree : XML) : Line1D {
@@ -108,8 +165,26 @@
 			return this;
 		}
 
+		override public function toXML() : XML {
+			var res : XML = new XML("<l name='" + name + "' type='" + type + "' length='" + length + "'/>");
+			var i : int = 0;
+			var n : int = this.children.length;
+			//this.children.filter(qry.passesMinAndMaxCheck);			
+			for (;i < n;++i) {
+				var c : Line1D = this.children[i] as Line1D;
+				res.appendChild(c.toXML());
+			}
+			return res;				
+		}
+
 		override public function toString() : String {
-			return name + " from " + this.A + " to " + this.Z + " (" + this.length + ") " + this.name + " children:\t\r" + this.children.join("\t\r");
+			var res : Array = new Array();
+			var spacein : Array = new Array();
+		
+			res.push(spacer);
+			res.push(name + " from " + this.A + " to " + this.Z + " (" + this.length + ") " + this.name + " children:\r" + spacer);
+			res.push(this.children.join("\r" + spacer));
+			return res.join('');
 		}
 
 		/*override public function clone() : Object {

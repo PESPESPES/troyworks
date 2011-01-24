@@ -14,10 +14,10 @@ package com.troyworks.geom.d1 {
 		protected var val : Number = 0;
 		private static const REG : * = registerClassAlias("com.troyworks.geom.d1.Point1D", Point1D);
 
-		public function Point1D(name : String = "Point", x : Number = 0) {
+		public function Point1D(name : String = "Point", pos : Number = 0) {
 			//id = (id != null) ?id : id;
 			this.name = name;
-			val = x;
+			val = pos;
 		}
 
 		public function add(p : Point1D) : Point1D {

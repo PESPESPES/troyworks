@@ -28,7 +28,7 @@ package com.troyworks.core.cogs.proxies {
 			_stage.removeEventListener(KeyboardEvent.KEY_DOWN,reportKeyDown);
 			_stage.removeEventListener(KeyboardEvent.KEY_UP,reportKeyUp);
 		}
-		function reportKeyDown(event:KeyboardEvent):void
+		public function reportKeyDown(event:KeyboardEvent):void
 		{
 		
 			trace("Key Pressed: " + String.fromCharCode(event.charCode) +         " (key code: " + event.keyCode + " character code: "         + event.charCode + ")");
@@ -37,7 +37,7 @@ package com.troyworks.core.cogs.proxies {
 		//	_sm.dispatchEvent(evt);
 		}
 
-		function reportKeyUp(event:KeyboardEvent):void
+		public function reportKeyUp(event:KeyboardEvent):void
 		{
 			trace("Key Released: " + String.fromCharCode(event.charCode) +         " (key code: " + event.keyCode + " character code: " +         event.charCode + ")");
 

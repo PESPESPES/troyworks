@@ -1,6 +1,6 @@
 ﻿package mdl {
 	import com.troyworks.data.Default;
-	
+
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;		
 
@@ -24,7 +24,9 @@
 		public var camera_points : Array;
 		public var trialities : Array;
 		public var interactions : Dictionary;
-
+		public var reverseinteractions : Dictionary;
+		public var reverseinteractions2 : Dictionary;
+		public var overwrites : Object;
 		private var i : int;
 		private var n : int;
 		// use Grand Unified Theory labels and colors
@@ -35,30 +37,30 @@
 		}
 
 		/*public function get curCoordinate() : Coordinates {
-			return _curCoordinate ;
+		return _curCoordinate ;
 		}
 
 		public function set curCoordinate(val : Coordinates) : void {
-			_curCoordinate = val;
-			trace("setting curCoordinate to " + val.id + " from " + _curCoordinate.id);
-			///////// UPDATE the POINTS COORDS /////////////
-			i = 0;
-			n = particles.length;
-			var cp : EightDimensionParticle;
-			trace(" particles " + n);
-			for (;i < n; ++i) {
+		_curCoordinate = val;
+		trace("setting curCoordinate to " + val.id + " from " + _curCoordinate.id);
+		///////// UPDATE the POINTS COORDS /////////////
+		i = 0;
+		n = particles.length;
+		var cp : EightDimensionParticle;
+		trace(" particles " + n);
+		for (;i < n; ++i) {
 				
-				cp = particles[i] as EightDimensionParticle;
-				cp.setCurrentCoordinates(val.id);
-				cp = camera_points[i] as EightDimensionParticle;
-				cp.setCurrentCoordinates(val.id);
-			}
-			/////////    dispatach changed //////////////////
-			dispatchEvent(new Event(Model.COORDS_CHANGED));
-			//dispatchEvent(new Event(Model.ROTATIONS_CHANGED));
+		cp = particles[i] as EightDimensionParticle;
+		cp.setCurrentCoordinates(val.id);
+		cp = camera_points[i] as EightDimensionParticle;
+		cp.setCurrentCoordinates(val.id);
+		}
+		/////////    dispatach changed //////////////////
+		dispatchEvent(new Event(Model.COORDS_CHANGED));
+		//dispatchEvent(new Event(Model.ROTATIONS_CHANGED));
 		}*/
 
-		public static function XMLFactory(xml : XML, gutIDx : Dictionary, GUTparticle : EightDimensionParticle, GUTparticle2 : EightDimensionParticle, mdlx:Model) : PointSystem {
+		public static function XMLFactory(xml : XML, gutIDx : Dictionary, GUTparticle : EightDimensionParticle, GUTparticle2 : EightDimensionParticle, mdlx : Model) : PointSystem {
 			//	trace("!!!!!!!!!!!!!!!XMLFactory!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			//	trace(xml.toXMLString());
 			//	trace("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -112,7 +114,7 @@
 			ps.particles = new Array();
 			//	var idx:Object = new Object();
 
-			for (;i < n; ++i) {
+			for (;i < n;++i) {
 	
 				p = EightDimensionParticle.XMLFactory(xparticles[i]);
 				
@@ -170,7 +172,7 @@
 			ps.camera_points = new Array();
 			var cp : EightDimensionParticle;
 			i = 0;
-			for (;i < n; ++i) {
+			for (;i < n;++i) {
 				
 				p = ps.particles[i];
 				cp = p.clone() as EightDimensionParticle;
@@ -187,7 +189,7 @@
 			if(n > 0) {
 				ps.coordinates = new Array();
 				var co : Coordinates;
-				for (;i < n; ++i) {
+				for (;i < n;++i) {
 					//	trace("Coord " + i + " " + coords[i].toXMLString());
 					co = Coordinates.XMLFactory(coords[i], ps, i);
 					trace("Coord obj " + co.label);
@@ -195,7 +197,7 @@
 					ps.coordinates.push(co);
 					if(co.isDefault) {
 						trace("isDefault " + co);
-						mdlx.curcoords  = co;
+						mdlx.curcoords = co;
 					}
 				}
 			
@@ -209,6 +211,9 @@
 			///           INTERACTIONS BETWEEN PARTICLES       (must go after Particles!              ///
 			//////////////////////////////////////////////////////////////////////			
 			ps.interactions = new Dictionary(true);
+			ps.reverseinteractions = new Dictionary(true);
+			ps.reverseinteractions2 = new Dictionary(true);
+			//ps.overwrites= new Object();
 			var xparticlInteractions : XMLList = xml..i;
 			//trace("xparticlInteractions " + xparticlInteractions.toXMLString());
 			//throw new Error("DEBUGGING BREAK");
@@ -218,36 +223,153 @@
 			var ky_val : Array;
 			var lnks : Array;
 			var keys : Array;
-			var pk : Number;
-			var sk : Number;
+			var A : String;
+			var B : String;
+			var C : String;
+			var D : String;
+			var Ai : Number;
+			var Bi : Number;
+			var Ci : Number;
+			var Di : Number;
+			var unew : Boolean = true;
 			trace("Found " + n + " interactions====================================");
 			//XXX 
 			if(true && n > 0) {
 				try {
-					for (;i < n; ++i) {
+					for (;i < n;++i) {
 						//trace("PInteraction " + i + " " + xparticlInteractions[i].toXMLString());
+						//<i lnk="85,156=20,21" />  This is what we get, 85 and 156 are the ID's of the start particles, 20 and maybe 21 is the resultant particles
+
 						ky_val = String(xparticlInteractions[i].@lnk).split("=");
-						lnks = ky_val[1].split(",");
-						keys = ky_val[0].split(",");
+						//so now "85,156","20,21"   
+						keys = ky_val[0].split(",");  //[85,156]
+						lnks = ky_val[1].split(","); //[20,21]
+						A = keys[0];
+						Ai = Number(A) - 1;  //primary key
+						ps.particles[Ai].participates = EightDimensionParticle.ISTATE_A;
+						
+						B = keys[1];
+						Bi = Number(B) - 1; //secondary key
+						ps.particles[Bi].participates = EightDimensionParticle.ISTATE_B;
+		
+						if(lnks.length > 0) {
+							C = lnks[0];  //first interaction key
+							Ci = Number(C) - 1;  //first interaction key
+							ps.particles[Ci].participates = EightDimensionParticle.ISTATE_D;
+							
+							if(lnks.length == 2) {
+								D = lnks[1]; //second interaction
+								Di = Number(D) - 1; //second interaction
+								ps.particles[Di].participates = EightDimensionParticle.ISTATE_D;
+							}
+						}
+						///////  START POSITIONS /////////////
 						if(keys.length == 2) {
 							// given a particle has many outgoing links we need to put them into a single array on the particle
-							pk = Number(keys[0] - 1);
-							sk = Number(keys[1] - 1);
+							// -1 as we are zero based in flash, where the ids in the ps are 1 based
 							//trace();
-							//trace(" pk " + pk + "pFrom " +ps.particles[pk] +"  "+ " sk " + sk +" "  + ps.particles[sk]);
-							//					trace("pFrom " +ps.particles[pk] );
+							trace(" Ai " + Ai + "pFrom " + ps.particles[Ai] + "  " + " Bi " + Bi + " " + ps.particles[Bi]);
+							//					trace("pFrom " +ps.particles[Ai] );
 							/////////// BIDIRECTIONAL LINK
-							ps.particles[pk].outboundParticleLinks.push(ps.particles[sk]);
-							ps.particles[sk].outboundParticleLinks.push(ps.particles[pk]);
+							ps.particles[Ai].outboundParticleLinks.push(ps.particles[Bi]);
+							ps.particles[Bi].outboundParticleLinks.push(ps.particles[Ai]);
+							if(unew) {
+								if(!isNaN(Ci)) {
+									ps.particles[Ci].outboundParticleLinks.push(ps.particles[Bi]);
+									ps.particles[Ci].outboundParticleLinks.push(ps.particles[Ai]);
+									//	ps.particles[Ai].outboundParticleLinks.push(ps.particles[Ci]);
+									//ps.particles[Bi].outboundParticleLinks.push(ps.particles[Ci]);
+									if(!isNaN(Di)) {
+										ps.particles[Di].outboundParticleLinks.push(ps.particles[Bi]);
+										ps.particles[Di].outboundParticleLinks.push(ps.particles[Ai]);
+									//	ps.particles[Di].outboundParticleLinks.push(ps.particles[Ci]);
+										//ps.particles[Ci].outboundParticleLinks.push(ps.particles[Di]);
+									}
+								}	
+							}						
 						}
+						///////// OUTGOING INTERACTIONS /////////////
 						if(lnks.length == 1) {
 							//					trace("putting 1 interaction" + ky_val[0]);
-							ps.interactions[ky_val[0]] = [ps.particles[Number(lnks[0]) - 1]];
-							ps.interactions[keys[1]+","+keys[0]] = [ps.particles[Number(lnks[0]) - 1]];
+							ps.interactions[A + "," + B] = [ps.particles[Ci]]; //A,B -> C
+							ps.interactions[B + "," + A] = [ps.particles[Ci]];  // inversion  B,A->C
+							// new 
+							if(unew) {
+								/*if(ps.reverseinteractions[C + "," + B]) {
+									trace("ERROR overwrite " + C + "," + B + " " + ps.reverseinteractions[C + "," + B]);	
+								}
+								if(ps.reverseinteractions[C + "," + A]) {
+									trace("ERROR overwrite " + C + "," + A + " " + ps.reverseinteractions[C + "," + A]);	
+								}
+								if(ps.reverseinteractions[B + "," + C]) {
+									trace("ERROR overwrite " + B + "," + C + " " + ps.reverseinteractions[B + "," + C]);	
+								}
+								
+								if(ps.reverseinteractions[A + "," + C]) {
+									trace("ERROR overwrite " + A + "," + C + " " + ps.reverseinteractions[A + "," + C]);	
+								}*/
+								if(!ps.reverseinteractions[C + "," + B]){
+									ps.reverseinteractions[C + "," + B] = [ps.particles[Ai], C]; //C,B -> A
+								}else{
+									
+									if(!ps.reverseinteractions2[C + "," + B]){
+									ps.reverseinteractions2[C + "," + B] = [ps.particles[Ai], C]; //C,B -> A
+									}else{
+									trace("OVERWRITE");	
+									}
+								}
+								if(!ps.reverseinteractions[C + "," + A]){
+									ps.reverseinteractions[C + "," + A] = [ps.particles[Bi], C];  // inversion  C,A->B
+								}else{
+								if(!ps.reverseinteractions2[C + "," + A]){	
+									ps.reverseinteractions2[C + "," + A] = [ps.particles[Bi], C];  // inversion  C,A->B
+									}else{
+									trace("OVERWRITE");	
+									}
+								}
+								if(!ps.reverseinteractions[B + "," + C]){
+									ps.reverseinteractions[B + "," + C] = [ps.particles[Ai], C]; //C,B -> A
+								}else{
+								if(!ps.reverseinteractions2[B + "," + C]){	
+									ps.reverseinteractions2[B + "," + C] = [ps.particles[Ai], C]; //C,B -> A
+									}else{
+									trace("OVERWRITE");	
+									}
+								}
+								if(!ps.reverseinteractions[A + "," + C]){
+									ps.reverseinteractions[A + "," + C] = [ps.particles[Bi], C];  // inversion  C,A->B
+								}else{
+								if(!ps.reverseinteractions2[A + "," + C]){	
+									ps.reverseinteractions2[A + "," + C] = [ps.particles[Bi], C];  // inversion  C,A->B
+									}else{
+									trace("OVERWRITE");	
+									}
+								}
+								
+								
+								
+								
+							//	ps.overwrites[C + "," + B] = (ps.overwrites[C + "," + B])? ps.overwrites[C + "," + B] +1:1;
+							//	ps.overwrites[C + "," + A] = (ps.overwrites[C + "," + A])? ps.overwrites[C + "," + A]+1:1;
+							//	ps.overwrites[B + "," + C] = (ps.overwrites[B + "," + C])? ps.overwrites[B + "," + C]+1:1;
+							//	ps.overwrites[A + "," + C] = (ps.overwrites[A + "," + C])? ps.overwrites[A + "," + C]+1:1;
+
+							}
 						}else if(lnks.length == 2) {
 							//								trace("putting 2 interaction" + ky_val[0] + "  "+ ps.particles[Number(lnks[0])-1] + " " +  ps.particles[Number(lnks[1])]-1]);
-							ps.interactions[ky_val[0]] = [ps.particles[Number(lnks[0]) - 1], ps.particles[Number(lnks[1]) - 1]];
-							ps.interactions[keys[1]+","+keys[0]] = [ps.particles[Number(lnks[0]) - 1], ps.particles[Number(lnks[1]) - 1]];
+							ps.interactions[A + "," + B] = [ps.particles[Ci], ps.particles[Di]];
+							ps.interactions[B + "," + A] = [ps.particles[Ci], ps.particles[Di]];  // inversion
+							// new
+							if(unew) { 
+								ps.reverseinteractions[C + "," + B] = [ps.particles[Ai],ps.particles[Di]]; //C,B -> A
+								ps.reverseinteractions[C + "," + A] = [ps.particles[Bi],ps.particles[Di]];  // inversion  C,A->B
+								ps.reverseinteractions[D + "," + B] = [ps.particles[Ai],ps.particles[Ci]]; //C,B -> A
+								ps.reverseinteractions[D + "," + A] = [ps.particles[Bi],ps.particles[Ci]];  // inversion  C,A->B
+								ps.reverseinteractions[B + "," + C] = [ps.particles[Ai],ps.particles[Di]]; //C,B -> A
+								ps.reverseinteractions[A + "," + C] = [ps.particles[Bi],ps.particles[Di]];  // inversion  C,A->B
+								ps.reverseinteractions[B + "," + D] = [ps.particles[Ai],ps.particles[Ci]]; //C,B -> A
+								ps.reverseinteractions[A + "," + D] = [ps.particles[Bi],ps.particles[Ci]];  // inversion  C,A->B
+							}
 						}
 		//		p = ParticleInteractions.XMLFactory(xparticles[i]);
 			//	trace("Particle obj " + co);
@@ -257,6 +379,11 @@
 				}catch(er : Error) {
 				//	throw new Error("ERROR in PointSystem.XMLFactory parsing interactions " +  xparticlInteractions[i].toXMLString() +  " " + er.getStackTrace());
 				}
+				
+				//trace("OVERWRITES");
+				//for (var ov : String in ps.overwrites) {
+				//	trace(ov + " cnt " + ps.overwrites[ov]);
+				//}
 			}
 			///////////////////////////////////////////////////////////////////////
 			///           CREATE TRIALITIES      (must go after Particles!              ///
@@ -266,7 +393,7 @@
 			i = 0;
 			n = tri.length();
 			trace("Found " + n + " trialities ====================================");
-			for (;i < n; ++i) {
+			for (;i < n;++i) {
 				//trace("PInteraction " + i + " " + xparticlInteractions[i].toXMLString());
 				lnks = String(tri[i].@lnk).split(",");
 				//	trace(" triality " + lnks.join(","));
