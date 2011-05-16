@@ -759,8 +759,8 @@ package com.troyworks.core.tweeny {
 					c = _lc;
 					aa = _ac;
 					zz = colorTransform;
-					zz.alphaMultiplier = trg.colorTransform.alphaMultiplier;
-					zz.alphaOffset = trg.colorTransform.alphaOffset;
+					zz.alphaMultiplier = trg.transform.colorTransform.alphaMultiplier;
+					zz.alphaOffset = trg.transform.colorTransform.alphaOffset;
 					continue;
 				} else if(k === SNDTRANSFORM_START && !isSprite) {
 					//skip sound

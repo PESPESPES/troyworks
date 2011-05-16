@@ -12,13 +12,13 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 		public var _links : MultiEntryDictionary;
 		//list of all nodes and links regardless of type
 		public var nodes : Array;
-		public var links : Array;
+	//	public var links : Array;
 		public var nIdx : Object;
 		public var lIdx : Object;
 		public var rootNodes : Array;
 		//holder for the set interval
 		protected var si : Number;
-		public var depth : Number;
+	//	public var depth : Number;
 		public function MicroCore (id : Number, name : String, nType : String)
 		{
 			super (id, name, nType);
@@ -58,8 +58,8 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 			{
 				var f:Object = className;
 				//eval(className);
-				////trace( f + " n type of "   + typeof (f) + " " + (typeof (f) == "function"));
-				if (typeof (f) == "function")
+				trace( f + " n type of "   + typeof (f) + " " + (typeof (f) == "function") + " " + (f is Class));
+				if (typeof (f) == "function" || f is Class)
 				{
 					//	//trace(" n creating dynamic function ");
 					trace("$1");
@@ -107,7 +107,7 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 			var n : MicroCore = null;
 			if (className != null)
 			{
-				var f = className;
+				var f :Object= className;
 				// _global[className];//eval(className);
 				//	//trace( f + " " + name + " h type of "   + typeof (f) + " " + (typeof (f) == "function") + " instance of MicroCore?: " + (f is MicroCore) + " instance of Object?: " + (f is Object));
 				if (f is MicroCore)
@@ -119,13 +119,13 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 					{
 						//trace ("warning casting " + name + " failed!");
 					};
-				} else if (typeof (f) == "function")
+				} else if (typeof (f) == "function"|| f is Class)
 				{
 					//	//trace(" h creating dynamic function ");
 					n = new f (this.nodes.length, name, oType);
 	
 				} else if (typeof (className) == "string"){
-					var cl = getDefinitionByName(String(className));
+					var cl:Object = getDefinitionByName(String(className));
 					n = new cl (String(className))();
 				} else
 				{
@@ -176,7 +176,7 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 		public function getNodeByName (name : String) : MicroNode
 		{
 			//trace (" getNodeByName name: " + name );
-			var o = this.nIdx [name];
+			var o:Object = this.nIdx [name];
 			if (o != null)
 			{
 				//trace (" o != null");
@@ -197,12 +197,12 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 		fromNode : MicroNode, toNode : MicroNode, weight : Number) : MicroLink
 		{
 			//trace("creating LInk " + name + " from " + fromNode + " to " + toNode);
-			var l = null;
+			var l:MicroLink = null;
 			if (className != null)
 			{
-				var f = className;
+				var f:Object = className;
 				//:Function = eval(className);
-				if (typeof (f) == "function")
+				if (typeof (f) == "function"|| f is Class)
 				{
 					l = new f (this.links.length, name, oType, weight);
 				} else if (f is MicroLink)
@@ -279,11 +279,12 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 			var tranList : Array = new Array ();
 			var enterList : Array = new Array ();
 			var findParent : Boolean = true;
-			var dir = null;
+			var dir:Object = null;
+			var i:Number;
 			//trace ("From " + sA.name + " @ " + dA + " -> " + sB.name + " @ " + dB);
 			if (dA > dB)
 			{
-				var i = dA - dB;
+				i= dA - dB;
 				//trace ("doing down " + i + " sA");
 				dir = i;
 				while (i --)
@@ -294,7 +295,7 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 				};
 			} else if (dA < dB)
 			{
-				var i = dB - dA;
+				i = dB - dA;
 				//trace ("going up " + i + " sB");
 				dir = i;
 				if (sA === sB.parent)
@@ -385,8 +386,8 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 			var i:String = null;
 			for (i in this.nodes)
 			{
-				var node = this.nodes [i];
-				var id = node.id;
+				var node:MicroNode = this.nodes [i];
+				var id:Number = node.id;
 				//set distance
 				d [id] = Number.POSITIVE_INFINITY;
 				p [id] = node;
@@ -403,25 +404,25 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 			{
 				trace ("going past children" + q.length);
 				// get current node
-				var u = MicroNode (q.pop ());
+				var u:MicroNode = MicroNode (q.pop ());
 				trace ("starting with node " + u);
 				//get adjacent/children and look for minimum length;
 				var links : Array = u.getOutLinksReadOnly ();
 				trace ("found children " + links);
 				//		var S = S U{u}
 				//for each ver
-				var j = null;
+				var j:Object = null;
 				for (j in links)
 				{
-					var lnk = links [j];
-					var v = lnk.getToNode ();
+					var lnk:MicroLink = links [j];
+					var v:MicroNode = lnk.getToNode ();
 					//	trace ("adjacent " + lnk + " " + lnk.weight);
 					//if weight of link + current distance of from node less than distance from to node
 					if (lnk.weight + d [u.id] < d [v.id])
 					{
 						d [v.id] = lnk.weight + d [u.id];
 						p [v.id] = u;
-						var c = _color [v.id];
+						var c:Object = _color [v.id];
 						switch (c)
 						{
 							case WHITE :
@@ -446,7 +447,7 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 				_color [u.id] = BLACK;
 			}
 			trace (Trace.me (d, "distances from " + s, true));
-			var id = 5;
+			//var id:Number = 5;
 			while (id != s.id)
 			{
 				trace (id + " pred " + p [id]);
@@ -454,17 +455,17 @@ import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 			}
 		}
 		/////////////////////////////////////////////////////
-		public function toString () : String
+		override public function toString () : String
 		{
-			var res = new Array ();
+			var res:Array = new Array ();
 			res.push ("MicroCore." + this.name + ".toString()");
 			res.push ("Nodes:");
-			for (var ni in this.nodes)
+			for (var ni:Object in this.nodes)
 			{
 				res.push ("\t " + this.nodes [ni]);
 			}
 			res.push ("Links:");
-			for (var li in this.links)
+			for (var li:Object in this.links)
 			{
 				res.push ("\t " + this.links [li]);
 			}

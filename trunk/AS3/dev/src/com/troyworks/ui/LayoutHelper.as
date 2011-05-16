@@ -1,4 +1,5 @@
 package com.troyworks.ui {
+	import flash.display.DisplayObject;
 	import flash.geom.Point; 
 	import flash.geom.Rectangle;
 	/**
@@ -67,7 +68,9 @@ package com.troyworks.ui {
 		};
 
 		public function set bounds(b : Rectangle) : void {
+			trace("set " + b.width, b.height);
 			m_bounds = b;
+			trace("set bound.width" + m_bounds.width, m_bounds.height);
 			CX = m_bounds.x + m_bounds.width / 2;
 			CY = m_bounds.y + m_bounds.height / 2;
 			tmpX = m_bounds.x;
@@ -85,12 +88,16 @@ package com.troyworks.ui {
 			tmpI = 0;
 			tmpJ = 0;
 			var nu : Number = Math.sqrt(numberOfClips);
+			trace(numberOfClips, nu);
 			tmpX = m_bounds.x;
 			tmpY = m_bounds.y;
 			tmpI_MAX = Math.ceil(nu);
 			tmpJ_MAX = Math.floor(nu);
+			trace("tmpI_MAX " + tmpI_MAX, tmpJ_MAX);
 			wspace = m_bounds.width / tmpI_MAX;
 			vspace = m_bounds.height / tmpJ_MAX;
+			trace("m_bounds.width" + m_bounds.width, m_bounds.height);
+			trace("wsapce " + wspace, vspace);
 			
 			switch (layoutStructure) {
 				case ELLIPTICAL :
@@ -115,9 +122,10 @@ package com.troyworks.ui {
 		public function layoutClips(clips_array : Array) : void {
 			var i : Number = clips_array.length;
 			while (i--) {
-				var b : MovieClip = MovieClip(clips_array[i]);
+				var b : DisplayObject = DisplayObject(clips_array[i]);
 				var p : Point = new Point();
 				layoutClip(i, p);
+				trace(layoutStructure + " " + orientation + " clip " + p.x, p.y);
 				b.x = p.x;
 				b.y = p.y;
 			}
@@ -136,6 +144,7 @@ package com.troyworks.ui {
 					break;		
 				case LINEAR :
 					if (orientation == "horizontal") {
+						trace(" m_bounds.left " + m_bounds.left, i, wspace);
 						p.x = m_bounds.left + (wspace * i);
 						p.y = CY;
 					} else if (orientation == "vertical") {
