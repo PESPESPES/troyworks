@@ -32,12 +32,19 @@ package com.troyworks.framework.loader {
 
 		public var targetClip : Sprite;
 		public  var clip : String;
-		private var xml : XML;		
-
+		public var xml : XML;		
+		public var data : *;
+		
+		public static var FORMAT_TEXT:String = "FORMAT_TEXT";
+		public static var FORMAT_XML:String = "FORMAT_XML";
+		public var format:String = FORMAT_TEXT;
 		
 		public function TextLoaderUnit(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE) {
 			super(initState, aMode);
 			setStateMachineName("TextLoaderUnit");
+		}
+		public function setFormatToXML():void{
+			format = FORMAT_XML;
 		}
 
 		override public function getWorkPerformed() : Number {
@@ -93,12 +100,12 @@ package com.troyworks.framework.loader {
 		public function completeLoadedHandler(event : Event) : void {
 			trace(_smName + "_" + mediaURL + ".completeLoadedHandler: " + event);
 			
-			if(event.target.data is XML) {
+			if(event.target.data is XML || format == FORMAT_XML) {
 				
 				try {
 					//Convert the downloaded text into an XML
 					xml = new XML(event.target.data);
-					trace(xml);
+					//trace(xml);
 				} catch (err : TypeError) {
 					//Could not convert the data, probavlu because
 					//because is not formated correctly
@@ -106,7 +113,7 @@ package com.troyworks.framework.loader {
 					trace(err.message);
 				}
 			}else{
-				
+				data = event.target.data;
 			}
 			
 			////////// TODO LAYOUT //////////////////

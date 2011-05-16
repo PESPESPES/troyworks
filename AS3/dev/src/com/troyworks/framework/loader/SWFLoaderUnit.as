@@ -39,6 +39,7 @@ package com.troyworks.framework.loader {
 		public  var clip : DisplayObject;
 		public var nameForLoadedClip:String =null;
 		public var wrapBitmap:Boolean = false;
+		public var initParams:Object = new Object();
 		public function SWFLoaderUnit(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE) {
 			super(initState, aMode);
 			setStateMachineName("SWFLoaderUnit");
@@ -113,6 +114,9 @@ package com.troyworks.framework.loader {
 			    clip.name =nameForLoadedClip; 
 			}
 			////////// TODO LAYOUT //////////////////
+			for (var e : String in initParams) {
+				clip[e] = initParams[e];
+			}
 			//clip.x = Math.random() * 50;
 			//clip.y = Math.random() * 50;
 			//clip.alpha = .3;

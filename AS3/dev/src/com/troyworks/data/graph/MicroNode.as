@@ -75,14 +75,17 @@ package com.troyworks.data.graph {
 		public function getLink (incoming : Boolean, targetNode : MicroNode, lType : String) : MicroLink
 		{
 			//trace("getLink incoming: "+ incoming + " type:" + lType + " to " + targetNode.name );
+			var _array:Array;
+			var i:int;
+			var l : MicroLink;
 			if (incoming)
 			{
-				var _array = this._inLinks.getAllItems (lType);
-				var i = _array.length;
+				_array = this._inLinks.getAllItems (lType);
+				 i = _array.length;
 				//trace("found " + i + " inlinks");
 				while (i --)
 				{
-					var l : MicroLink = MicroLink (_array [i]);
+					l  = MicroLink (_array [i]);
 					//trace("need "+ this.name + "<- " + targetNode.name + "  comparing: in: " + l._toNode.name + " out: " + l._fromNode.name );
 					if (l._toNode == targetNode)
 					{
@@ -92,12 +95,12 @@ package com.troyworks.data.graph {
 				}
 			} else
 			{
-				var _array = this._outLinks.getAllItems (lType);
-				var i = _array.length;
+				 _array = this._outLinks.getAllItems (lType);
+				 i = _array.length;
 				//trace("found " + i + " outlinks");
 				while (i --)
 				{
-					var l : MicroLink = MicroLink (_array [i]);
+					 l  = MicroLink (_array [i]);
 					//trace("need "+ this.name + "-> " + targetNode.name + "  comparing: in: " + l._toNode.name + " out: " + l._fromNode.name );
 					if (l._toNode == targetNode)
 					{
@@ -106,19 +109,22 @@ package com.troyworks.data.graph {
 					}
 				}
 			}
+			return null;
 		}
-		public function getOutgoingLinks (lType : String, res : Array) : Array
+		public function getOutgoingLinks (lType : String, res : Array, includeParent:Boolean = true) : Array
 		{
 			//trace("Node.getOutgoingLinks ");
-			var topLevel = false;
+			var topLevel:Boolean = false;
 			if (res == null)
 			{
 				res = new Array ();
 				topLevel = true;
 			}
-			this.parent.getOutgoingLinks (lType, res);
+			if(this.parent && includeParent){
+				this.parent.getOutgoingLinks (lType, res);
+			}
 			var l_array : Array = this._outLinks.getAllItems (lType);
-			var i : Number = l_array.length;
+			var i : Number = (l_array)?l_array.length:0;
 			//trace(this.name + " found " + i + " local links " );
 			while (i --)
 			{
@@ -139,19 +145,19 @@ package com.troyworks.data.graph {
 			}
 			return res;
 		}
-		public function getOutLinksReadOnly(lType : String) : Array{
+		public function getOutLinksReadOnly(lType : String = null) : Array{
 			return this._outLinks.getAllItems (lType);
 		}
-		public function getInLinksReadOnly(lType : String) : Array{
+		public function getInLinksReadOnly(lType : String = null) : Array{
 			return this._inLinks.getAllItems (lType);
 		}
-		public function traceMe (str : String, lvl : Number =0) : void
+		public function traceMe (str : String, lvl : Number =NaN) : void
 		{
 			if (MicroNode.debugLevel == - 1)
 			{
 				return;
-			} else if (lvl == null || lvl >= MicroNode.debugLevel){
-			trace (str);
+			} else if (isNaN(lvl) || lvl >= MicroNode.debugLevel){
+				trace (str);
 			}
 		}
 		public function setAsRootNode () : void 
@@ -162,7 +168,7 @@ package com.troyworks.data.graph {
 			this.core.addAsRootNode (this);//, val);
 		}
 		/////////////////////////////////////////////////////
-		public function toString () : String
+		override public function toString () : String
 		{
 			return " node " + this.name + " id: " + this.id;
 		}
@@ -176,6 +182,7 @@ package com.troyworks.data.graph {
 			if(e.sig != SIG_TRACE){
 				return s_active;
 			}
+			return s_root;
 		}
 		/*.................................................................*/
 		public function s_active(e : CogEvent) : Function
@@ -208,16 +215,17 @@ package com.troyworks.data.graph {
 			return s_root;
 		}
 		/*..PSEUDOSTATE...............................................................*/
-		public function s_final(e : CogEvent) : void
+		public function s_final(e : CogEvent) : Function
 		{
 //			this.onFunctionEnter ("s_final-", e, []);
 			switch (e.sig)
 			{
 				case SIG_ENTRY :
 				{ 
-					return;
+					//return s_root;
 				}
 			}
+			return s_root;
 		}
 		
 	}
