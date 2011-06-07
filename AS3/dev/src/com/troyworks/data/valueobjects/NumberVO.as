@@ -40,7 +40,7 @@
 
 	public class NumberVO extends ValueObject {
 		private var _val : Number = NaN;
-
+		private var _defval : Number = NaN;
 		
 		public function NumberVO(val : Number, myConstraint : Function = null, myTriggers : Array = null) {
 			super();
@@ -66,11 +66,12 @@
 				var evt : DataChangedEvent = onChanged(newVal, _val, PRE_DATA_CHANGE);
 				if(evt.cancelable && evt.isCancelled){
 				}else {
+					var oldVal : Object = _val;
 					_val = newVal;
 					//POST COMMIT
 				//		trace(name+":NumberVO.postcommit" + _val);
 					
-					onChanged(newVal, _val, DATA_CHANGE);
+					onChanged(newVal, oldVal, DATA_CHANGE);
 				}
 			}
 		}
@@ -79,7 +80,12 @@
 			//trace(name+":NumberVO.getValue " + _val);
 			return _val;
 		}
-
+		public function set defaultValue(defVal:Number):void{
+			_defval = defVal;
+		}
+		public function resetToDefaults():void{
+			value = new Number(_defval); //value not reference	
+		}
 		override public function toString() : String {
 			return _val.toString();
 		}

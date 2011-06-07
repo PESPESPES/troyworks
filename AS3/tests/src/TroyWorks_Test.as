@@ -22,6 +22,7 @@
 	import com.troyworks.core.cogs.Test_Hsm;
 	import com.troyworks.logging.*;
 	import com.troyworks.data.Test_ArrayX;
+	import com.troyworks.data.graph.Test_MicroCore;
 	import com.troyworks.core.cogs.StateMachine;
 	import com.troyworks.framework.loader.Test_SWFLoaderUnit;
 	import com.troyworks.util.datetime.*;
@@ -148,7 +149,7 @@
 				//testRunner.addTest(Test_Line1D);
 				//testRunner.addTest(Test_TDate);
 				//testRunner.addTest(Test_XORcipher);
-				testRunner.addTest(Test_CompoundLine1D);
+			//	testRunner.addTest(Test_CompoundLine1D);
 				////////RUN TEST //////////////
 
 				if(testRunner.hasTests) {
@@ -182,7 +183,7 @@
 				testRunner2.addEventListener(Event.CHANGE, onProgress);
 				///////////////////////////////////////////
 				//	testRunner2.addTest(Test_Hsm);
-
+				testRunner2.addTest(Test_MicroCore);
 				//testRunner2.addTest(Test_Fsm);
 				//	testRunner2.addTest(Test_PlaceHolderUnitOfWork);
 				//testRunner2.addTest(SampleTest);
