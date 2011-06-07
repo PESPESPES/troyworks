@@ -90,6 +90,8 @@ package com.troyworks.data.valueobjects {
 
 	public class ValueObject extends EventDispatcher {
 		public var name : String = "ValueObject";
+		public var description:String ="";
+		
 		public var constraint : Function = null;
 		public var triggers : Array = new Array();
 		//used when synchroizing
@@ -113,7 +115,7 @@ package com.troyworks.data.valueobjects {
 			triggers.push({gaurd:rangeFilter, fn:fn});
 		}
 
-		private var _dispatchEventsEnabled : Boolean ;
+		private var _dispatchEventsEnabled : Boolean = false;
 
 		public function set dispatchEventsEnabled( value : Boolean  ) : void {
 			if(_dispatchEventsEnabled != value) {
@@ -125,7 +127,10 @@ package com.troyworks.data.valueobjects {
 		public function get dispatchEventsEnabled( ) : Boolean {
 			return _dispatchEventsEnabled;
 		}
-
+		override public function addEventListener(type:String, listener:Function,useCapture:Boolean =false,priority:int=0,useWeakReference:Boolean = false):void{
+			dispatchEventsEnabled = true;
+			super.addEventListener(type, listener,useCapture,priority,useWeakReference);
+		}
 		
 		
 		public function removeOnValueChangedAction(rangeFilter : Filter = null, fn : Function = null) : Boolean {

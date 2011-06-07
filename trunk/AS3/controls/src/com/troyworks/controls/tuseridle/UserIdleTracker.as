@@ -28,8 +28,9 @@ package com.troyworks.controls.tuseridle {
 	    	stage.addEventListener(MouseEvent.MOUSE_DOWN, resetTimeOut);
 	    	stage.addEventListener(MouseEvent.MOUSE_UP, resetTimeOut);
 	    	stage.addEventListener(MouseEvent.MOUSE_MOVE, resetTimeOut);
+	    	stage.addEventListener(MouseEvent.MOUSE_WHEEL, resetTimeOut);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, resetTimeOut);
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, resetTimeOut);    
+			stage.addEventListener(KeyboardEvent.KEY_UP, resetTimeOut);    
 			    
 		}
 		public function onTimeout() : void {

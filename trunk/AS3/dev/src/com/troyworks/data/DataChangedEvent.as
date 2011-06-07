@@ -34,7 +34,7 @@ package com.troyworks.data {
 			return res;
 		}
 		public override function toString():String{
-			return "DataChangedEvent phase " + this.type + " oldVal " + oldVal + " " + currentVal;
+			return "DataChangedEvent phase " + this.type + " from " + oldVal + " to: " + currentVal;
 		}
 	}
 }

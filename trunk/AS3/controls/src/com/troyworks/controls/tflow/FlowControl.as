@@ -148,6 +148,9 @@
 		public var debugShowChildAdded : Boolean = false;
 		public var debugShowChildRemoved : Boolean = false;
 		public var hasPreloadingFrame : Boolean = false; 
+		public var stopAllSoundsBetweenNav : Boolean = false;
+		public var enableToolTips : Boolean = true;
+
 		//whether or not a next frame should be called upon load
 
 		//////////////////////////////////////////////////////////
@@ -159,9 +162,8 @@
 		private var fadeClipTny : Tny;
 		public var fadeClipColor : Number = 0xFFFFFF; 
 		public var nextAction : Function;
-		public var enableToolTips : Boolean = true;
-		public var stopAllSoundsBetweenNav : Boolean = false;
 
+		
 		public var classMap : Dictionary = new Dictionary(true);
 		public var isEmbedded : Boolean = false;
 		public var iniObj : Object;
@@ -170,8 +172,8 @@
 
 		public var flowControlHasInited : Boolean = false;
 		public var version : Number = 1.2;
-		public var fcIsInited:Boolean = false;
-		public var isBusyNavigating:Boolean = false;
+		public var fcIsInited : Boolean = false;
+		public var isBusyNavigating : Boolean = false;
 
 		//	public static var trace : Function = TraceAdapter.SOSTracer;
 
@@ -185,8 +187,8 @@
 		}
 
 		public function init(initObj : Object = null) : void {
-			trace("FlowControl("+ version+ ").init ****************************************************" + loaderInfo + " isEmbedded " + isEmbedded);
-			if(fcIsInited){
+			trace("FlowControl(" + version + ").init ****************************************************" + loaderInfo + " isEmbedded " + isEmbedded);
+			if(fcIsInited) {
 				trace("error FC already Inited!!!");
 				return;
 			}
@@ -210,10 +212,10 @@
 				//addEventListener(Event.ENTER_FRAME,onEF);
 				if(view.stage == null) {
 					addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-				}else {
+				} else {
 					onAddedToStage(null);
 				}
-			}else {
+			} else {
 				trace("waiting on UI");				
 			}
 			
@@ -233,7 +235,7 @@
 			setView(this);
 			if(view.hasOwnProperty("config")) {
 				trace("waiting on config");
-			}else {
+			} else {
 				trace("not waiting on config");
 				framesToWait = 1 ;
 				onRenderFirstFrame();
@@ -260,8 +262,8 @@
 				var vw = view.loaderInfo.width; 
 				trace("loaderInfo GOOD");
 			}catch(er : Error) {
-//				trace(" " + er.mses);
-	//			trace("ER loadingInfo not loaded yet" + er.getStackTrace());
+				//				trace(" " + er.mses);
+				//			trace("ER loadingInfo not loaded yet" + er.getStackTrace());
 				framesToWait++;
 				return false;
 			}
@@ -279,7 +281,7 @@
 					framesToWait = 0 ;
 					trace("removing onRenderFirstFrame2222");
 					removeEventListener(Event.ENTER_FRAME, onRenderFirstFrame);
-				}else {
+				} else {
 					trace(" FlowControl using default configuration ");
 				}
 			}catch(er : Error) {
@@ -314,7 +316,7 @@
 				fadeClip.graphics.endFill();
 				trace("add FadeClip");
 				view.parent.addChild(fadeClip);
-			}else {
+			} else {
 				fadeClip = view.fadeClip;
 			}
 			view.visible = true;
@@ -329,7 +331,7 @@
 				///////////////////////////////
 				// load list of engines / services
 				///////////////////////////////
-			}else {
+			} else {
 					
 				trace("requesting NEXT FRAME " + view);
 				//	view.gotoAndStop("intro");
@@ -362,7 +364,7 @@
 						trace("initObj2 " + c + " = " + view.config[c]);
 						this[c] = view.config[c];
 					}
-				}else {
+				} else {
 					trace(" FlowControl using default configuration ");
 				}
 			}catch(er : Error) {
@@ -373,7 +375,6 @@
 			if(watchAddedAndRemovedEvents) {
 				trace("enabling watch");
 				enableFlowControlDynamicBinding();
-		
 			}
 			
 			////////// LISTEN DEEP INSIDE FOR EVENTS TO HAPPEN /////////////
@@ -401,7 +402,7 @@
 			view.addEventListener("nextScene", requestNextScene);
 			view.addEventListener("prevScene", requestPrevScene);
 
-			view.addEventListener("FlowControlEnableKeyboardNavigation", enableFlowControlKeyboardNavigation );
+			view.addEventListener("FlowControlEnableKeyboardNavigation", enableFlowControlKeyboardNavigation);
 			view.addEventListener("FlowControlDisableKeyboardNavigation", disableFlowControlKeyboardNavigation);
 			
 			view.addEventListener("FlowControlEnableDynamicBinding", enableFlowControlDynamicBinding);
@@ -409,21 +410,23 @@
 			
 		//	onFrameChanged();
 		}
-		public function enableFlowControlDynamicBinding(evt:Event = null):void{
+
+		public function enableFlowControlDynamicBinding(evt : Event = null) : void {
 			trace("****enableFlowControlDynamicBinding****");
-				view.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
-				view.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
-				view.addEventListener(Event.ADDED, onChildAdded);
-				view.addEventListener(Event.REMOVED, onChildRemoved);
+			view.addEventListener(Event.ADDED_TO_STAGE, addedToStage);
+			view.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
+			view.addEventListener(Event.ADDED, onChildAdded);
+			view.addEventListener(Event.REMOVED, onChildRemoved);
 		}
-		public function disableFlowControlDynamicBinding(evt:Event = null):void{
+
+		public function disableFlowControlDynamicBinding(evt : Event = null) : void {
 			trace("****disableFlowControlDynamicBinding****");
-				view.removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
-				view.removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
-				view.removeEventListener(Event.ADDED, onChildAdded);
-				view.removeEventListener(Event.REMOVED, onChildRemoved);
+			view.removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
+			view.removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
+			view.removeEventListener(Event.ADDED, onChildAdded);
+			view.removeEventListener(Event.REMOVED, onChildRemoved);
 		}
-		
+
 		public function enableFlowControlKeyboardNavigation(evt : Event = null) : void {
 			trace("**---enableFlowControlKeyboardNavigation --**");
 			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
@@ -438,7 +441,7 @@
 		//////////////////////FADE /////////////////////////////////
 		protected function startFadeUP(event : Event = null) : void {
 			trace("FlowControl.startFadeUP " + view.currentFrame);
-			rlastFrame = String( view.currentFrame);
+			rlastFrame = String(view.currentFrame);
 			isBusyNavigating = true;
 			fadeClipTny.alpha = 1;
 			fadeClipTny.onComplete = onFadedUP;
@@ -483,15 +486,15 @@
 		///////////////////  WATCHING CHILDREN ////////////////////////
 		protected function onChildAdded(event : Event) : void {
 			var dO : DisplayObject = DisplayObject(event.target);
-			var stn:String = getQualifiedClassName(dO);
-			var isButton : Boolean = stn =="fl.controls::Button"  || stn =="flash.display::SimpleButton"; 
+			var stn : String = getQualifiedClassName(dO);
+			var isButton : Boolean = stn == "fl.controls::Button" || stn == "flash.display::SimpleButton"; 
 			var isMC : Boolean = dO is MovieClip;
 			
 			//var isButton : Boolean = getdO; 
 			 
 			// || dO is RadioButton;
 			if(debugShowChildAdded) {
-				trace("FlowControl.onChildAdded " + dO.name + " " + isButton+  " " +stn );
+				trace("FlowControl.onChildAdded " + dO.name + " " + isButton + " " + stn);
 			}
 			if((isButton || isMC ) && validDo(dO)) {
 				setupGoto(dO, dO.name);
@@ -519,8 +522,8 @@
 
 		protected function onChildRemoved(event : Event) : void {
 			var dO : DisplayObject = DisplayObject(event.target);
-			var stn:String = getQualifiedClassName(dO);
-			var isButton : Boolean = stn =="fl.controls::Button"  || stn =="flash.display::SimpleButton"; 
+			var stn : String = getQualifiedClassName(dO);
+			var isButton : Boolean = stn == "fl.controls::Button" || stn == "flash.display::SimpleButton"; 
 		
 			// || dO is RadioButton;
 			if(debugShowChildAdded) {
@@ -542,11 +545,11 @@
 			var i : int = 0;
 			var n : int = numChildren;
 
-			for (;i < n; ++i) {
+			for (;i < n;++i) {
 				var dO : DisplayObject = getChildAt(i);
 				//trace(describeType(dO));
-				var stn:String = getQualifiedClassName(dO);
-				var isButton : Boolean = stn =="fl.controls::Button"  || stn =="flash.display::SimpleButton"; 
+				var stn : String = getQualifiedClassName(dO);
+				var isButton : Boolean = stn == "fl.controls::Button" || stn == "flash.display::SimpleButton"; 
 		
 				//var isRadio : Boolean = false;
 				//dO is RadioButton;	
@@ -581,10 +584,10 @@
 				fnName = frame.split("_")[0];
 				evtTr = null;
 				if (view[fnName] is Function) {
-					trace("Found FUnction " +fnName +" "  + view[fnName]);
+					trace("Found FUnction " + fnName + " " + view[fnName]);
 					ie.addEventListener(MouseEvent.CLICK, view[fnName]);
 //					ie.addEventListener(MouseEvent.CLICK, EventAdapter.create(this[fnName], []));
-				}else{
+				} else {
 					trace("WARNING: skippng FUnction " + fnName);
 				}
 			}else if(frame.indexOf("play_") == 0) {
@@ -593,7 +596,7 @@
 				if(ary.length == 1 || (ary.length == 2 && ary[1] == "")) {
 					trace(" standard play()");
 					evtTr.evtType = "play";					
-				}else {
+				} else {
 					trace(" gotoAndPlay()");
 					evtTr = new EventAdapter();
 					evtTr.initAsRedispatcher(this);
@@ -611,10 +614,10 @@
 				evtTr.evtType = "prevScene";					
 			}else if(frame == "nextScene_" ) {
 				evtTr.evtType = "nextScene";	
-			}else if(frame == "lastFrame"){
+			}else if(frame == "lastFrame") {
 				evtTr.evtType = "lastFrame";
 				//evtTr.args =["$lastframe"];
-			}else {
+			} else {
 				ary = frame.split("_");
 				trace(" gotoAndStop " + frame + "  '" + ary.join("','") + "'");
 				if(ary.length > 0) {
@@ -626,12 +629,12 @@
 						trace("adding gotoAndPlay");
 						evtTr.evtType = "gotoAndPlay";
 						evtTr.args = [ary[1]];
-					}else {
+					} else {
 						//trace("ary '"+ ary.length + "'");
 						trace("ignoring");
 						ignoreClick = true;
 					}
-				}else {
+				} else {
 					trace("adding gotoAndStop2");
 					evtTr.evtType = "gotoAndPlay";
 					evtTr.args = [frame];					
@@ -658,9 +661,9 @@
 			var id : String = view.name + "+" + event;
 			var evtTr : EventAdapter = evtIdx[id];
 			trace("takedownGoto " + ie + " " + event + " id " + id + " is " + evtTr);
-			if(evtTr != null){
-			ie.removeEventListener(event, evtTr.dispatchEvent);
-			delete(evtIdx[id]);
+			if(evtTr != null) {
+				ie.removeEventListener(event, evtTr.dispatchEvent);
+				delete(evtIdx[id]);
 			}		
 		}
 
@@ -673,7 +676,7 @@
 			var res : String;
 			if(str.indexOf("gotoAnd") == 0) {
 				res = str.split("_")[1];
-			}else {
+			} else {
 				res = str;
 			}
 			
@@ -762,6 +765,7 @@
 				}
 			}
 		}
+
 		protected function requestNextFrame(event : Event = null) : void {
 			trace("requestNextFrame");
 			if(view.currentFrame < view.totalFrames) {
@@ -821,7 +825,7 @@
 		}
 
 		protected  function requestGotoAndPlay(event : EventWithArgs = null) : void {
-			trace("requestGotoAndPlay '" + event.args[0] +"'");
+			trace("requestGotoAndPlay '" + event.args[0] + "'");
 			nextAction = EventAdapter.create(view.gotoAndPlay, event.args, false);
 			startFadeUP();
 			if(event != null) {
@@ -848,8 +852,8 @@
 		///////////////////////////////////////////////////////////////////
 		//                       UI MANAGEMENT 
 		////////////////////////////////////////////////////////////////////
-	
 
+		
 		public function inventoryFrames(enableFrameDebugger : Boolean = false) : void {
 			activeFrames = new Object();
 			frameLabelToNumberIdx = new Object();
@@ -858,7 +862,7 @@
 			var fn : Number = -1;
 			trace("Inventorying FrameLabels----------------------");
 			
-			for (var i : int = 0;i < view.currentLabels.length; i++) {
+			for (var i : int = 0;i < view.currentLabels.length;i++) {
 				nm = view.currentLabels[i].name;
 				fn = view.currentLabels[i].frame;
 				trace(i + " " + nm + " " + fn);
@@ -927,7 +931,7 @@
 				var cnm : String;
 				var evt : FlowControlEvent;
 				try {
-					for (var i : int = 0;i < view.currentLabels.length; i++) {
+					for (var i : int = 0;i < view.currentLabels.length;i++) {
 						cnm = view.currentLabels[i].name;
 						if (cnm != " " && view.currentLabels[i].frame == view.currentFrame && activeFrames[cnm] != true) {
 							activeFrames[cnm] = true;
@@ -992,7 +996,7 @@
 			var frameNo : uint = 0;
 			if(frame is String) {
 				frameNo = getFrameNumberForFrameLabel(frame) - 1;
-			}else {
+			} else {
 				frameNo = uint(frame);
 			}
 			initFrameScripts[frameNo] = callback; 
@@ -1002,7 +1006,7 @@
 			var frameNo : uint = 0;
 			if(frame is String) {
 				frameNo = getFrameNumberForFrameLabel(frame) - 1;
-			}else {
+			} else {
 				frameNo = uint(frame);
 			}
 			initFrameScripts[frameNo] = null; 
@@ -1013,7 +1017,7 @@
 			var frameNo : uint = 0;
 			if(frame is String) {
 				frameNo = getFrameNumberForFrameLabel(frame) - 1;
-			}else {
+			} else {
 				frameNo = uint(frame);
 			}
 			trace("frameNo " + frameNo + " addOnLoadedFrameScript " + frame);
@@ -1024,7 +1028,7 @@
 			var frameNo : uint = 0;
 			if(frame is String) {
 				frameNo = getFrameNumberForFrameLabel(frame) - 1;
-			}else {
+			} else {
 				frameNo = uint(frame);
 			}
 			view.addFrameScript(frameNo, null);

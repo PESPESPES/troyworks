@@ -66,7 +66,7 @@ package com.troyworks.events {
 
 		public var bubbles : Boolean = true;
 		public var cancelable : Boolean = true;
-		private var includeEvent : Boolean = false;
+		public var includeEvent : Boolean = false;
 
 		public function EventAdapter(functionToCall : Function = null, callbackArguments : Array = null) {
 			_fn = functionToCall;
