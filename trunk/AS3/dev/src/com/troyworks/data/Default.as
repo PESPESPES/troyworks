@@ -28,13 +28,14 @@ package com.troyworks.data {
 			else return false;
 		}
 		public static function getNumberFromString(att:String,def:Number= NaN):Number {
-			if(!isNaN(def) && (att==null || att=="" )) {
+			//trace("getNumberFromString " + att);
+			if(att==null || att=="" ) {
 				return def;
 			}
 			return Number(att);
 		}
 		public static function getString(att:String,def:String= null) :String{
-			if(def!=null &&(att==null || att=="" )) {
+			if(att==null || att=="" ) {
 				return def;
 			}
 			return String(att);

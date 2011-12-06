@@ -14,7 +14,7 @@ package com.troyworks.data.graph {
 		public var core : MicroCore;
 		public var parent : MicroNode;
 		public var nType : String;
-		public var id : Number;
+		private var _id : int = -1;
 		public var name : String;
 		public var depth : Number;
 		//-1 is off, low number equals low priority, high number equals high priority.
@@ -34,7 +34,7 @@ package com.troyworks.data.graph {
 		public function initnode (id : Number, name : String, nType : String):void
 		{
 			this.initBlank ();
-			this.id = id;
+			this.id = (id == -1)?MicroCore.IDGen.getNextID():id;
 			this.name = name;
 		}
 		public function initBlank ():void
@@ -48,6 +48,14 @@ package com.troyworks.data.graph {
 			this.nType = (nType == null) ?"_" : nType;
 			this.depth = 0;
 		}
+		public function get id():int{
+			return _id;
+		}
+		public function set id(newId:int):void{
+			_id= newId;
+			MicroCore.IDX[_id]= this;
+		}
+		
 		public function addLink (incoming : Boolean, link : MicroLink) : void
 		{
 			if (incoming)

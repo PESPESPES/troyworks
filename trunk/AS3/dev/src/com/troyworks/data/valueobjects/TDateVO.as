@@ -4,6 +4,8 @@ package com.troyworks.data.valueobjects {
 
 	public class TDateVO extends ValueObject {
 		private var _val : TDate = null;
+		private var _defval  : TDate = null;
+		
 
 		public function TDateVO(val : TDate, func : Function = null) {
 			super(func);
@@ -23,19 +25,28 @@ package com.troyworks.data.valueobjects {
 			trace("TDateVO.value change " + _val.time + " !=  " + newVal.time);
 			if (_val.time != newVal.time) {
 			
-				var evt : DataChangedEvent = onChanged(newVal, _val, PRE_DATA_CHANGE);
-				if(evt.cancelable && evt.isCancelled){
+				var evt : DataChangedEvent = onChanged(newVal, _val, PRE_DATA_CHANGED);
+				if(evt && evt.cancelable && evt.isCancelled){
 				}else {
 					_val = newVal;
 					//POST COMMIT
 				//		trace(name+":NumberVO.postcommit" + _val);
 					
-					onChanged(newVal, _val, DATA_CHANGE);
+					onChanged(newVal, _val, DATA_CHANGED);
 				}
 				
 			}else {
 				trace("NO value change "  + _val);		
 			}
+		}
+		public function set defaultValue(defVal:TDate):void{
+			_defval = defVal;
+		}
+		public function get defaultValue() : TDate {
+			return _defval;
+		}
+		public function resetToDefaults():void{
+			value = new TDate(_defval.time); //value not reference	
 		}
 
 		public function get value() : TDate {

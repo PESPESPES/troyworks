@@ -23,7 +23,25 @@ package com.troyworks.data {
 		//	REQUIRE(testArrayX_pop(), "testArrayX_pop");
 		//	REQUIRE(testArrayX_shift(), "testArrayX_shift");
 		}
-
+		public function test_snapToClosest360() : Boolean {
+			var a1 : ArrayX = new ArrayX();
+			var cnt : int = 36;
+			while(cnt--) {
+				a1.push(cnt * 10);
+			}
+			a1.sort(Array.NUMERIC);
+			trace("set " + a1);
+			var base : int = 20;
+			var i : int = 10;
+			var res : Boolean; 
+			while(i--) {
+				trace("closest " + (base + i) + " " + a1.snapToClosest((base + i)));
+			}
+			//var passFilter : Boolean = (a1.toString() == "B,C" && r == "A");
+			//trace("  pass shift: " + passFilter);
+			//trace("  res is " + a1 + " returned " + r);
+			return res;//passFilter;
+		}
 		/*****************************************
 		 * for a given bunch of elements, e.g. A, B,C
 		 * and a given bunch of weightws e. 60, 30, 10

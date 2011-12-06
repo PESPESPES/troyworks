@@ -47,18 +47,19 @@ package com.troyworks.core.chain {
 		//which are currently errored/done
 		protected var finished : Array = null; 
 
-		protected var mode : Boolean = SEQUENTIAL_MODE;
+		public var mode : Boolean = SEQUENTIAL_MODE;
 		public var checkInterval : Number = 1000 / 12;
 
 		private var _parentUnit : IUnit;
 		public var parallelAllChildrenStarted : Boolean = false;
 		public  var isLeafTask : Boolean = false; 
+		public var traceEnabled: Boolean = false; 
 
 		public function UnitOfWork(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE, smName:String = "Chain") {
 			super(initState, smName, false);
 			mode = aMode;
 			_smName = smName + "_" + (mode == SEQUENTIAL_MODE) ? SEQUENTIAL_WORKER : PARALLEL_WORKER;
-			trace("smName  " + _smName + "#" + _smID);  
+			trace2("smName  " + _smName + "#" + _smID);  
 			children = new Array();
 			finished = new Array();	
 			toDo = null;
@@ -102,7 +103,7 @@ package com.troyworks.core.chain {
 		}
 
 		protected function fireCompletedEvent() : void {
-			trace(_smName + "#" + _smID + ".dispatching ***Complete***");	
+			trace2(_smName + "#" + _smID + ".dispatching ***Complete***");	
 			var evt : PlayheadEvent = new PlayheadEvent(EVT_COMPLETE);
 			evt.percentageDone = 1;
 			dispatchEvent(evt);
@@ -130,9 +131,9 @@ package com.troyworks.core.chain {
 					tp = c.getWorkPerformed();
 					tw = c.getTotalWorkToPerform();
 					if(c.isComplete()) {
-						trace(" D " + c.getUnitName() + " " + tp + " / " + tw);
+						trace2(" D " + c.getUnitName() + " " + tp + " / " + tw);
 					}else {
-						trace("   " + c.getUnitName() + " " + tp + " / " + tw);
+						trace2("   " + c.getUnitName() + " " + tp + " / " + tw);
 					}
 					totalPerformed += tp;
 					totalWork += tw;	
@@ -148,11 +149,11 @@ package com.troyworks.core.chain {
 					tw = c.getTotalWorkToPerform();
 					
 					if(c.hasStarted()) {
-						trace(" A " + c.getUnitName() + " " + tp + " / " + tw);
+						trace2(" A " + c.getUnitName() + " " + tp + " / " + tw);
 						
 						paraActive++;
 					}else {
-						trace(" * " + c.getUnitName() + " " + tp + " / " + tw);
+						trace2(" * " + c.getUnitName() + " " + tp + " / " + tw);
 					}
 					
 					activePerformed += tp;
@@ -167,7 +168,7 @@ package com.troyworks.core.chain {
 			if(paraActive == active.length) {
 				parallelAllChildrenStarted = true;	
 			}
-			trace(_smName + "#" + _smID + ".calcStats " + totalPerformed + " / " + totalWork);
+			trace2(_smName + "#" + _smID + ".calcStats " + totalPerformed + " / " + totalWork);
 			notifyProgress();
 		}
 
@@ -176,7 +177,7 @@ package com.troyworks.core.chain {
 
 		protected function notifyProgress() : void {
 			
-			trace(_smName + "#" + _smID + ".UnitOfWork.notifyProgress " + totalPerformed +" / " +totalWork);
+			trace2(_smName + "#" + _smID + ".UnitOfWork.notifyProgress " + totalPerformed +" / " +totalWork);
 			var evt : PlayheadEvent = new PlayheadEvent(EVT_PROGRESS);
 			
 			evt.percentageDone = totalPerformed / totalWork;
@@ -188,7 +189,7 @@ package com.troyworks.core.chain {
 
 		public function addChild(c : IUnit) : void {
 			
-			trace(_smName + smID + " HIGHLIGHTR addCHild ");
+			trace2(_smName + smID + " HIGHLIGHTR addCHild ");
 			children.push(c);
 			if(toDo == null ) {
 				toDo = new Array();
@@ -202,17 +203,17 @@ package com.troyworks.core.chain {
 		}
 
 		public function startWork() : void {
-			trace("" + _smName + "#" + _smID + ".startWork +++++++++++++++++++++++++++++++++++++++" + toDo);
+			trace2("" + _smName + "#" + _smID + ".startWork +++++++++++++++++++++++++++++++++++++++ todo:" + toDo);
 			///////////////////// COMPOSITE ////////////////////////////
 			if((toDo != null && ( totalWork == 0 || ( totalPerformed == totalWork && finished.length == children.length)) )) {
 				///nothing to load!//////////////
 				if(!hsmIsActive) {
-					trace("WARNING startWork() called with nothing to load");
+					trace2("WARNING startWork() called with nothing to load");
 					_initState = s_done;
 					initStateMachine();
 					return;
 				}else {
-					trace("" + _smName + "#" + _smID + ".startWork2 ......finished");
+					trace2("" + _smName + "#" + _smID + ".startWork2 ......finished");
 					requestTran(s_done);
 				}
 			}
@@ -221,25 +222,29 @@ package com.troyworks.core.chain {
 				var c : IUnit;
 				if(mode == PARALLEL_MODE) {
 					//PARALLEL
-					trace("[[[[[[[loading in parrallel ---------" + toDo.length);
+					trace2("[[[[[[[loading in parrallel ---------" + toDo.length);
 					while(toDo.length > 0) {
 						c = IUnit(toDo.shift());
 						c.addEventListener(EVT_COMPLETE, onChildCompleted);
+						c.addEventListener(EVT_ERROR, onChildErrored);
+						
 						c.startWork();
 						active.push(c);
 						parallelAllChildrenStarted = false;
 					}
 				}else {
 					//SEQUENTIAL
-					trace("[[[[[[[loading sequentially---------" + toDo.length);
+					trace2("[[[[[[[loading sequentially---------" + toDo.length);
 					c = IUnit(toDo.shift());
 					c.addEventListener(EVT_COMPLETE, onChildCompleted);
+					c.addEventListener(EVT_ERROR, onChildErrored);
 					c.startWork();
 					active.push(c);
 				//if(!pulseHasStarted()){
 				//	dispatchEventententent(SIG_ENTRY);
 				//}
 				}
+				toDo =null;
 				//_initState =s__doing;
 				if(!hsm_is_Active){
 				initStateMachine();
@@ -270,8 +275,9 @@ package com.troyworks.core.chain {
 			for (;i < n; ++i) {
 				var c : IUnit = IUnit(active[i]);
 				if(c == evt.target) {
-					trace("child " + c.getUnitName() + " says it's completed");
+					trace2("child " + c.getUnitName() + " says it's completed");
 					c.removeEventListener(EVT_COMPLETE, onChildCompleted);
+					c.removeEventListener(EVT_ERROR, onChildErrored);
 					finished.push(c);	
 					active.splice(i, 1);
 				}	
@@ -280,13 +286,16 @@ package com.troyworks.core.chain {
 				evt.stopImmediatePropagation();
 			}
 			
-			trace(_smName + "_" + smID + ".HIGHLIGHTG onChildCompleted" + active.length);
+			trace2(_smName + "_" + smID + ".HIGHLIGHTG onChildCompleted" + active.length);
 			dispatchEvent(SIG_CALLBACK.createPrivateEvent());
 		}
 
 		public function onChildErrored(evt : Event = null) : void {
-			trace("a child errored out");
-			//dispatchEvent(new PlayheadEvent(EVT_COMPLETE));
+			trace2("onChildErrored OUT");
+			var pE:PlayheadEvent = new PlayheadEvent(EVT_ERROR);
+			pE.percentageDone = totalPerformed / totalWork;
+			dispatchEvent(pE);
+			requestTran(s__notDoneWithErrors);
 		}
 
 		public function execute() : void {
@@ -314,15 +323,15 @@ package com.troyworks.core.chain {
 					if(!isLeafTask){
 					if(toDo == null && finished.length == 0) {
 						//FINISHED LOADING LIST
-						trace(_smName + "#" + _smID + ".FINISHED EMPTY WORKLIST");
+						trace2(_smName + "#" + _smID + ".FINISHED EMPTY WORKLIST");
 						requestTran(s_done);
 					}else if ( finished.length == children.length) {
 						//FINISHED LOADING LIST
-						trace(_smName + "#" + _smID + ".FINISHED LOADING WORKLIST");
+						trace2(_smName + "#" + _smID + ".FINISHED LOADING WORKLIST");
 						requestTran(s_done);
-					}else if (toDo.length >= 0) {
+					}else if (children.length >= 0) {
 						//FINISHED LOADING A CHILD
-						trace(_smName + "#" + _smID + ".FINISHED LOADING CHILD");
+						trace2(_smName + "#" + _smID + ".FINISHED LOADING CHILD");
 						startWork();
 					}
 					}
@@ -360,7 +369,7 @@ package com.troyworks.core.chain {
 				//case SIG_INIT:
 				//	return (totalPerformed > 0 && totalWork > 0 )? s___partiallyDone:null;
 				case SIG_ENTRY :
-					trace(_smName + "#" + _smID + ".s__doing SIG_ENTRYSIG_ENTRYSIG_ENTRYSIG_ENTRYSIG_ENTRYSIG_ENTRYSIG_ENTRY. start Pulse");
+					trace2(_smName + "#" + _smID + ".s__doing SIG_ENTRYSIG_ENTRYSIG_ENTRYSIG_ENTRYSIG_ENTRYSIG_ENTRYSIG_ENTRY. start Pulse");
 				
 					startPulse();
 					return null;
@@ -368,24 +377,24 @@ package com.troyworks.core.chain {
 					
 					calcStats();
 					
-					trace(_smName + "#" + _smID + ".Pulsing " + totalPerformed + "/ " + totalWork);
+					trace2(_smName + "#" + _smID + ".Pulsing " + totalPerformed + "/ " + totalWork);
 					
 					if(totalPerformed > 0 && totalWork > 0) {
-						trace("target.totalFrames " + totalWork);
+						trace2("target.totalFrames " + totalWork);
 						//TODO dispatchEvent("STARTED_GETTING_DATA");
 						//	if(totalWork > 0  && totalWork ==totalPerformed){
 						//		requestTran(s_done);						
 						//	}else{
-						trace("!!requestTran(s___partiallyDone)");
+						trace2("!!requestTran(s___partiallyDone)");
 						requestTran(s___partiallyDone);	
 					//	}
 					}else {
-						trace("target.totalFrames " + totalWork);
+						trace2("target.totalFrames " + totalWork);
 					}
 					notifyProgress();
 					return null;
 				case SIG_EXIT :
-					trace(_smName + "#" + _smID + ".s__doing SIG_EXITSIG_EXITSIG_EXITSIG_EXITSIG_EXITSIG_EXITSIG_EXITSIG_EXIT. stop Pulse");
+					trace2(_smName + "#" + _smID + ".s__doing SIG_EXITSIG_EXITSIG_EXITSIG_EXITSIG_EXITSIG_EXITSIG_EXITSIG_EXIT. stop Pulse");
 					stopPulse();
 					return null;
 			}
@@ -398,15 +407,15 @@ package com.troyworks.core.chain {
 				case SIG_ENTRY :
 					return null;
 				case SIG_PULSE:
-					trace("[[[[[[[----pulse-----");
+					trace2("[[[[[[[----pulse-----");
 					calcStats();
-					trace(_smName + "#" + _smID + ".[[[[[[[UnitOfWork.loaded " + totalPerformed + " /  " + totalWork);
+					trace2(_smName + "#" + _smID + ".[[[[[[[UnitOfWork.loaded " + totalPerformed + " /  " + totalWork);
 					
 					
 					if(parallelAllChildrenStarted && activePerformed >= activeWork) {
 						
 						if(active == null || active.length == 0) {
-							//	trace("[[[[[[[finished Loading child(ren)------ LOADING " + active.length + " LEFT " + toDo.length);
+							//	trace2("[[[[[[[finished Loading child(ren)------ LOADING " + active.length + " LEFT " + toDo.length);
 
 							dispatchEvent(SIG_CALLBACK.createPrivateEvent());
 						}
@@ -427,7 +436,7 @@ package com.troyworks.core.chain {
 					notifyProgress();
 				
 					//////////dispatch complete event ////////////
-					trace("" + _smName + "#" + _smID + ".s_doneENTER +++++++++++++++++++++++++++++++++++++++" + toDo);
+					trace2("" + _smName + "#" + _smID + ".s_doneENTER +++++++++++++++++++++++++++++++++++++++" + toDo);
 		
 					fireCompletedEvent();
 					return null;
@@ -445,6 +454,11 @@ package com.troyworks.core.chain {
 		public function getParentTask() : IUnit {
 			
 			return _parentUnit;
+		}
+		public function trace2(st:String):void{
+			if(traceEnabled){
+				trace(st);	
+			}
 		}
 	}
 }

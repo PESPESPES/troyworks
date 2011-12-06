@@ -65,8 +65,8 @@ package com.troyworks.data.valueobjects {
 	var mood:NumberVO= new NumberVO(50, constraint.constrainToRange); // initial value is 50.
 
 	 * 
-	 *  mood.addEventListener( DataChangedEvent.PRE_DATA_CHANGE, onPrecommitCheck);
-	mood.addEventListener( DataChangedEvent.DATA_CHANGE, onPostcommitCheck);
+	 *  mood.addEventListener( DataChangedEvent.PRE_DATA_CHANGED, onPrecommitCheck);
+	mood.addEventListener( DataChangedEvent.DATA_CHANGED, onPostcommitCheck);
 	 * 
 	//Cancel the value from actually being commited, in this case the post commit event won't take place.
 
@@ -98,8 +98,8 @@ package com.troyworks.data.valueobjects {
 		public var isDirty : Boolean = false;
 		public var isWriteable : Boolean = true;
 
-		public static const PRE_DATA_CHANGE : String = DataChangedEvent.PRE_DATA_CHANGE;
-		public static const DATA_CHANGE : String = DataChangedEvent.DATA_CHANGE;
+		public static const PRE_DATA_CHANGED : String = DataChangedEvent.PRE_DATA_CHANGED;
+		public static const DATA_CHANGED : String = DataChangedEvent.DATA_CHANGED;
 
 		public function ValueObject(func : Function = null) {
 			super();
@@ -158,21 +158,21 @@ package com.troyworks.data.valueobjects {
 			if(dispatchEventsEnabled) {
 				trace("dispatchEventsEnabled " + phase);
 				var evt : DataChangedEvent;
-				if(phase == PRE_DATA_CHANGE) {
-					evt = new DataChangedEvent(PRE_DATA_CHANGE, true, true);
-				}else if(phase == DATA_CHANGE || phase == null) {
+				if(phase == PRE_DATA_CHANGED) {
+					evt = new DataChangedEvent(PRE_DATA_CHANGED, true, true);
+				}else if(phase == DATA_CHANGED || phase == null) {
 					trace("DATA CHANGE phase");
-					evt = new DataChangedEvent(DATA_CHANGE, true, false);
+					evt = new DataChangedEvent(DATA_CHANGED, true, false);
 				}
 				evt.oldVal = oldVal;
 				evt.currentVal = currentVal;
-				if(phase == DATA_CHANGE) {
+				if(phase == DATA_CHANGED) {
 					isDirty = true;
 				}
 				dispatchEvent(evt);
 			}
 			trace("POST dispatchEventsEnabled");
-			if(phase == DATA_CHANGE) {
+			if(phase == DATA_CHANGED) {
 				///////////
 				for (var i : int = 0;i < triggers.length; i++) {
 					var tr : Object = triggers[i];

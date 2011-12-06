@@ -1,6 +1,6 @@
 package  com.troyworks.data.id { 
 
-	class SingletonIDgenerator
+	public class SingletonIDgenerator
 	{
 		// a singleton class that generates a stream of unique number id's and can recycle them.
 		public var nextID:Number;
