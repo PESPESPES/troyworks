@@ -12,7 +12,7 @@ package com.troyworks.data.graph {
 		public var data : Object;
 		public var core : MicroCore;
 		public var nType : String;
-		public var id : Number;
+		private var _id : int = -1;
 		public var name : String;
 		public var weight : Number = 1;
 
@@ -26,11 +26,17 @@ package com.troyworks.data.graph {
 			this._toNodeID = undefined;
 			this.data = new Object();
 			this.nType = (nType == null) ? "_" : nType;
-			this.id = id;
+			this.id = (id== -1)?MicroCore.IDGen.getNextID() : id;
 			this.name = name;
 			this.weight = (nType == null) ? weight : 1;
 		}
-
+		public function get id():int{
+			return _id;
+		}
+		public function set id(newId:int):void{
+			_id= newId;
+			MicroCore.IDX[_id]= this;
+		}
 		public function setNode(isFromNode : Boolean, node : MicroNode) : void {
 			if(isFromNode) {
 				this._fromNode = node;

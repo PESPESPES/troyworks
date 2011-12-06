@@ -5,8 +5,8 @@ package com.troyworks.data {
 	 */
 	public class DataChangedEvent extends Event {
 		public var propertyName:String;
-		public static const DATA_CHANGE:String = "dataChange";
-		public static const PRE_DATA_CHANGE:String = "preDataChange";
+		public static const DATA_CHANGED:String = "dataChanged";
+		public static const PRE_DATA_CHANGED:String = "preDataChanged";
 
 		public var oldVal : Object;
 		public var currentVal : Object;

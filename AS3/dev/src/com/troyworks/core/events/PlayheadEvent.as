@@ -28,5 +28,8 @@ package com.troyworks.core.events {
 			res.percentageDone = Number(this.percentageDone);
             return res;
         }
+        override public function toString() : String {
+        	return "com.troyworks.core.events.PlayheadEvent percentageDone" + percentageDone;
+        }
     }
 }

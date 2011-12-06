@@ -47,7 +47,7 @@ package com.troyworks.controls.ttooltip {
 		public static var IDZ : int = 0;
 		private var scope : DisplayObjectContainer;
 		private var target : DisplayObject;
-
+		public var embedFonts:Boolean = false;
 		private var _bf : BevelFilter;
 
 		public function TToolTip( myRoot : DisplayObjectContainer, font : Font = null, tipColor : uint = 0xFFFFFF, tipAlpha : Number = 1, tipShape : String = "roundTip", fontColor : uint = 0x000000, fontSize : int = 11, advRendering : Boolean = true) {
@@ -89,7 +89,7 @@ package com.troyworks.controls.ttooltip {
 			label_txt.width = 1;
 			label_txt.height = 1;
 			label_txt.autoSize = TextFieldAutoSize.LEFT;
-			//	label_txt.embedFonts = true;
+			label_txt.embedFonts = embedFonts;
 			label_txt.multiline = true;
 			label_txt.htmlText = _label;
 

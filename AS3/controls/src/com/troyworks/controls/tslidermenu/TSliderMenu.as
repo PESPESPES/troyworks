@@ -201,7 +201,11 @@ package com.troyworks.controls.tslidermenu {
 		}
 
 		protected function onRollOverHandler(evt : Event) : void {
-			slidingTray.swapChildren(evt.target as DisplayObject, slidingTray.getChildAt(slidingTray.numChildren - 1));
+			try{
+				slidingTray.swapChildren(evt.target as DisplayObject, slidingTray.getChildAt(slidingTray.numChildren - 1));
+			}catch(er:Error){
+				
+			}
 		}
 	}
 }

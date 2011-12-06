@@ -19,15 +19,15 @@ package com.troyworks.data.valueobjects {
 				newVal = constraint(newVal);
 			}
 			if (_val != newVal) {
-				var evt : DataChangedEvent = onChanged(newVal, _val, PRE_DATA_CHANGE);
-				if(evt.cancelable && evt.isCancelled) {
+				var evt : DataChangedEvent = onChanged(newVal, _val, PRE_DATA_CHANGED);
+				if(evt && evt.cancelable && evt.isCancelled) {
 				} else {
 					var oldVal : Object = _val;
 					_val = newVal;
 					//POST COMMIT
 					//		trace(name+":StringVO.postcommit" + _val);
 
-					onChanged(newVal, oldVal, DATA_CHANGE);
+					onChanged(newVal, oldVal, DATA_CHANGED);
 				}
 			}
 		}
@@ -38,6 +38,9 @@ package com.troyworks.data.valueobjects {
 
 		public function set defaultValue(defVal : String) : void {
 			_defval = defVal;
+		}
+		public function get defaultValue() : String {
+			return _defval;
 		}
 
 		public function resetToDefaults() : void {

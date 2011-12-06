@@ -758,9 +758,9 @@
 					if ( !tIsPA) {
 						s = tS;
 						tp = s.call(this, EVT_EMPTY);
-						while (true) {
+						while (s != null) {
 							t = s.call(this, EVT_INIT);
-							if(t == null) {
+							if(t == null && s != hsm_s_Deactivated) {
 								throw new Error("error in statemachine topology, EVT_INIT " + getStateName(s) + " returned null");
 							}else if (t == tp || t == s_root) {
 								//reached destination, no init state to process
@@ -1088,8 +1088,10 @@
 			if (event.type == CogEvent.EVTD_COG_PRIVATE_EVENT) {
 
 				switch (event.sig) {
+					case SIG_INIT :
 					case SIG_ENTRY :
 						hsm_is_Active = false;
+						//dispatchEvent(new CogExternalEvent(CogExternalEvent.CHANGED));
 						break;
 				}
 			}

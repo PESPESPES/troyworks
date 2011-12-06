@@ -1,4 +1,5 @@
 package com.troyworks.framework.loader {
+	import flash.utils.getQualifiedClassName;
 	import flash.display.Bitmap;
 	import flash.events.ProgressEvent;	
 	import flash.display.MovieClip;	
@@ -33,28 +34,49 @@ package com.troyworks.framework.loader {
 	public class SWFLoaderUnit extends UnitOfWork {
 		private var s_loader : Loader;
 		private var s_loaderUtil : LoaderUtil;
-		public var mediaURL : String = "B.swf"; 
+
 		//	//"TroyWorks-80x80.jpg"; //
 		public var targetClip : Sprite;
 		public  var clip : DisplayObject;
-		public var nameForLoadedClip:String =null;
-		public var wrapBitmap:Boolean = false;
-		public var initParams:Object = new Object();
+		public var nameForLoadedClip : String = null;
+		public var wrapBitmap : Boolean = false;
+		public var initParams : Object = new Object();
+		public var lastBytesTotal:Number = NaN;
+		public var lastBytesLoaded:Number = NaN;
+		public var hasRecievedComplete:Boolean = false;
+		
 		public function SWFLoaderUnit(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE) {
 			super(initState, aMode);
 			setStateMachineName("SWFLoaderUnit");
 		}
 
+		private var _mediaURL : String;
+
+		public function set mediaURL( value : String ) : void {
+			var li1 : int = value.lastIndexOf("/");
+			var li2 : int = value.lastIndexOf("\\");
+			var li : int = Math.max(li1, Math.max(li2, 0));
+			_smName = value.substring(li, value.length);
+			_mediaURL = value;
+		}
+
+		public function get mediaURL( ) : String {
+			return _mediaURL;
+		}
+
+		
+		
+		
 		override public function getWorkPerformed() : Number {
-			//	trace("getWorkPerformed");
+			//	trace2("SWFLoaderUnit.getWorkPerformed");
 			try {
-				if(s_loader == null || s_loader.contentLoaderInfo == null) {
+				if(s_loader == null || s_loader.contentLoaderInfo == null || hasRecievedComplete) {
 				
-					//	trace("getWorkPerformed1 NaN");
-					return NaN;
+				//		trace2("getWorkPerformed1 NaN");
+					return lastBytesLoaded;
 				} else {
-				
-					//	trace("getWorkPerformed2 " + s_loader.contentLoaderInfo.bytesLoaded );
+					lastBytesLoaded  =s_loader.contentLoaderInfo.bytesLoaded;
+					//	trace2("getWorkPerformed2 " + s_loader.contentLoaderInfo.bytesLoaded );
 					return s_loader.contentLoaderInfo.bytesLoaded;
 				}
 			}catch(e : Error) {
@@ -65,9 +87,10 @@ package com.troyworks.framework.loader {
 
 		override public function getTotalWorkToPerform() : Number {
 			try {
-				if(s_loader == null || s_loader.contentLoaderInfo == null) {
-					return NaN;
+				if(s_loader == null || s_loader.contentLoaderInfo == null|| hasRecievedComplete) {
+					return lastBytesTotal;
 				} else {
+					lastBytesTotal  =s_loader.contentLoaderInfo.bytesTotal;
 					return s_loader.contentLoaderInfo.bytesTotal;
 				}
 			}catch(e : Error) {
@@ -86,11 +109,11 @@ package com.troyworks.framework.loader {
 					s_loaderUtil = new LoaderUtil(s_loader.contentLoaderInfo);
 					//s_loaderUtil.addEventListener(Event.COMPLETE, completeSWFLoadHandler);
 					s_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, calcStats);
-					//s_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onChildErrored);
+					s_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onIO_ERROR);
 					s_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, completeSWFLoadHandler);
 					var request : URLRequest = new URLRequest(mediaURL);
 					
-					trace(_smName + "#" + _smID + ".starting to load SWF/IMG '" + mediaURL + "'");
+					trace2(_smName + "#" + _smID + ".starting to load SWF/IMG '" + mediaURL + "'");
 					
 					var loaderContext : LoaderContext = new LoaderContext();
 					loaderContext.applicationDomain = ApplicationDomain.currentDomain; 
@@ -98,23 +121,34 @@ package com.troyworks.framework.loader {
 					break;	
 			}
 			return super.s__doing(e);
-		}		
+		}	
+
+		public function onIO_ERROR(evt : IOErrorEvent) : void {
+			trace2("SWFLoader.onIO_ERROR" + evt.toString());
+			onChildErrored(evt);	
+		}
 
 		
 		
 		public function completeSWFLoadHandler(event : Event) : void {
-			trace(_smName + "#" + _smID + ".completeHandler: " + event);
+			trace2(_smName + "#" + _smID + ".completeHandler: " + event);
+			getWorkPerformed();
+			getTotalWorkToPerform();
+			hasRecievedComplete = true;
+			trace2(getWorkPerformed() + " / " + getTotalWorkToPerform())
 			clip = DisplayObject(Loader(event.target.loader).content);
-			if(clip is Bitmap && wrapBitmap){
-				var wrapper:Sprite = new Sprite();
+			var str : String = getQualifiedClassName(s_loader.content);
+			if(clip is Bitmap && wrapBitmap) {
+				var wrapper : Sprite = new Sprite();
 				wrapper.addChild(clip);
 				clip = wrapper;
 			}
-			if(nameForLoadedClip){
-			    clip.name =nameForLoadedClip; 
+			if(nameForLoadedClip) {
+				clip.name = nameForLoadedClip; 
 			}
 			////////// TODO LAYOUT //////////////////
 			for (var e : String in initParams) {
+				trace2("SWFLoaderUnit.initParm " + e + " " + initParams[e]);
 				clip[e] = initParams[e];
 			}
 			//clip.x = Math.random() * 50;
@@ -124,14 +158,24 @@ package com.troyworks.framework.loader {
 				(clip as MovieClip).stop();
 			}
 			
-			if(targetClip != null) {
-				targetClip.addChild(clip);
+			if(str == "flash.display::AVM1Movie") {
+				s_loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, completeSWFLoadHandler);
+				targetClip.addChild(s_loader);
+			} else {
+				if(targetClip != null) {
+					trace2("SWFLoaderUnit, targetClip " + targetClip.name);
+					targetClip.addChild(clip);
+				} else {
+					trace2("SWFLoaderUnit, no targetClip");
+				}
+				s_loader.unload();
 			}
-			trace(_smName + "#" + _smID + ".requestingDone: " + event);
+			trace2(_smName + "#" + _smID + ".requestingDone: " + event);
 			
 			requestTran(s_done);
 			//dispatchEvent(new PlayheadEvent(EVT_COMPLETE));
 			//dispatchEvent(event);
 		}
+		
 	}
 }

@@ -63,25 +63,8 @@
 			startAsynchTests();
 		}
 
-		public function test_ArrayX_snapToClosest360() : Boolean {
-			var a1 : ArrayX = new ArrayX();
-			var cnt : int = 36;
-			while(cnt--) {
-				a1.push(cnt * 10);
-			}
-			a1.sort(Array.NUMERIC);
-			trace("set " + a1);
-			var base : int = 20;
-			var i : int = 10;
-			var res : Boolean; 
-			while(i--) {
-				trace("closest " + (base + i) + " " + a1.snapToClosest((base + i)));
-			}
-			//var passFilter : Boolean = (a1.toString() == "B,C" && r == "A");
-			//trace("  pass shift: " + passFilter);
-			//trace("  res is " + a1 + " returned " + r);
-			return res;//passFilter;
-		}
+
+	
 
 		/*public function test_ArrayX_snapToClosest() : Boolean {
 		var a1 : ArrayX = new ArrayX();
@@ -134,6 +117,7 @@
 				testRunner.addEventListener(Event.COMPLETE, onSychronousTestComplete);
 				testRunner.addEventListener(Event.CHANGE, onProgress);
 				///////////////////////////////////////////
+				testRunner.addTest(Test_MicroCore);
 				//	testRunner.addTest(Test_ArrayX);
 				//testRunner.addTest(Test_DesignByContract);
 				//				testRunner.addTest(Test_Fsm);
@@ -149,7 +133,7 @@
 				//testRunner.addTest(Test_Line1D);
 				//testRunner.addTest(Test_TDate);
 				//testRunner.addTest(Test_XORcipher);
-			//	testRunner.addTest(Test_CompoundLine1D);
+				//	testRunner.addTest(Test_CompoundLine1D);
 				////////RUN TEST //////////////
 
 				if(testRunner.hasTests) {
@@ -183,7 +167,7 @@
 				testRunner2.addEventListener(Event.CHANGE, onProgress);
 				///////////////////////////////////////////
 				//	testRunner2.addTest(Test_Hsm);
-				testRunner2.addTest(Test_MicroCore);
+				//testRunner2.addTest(Test_MicroCore);
 				//testRunner2.addTest(Test_Fsm);
 				//	testRunner2.addTest(Test_PlaceHolderUnitOfWork);
 				//testRunner2.addTest(SampleTest);

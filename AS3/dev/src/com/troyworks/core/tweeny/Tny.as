@@ -219,7 +219,8 @@ package com.troyworks.core.tweeny {
 		public static const USRP_END : String = "12";
 		protected var hasColorSupport : Boolean = false;
 		public static const  VERSION : Number = 1.2;
-		private var roundOutput : Boolean = false;
+		public var roundOutput : Boolean = false;
+		public var roundPrecision:Number = NaN;
 		public static var STAGE : Stage;
 
 		public var x : Number = NaN;
@@ -238,12 +239,13 @@ package com.troyworks.core.tweeny {
 		public var soundTransform : SoundTransform = new SoundTransform();
 		//An array containing the parameters that should be passed to the this.onComplete when this tween has finished.
 		public var colorTransform : ColorTransform = new ColorTransform();
-		public var isF10:Boolean;
+		public var isF10 : Boolean;
+
 		//	public var transform:Transform;
 		public function Tny(targetD : DisplayObject = null, standardProps : Boolean = true) {
 			super();
 			//	transform = new Transform(null);//new Sprite().transform;
-			var ts:String = Capabilities.version.split(" ")[1];
+			var ts : String = Capabilities.version.split(" ")[1];
 			isF10 = ts.indexOf("10") == 0;
 			//trace("Capabilities.version " + Capabilities.version);
 			if(!SND_PROPS) {
@@ -633,7 +635,7 @@ package com.troyworks.core.tweeny {
 		 * note that when Tny's exist they are always getting the
 		 * onPulse, this is to avoid startup of animation overhead.
 		 * **/
-		public function onPulse(evt : Object = null) : void {
+		public function onPulse(evt : Event = null) : void {
 		
 			//PROP LISTING trace(p.join(","));
 
@@ -664,7 +666,7 @@ package com.troyworks.core.tweeny {
 					/////// CAPTURE START POSITION////////
 					_aD.y = trg.y;
 					_aD.x = trg.x;
-					if(isF10){
+					if(isF10) {
 						_aD.z = trg.z;
 					}
 					_aD.height = trg.height;
@@ -785,13 +787,18 @@ package com.troyworks.core.tweeny {
 				if(isNaN(Number(k)) && c) {
 					ak = aa[k];
 					//	trace("k,c,ak,tt",k,c,ak,zz,tt);
-					//	trace("calc '" + k + "' " + c[k] + " " + ak + " " + zz[k] + " @ " + tt);
+					trace("calc '" + k + "' " + c[k] + " " + ak + " " + zz[k] + " @ " + tt);
 					//current  = start + (delta) * currenteasetime
 					//current = start + (end - start) * percent of duration
 					c[k] = ak + ((zz[k] - ak) * tt);
 					//trace("pcalc '" + k +"' " + c[k]);
 					if(roundOutput) {
-						c[k] = Math.round(c[k]);
+						if(isNaN(roundPrecision)) {
+							c[k] = Math.round(c[k]);
+						} else {
+							trace("before round " + c[k] + " >  "+ (c[k] * roundPrecision)+ " ->  "+ (c[k] * roundPrecision) + " --> " + (Math.round(c[k] * roundPrecision) / roundPrecision));
+							c[k] = Math.round(c[k] * roundPrecision) / roundPrecision;
+						}
 					}
 				}	
 				/////////// FINISH ////////////
@@ -819,6 +826,7 @@ package com.troyworks.core.tweeny {
 				//	trace("finishing userProps");
 				}
 			}
+		//	evt.updateAfterEvent();
 			//	trace(trg.name +" active3 "+ t + "% " + d );
 			//	trace("finished? " + trg.name+ " " + isFinished);
 			if(isFinished) {

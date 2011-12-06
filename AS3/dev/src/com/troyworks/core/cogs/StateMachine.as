@@ -39,7 +39,7 @@ package com.troyworks.core.cogs {
 		public var ASSERT : Function;
 		public var REQUIRE : Function;
 		//////////// LOGGING /////////////////////
-		public static var DEFAULT_TRACE : Function;
+		public static var DEFAULT_TRACE : Function = emptyTrace;
 		//performance metrics
 		protected var profilingOn : Boolean = false;
 		protected var evtRequestTime : Number = 0;

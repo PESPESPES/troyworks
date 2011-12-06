@@ -31,6 +31,7 @@
 			// child SWFs definitions do not overwrite parents
 			var addedDefinitions:LoaderContext = new LoaderContext();
 			addedDefinitions.applicationDomain = ApplicationDomain.currentDomain;
+			addedDefinitions.allowCodeImport = true;
 			
             var loader:Loader = new Loader();
             if (this.callback != null) {
