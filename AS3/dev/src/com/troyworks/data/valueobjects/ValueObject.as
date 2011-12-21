@@ -38,15 +38,15 @@ package com.troyworks.data.valueobjects {
 	 * 
 	 * 	Any VO is a 'Value Object' that wraps an underlying primitive,
 	 * 	
-	 * 	it's meant to be used at the model layer, it can have optional
-	 * 	constraints as to what it can be set to (rounding, quantizing)
-	 *  as well as multiple complex actions that can be taken when the value
-	 *  it get into certain ranges or specific values, e.g. call function
-	 *   Hot when the value
-	 *  is between 80-100, call function Cold when the value is between 0-60.
+	 * 	it's meant to be used at the model layer,
+	 * 	
+	 * 	-it can have optional constraints as to what the value can actually be set to
+	 * 	  (rounding, quantizing) e.g. pass in 1.234 and it is rounded to 1.0;
+	 *  - multiple complex actions that can be taken when the value
+	 *   it get into certain ranges or specific values, e.g. 
+	 *          fire event Hot when the value is between 80-100
+	 *          call function Cold when the value is between 0-60.
 	 *  
-	 *  It's useful when used with the EventAdapter to turn that function call into dispatching 
-	 *  Events etc.
 	 *  
 	 *  TODO
 	 *  String
@@ -59,32 +59,34 @@ package com.troyworks.data.valueobjects {
 	 *  Null/void?
 	 *  Boolean data type
 	 *  
-	 *  
-	var constraint:NumberRangeConstraint = new NumberRangeConstraint(0,100);
-
-	var mood:NumberVO= new NumberVO(50, constraint.constrainToRange); // initial value is 50.
-
-	 * 
-	 *  mood.addEventListener( DataChangedEvent.PRE_DATA_CHANGED, onPrecommitCheck);
+	 *
+	//  EXAMPLE: mood machine, has a value that must range between 0 and 100 for the mood
+ 	var constraint:NumberRangeConstraint = new NumberRangeConstraint(0,100);
+	// initial value is 50, and the constrait we just setup
+	var mood:NumberVO= new NumberVO(50, constraint.constrainToRange); 
+	// add some events for before the change and after the change
+	mood.addEventListener( DataChangedEvent.PRE_DATA_CHANGED, onPrecommitCheck);
 	mood.addEventListener( DataChangedEvent.DATA_CHANGED, onPostcommitCheck);
-	 * 
+	 
 	//Cancel the value from actually being commited, in this case the post commit event won't take place.
-
 	function onPrecommitCheck(evt:DataChangedEvent):void{
-	trace("onPrecommitCheck");
-	evt.stopPropagation();
-	trace(evt);
- 
-
-	}
+	    trace("onPrecommitCheck");
+	    evt.stopPropagation();  
+	    trace(evt);
+ 	}
 
 	function onPostcommitCheck(evt:DataChangedEvent):void{
-
-	trace("onPostcommitCheck");
-
-	trace(evt);
+    	trace("onPostcommitCheck");
+	    trace(evt);
 
 	}
+	 // It's very useful when combined with Filters, to trigger events/callbacks
+	 // when data enters certain ranges
+	 
+	var rFilter1:NumberRangeBooleanFilter = new NumberRangeBooleanFilter(95,100, true, true);
+		mood.addOnValueChangedAction(rFilter1, onRangeSuperHappy);
+  It's useful when used with the EventAdapter to turn that function call into dispatching 
+	 *  Events etc.
 
 	 */
 
@@ -95,6 +97,7 @@ package com.troyworks.data.valueobjects {
 		public var constraint : Function = null;
 		public var triggers : Array = new Array();
 		//used when synchroizing
+		public var hasChangedFromDefault : Boolean = false;
 		public var isDirty : Boolean = false;
 		public var isWriteable : Boolean = true;
 
@@ -146,7 +149,7 @@ package com.troyworks.data.valueobjects {
 					remove = true;
 				}
 				if(remove) {
-					trace("removing inRangeAction");
+				//	trace("removing inRangeAction");
 					triggers.splice(i, 1);
 					return true;	
 				}
@@ -156,22 +159,26 @@ package com.troyworks.data.valueobjects {
 
 		protected function onChanged(currentVal : *, oldVal : *, phase : String = null) : DataChangedEvent {
 			if(dispatchEventsEnabled) {
-				trace("dispatchEventsEnabled " + phase);
+				//trace("dispatchEventsEnabled " + phase);
 				var evt : DataChangedEvent;
 				if(phase == PRE_DATA_CHANGED) {
 					evt = new DataChangedEvent(PRE_DATA_CHANGED, true, true);
 				}else if(phase == DATA_CHANGED || phase == null) {
-					trace("DATA CHANGE phase");
+				//	trace("DATA CHANGE phase");
 					evt = new DataChangedEvent(DATA_CHANGED, true, false);
 				}
 				evt.oldVal = oldVal;
 				evt.currentVal = currentVal;
 				if(phase == DATA_CHANGED) {
 					isDirty = true;
+					hasChangedFromDefault = true;
 				}
 				dispatchEvent(evt);
+			}else{
+				isDirty = true;
+				hasChangedFromDefault = true;
 			}
-			trace("POST dispatchEventsEnabled");
+		//	trace("POST dispatchEventsEnabled");
 			if(phase == DATA_CHANGED) {
 				///////////
 				for (var i : int = 0;i < triggers.length; i++) {

@@ -13,7 +13,7 @@ package com.troyworks.data {
 	 * NOTE
 	 * due to LAME limitations in Flash 9 (still true in  10.1). You can't store this class
 	 * in any serialization using AMF..sharedoOjbect, RemoteObject etc.  This is not the fault of ArrayX
-	 * but rather some true of any classes that extend Array.
+	 * but rather something true of any classes that extend Array.
 	 * 
 	 * registerClassAlias is normally used, but in this case it's ignored. 
 	 * 
