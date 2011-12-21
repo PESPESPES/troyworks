@@ -75,6 +75,9 @@ package com.troyworks.core.cogs {
 
 		public static function emptyTrace(... rest) : void {
 		}
+		public static function getStandardTrace():Function{
+			return trace;
+		}
 
 		public static function getDefaultTrace() : Function {
 			trace("getDefaultTrace " + DEFAULT_TRACE);
