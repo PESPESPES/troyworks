@@ -1,0 +1,960 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"r",
+				"delay(...) : haxe.Timer"
+			],
+			[
+				"SigEn",
+				"SigEntry(...) : CogSignal<Unknown<0>>"
+			],
+			[
+				"SiE",
+				"SigExit(...) : CogSignal<Unknown<0>>"
+			],
+			[
+				"s11",
+				"s_11 [function]"
+			],
+			[
+				"sign",
+				"signalUserIDz"
+			],
+			[
+				"S",
+				"SELF2"
+			],
+			[
+				"Ei",
+				"EightSigs [class]"
+			],
+			[
+				"Sel",
+				"fire_SELF2 [function]"
+			],
+			[
+				"SigE",
+				"SigExit"
+			],
+			[
+				"Cog",
+				"CogEvent [class]"
+			],
+			[
+				"E",
+				"EightStateMachineSignal [class]"
+			],
+			[
+				"co",
+				"cogs [package]"
+			],
+			[
+				"e",
+				"core [package]"
+			],
+			[
+				"tr",
+				"troyworks"
+			],
+			[
+				"Sign",
+				"SignalCarrier"
+			],
+			[
+				"to",
+				"toCarrier"
+			],
+			[
+				"Typ",
+				"TypedEvent [class]"
+			],
+			[
+				"ev",
+				"event [package]"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "core/cogs/CogSignal.hx",
+			"settings":
+			{
+				"buffer_size": 5163,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "core/cogs/CogEvent.hx",
+			"settings":
+			{
+				"buffer_size": 3235,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "core/cogs/FsmE.hx",
+			"settings":
+			{
+				"buffer_size": 1265,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "core/cogs/Fsm.hx",
+			"settings":
+			{
+				"buffer_size": 12007,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "core/cogs/StateMachine.hx",
+			"settings":
+			{
+				"buffer_size": 7698,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "core/cogs/Hsm.hx",
+			"settings":
+			{
+				"buffer_size": 37367,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "core/cogs/HsmTrans.hx",
+			"settings":
+			{
+				"buffer_size": 5326,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/HsmTrans.as",
+			"settings":
+			{
+				"buffer_size": 15268,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/Fsm.as",
+			"settings":
+			{
+				"buffer_size": 12702,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/StateMachine.as",
+			"settings":
+			{
+				"buffer_size": 7788,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/Hsm.as",
+			"settings":
+			{
+				"buffer_size": 39010,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/world/stack/projects/troyworks/troyworks/AS3/tests/src/TroyWorks_Test.as",
+			"settings":
+			{
+				"buffer_size": 6668,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "if(sS != cS)  {\n			//trace\"UNWINDING-----------------\" + getStateName(cS) + \"  sS\" + getStateName(sS));\n			s = cS;\n			while(true) {\n				sp = s(EVT_EMPTY);\n				//trace\" - sp \" + getStateName(sp) + \" s \" + getStateName(s));\n				if(sp == null)  {\n					// arrived at target state or root\n					//trace\" arrived at root\");\n					break;\n				}\n\n				else if(sp == sS)  {\n					// else haven't arrived at source state yet, keep going\n					//trace\"arrived unwinding \" + getStateName(s));\n					preExit.push(s);\n					//	f= 1;\n					break;\n				}\n\n				else  {\n					// else haven't arrived at source state yet, keep going\n					//trace\" unwinding \" + getStateName(s));\n					preExit.push(s);\n					//	f= 1;\n					s = sp;\n				}\n\n			}\n\n		}\n		var tIsPA : Bool = false;\n		var skipPrune : Bool = false;\n		var reentrant : Bool = false;\n		var LCA : CogEvent->Dynamic = null;\n		//Store this for posterity/history/undo\n		lastState = _myCurState;\n		if(transOptions.useCachedRouting && tran_Idx[key] != null)  {\n			//Found an existing routing\n			//trace\"existing routing\");\n			var routing : Array<Dynamic> = tran_Idx[key];\n			entry = routing[0];\n			exitry = routing[1];\n		}\n\n		else  {\n			//discover route\n			//trace\"discovering routing \");\n			///////////////////////////////////////////////////////////////////\n			//\n			// ROUTE   , find the path from the source\n			// of the transition to the target state\n			// start recording transition chain, if not a dynamic\n			//\n			////////////////////////////////////////////////////////////////////\n			//trace\"ROUTING----------\");\n			if(sS == tS)  {\n				////////////////////////////////////////////////////////////\n				//  Self Transitions, no extended discovery needed.\n				// Fig 4.7(a)\n				////////////////////////////////////////////////////////////\n				//trace\"(a) - self transition\");\n				entry[e++] = tS;\n				exitry[f++] = sS;\n				skipPrune = true;\n				reentrant = true;\n			}\n\n			else  {\n				//trace\"source != target\");\n				//target's parent state\n				tp = tS(EVT_EMPTY);\n				//source's parent state\n				sp = sS(EVT_EMPTY);\n				//if (cS == sS) {\n				//	//trace\"single level\");\n				////////////////////////////////////////////////////////////\n				//  Single Level Transitions, no extended discovery needed.\n				////////////////////////////////////////////////////////////\n				if(sS == tp)  {\n					// CHILD\n					//trace\"*Fig 4.7 (b)* -  transition to first child - ENTER only\");\n					//		if(tS != cS){\n					entry[e++] = tS;\n					//	}else {\n					//		//trace\" already active\");\n					//reentrant = true;\n					//return;\n					//break;\n					//	}\n				}\n\n				else if(sp == tp)  {\n					// SIBLING\n					//trace\"*Fig 4.7 (c) (sp == tp)* -  transition to sibling via parent EXIT and ENTER chain \");\n					entry[e++] = tS;\n					exitry[f++] = sS;\n				}\n\n				else if(sp == tS)  {\n					// PARENT\n					//trace\"*Fig 4.7 (d)* -  transition to first parent EXIT only\");\n					exitry[f++] = sS;\n					tIsPA = true;\n				}\n\n				else  {\n					//////////////////////////////////////////////////////////////\n					// Multi Level Transitions, extended discovery needed\n					/////////////////////////////////////////////////////////////\n					//trace\"multi level\");\n					//trace (\"*Fig 4.7 (e),(f), (g), (h) (sp.. == tp..)* -  transition to sibling(s) EXIT and ENTER chain  \");\n					//ENTER LIST from target\n					s = tS;\n					while(s != null && s != s_root) {\n						//trace (\"checking enter list from targets's parent\"  + s.call (this, TRACE_EVT));\n						if(s == sS)  {\n							//found it, target is GRANDCHILD\n							//trace\"e 4.7 (e)  found LCA! \" + e);\n							LCA = s;\n							break;\n						}\n\n						else  {\n							// add to entry list keep going,\n							entry[e++] = s;\n						}\n\n						s = s(EVT_EMPTY);\n					}\n					entry.reverse();\n					if(LCA == null)  {\n						LCA = entry[0];\n					}\n					s = sS;\n					while(s != null && s != s_root) {\n						//trace (\"checking exit list from activestate/source \" + s.call (this, TRACE_EVT));\n						if(s == tS || s == LCA)  {\n							//found it, target is GRANDPARENT\n							//trace\"x 4.7 (h) found LCA ! \" + f);\n							break;\n						}\n\n						else  {\n							// add to exit list keep going,\n							exitry[f++] = s;\n						}\n\n						s = s(EVT_EMPTY);\n					}\n					//\n					//trace\"\\r\\r\");\n					//traceEnterExitList(f, e, \"after normal routing\");\n					//trace\"\\r\\r\");\n					//PRUNE LIST for any unecessary LCA/root state's\n					if(e > 0 && f > 0)  {\n						//if we are here we didn't find the LCA *Fig 4.7 (g)\n						//trace\"----performing LCA extended discovery pruning---------\");\n						var ee : UInt = e;\n						var ff : UInt = f;\n						while(entry[(--ee)] == exitry[(--ff)]) {\n							e--;\n							f--;\n							//trace (\"discarding \" + entry [(e )].call (this, TRACE_EVT) + \" \" + exitry [(f )].call (this, TRACE_EVT));\n						}\n\n					}\n				}\n\n			}\n\n			if(exitry.length == 0)  {\n				reentrant = true;\n			}\n			if(transOptions.doInitDiscovery)  {\n				//traceace(\"INIT ROUTING----------------\");\n				if(!tIsPA)  {\n					s = tS;\n					tp = s(EVT_EMPTY);\n					while(true) {\n						t = s(EVT_INIT);\n						if(t == null)  {\n							throw new Error(\"error in statemachine topology, EVT_INIT \" + getStateName(s) + \" returned null\");\n						}\n\n						else if(t == tp || t == s_root)  {\n							//reached destination, no init state to process\n							break;\n						}\n\n						else  {\n							//trace\"  init \" + getStateName(s) + \" ++> \" + getStateName(t));\n							//found a new state to enter, add to list and keep climbing\n							postEnter.unshift(t);\n							tp = s;\n							s = t;\n						}\n\n					}\n\n				}\n				postEnter.reverse();\n				//for multi level init\n			}\n\n			else  {\n				trace(\"SKIP INIT ROUTING\");\n			}\n\n			//CAPTURE List and save it for later\n			tran_Idx[key] = [entry.concat(), exitry.concat()];\n		}\n\n		///////////////////////////////////////////////////////////////////\n		// MERGE the preExit and postEnter lists\n		//////////////////////////////////////////////////////////////////\n		//	trace(\"\\r\\r\");\n		exitry = preExit.concat(exitry);\n		entry = entry.concat(postEnter);\n		//trace(\"MERGED \");\n		traceEnterExitList(f, e, \"after MERGE discovery\");\n		//trace(\"\\r\\r\");\n		////////////////////////////////////////////////////////////////////\n		//\n		//  DONE FINDING ROUTE, perform actual transition, process events\n		//\n		/////////////////////////////////////////////////////////////////////\n		/* now we have the list of operations for this transition  proceed through the chain and exit each one\n		 * [0] child\n		 * [1] parent\n		 * [2] grandparent\n		 */\n		(transLock == false).withError([\"Error in HSM Illegal Transition detected in \" + toStringShort() + \"trannnot perform another trtrtranSIG_EXIT or ENTER_EVT (use SIG_INIT instead) \"]);\n		transLock = true;\n		//trace_smName + \" TRANSITIONING===================\");\n		var i : UInt;\n		var finalState : CogEvent->Dynamic;\n		var msg : String;\n		var handled : Dynamic = null;\n		if(f > 0 || preExit.length > 0)  {\n			i = 0;\n			while(i < exitry.length) {\n				s = exitry[i];\n				/* retrace exit path in reverse order */\n				msg = \"EXITING \" + getStateName(s);\n				//tracemsg);\n				handled = s(CogEvent.getExitEvent());\n				if(handled == null)  {\n					transitionLog.push(msg + \" HANDLED\");\n				}\n\n				else  {\n					transitionLog.push(msg + \" NOT HANDLED\");\n				}\n\n				finalState = s(EVT_EMPTY);\n				i++;\n			}\n		}\n		if(crossAction != null)  {\n			crossAction();\n		}\n		if(e > 0 || postEnter.length > 0)  {\n			/* retrace entry path in reverse order */\n			i = 0;\n			while(i < entry.length) {\n				s = entry[i];\n				if(!isInState(s) || reentrant)  {\n					// if we are going from a child to an already active parent //\n					msg = \"ENTERING \" + getStateName(s);\n					//tracemsg);\n					handled = s(CogEvent.getEnterEvent());\n					if(handled == null)  {\n						transitionLog.push(msg + \" HANDLED\");\n					}\n\n					else  {\n						transitionLog.push(msg + \" NOT HANDLED\");\n					}\n\n				}\n				finalState = s;\n				i++;\n			}\n		}\n		transLock = false;\n		////////////////////////////////////////////////////////////////////////////\n		//\n		//  FINISHED with the transition, set the current state to the last entered\n		//  and proceed to notify the world\n		//\n		/////////////////////////////////////////////////////////////////////////////\n		if(finalState != null)  {\n			myCurState = finalState;\n			dispatchEvent(SigGetOpts().createPrivateEvent());\n			onInternalStateChanged();\n		}\n\n		else  {\n			trace(\"WARNING, no statetransition performed\");\n		}\n\n		///// Check if there are additional transitions to peform, that might have\n		// been generated in the process of this last transition.\n		//if(!pendingTranList.length > 0){\n		//	transitionCallBackTimer.start();\n		//}\n		return handled;",
+			"settings":
+			{
+				"buffer_size": 8583,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "Packages/User/munit.sublime-build",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"INS",
+				"Package Control: Install Package"
+			],
+			[
+				"Inst",
+				"Package Control: Install Package"
+			],
+			[
+				"ke",
+				"Preferences: Key Bindings - Default"
+			],
+			[
+				"key",
+				"Preferences: Key Bindings - User"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"Instal",
+				"Package Control: Install Package"
+			],
+			[
+				"bin",
+				"Preferences: Global Settings - User"
+			],
+			[
+				"pac",
+				"Preferences: Browse Packages"
+			]
+		],
+		"width": 400.0
+	},
+	"console":
+	{
+		"height": 205.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/world/stack/os/win/prg/sublime2/Data/Packages/ActionScript/actionscript.sublime-build",
+		"/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/StateMachine.as",
+		"/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/Fsm.as",
+		"/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/HsmTrans.as",
+		"/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/ICompositeStackable.as",
+		"/C/world/stack/projects/troyworks/unit/com/troyworks/core/cogs/ImportsTester.hx",
+		"/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/Hsm.as",
+		"/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/FsmE.as",
+		"/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/CogSignal.as",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/NullStateMachine.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/COG.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/Hsm.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/QueuedTransitionRequest.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/IStateMachine.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/IHeirarchicalStateMachine.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/IFiniteStateMachine.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/ICompositeStateMachine.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/ICompositeStackable.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/HsmTrans.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/FsmE.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/TransitionOptions.hx",
+		"/C/world/stack/os/win/prg/lingo/haxe/nightly/lib/munit/0,9,2,1/massive/munit/Assert.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/StateMachine.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/CogSignal.hx",
+		"/C/world/stack/projects/troyworks/unit/com/troyworks/core/cogs/EightStateMachineSignal.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/CogEvent.hx",
+		"/C/world/stack/projects/troyworks/troyworks/AS3/tests/src/com/troyworks/core/cogs/EightStateMachine.as",
+		"/C/world/stack/projects/troyworks/unit/com/troyworks/core/cogs/EightStateMachineTest.hx",
+		"/C/world/stack/projects/troyworks/src/com/sf/error/UnhandledSignalError.hx",
+		"/C/world/stack/projects/troyworks/unit/TestSuite.hx",
+		"/C/world/stack/projects/troyworks/build.hxml",
+		"/C/world/stack/os/win/prg/sublime2/Data/Packages/Default/Default (Windows).sublime-keymap",
+		"/C/world/stack/os/win/prg/sublime2/Data/Packages/User/Default (Windows).sublime-keymap",
+		"/C/world/stack/projects/troyworks/troyworks/AS3/tests/src/com/troyworks/core/cogs/Test_Fsm.as",
+		"/C/world/stack/projects/troyworks/unit/com/troyworks/core/cogs/EightStateMachineEvent.hx",
+		"/C/world/stack/projects/troyworks/unit/com/troyworks/core/cogs/HsmTest.hx",
+		"/C/world/stack/projects/troyworks/unit/com/troyworks/core/cogs/TwoStateFsm.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/Fsm.hx",
+		"/C/world/stack/projects/troyworks/troyworks/AS3/tests/src/com/troyworks/core/cogs/TwoStateFsm.as",
+		"/C/world/stack/projects/troyworks/unit/com/troyworks/core/cogs/FsmTest.hx",
+		"/C/world/stack/os/win/prg/sublime2/Data/Packages/User/munit.sublime-build",
+		"/C/world/stack/projects/troyworks/src/com/sf/log/Logger.hx",
+		"/C/world/stack/projects/troyworks/troyworks/AS3/tests/src/com/troyworks/core/cogs/Test_Hsm.as",
+		"/C/world/stack/projects/troyworks/unit/test/FunctionSignatureTest.hx",
+		"/C/world/stack/projects/stax/src/main/haxe/haxe/reactive/Reactive.hx",
+		"/C/world/stack/projects/troyworks/troyworks.sublime-project",
+		"/C/world/stack/projects/troyworks/.munit",
+		"/C/world/stack/projects/troyworks/munit.txt",
+		"/C/world/stack/projects/troyworks/tests/build.hxml",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/proxies/KeyBoardProxy.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/proxies/LoaderProxy.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/proxies/URLLoaderProxy.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/SignalCarrier.hx",
+		"/C/world/stack/projects/troyworks/src/com/sf/event/TypedEvent.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/CogEventPayload.hx",
+		"/C/world/stack/projects/troyworks/src/com/troyworks/core/cogs/CogEventVO.hx",
+		"/C/world/stack/projects/troyworks/unit/TestMain.hx",
+		"/C/world/stack/projects/troyworks/troyworks.hxml",
+		"/C/world/stack/os/win/prg/sublime2/Data/Settings/Session.sublime_session",
+		"/C/world/stack/os/win/prg/sublime2/Data/Installed Packages/Package Control.sublime-package",
+		"/C/world/stack/os/win/prg/sublime2/Data/Packages/Package Control/Package Control.sublime-settings",
+		"/C/world/stack/os/win/prg/sublime2/Data/Packages/User/Base File.sublime-settings",
+		"/C/world/stack/os/win/prg/sublime2/Data/Packages/Default/Base File.sublime-settings",
+		"/C/world/stack/os/win/prg/sublime2/Data/Packages/User/Global.sublime-settings"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"C:\\world\\stack\\projects\\troyworks\\troyworks\\AS3\\dev\\src",
+			"C:\\world\\stack\\projects\\troyworks\\troyworks\\AS3\\dev\\src\\com\\troyworks\\core\\cogs",
+			"C:\\world\\stack\\projects\\troyworks\\src\\com\\troyworks\\core",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"Hsm",
+			"var s_Idx",
+			"getStateN",
+			"function getStateName",
+			"getStateName",
+			"transitionL",
+			"getStateName",
+			"function getStateName",
+			"getStateName",
+			"transition",
+			"	",
+			"transitionLo",
+			"function getStateN",
+			"function çgetStateN",
+			"getStateN",
+			"transitionLo",
+			"UInt",
+			"s_root",
+			";",
+			"tran_Idx",
+			"Idx",
+			"tran_Idx",
+			"Idx",
+			"tran_I",
+			"tran_Idx",
+			"trans",
+			"[",
+			" = [];",
+			".call\\(this, ",
+			"Refl",
+			"_ex",
+			"trans",
+			"SIG",
+			"ASSERT\\(([^,]+),\\s?((.*)*)\\);",
+			"UInt",
+			"discover",
+			"initStateN",
+			"getHear",
+			"getCurrentStateNames",
+			"_current",
+			"_currentState",
+			"Float",
+			"setT",
+			"SigCallBack",
+			"Function",
+			" [A-Z][a-zA-Z]*",
+			" COG",
+			"tran",
+			" [A-Z][a-zA-Z]*",
+			"desc",
+			"Proxy",
+			"var currentState",
+			"currentState",
+			"_currentState",
+			"type.get",
+			"s_Idx\\[(.*)\\]\\s*=\\s*([a-zA-Z_]*)",
+			"s_Idx[",
+			"ASSERT\\(([^,]+),\\s?((.*)*)\\);",
+			"tran_Idx",
+			"s_Idx",
+			"\\.call\\(this, ",
+			"\\.call\\(this,",
+			".call(this,",
+			"\\.call(this",
+			"\\.call",
+			"SIG",
+			"switch",
+			"SIG_EXIT",
+			"SIG_INIT",
+			"SIG_",
+			"SIG_EXIT",
+			"SIG_I",
+			"SIG_INIT",
+			"SIG_ENTRY",
+			"switch",
+			"trace",
+			"XML",
+			"xml",
+			"exitry",
+			"REQUIRE\\(([^,]+),\\s?((.*)*)\\);",
+			"hsm",
+			"(DesignByContract.*)",
+			"DesignByContract.initialize(this);",
+			"(DesignByContract.*)",
+			"^\\tvar",
+			"\\tvar",
+			"\\*/;",
+			"*/;",
+			"\\*/;",
+			"*/;",
+			"private var",
+			"private",
+			"withE",
+			"dict",
+			"public var",
+			"	var",
+			"^\\tvar",
+			"hasIni",
+			"getHsmIsActive",
+			"getSmID",
+			"([a-zA-Z_])+\\s?!=\\s?null\\)\\.",
+			"([a-zA-Z_])+\\s?!=\\s?null\\).",
+			"trace(\\(.*\\));",
+			"REQUIRE\\(([^,]+),\\s?((.*)*)\\);",
+			"REQUIRE\\(([^,]),\\s?((.*)*)\\);",
+			"REQUIRE\\((.*),\\s?((.*)*)\\);",
+			"REQUIRE\\((.*)((.*)*)\\);",
+			"REQUIRE\\((.*),\\s?((.*)*)\\);",
+			"REQUIRE\\((.*)((,\\s?.*)*)\\);",
+			"REQUIRE\\((.*),\\s?.*\\);",
+			"REQUIRE\\((.*)(,\\s?.*)*\\);",
+			"REQUIRE\\((.*)?(,\\s?.*)\\);",
+			"REQUIRE\\((.*)\\);",
+			"Function",
+			"enum",
+			"en",
+			"CogSignal",
+			"CogSignal<",
+			"CogSignal",
+			" 					:",
+			"SELF2",
+			"startTime",
+			"SignalUserIDz",
+			"\\(e:\\?CogEvent\\)",
+			"(e:?CogEvent)",
+			"GrandChildInactive",
+			"ChildActive",
+			"ChildInactive"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"Int",
+			"Uint",
+			"(",
+			"($1).withError([$2]);",
+			"Int",
+			"SigCallback",
+			"Void->Void",
+			"currentState",
+			"s_Idx.set($1,$2)",
+			"($1).withError([$2]);",
+			"(",
+			"SigExit(_)",
+			"SigInit(_)",
+			"Sig(_)",
+			"SigExit(_)",
+			"SigInit(_)",
+			"SigEntry(_)",
+			"($1).withError([$2]);",
+			"$1",
+			"//$1",
+			"\\\\$1",
+			"\\\\\\\\$1",
+			"\\\\$1",
+			"\\tprivate var",
+			"\\*/",
+			"var",
+			"public  var",
+			"\\tprivate var",
+			"private var",
+			"$1.isNotNull().",
+			"Debug($1).log();",
+			"($1).withError([$2]);",
+			"$1.withError([$2]);",
+			"CogEvent -> Void",
+			"en",
+			"signalUserIDz",
+			"",
+			" ",
+			"",
+			"case Sig$1",
+			"Debug($1).log();",
+			"CogEvent(EightSigs.$1)",
+			"CogEvent",
+			"CogEvent(EightSigs.$1)",
+			"$1",
+			"",
+			"$1",
+			"",
+			"$1",
+			"$2",
+			"",
+			"EightStateMachineSignals",
+			"case SIGExit(_)",
+			"case SIGEntry(_)",
+			"",
+			"TypedEvent<SignalCarrier>",
+			"\\\\"
+		],
+		"reverse": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 12,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "core/cogs/CogSignal.hx",
+					"settings":
+					{
+						"buffer_size": 5163,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4081,
+								4083
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"syntax": "Packages/HaXe/HaXe.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1066.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "core/cogs/CogEvent.hx",
+					"settings":
+					{
+						"buffer_size": 3235,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"syntax": "Packages/HaXe/HaXe.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "core/cogs/FsmE.hx",
+					"settings":
+					{
+						"buffer_size": 1265,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								553,
+								553
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"syntax": "Packages/HaXe/HaXe.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "core/cogs/Fsm.hx",
+					"settings":
+					{
+						"buffer_size": 12007,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4005,
+								4008
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"syntax": "Packages/HaXe/HaXe.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1666.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "core/cogs/StateMachine.hx",
+					"settings":
+					{
+						"buffer_size": 7698,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								527,
+								527
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"syntax": "Packages/HaXe/HaXe.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "core/cogs/Hsm.hx",
+					"settings":
+					{
+						"buffer_size": 37367,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2683,
+								2692
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"syntax": "Packages/HaXe/HaXe.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 786.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "core/cogs/HsmTrans.hx",
+					"settings":
+					{
+						"buffer_size": 5326,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4121,
+								4133
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"syntax": "Packages/HaXe/HaXe.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1304.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/HsmTrans.as",
+					"settings":
+					{
+						"buffer_size": 15268,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1005,
+								1005
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ActionScript/ActionScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 128.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/Fsm.as",
+					"settings":
+					{
+						"buffer_size": 12702,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3274,
+								3274
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ActionScript/ActionScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1260.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/StateMachine.as",
+					"settings":
+					{
+						"buffer_size": 7788,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ActionScript/ActionScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "/C/world/stack/projects/troyworks/troyworks/AS3/dev/src/com/troyworks/core/cogs/Hsm.as",
+					"settings":
+					{
+						"buffer_size": 39010,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1818,
+								1818
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ActionScript/ActionScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 562.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "/C/world/stack/projects/troyworks/troyworks/AS3/tests/src/TroyWorks_Test.as",
+					"settings":
+					{
+						"buffer_size": 6668,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4884,
+								4884
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ActionScript/ActionScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2060.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"settings":
+					{
+						"buffer_size": 8583,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8583,
+								8583
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HaXe/HaXe.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 139.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 32.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 312.0,
+	"status_bar_visible": true
+}

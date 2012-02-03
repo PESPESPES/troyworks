@@ -1,0 +1,43 @@
+# Flash 9+
+-main TestMain
+-lib munit
+-lib hamcrest
+-cp src
+-cp dep/stax/src/main/haxe
+
+-cp unit
+-swf-version 9
+-swf tests/bin/as3_test.swf
+--next
+#Flash 8
+-main TestMain
+-lib munit
+-lib hamcrest
+-cp src
+-cp dep/stax/src/main/haxe
+
+-cp unit
+-swf-version 8
+-swf tests/bin/as2_test.swf
+--next
+# JavaScript
+-main TestMain
+-lib munit
+-lib hamcrest
+-cp src
+-cp dep/stax/src/main/haxe
+
+-cp unit
+-js tests/bin/js_test.js
+
+--next
+
+# Neko
+-main TestMain
+-lib munit
+-lib hamcrest
+-cp src
+-cp dep/stax/src/main/haxe
+
+-cp unit
+-neko tests/bin/neko_test.n

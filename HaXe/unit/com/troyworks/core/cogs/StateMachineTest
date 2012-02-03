@@ -1,0 +1,142 @@
+package com.troyworks.core.cogs;
+
+import com.sf.States;
+using com.sf.States;
+
+class StateMachineTest{
+
+	public function new(){
+
+	}
+	/*
+	* Dsscribes a State which has a Parent and works on this Context.
+	*/
+	public function closed(){
+		
+	}
+	/**
+	* Describes a nested State which receives a Signal and returns a Transition. i.e : a group.
+	*/
+	public function group(v:Signal<Dynamic>):Transition<Dynamic>{
+		return null;
+	}
+
+	/*
+	* Describes a signal method.
+	*/
+	public function method(v:Signal<Dynamic>):Void{
+		
+	}
+}
+class EightStates extends StateMachine<Dynamic>{
+	public function new(){
+		super();
+		/**
+		* shoots.add(first);
+		* shoots.add(second);
+		*
+		*/
+	}
+	public function first():Void{
+		
+	}
+	public function second():Void{
+		
+	}
+	public function frame(v:Signal<Dynamic>){
+		return
+			switch (v) {
+				case Update(u) 	: //nextframe?
+				default 		: null;
+			}
+	}
+}
+class Toggle extends StateMachine<Dynamic>{
+	public var data : Bool;
+
+	public function new(){
+		super();
+		/**
+		* Takes function on and lifts it to a control
+		* specifies that its sibling is the lifted 'off' function and creates a TransitionObject
+		* Takes the Transition object and informs it that the parent group is toggle
+		*/
+		on.part().sibling( off.part()  ).both().parent( toggle.part() );
+		/**
+		* Notify the statemachine that the root group is toggle
+		*/
+		stem = toggle.part();
+	}
+	function dispatch(){
+		//send data
+	}
+	public function toggle(){
+		//returns a transition that will successfully move to either of the two states.
+		//return data ? ( off | on ).part().select() );
+	}
+	public function on(){
+		data = true;
+		dispatch();
+	}
+	public function off(){
+		data = false;
+		dispatch();
+	}
+}
+class Tweener extends StateMachine<TweenTransitions>{
+	public var setter 	: Float 	-> Void;
+
+	public 	var min 	: Float;
+	public  var max 	: Float;
+	public  var c 		: Float;
+	public  var v 		: Float;
+
+	public function new(){
+		super();
+		/**
+		* transitions.running_to_stopped = running.to(stopped)
+		* 
+		*/
+		// running -> paused, stopped -> paused
+		running.part().sibling(pause.part()).both().commit(this);
+		// running -> stopped, stopped -> running
+		running.part().sibling(stop.part()).both().commit(this);
+		// paused -> stopped
+		paused.part().sibling( stopped.part() ).commit(this);
+
+	}
+	public function ease(t:Float,v:Float,min:Float,max:Float):Float{
+		return t * v;
+	}
+	public function running(s:Signal<Tween>):Transition<Dynamic>{
+		switch(s){
+			case Update(u) :
+				var o = ease(t,v,min,max);
+				if( o >= max ){
+						stopped.part().select();
+				}else{
+						running.psrt().select().delay(2);
+				}
+			default	: 	running.psrt().select().delay(2);
+		}
+	}
+	public function paused(){
+		return switch(s){
+			case Enter :
+		}
+	}
+	public function stopped(){
+		
+	}
+	public function end(){
+		
+	}
+}
+class TweenTransitions{
+	public var running_to_stopped : Transition<Dynamic>;
+}
+typedef Tween = {
+	start 	: Float,
+	end 	: Float,
+	ease	: Float -> Float -> Float
+}

@@ -1,0 +1,20 @@
+
+
+notes on:
+
+HaXe:
+
+
+callback is a special function that creates a closure at compile time
+
+a private var in Haxe is the equivalent of a protected var in as3
+
+haxe can be very picky about types, in switches in particular, if you are mixing States and Functions, set a var rather than return a switch.
+
+a class function without public/private is assumed to be private in a class and public in an interface
+
+If you have an optional var typed haxe.PosInfos in a function, and you do not pass anything, the copiler will insert the callsite
+Other
+
+
+I have assumed the when the last transitionLog entry is a particular state, then the machine is in that state.
