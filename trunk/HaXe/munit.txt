@@ -1,0 +1,5 @@
+src=unit
+bin=tests/bin
+report=tests/report
+hxml=tests/build.hxml
+classPaths=src,dep/stax/src/main/haxe

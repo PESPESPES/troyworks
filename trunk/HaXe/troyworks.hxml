@@ -1,0 +1,9 @@
+-cp src
+-cp ../rtype/src
+-cp ../stax/src/main/haxe
+-cp unit
+-lib munit
+-swf bin/troyworks.swf
+-swf-header 800:600:30:FFFFFF
+-swf-version 10.1
+-main Main
