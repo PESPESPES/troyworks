@@ -1,9 +1,11 @@
-package  com.troyworks.data { 
+package com.troyworks.data {
+	import flash.net.registerClassAlias;
 
 	public dynamic class MultiEntryDictionary extends Object {
-		///////////////////////////////
+		// /////////////////////////////
 		// Stores things as one type multiple values
 		// e.g. Dictionary.word[0...N] definitions.
+		registerClassAlias("com.troyworks.data.valueobjects.MultiEntryDictionary", MultiEntryDictionary);
 		public function MultiEntryDictionary() {
 			super();
 		}
@@ -15,7 +17,7 @@ package  com.troyworks.data {
 			if (this[key] == null) {
 				this[key] = new Array();
 			}
-			//remove event, object and function
+			// remove event, object and function
 			this[key].push(value);
 		}
 
@@ -31,23 +33,23 @@ package  com.troyworks.data {
 		}
 
 		public function getAllItems(key : String) : Array {
-			//	trace("----getAllItems type:" + key);
+			// trace("----getAllItems type:" + key);
 			if (key == null || key == " ") {
 				key = "_";
 			}
 			var p : Array = this[key];
 			if (p != null) {
-				//trace(" contains types");
+				// trace(" contains types");
 				return p;
 			} else {
-				//trace("doen'ts contain types");
-				//should probably concat all the terms into one array
+				// trace("doen'ts contain types");
+				// should probably concat all the terms into one array
 				return null;
 			}
 		}
 
 		public function getAllTypes() : void {
-			//	var _array:Array = new Array ();
+			// var _array:Array = new Array ();
 			trace("getAllTypes--");
 			trace((this["LJ"] != null) + " lj key is not null");
 			trace((this["_"] != null) + "_ key is not null");
@@ -71,11 +73,11 @@ package  com.troyworks.data {
 			var p : Array = this[key];
 			if (p != null) {
 				var res : Object = p[key2];
-				//	trace(res + " type exists looking for "+ key+ "."+key2);
+				// trace(res + " type exists looking for "+ key+ "."+key2);
 				return res ;
 			} else {
-				//trace(" could not find type "+  key + "." + key2);
-				//trace(this.toString());
+				// trace(" could not find type "+  key + "." + key2);
+				// trace(this.toString());
 				return null;
 			}
 		}
@@ -85,12 +87,12 @@ package  com.troyworks.data {
 			if (key == null || key == " ") {
 				key = "_";
 			}
-			var p:Object = this[key];
+			var p : Object = this[key];
 			if (p != null) {
 				res = p.splice(value, 1);
 			}
 			if (p.length == 0) {
-				//trace("no more listeners for event "+event);
+				// trace("no more listeners for event "+event);
 				delete (this[key]);
 			}
 			return res;
@@ -103,7 +105,7 @@ package  com.troyworks.data {
 			}
 			var p : Array = this[key];
 			if (p != null) {
-				//trace("no more listeners for event "+event);
+				// trace("no more listeners for event "+event);
 				delete (this[key]);
 				res = p;
 			}
@@ -112,14 +114,14 @@ package  com.troyworks.data {
 
 		public function toString(keysOnly : Boolean = false) : String {
 			var res : Array = new Array();
-	
-			for(var i:Object in this) {
-				var v : String = (keysOnly) ? "":"' = v:'" + this[i] + "'" ;
+
+			for (var i:Object in this) {
+				var v : String = (keysOnly) ? "" : "' = v:'" + this[i] + "'" ;
 				var s : String = " k:'" + i + v;
 				res.push(s);
 			}
-			res.reverse(); 
-			if(keysOnly) {
+			res.reverse();
+			if (keysOnly) {
 				res.unshift("keys only");
 			}
 			return res.join("\r");

@@ -1,4 +1,5 @@
-package com.troyworks.data.graph { 
+package com.troyworks.data.graph {
+	import flash.net.registerClassAlias;
 
 	//import com.troyworks.data.Dictionary
 
@@ -15,7 +16,7 @@ package com.troyworks.data.graph {
 		private var _id : int = -1;
 		public var name : String;
 		public var weight : Number = 1;
-
+		registerClassAlias("com.troyworks.data.graph.MicroLink", MicroLink);
 		
 		public function MicroLink(id : Number = NaN,  name : String = "unnamedLink", nType : String = "", weight : Number = 0.0) {
 			trace("creating new link " + id + " name " + name + " type " + nType + " weight " + weight);

@@ -1,4 +1,5 @@
 package com.troyworks.data.valueobjects {
+	import flash.net.registerClassAlias;
 	import com.troyworks.data.DataChangedEvent;
 
 	public class UintVO extends ValueObject
@@ -6,7 +7,8 @@ package com.troyworks.data.valueobjects {
 		
 		private var _val : uint = 0;
 		private var _defval : uint = 0;
-		public function UintVO(val : uint, func:Function = null)
+		registerClassAlias("com.troyworks.data.valueobjects.ValueObject", ValueObject);
+		public function UintVO(val : uint = 0, func:Function = null)
 		{
 			super(func);
 			_val = val;

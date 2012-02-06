@@ -1,4 +1,5 @@
 package com.troyworks.data.valueobjects {
+	import flash.net.registerClassAlias;
 	import com.troyworks.data.DataChangedEvent;	
 	import com.troyworks.data.filters.Filter;	
 
@@ -104,6 +105,7 @@ package com.troyworks.data.valueobjects {
 		public static const PRE_DATA_CHANGED : String = DataChangedEvent.PRE_DATA_CHANGED;
 		public static const DATA_CHANGED : String = DataChangedEvent.DATA_CHANGED;
 
+		registerClassAlias("com.troyworks.data.valueobjects.ValueObject", ValueObject);
 		public function ValueObject(func : Function = null) {
 			super();
 			constraint = func;

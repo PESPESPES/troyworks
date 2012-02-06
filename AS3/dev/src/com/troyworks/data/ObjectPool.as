@@ -1,4 +1,5 @@
 package com.troyworks.data {
+	import com.troyworks.util.constructUtil;
 
 /*
  * Author: Richard Lord
@@ -29,8 +30,7 @@ package com.troyworks.data {
 //package uk.co.bigroom.utils 
 	//{
 	
-	import com.troyworks.util.construct;	
-	
+
 	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;			
@@ -69,7 +69,7 @@ package com.troyworks.data {
 			}
 			else
 			{
-				return construct( type, parameters );
+				return constructUtil( type, parameters );
 			}
 		}
 		
