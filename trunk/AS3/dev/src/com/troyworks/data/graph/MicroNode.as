@@ -1,4 +1,5 @@
 package com.troyworks.data.graph {
+	import flash.net.registerClassAlias;
 	import com.troyworks.core.cogs.CogEvent;	
 	import com.troyworks.core.cogs.Hsm; 
 	import com.troyworks.data.MultiEntryDictionary;
@@ -6,6 +7,7 @@ package com.troyworks.data.graph {
 	
 	public class MicroNode extends Hsm
 	{
+		registerClassAlias("com.troyworks.data.graph.MicroNode", MicroNode);
 		public var _inLinks : MultiEntryDictionary;
 		public var _outLinks : MultiEntryDictionary;
 		//	public var linkIdx:Object;

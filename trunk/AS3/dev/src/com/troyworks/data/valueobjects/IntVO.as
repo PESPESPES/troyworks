@@ -1,11 +1,13 @@
 package com.troyworks.data.valueobjects {
+	import flash.net.registerClassAlias;
 	import com.troyworks.data.DataChangedEvent;
 
 	public class IntVO extends ValueObject {
 		private var _val : int = 0;
 		private var _defval : int = NaN;
-
-		public function IntVO(val : int, func : Function = null) {
+		registerClassAlias("com.troyworks.data.valueobjects.IntVO", IntVO);
+		
+		public function IntVO(val : int = -1, func : Function = null) {
 			super(func);
 			_val = val;
 		}

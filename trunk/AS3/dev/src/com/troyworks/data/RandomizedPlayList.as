@@ -269,7 +269,7 @@ package com.troyworks.data {
 				return null;
 			}
 		};
-		public function toString (contents : Boolean) : String
+		public function toString2 (contents : Boolean) : String
 		{
 			var res : String = "";
 			if (contents)

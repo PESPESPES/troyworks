@@ -1,4 +1,6 @@
 package com.troyworks.data.graph {
+	import flash.net.registerClassAlias;
+	import com.troyworks.core.cogs.StateMachine;
 	import com.troyworks.data.id.NumericIDGenerator;
 
 	import flash.utils.Dictionary;
@@ -9,6 +11,7 @@ package com.troyworks.data.graph {
 	import flash.utils.getDefinitionByName;	//import com.troyworks.data.skiplist. *;
 
 	public class MicroCore extends com.troyworks.data.graph.MicroNode {
+		registerClassAlias("com.troyworks.data.graph.MicroCore", MicroCore);
 		public static var className : String = "com.troyworks.data.graph.MicroCore";
 		///public var classType
 		//typed nodes and links. being used as a dictionary.
@@ -302,6 +305,7 @@ package com.troyworks.data.graph {
 		}
 		public function getRootNodeIndexFor(n : MicroNode) : int {
 			for (var i : int = 0;i < rootNodes.length;i++) {
+				StateMachine.getStandardTrace()("getRootNodeIndexFor " + i + " " + n.id + " ==? " + rootNodes[i].id + " EQUAL:?" + (n ===rootNodes[i]));
 				if((rootNodes[i] as MicroNode) == n) {
 					return i;
 				}
@@ -332,9 +336,32 @@ package com.troyworks.data.graph {
 			if (i == -1) {
 				return false;
 			} else {
-				var ci:Object = rootNodes.splice(i, 1);
-				rootNodes.splice(indexPosition, 0, ci);
+				var ci:Array = rootNodes.splice(i, 1);
+				rootNodes.splice(indexPosition, 0, ci[0]);
 				return true;
+			}
+		}
+		public function shiftRootNodeLeft(id:int):Boolean{
+			var atIndex:int =  getRootNodeIndexForID(id);
+		
+			if(atIndex > 0){
+				var ci:Array = rootNodes.splice(atIndex, 1);
+				rootNodes.splice(atIndex-1, 0, ci[0]);
+				return true;
+			}else{
+		
+				return false;
+			}
+		}
+		public function shiftRootNodeRight(id:int):Boolean{
+			var atIndex:int = getRootNodeIndexForID(id);
+			if(atIndex < rootNodes.length -1){
+				var ci:Array = rootNodes.splice(atIndex, 1);
+				rootNodes.splice(atIndex+1, 0, ci[0]);
+				return true;
+			}else{
+				//trace("can't shift");
+				return false;
 			}
 		}
 

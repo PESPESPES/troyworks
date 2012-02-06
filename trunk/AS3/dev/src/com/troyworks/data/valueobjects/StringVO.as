@@ -1,11 +1,13 @@
 package com.troyworks.data.valueobjects {
+	import flash.net.registerClassAlias;
 	import com.troyworks.data.DataChangedEvent;
 
 	public class StringVO extends ValueObject {
 		private var _val : String = "";
 		private var _defval : String = "";
+		registerClassAlias("com.troyworks.data.valueobjects.StringVO", StringVO);
 
-		public function StringVO(val : String, func : Function = null) {
+		public function StringVO(val : String = null, func : Function = null) {
 			super(func);
 			_val = val;
 		}

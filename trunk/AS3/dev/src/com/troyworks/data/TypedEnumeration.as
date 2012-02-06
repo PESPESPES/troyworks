@@ -3,8 +3,9 @@ package com.troyworks.data {
 	 *  This class implements a typed enumeration 
 	 *  basically a read only static value that is a number
 	 *  but extended by type information, like name.
+	 *  really should extend a number but damn flash won't let us
 	 */
-	public class TypedEnumeration extends Number
+	public class TypedEnumeration extends Object
 	{
 		public static var NONE : TypedEnumeration = new TypedEnumeration(0, "NONE");
 		public static var A : TypedEnumeration = new TypedEnumeration(1, "A");

@@ -1,13 +1,15 @@
 package com.troyworks.data.valueobjects {
+	import flash.net.registerClassAlias;
 	import com.troyworks.data.DataChangedEvent;
 	import com.troyworks.util.datetime.TDate;
 
 	public class TDateVO extends ValueObject {
 		private var _val : TDate = null;
 		private var _defval  : TDate = null;
+		registerClassAlias("com.troyworks.data.valueobjects.TDateVO", TDateVO);
 		
 
-		public function TDateVO(val : TDate, func : Function = null) {
+		public function TDateVO(val : TDate = null, func : Function = null) {
 			super(func);
 			_val = val;
 		}

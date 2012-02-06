@@ -1,7 +1,7 @@
 package com.troyworks.data {
 	import flash.net.registerClassAlias;
 
-	import com.troyworks.util.construct;	
+	import com.troyworks.util.constructUtil;	
 
 	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
@@ -51,7 +51,7 @@ package com.troyworks.data {
 		public function prefill(count : int, type : Class, ...parameters ) : void {
 			var pool : Array = getPool(type);
 			while(count--) {
-				pool.push(construct(type, parameters));
+				pool.push(constructUtil(type, parameters));
 			}
 		}
 
@@ -76,7 +76,7 @@ package com.troyworks.data {
 				return object ;
 			} else {
 				trace("CONSTRUCTING NEW");
-				return construct(type, parameters);
+				return constructUtil(type, parameters);
 			}
 		}
 

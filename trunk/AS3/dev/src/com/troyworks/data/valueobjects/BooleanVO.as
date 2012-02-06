@@ -1,11 +1,13 @@
 package com.troyworks.data.valueobjects {
+	import flash.net.registerClassAlias;
 	import com.troyworks.data.DataChangedEvent;
 
 	public class BooleanVO extends ValueObject {
 		private var _val : Boolean = false;
 		private var _defval : Boolean = false;
+		registerClassAlias("com.troyworks.data.valueobjects.BooleanVO", BooleanVO);
 
-		public function BooleanVO(val : Boolean, func : Function = null) {
+		public function BooleanVO(val : Boolean = false, func : Function = null) {
 			super(func);
 			_val = val;
 		}

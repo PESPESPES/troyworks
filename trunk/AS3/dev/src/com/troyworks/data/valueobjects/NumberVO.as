@@ -1,4 +1,5 @@
 ﻿package com.troyworks.data.valueobjects {
+	import flash.net.registerClassAlias;
 	import com.troyworks.data.DataChangedEvent;	
 
 	import flash.events.Event;	
@@ -41,8 +42,9 @@
 	public class NumberVO extends ValueObject {
 		private var _val : Number = NaN;
 		private var _defval : Number = NaN;
+		registerClassAlias("com.troyworks.data.valueobjects.NumberVO", NumberVO);
 		
-		public function NumberVO(val : Number, myConstraint : Function = null, myTriggers : Array = null) {
+		public function NumberVO(val : Number = NaN, myConstraint : Function = null, myTriggers : Array = null) {
 			super();
 			_val = val;
 			constraint = myConstraint;
