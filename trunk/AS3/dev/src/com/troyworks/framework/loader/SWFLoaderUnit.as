@@ -39,11 +39,13 @@ package com.troyworks.framework.loader {
 		public var targetClip : Sprite;
 		public  var clip : DisplayObject;
 		public var nameForLoadedClip : String = null;
+		public var wrapClip:Boolean = false;
 		public var wrapBitmap : Boolean = false;
 		public var initParams : Object = new Object();
 		public var lastBytesTotal:Number = NaN;
 		public var lastBytesLoaded:Number = NaN;
 		public var hasRecievedComplete:Boolean = false;
+		public var onRecievedManifestCallback:Function;
 		
 		public function SWFLoaderUnit(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE) {
 			super(initState, aMode);
@@ -131,16 +133,19 @@ package com.troyworks.framework.loader {
 		
 		
 		public function completeSWFLoadHandler(event : Event) : void {
-			trace2(_smName + "#" + _smID + ".completeHandler: " + event);
+			trace2(_smName + "#" + _smID + ".completeSWFLoadHandler: " + event);
+			
+			
 			getWorkPerformed();
 			getTotalWorkToPerform();
-			hasRecievedComplete = true;
-			trace2(getWorkPerformed() + " / " + getTotalWorkToPerform())
+			hasRecievedComplete = true;			
+			trace2(getWorkPerformed() + " / " + getTotalWorkToPerform());
 			clip = DisplayObject(Loader(event.target.loader).content);
 			var str : String = getQualifiedClassName(s_loader.content);
-			if(clip is Bitmap && wrapBitmap) {
+			if(clip is Bitmap && wrapBitmap  || wrapClip) {
 				var wrapper : Sprite = new Sprite();
 				wrapper.addChild(clip);
+				wrapper.name = "bitmapwrapper";
 				clip = wrapper;
 			}
 			if(nameForLoadedClip) {
@@ -151,6 +156,22 @@ package com.troyworks.framework.loader {
 				trace2("SWFLoaderUnit.initParm " + e + " " + initParams[e]);
 				clip[e] = initParams[e];
 			}
+
+			if(clip.hasOwnProperty("manifest")){
+				trace2("SWFLoaderUnit. clip has manifest");
+				//clip["initObject"](onAddedCallback);
+				if(onRecievedManifestCallback!=null){
+					onRecievedManifestCallback(clip["manifest"]);
+				}
+			}else{
+				trace2("SWFLoaderUnit. clip has NO manifest");
+			}
+			/*if(clip.hasOwnProperty("onFirstFrameLoaded") && onAddedCallback != null){
+				trace2("SWFLoaderUnit. clip has onFirstFrameLoaded");
+				clip["onFirstFrameLoaded"](onAddedCallback);
+			}else{
+				trace2("SWFLoaderUnit. clip has NO onFirstFrameLoaded");
+			}*/
 			//clip.x = Math.random() * 50;
 			//clip.y = Math.random() * 50;
 			//clip.alpha = .3;
@@ -163,10 +184,10 @@ package com.troyworks.framework.loader {
 				targetClip.addChild(s_loader);
 			} else {
 				if(targetClip != null) {
-					trace2("SWFLoaderUnit, targetClip " + targetClip.name);
+					trace2(_smName +":SWFLoaderUnit, targetClip " + targetClip.name);
 					targetClip.addChild(clip);
 				} else {
-					trace2("SWFLoaderUnit, no targetClip");
+					trace2(_smName +":SWFLoaderUnit, no targetClip");
 				}
 				s_loader.unload();
 			}
