@@ -30,17 +30,29 @@ package com.troyworks.core.chain {
 		public static const PARALLEL_MODE : Boolean = false;
 		public static const SEQUENTIAL_WORKER : String = "SequentialWorker";
 		public static const PARALLEL_WORKER : String = "ParallelWorker";
+		/*- in parallel preloading chain/UnitOfWork.as now waits for the completion event to fire prior to moving on, rather than looking at raw bytes loaded.
+- renamed the queues to make more sense.  AllTasks (unfinished or not), ToDo(those left to do), active (those being worked on), finished (all finished regardless of ok or failed), finished_with_errors and finished_ok just the subset of finished that do that thing.
+*/
 		protected var totalWork : Number = 0;
 		protected var totalPerformed : Number = 0;
 		protected var activeWork : Number = 0;
 		protected var activePerformed : Number = 0;
-		public var children : Array = null;
+		
+		protected var totalHaveSaidFinished : Number = 0;
+		protected var totalToBeFinished : Number = 0;
+		
+		
+		public var alltasks : Array = null;
 		// piles to denote what of the children are done,
 		protected var toDo : Array = null;
 		// which are actively downloading at present
 		protected var active : Array = null;
 		// which are currently errored/done
 		protected var finished : Array = null;
+		protected var finished_with_errors : Array = null;
+		protected var finished_ok : Array = null;
+		
+		
 		public var mode : Boolean = SEQUENTIAL_MODE;
 		public var checkInterval : Number = 1000 / 12;
 		private var _parentUnit : IUnit;
@@ -51,14 +63,21 @@ package com.troyworks.core.chain {
 
 		public function UnitOfWork(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE, smName : String = "Chain") {
 			super(initState, smName, false);
-			mode = aMode;
+			
 			_smName = smName + "_" + (mode == SEQUENTIAL_MODE) ? SEQUENTIAL_WORKER : PARALLEL_WORKER;
 			trace2("smName  " + _smName + "#" + _smID);
-			children = new Array();
-			finished = new Array();
+			init(aMode);
+			trace("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + alltasks.length);
+		}
+		public function init( aMode : Boolean = SEQUENTIAL_MODE):void{
+			mode = aMode;
+			alltasks = new Array();
 			toDo = null;
 			active = new Array();
-			trace("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + children.length);
+			finished = new Array();
+			finished_with_errors = new Array();
+			finished_ok = new Array();
+			
 		}
 
 		public static function makeParallelWorker(smName : String = null) : UnitOfWork {
@@ -85,8 +104,11 @@ package com.troyworks.core.chain {
 			return totalWork;
 		}
 
-		public function isComplete() : Boolean {
+		public function isFinishedOK() : Boolean {
 			return isInState(s_done);
+		}
+		public function isFinishedWithErrors() : Boolean {
+			return isInState(s__notDoneWithErrors);
 		}
 
 		public function hasStarted() : Boolean {
@@ -109,7 +131,7 @@ package com.troyworks.core.chain {
 		// Top down query and summary of status //
 		public function calcStats(evt : Event = null) : void {
 			var i : int = 0;
-			var n : int = children.length;
+			var n : int = alltasks.length;
 			var tp : Number;
 			var tw : Number;
 
@@ -119,15 +141,18 @@ package com.troyworks.core.chain {
 				totalWork = 0;
 				activeWork = 0;
 				activePerformed = 0;
-
+				totalHaveSaidFinished = 0;
+				//----- go through all children and see if they are done --//
 				var c : IUnit;
+				
 				for (;i < n; ++i) {
-					c = IUnit(children[i]);
+					c = IUnit(alltasks[i]);
 
 					tp = c.getWorkPerformed();
 					tw = c.getTotalWorkToPerform();
-					if (c.isComplete()) {
+					if (c.isFinishedOK() || c.isFinishedWithErrors()) {
 						trace2(" D " + c.getUnitName() + " " + tp + " / " + tw);
+						totalHaveSaidFinished++;
 					} else {
 						trace2("   " + c.getUnitName() + " " + tp + " / " + tw);
 					}
@@ -160,6 +185,10 @@ package com.troyworks.core.chain {
 				totalWork = getTotalWorkToPerform();
 				activePerformed = totalPerformed;
 				activeWork = totalWork;
+				if(isFinishedOK()){
+					totalHaveSaidFinished =1;
+				}
+				
 			}
 			if (paraActive == active.length) {
 				parallelAllChildrenStarted = true;
@@ -184,11 +213,12 @@ package com.troyworks.core.chain {
 
 		public function addChild(c : IUnit) : void {
 			trace2(_smName + smID + " HIGHLIGHTR addCHild ");
-			children.push(c);
+			alltasks.push(c);
 			if (toDo == null ) {
 				toDo = new Array();
 			}
 			toDo.push(c);
+			totalToBeFinished = alltasks.length;
 			c.setParentTask(this);
 			IEventDispatcher(c).addEventListener(EVT_COMPLETE, calcStats);
 			IEventDispatcher(c).addEventListener(EVT_PROGRESS, calcStats);
@@ -200,7 +230,7 @@ package com.troyworks.core.chain {
 			trace2("" + _smName + "#" + _smID + ".startWork +++++++++++++++++++++++++++++++++++++++ todo:" + toDo);
 			hasFiredComplete = false;
 			// /////////////////// COMPOSITE // //////////////////////////
-			if ((toDo != null && ( totalWork == 0 || ( totalPerformed == totalWork && finished.length == children.length)) )) {
+			if ((toDo != null && ( totalWork == 0 || ( totalPerformed == totalWork && finished.length == alltasks.length)) )) {
 				// /nothing to load!//////////////
 				if (!hsmIsActive) {
 					trace2("WARNING startWork() called with nothing to load");
@@ -282,6 +312,7 @@ package com.troyworks.core.chain {
 					c.removeEventListener(EVT_PROGRESS, calcStats);
 					c.removeEventListener(EVT_ERROR, onChildErrored);
 					finished.push(c);
+					finished_ok.push(c);
 					active.splice(i, 1);
 				}
 			}
@@ -295,6 +326,25 @@ package com.troyworks.core.chain {
 
 		public function onChildErrored(evt : Event = null) : void {
 			trace2("onChildErrored OUT");
+			var i : int = 0;
+			var n : int = active.length;
+			// cross the finished off our active list////////////////
+			for (;i < n; ++i) {
+				var c : IUnit = IUnit(active[i]);
+				if (c == evt.target) {
+					trace2("child " + c.getUnitName() + " says it's completed");
+					c.removeEventListener(EVT_COMPLETE, onChildCompleted);
+					c.removeEventListener(EVT_PROGRESS, calcStats);
+					c.removeEventListener(EVT_ERROR, onChildErrored);
+					finished.push(c);
+					finished_with_errors.push(c);
+					active.splice(i, 1);
+				}
+			}
+			if (evt.cancelable) {
+				evt.stopImmediatePropagation();
+			}
+			
 			var pE : PlayheadEvent = new PlayheadEvent(EVT_ERROR);
 			pE.percentageDone = totalPerformed / totalWork;
 			dispatchEvent(pE);
@@ -317,6 +367,7 @@ package com.troyworks.core.chain {
 				case SIG_ENTRY :
 					return null;
 				case SIG_EXIT :
+					stopPulse();
 					return null;
 				case SIG_CALLBACK:
 					if (!isLeafTask) {
@@ -324,11 +375,11 @@ package com.troyworks.core.chain {
 							// FINISHED LOADING LIST
 							trace2(_smName + "#" + _smID + ".FINISHED EMPTY WORKLIST");
 							requestTran(s_done);
-						} else if ( finished.length == children.length) {
+						} else if ( finished.length == alltasks.length) {
 							// FINISHED LOADING LIST
 							trace2(_smName + "#" + _smID + ".FINISHED LOADING WORKLIST");
 							requestTran(s_done);
-						} else if (children.length >= 0) {
+						} else if (alltasks.length >= 0) {
 							// FINISHED LOADING A CHILD
 							trace2(_smName + "#" + _smID + ".FINISHED LOADING CHILD");
 							startWork();
@@ -373,7 +424,7 @@ package com.troyworks.core.chain {
 				case SIG_PULSE:
 					calcStats();
 					trace2(_smName + "#" + _smID + ".Pulsing " + totalPerformed + "/ " + totalWork);
-					if (totalPerformed > 0 && totalWork > 0) {
+					if ((totalHaveSaidFinished != totalToBeFinished) && (totalPerformed > 0) && (totalWork > 0)) {
 						trace2("target.totalFrames " + totalWork);
 						// TODO dispatchEvent("STARTED_GETTING_DATA");
 						// if(totalWork > 0  && totalWork ==totalPerformed){
@@ -403,7 +454,7 @@ package com.troyworks.core.chain {
 					trace2("[[[[[[[----pulse-----");
 					calcStats();
 					trace2(_smName + "#" + _smID + ".[[[[[[[UnitOfWork.loaded " + totalPerformed + " /  " + totalWork);
-					if (parallelAllChildrenStarted && activePerformed >= activeWork) {
+					if (parallelAllChildrenStarted && totalHaveSaidFinished >= totalToBeFinished ) {
 						if (active == null || active.length == 0) {
 							// trace2("[[[[[[[finished Loading child(ren)------ LOADING " + active.length + " LEFT " + toDo.length);
 
