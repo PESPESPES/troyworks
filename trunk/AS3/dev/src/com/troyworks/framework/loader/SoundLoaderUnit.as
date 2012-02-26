@@ -1,26 +1,12 @@
 package com.troyworks.framework.loader {
-	import flash.media.SoundLoaderContext;
-	import flash.media.Sound;
-	import flash.events.ProgressEvent;	
-	import flash.display.MovieClip;	
-	import flash.events.IOErrorEvent;	
-	import flash.errors.IOError;	
-	import flash.system.ApplicationDomain;	
-	import flash.system.LoaderContext;	
-
-	import com.troyworks.core.events.PlayheadEvent;	
-
-	import flash.display.DisplayObject;	
-
-	import com.troyworks.core.cogs.CogEvent;	
 	import com.troyworks.core.chain.UnitOfWork;
+	import com.troyworks.core.cogs.CogEvent;
 
-	import flash.display.Sprite;	
-	import flash.events.Event;	
-	import flash.net.URLRequest;	
-	import flash.display.Loader;	
-
-	import com.troyworks.framework.loader.LoaderUtil;
+	import flash.errors.IOError;
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.media.Sound;
+	import flash.net.URLRequest;
 
 	/**
 	 * SoundLoaderUnit
@@ -34,9 +20,9 @@ package com.troyworks.framework.loader {
 	public class SoundLoaderUnit extends UnitOfWork {
 		//	private var s_loader : Loader;
 
-		private	var s : Sound;
-		private var s_loaderUtil : LoaderUtil;
-		public var mediaURL : String = "B.swf"; 
+		public	var s : Sound;
+		public var s_loaderUtil : LoaderUtil;
+		public var mediaURL : String = "B.mp3"; 
 
 		//	//"TroyWorks-80x80.jpg"; //
 		//public var targetClip : Sprite;

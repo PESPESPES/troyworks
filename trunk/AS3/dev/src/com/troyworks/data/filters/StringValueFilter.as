@@ -11,8 +11,8 @@ package com.troyworks.data.filters {
 	 *
 	 */
 	public class StringValueFilter extends Filter {
-		var idx : Object = new Object();
-		var prop : String;
+		public var idx : Object = new Object();
+		public var prop : String;
 
 		public function StringValueFilter(values : Array, property : String = null) {
 			addValues(values);
@@ -29,18 +29,20 @@ package com.troyworks.data.filters {
 		}
 
 		override public function passesFilter(itemVal : *, index : int = 0, array : Array = null) : Boolean {
-			trace(".StringValueFilterpassesFilter " + itemVal);
+			trace(".StringValueFilterpassesFilter: '" + itemVal+"'");
 			var passes : Boolean = false;
 			if(prop != null) {
-				if(idx[itemVal[prop]]) {
+				if(idx[itemVal[prop]] != null) {
 					passes = true;
 				}	
 			}else {
-				if(idx[itemVal]) {
+				if(idx[itemVal]!= null) {
 					passes = true;
 				}
 			}
-			var res : Boolean = (invert) ? !passes : passes; 
+			
+			var res : Boolean = (invert) ? !passes : passes;
+			trace("res " + res + " " + invert); 
 			if(res) {
 				onPassedFiltered();
 			}

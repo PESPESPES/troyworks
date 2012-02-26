@@ -75,14 +75,14 @@
 
 		public function set A(val : Point1D) : void {
 			if(_A != null) {
-				_A.removeEventListener(DataChangedEvent.DATA_CHANGE, onAChanged);
+				_A.removeEventListener(DataChangedEvent.DATA_CHANGED, onAChanged);
 			}
-			var dce : DataChangedEvent = new DataChangedEvent(DataChangedEvent.DATA_CHANGE);
+			var dce : DataChangedEvent = new DataChangedEvent(DataChangedEvent.DATA_CHANGED);
 			dce.oldVal = _A;
 			dce.currentVal = val;
 			_A = val;
 			if(_A != null) {
-				_A.addEventListener(DataChangedEvent.DATA_CHANGE, onAChanged);
+				_A.addEventListener(DataChangedEvent.DATA_CHANGED, onAChanged);
 			}
 			dispatchEvent(dce);
 		}
@@ -97,14 +97,14 @@
 
 		public function set Z(val : Point1D) : void {
 			if(_B != null) {
-				_B.removeEventListener(DataChangedEvent.DATA_CHANGE, onBChanged);
+				_B.removeEventListener(DataChangedEvent.DATA_CHANGED, onBChanged);
 			}
-			var dce : DataChangedEvent = new DataChangedEvent(DataChangedEvent.DATA_CHANGE);
+			var dce : DataChangedEvent = new DataChangedEvent(DataChangedEvent.DATA_CHANGED);
 			dce.oldVal = _B;
 			dce.currentVal = val;
 			_B = val;
 			if(_B != null) {
-				_B.addEventListener(DataChangedEvent.DATA_CHANGE, onBChanged);
+				_B.addEventListener(DataChangedEvent.DATA_CHANGED, onBChanged);
 			}
 			dispatchEvent(dce);
 		}

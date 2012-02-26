@@ -10,7 +10,7 @@
 	public class CompoundLine1D extends Line1D {
 		public var children : Array = new Array();
 		private static const REG : * = registerClassAlias("com.troyworks.geom.d1.CompoundLine1D", CompoundLine1D);
-
+		public var lasti:int;
 		////////////
 		public function CompoundLine1D(obj : Object = null, type : Number = NaN, start : Number = NaN, length : Number = NaN, end : Number = NaN) {	
 	
@@ -80,6 +80,7 @@
 					while(child.length > 0) {
 						res.push(child.pop());
 					}
+					lasti = i;
 				}
 				var a : Boolean = qry.passesMinAndMaxCheck(c.A.position, c.Z.position);
 				//trace(qry);

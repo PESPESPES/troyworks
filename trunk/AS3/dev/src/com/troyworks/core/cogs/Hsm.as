@@ -374,7 +374,7 @@
 	/*hsm_callbackIn is needed to get around the single thread reenter a state issue we are supposed to have left issue.  this when off caused some nasty bugs that are hard to track down. e.g. you write a good statemachine, looks good then when running it starts doing wierd things during transitions that execute other transitions.
 	*/
 		public function hsm_callbackIn(ms : Number = 45) : void {
-			trace("hsm calling back in ============================");
+			trace(_smName+".hsm calling back in ============================");
 			//	var myTimer : Timer = new Timer(ms, 1);
 			//	myTimer.addEventListener("timer", hsm_onCallbackHandler);
 			//	myTimer.start();
@@ -565,7 +565,7 @@
 			var curName : String = getStateName(_currentState);
 			var sourceName : String = getStateName(mySource);
 			var requestedName : String = getStateName(targetState);
-			trace("HIGHLIGHTB " + _smNameID + ".tran>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + curName + ".. " + sourceName + " to " + requestedName + "");
+			trace("HIGHLIGHTB " + _smName + ".tran>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + curName + ".. " + sourceName + " to " + requestedName + "");
 			var key : String = curName + "->" + requestedName;
 	
 			///////////////////////////
@@ -932,7 +932,7 @@
 		}
 
 		override public function toString() : String {
-			//trace("hsm.toString()");
+			//trace(_smName+".hsm.toString()");
 			var a : Array = new Array();
 			a.push("Hsm." + _smName + _smID + "." + myCurStateName);
 			return a.join("\r");
@@ -948,7 +948,7 @@
 		/* the default very first pseudostate called when the machine
 		 * is turned on via the init() call */
 		protected function hsm_s_Initial(event : CogEvent) : void {
-			trace("hsm_s_Initial" + event.sig);
+			//trace(_smName+".hsm_s_Initial" + event.sig);
 			if (event.type == CogEvent.EVTD_COG_PRIVATE_EVENT) {
 				switch (event.sig) {
 					case SIG_ENTRY :
@@ -962,14 +962,14 @@
 		}
 
 		protected function hsm_s_HasntActivated(event : CogEvent) : void {
-			trace("hsm_s_HasntActivated" + event.sig);
+			trace(_smName+".hsm_s_HasntActivated " + event.sig);
 			if (event.type == CogEvent.EVTD_COG_PRIVATE_EVENT) {
 
 				switch (event.sig) {
 					case SIG_ENTRY :
-						trace("hsm_s_HasntActivated-");
+						trace(_smName+".hsm_s_HasntActivated-");
 						hsm_callbackIn(1);
-						trace("hsm_s_HasntActivated--");
+						trace(_smName+".hsm_s_HasntActivated--");
 						break;
 					case SIG_CALLBACK:
 						hsm_currentState = hsm_s_Activating;
@@ -979,7 +979,7 @@
 		}
 
 		protected function hsm_s_Activating(event : CogEvent) : void {
-			trace("hsm_s_Activating" + event.sig);
+			trace(_smName+".hsm_s_Activating " + event.sig);
 			if (event.type == CogEvent.EVTD_COG_PRIVATE_EVENT) {
 
 				switch (event.sig) {
@@ -1019,7 +1019,7 @@
 		protected function hsm_s_Active(event : CogEvent) : void {
 			//use namespace  COG;
 			if (event.type == CogEvent.EVTD_COG_PRIVATE_EVENT) {
-				trace("hsm_s_Active" + event.sig);
+				trace(_smName+".hsm_s_Active" + event.sig);
 				switch (event.sig) {
 					case SIG_ENTRY:
 						trace("HIGHLIGHT1 !!!!!!!!!!!!!!!!!!!! HSM now ACTIVE !!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -1057,7 +1057,7 @@
 
 		//============== TRANSITION BLOCK ============================//
 		protected function hsm_s_ActiveInTransition(event : CogEvent) : void {
-			trace("hsm_s_ActiveInTransition" + event.sig);
+			trace(_smName+".hsm_s_ActiveInTransition" + event.sig);
 			if (event.type == CogEvent.EVTD_COG_PRIVATE_EVENT) {
 
 				switch (event.sig) {
@@ -1069,7 +1069,7 @@
 		}
 
 		protected function hsm_s_Deactivating(event : CogEvent) : void {
-			trace("hsm_s_Deactivating" + event.sig);
+			trace(_smName+".hsm_s_Deactivating" + event.sig);
 			if (event.type == CogEvent.EVTD_COG_PRIVATE_EVENT) {
 
 				switch (event.sig) {
@@ -1084,7 +1084,7 @@
 		}
 
 		protected function hsm_s_Deactivated(event : CogEvent) : void {
-			trace("hsm_s_Deactivated" + event.sig);
+			trace(_smName+".hsm_s_Deactivated" + event.sig);
 			if (event.type == CogEvent.EVTD_COG_PRIVATE_EVENT) {
 
 				switch (event.sig) {

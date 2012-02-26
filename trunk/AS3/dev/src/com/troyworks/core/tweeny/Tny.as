@@ -240,6 +240,7 @@ package com.troyworks.core.tweeny {
 		//An array containing the parameters that should be passed to the this.onComplete when this tween has finished.
 		public var colorTransform : ColorTransform = new ColorTransform();
 		public var isF10 : Boolean;
+		public var name : String;
 
 		//	public var transform:Transform;
 		public function Tny(targetD : DisplayObject = null, standardProps : Boolean = true) {
@@ -589,16 +590,18 @@ package com.troyworks.core.tweeny {
 			
 			
 			
-			trace("duration " + dur);
+			trace("Tny.duration " + dur);
 			isActive = true;
 			hasStarted = false;
 			isFinished = false;
 			if(dur == 0) {
+				trace("Tny.dur 0 ");
 				//jump to end
 				st = -1;
 				d = 1;
 				onPulse(null);
 			} else {
+				trace("Tny.not 0 ");
 
 				//this will be called every frame
 				// so duration will be frames: = dur (in seconds)* fps;
@@ -613,7 +616,7 @@ package com.troyworks.core.tweeny {
 				st = getTimer() + dl;
 				t = -dl ;//+ (Math.random() * fd); // if we have a delay, setup the delay as a percentage of the time (as we increment in percent)
 			}
-			//trace("t " + t + " " + dl + " " + d + " dur " + dur);
+			trace("t " + t + " " + dl + " " + d + " dur " + dur);
 	
 //			trace("ts " + ts);
 		}
@@ -641,7 +644,7 @@ package com.troyworks.core.tweeny {
 
 			//	trace(trg.name +" onPulse "+ t + "% " + d + " " + isActive + " " + trg + " " + ts );
 			if(!isActive || (trg == null)) {
-				//trace(" invalid ");
+				//trace(" invalid isActive: "+ isActive +  " hasTrg: " + trg);
 				return;
 			}
 			t = getTimer() - st;
@@ -787,7 +790,7 @@ package com.troyworks.core.tweeny {
 				if(isNaN(Number(k)) && c) {
 					ak = aa[k];
 					//	trace("k,c,ak,tt",k,c,ak,zz,tt);
-					trace("calc '" + k + "' " + c[k] + " " + ak + " " + zz[k] + " @ " + tt);
+				//	trace("calc '" + k + "' " + c[k] + " " + ak + " " + zz[k] + " @ " + tt);
 					//current  = start + (delta) * currenteasetime
 					//current = start + (end - start) * percent of duration
 					c[k] = ak + ((zz[k] - ak) * tt);
@@ -831,7 +834,7 @@ package com.troyworks.core.tweeny {
 			//	trace("finished? " + trg.name+ " " + isFinished);
 			if(isFinished) {
 				//	trace("finished " + trg.name);
-				//	trace("finished " + trg.name  + " in " + (getTimer() - st));
+					trace("finished " + trg.name  + " in " + (getTimer() - st));
 
 				isActive = false;
 				if (onComplete != null) {
