@@ -45,7 +45,8 @@ package com.troyworks.framework.loader {
 		public var lastBytesTotal:Number = NaN;
 		public var lastBytesLoaded:Number = NaN;
 		public var hasRecievedComplete:Boolean = false;
-		public var onRecievedManifestCallback:Function;
+		public var onRecievedManifestCallback : Function;
+		public var smoothing : Boolean = true;
 		
 		public function SWFLoaderUnit(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE) {
 			super(initState, aMode);
@@ -110,7 +111,8 @@ package com.troyworks.framework.loader {
 					s_loader = new Loader();
 					s_loaderUtil = new LoaderUtil(s_loader.contentLoaderInfo);
 					//s_loaderUtil.addEventListener(Event.COMPLETE, completeSWFLoadHandler);
-					s_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, calcStats);
+					//s_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, calcStats);
+					s_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, firePulseEvent);
 					s_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onIO_ERROR);
 					s_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, completeSWFLoadHandler);
 					var request : URLRequest = new URLRequest(mediaURL);
@@ -129,11 +131,9 @@ package com.troyworks.framework.loader {
 			trace2("SWFLoader.onIO_ERROR" + evt.toString());
 			onChildErrored(evt);	
 		}
-
-		
 		
 		public function completeSWFLoadHandler(event : Event) : void {
-			trace2(_smName + "#" + _smID + ".completeSWFLoadHandler: " + event);
+			trace2(_smName + "#" + _smID + ":SWFLoaderUnit.completeSWFLoadHandler: " + event);
 			
 			
 			getWorkPerformed();
@@ -142,6 +142,9 @@ package com.troyworks.framework.loader {
 			trace2(getWorkPerformed() + " / " + getTotalWorkToPerform());
 			clip = DisplayObject(Loader(event.target.loader).content);
 			var str : String = getQualifiedClassName(s_loader.content);
+			if(clip is Bitmap && smoothing){
+				(clip as Bitmap).smoothing = true;
+			}
 			if(clip is Bitmap && wrapBitmap  || wrapClip) {
 				var wrapper : Sprite = new Sprite();
 				wrapper.addChild(clip);
@@ -184,7 +187,7 @@ package com.troyworks.framework.loader {
 				targetClip.addChild(s_loader);
 			} else {
 				if(targetClip != null) {
-					trace2(_smName +":SWFLoaderUnit, targetClip " + targetClip.name);
+					trace2(_smName +":SWFLoaderUnit, addChild to targetClip " + targetClip.name);
 					targetClip.addChild(clip);
 				} else {
 					trace2(_smName +":SWFLoaderUnit, no targetClip");
