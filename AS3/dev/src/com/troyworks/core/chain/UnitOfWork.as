@@ -41,12 +41,12 @@ package com.troyworks.core.chain {
 		protected var totalToBeFinished : Number = 0;
 		public var alltasks : Array = null;
 		// piles to denote what of the children are done,
-		protected var toDo : Array = null;
+		public var toDo : Array = null;
 		// which are actively downloading at present
-		protected var active : Array = null;
+		public var active : Array = null;
 		// which are currently errored/done
-		protected var finished : Array = null;
-		protected var finished_with_errors : Array = null;
+		public var finished : Array = null;
+		public var finished_with_errors : Array = null;
 		protected var finished_ok : Array = null;
 		public var mode : Boolean = SEQUENTIAL_MODE;
 		public var checkInterval : Number = 1000 / 12;
