@@ -20,6 +20,7 @@ package com.troyworks.logging {
 		
 		protected static const clearConsoleCommand:String = "<clear/>\n";
 		public static var IDz:int =0;
+		public static var SOS_IP:String = "localhost";
 
 		public function SOS() {
 			super();
@@ -35,7 +36,7 @@ package com.troyworks.logging {
 				
 				 SOS._csock.addEventListener(Event.CONNECT, connectCommandHandler);
 								
-				SOS._csock.connect("localhost",4445);
+				SOS._csock.connect(SOS_IP,4445);
 			}else{
 				trace("SOS"+id+"BBBBBBBBBBBBBBBBBBBB COMMAND SOCKET ALREADY CONNECTED BBBBBBBBBBBBBBBBBBBBBBBBB");
 			
@@ -45,7 +46,7 @@ package com.troyworks.logging {
 				SOS._msock = new XMLSocket();
 				 SOS._msock.addEventListener(Event.CONNECT, connectMessageHandler);
 				configureListeners(SOS._msock);
-				SOS._msock.connect("localhost",4444);
+				SOS._msock.connect(SOS_IP,4444);
 			}else{
 				trace("SOS"+id+"BBBBBBBBBBBBBBBBBBBB MESSAGE SOCKET ALREADY CONNECTED BBBBBBBBBBBBBBBBBBBBBBBBB");				
 			

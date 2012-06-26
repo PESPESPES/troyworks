@@ -51,4 +51,10 @@
 			<locationURI>Flex3_4_FP_10_1/frameworks/libs/utilities.swc</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>CS3CoreComponentsSWC</name>
+			<value>file:/E:/DATA_SYNC/CodeProjects/Actionscript%203.0/CS3Core/CS3components.swc</value>
+		</variable>
+	</variableList>
 </projectDescription>

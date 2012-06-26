@@ -12,14 +12,14 @@ package com.troyworks.text {
 	 * @author Troy Gardner
 	 */
 	public class TextFieldUtil {
-		public static function turnEditable(aryOfTextFields : Array) : void {
+		public static function turnEditable(aryOfTextFields : Array, embed:Boolean = true) : void {
 			var i : int = 0;
 			var n : int = aryOfTextFields.length;
 			var txt : TextField;
 			for(;i < n;++i) {
 				txt = aryOfTextFields[i] as TextField;
 				txt.type = TextFieldType.INPUT;
-				txt.embedFonts = true;
+				txt.embedFonts = embed;
 				txt.border = true;
 				txt.background = true;
 				txt.selectable = true;
@@ -50,7 +50,7 @@ package com.troyworks.text {
 			//new XML();
 			var children : XMLList = parent.children();
 			
-			for each(var child in children) {
+			for each(var child:XML in children) {
 				trace("adding child " + child.toString());
 				body.appendChild(child);
 			}

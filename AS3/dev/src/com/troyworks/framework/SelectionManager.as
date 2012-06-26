@@ -1,14 +1,13 @@
-﻿package com.troyworks.framework { 
+﻿package com.troyworks.framework {
+	import com.troyworks.framework.controller.CollectionManager;
+
+	import flash.display.*;
+	import flash.events.MouseEvent;
+ 
 	
 	/**
 	 * @author Troy Gardner
 	 */
-	import flash.events.MouseEvent;	
-	import flash.display.DisplayObjectContainer;	
-
-	import com.troyworks.framework.controller.CollectionManager;	
-
-	import flash.display.*;
 
 	public class SelectionManager extends CollectionManager {
 		public static var SINGLE_SELECT_MODE : Number = 0;

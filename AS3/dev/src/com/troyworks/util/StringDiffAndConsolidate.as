@@ -54,7 +54,7 @@ package com.troyworks.util{
 	 * even if they don't really need to be morphed.
 	 */
 	public class StringDiffAndConsolidate extends Sprite {
-		public var WHITESPACE : String = " \r\t\n";
+		public static var WHITESPACE : String = " \r\t\n";
 		public	var onlyInStateA : Object = new Object();
 		public	var onlyInStateB : Object = new Object();
 		public	var inBothAandB : Object = new Object();
@@ -106,7 +106,7 @@ package com.troyworks.util{
 			return null;
 		}
 
-		public function tokenizeToWords(str : String) : Array {
+		public static function tokenizeToWords(str : String) : Array {
 			var res : Object = new Object();
 			var wordr : Array = new Array();
 

@@ -34,36 +34,25 @@ package com.troyworks.logging {
 	
 			var msg:String = obj.toString();
 			if(typeof(obj) =="string"){
+				//sosL.sos.showMessage(null,"typeofstring");
+			//	sosL.setupStyles();
 				var s : String = String(obj);
-				var err : Boolean = s.indexOf("ERROR") >-1;
-				var fI:Number = s.indexOf("FAILED");
-				var failed:Boolean =  fI>-1 && (s.charAt(fI-1)!= "_" );
-				var warn : Boolean = s.indexOf("WARNING") >-1;
-				var info : Boolean = s.indexOf("INFO") >-1;
-				var breakP:Boolean = s.indexOf("BREAKPOINT") >-1;
+				var b:int = s.indexOf(" ");
+				var key:String = s.substring(0,b);
+				if(LogLevel[key] != null){
+					if(promptOnFatal && (LogLevel[key] == LogLevel.FATAL)){
+					//	sosL.sos.createDialog("ERROR", msg);
+						//	sosL.sos.createDialog();
+					}
+					sosL.logLevel(LogLevel[key], msg);
+					return;
+				}
 				var hiDX:Number = s.indexOf(HIGHLIGHT);
 				var highlight : Boolean = hiDX >-1;
 				var startO : Boolean = s.indexOf("\\\\\\\\\\\\\\\\") >-1;
 				var endO : Boolean = s.indexOf("//////////////////") >-1;
 				
-				if(err){
-					sosL.logLevel(LogLevel.SEVERE, msg);
-					if(promptOnFatal){
-					//	sosL.sos.createDialog("ERROR", msg);
-						//	sosL.sos.createDialog();
-					}
-					return;
-				}else if(failed){
-					sosL.logLevel(LogLevel.FLASH_ERROR,msg);
-					return;
-									
-				}else if(warn){
-					sosL.logLevel(LogLevel.WARNING,msg);
-					return;
-				}else if(info){
-					sosL.logLevel(LogLevel.INFO,msg);
-					return;				
-				}else if(highlight){
+				 if(highlight){
 					//using the single letter/number after highlight
 					// translate it into a suitable color
 					var color:String = s.charAt((hiDX + HIGHLIGHT.length));

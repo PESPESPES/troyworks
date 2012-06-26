@@ -21,6 +21,9 @@ package com.troyworks.logging {
 		public static const INFO : LogLevel = new LogLevel(0xffcccc,"INFO");
 		public static const LOG : LogLevel = new LogLevel(0xffffff,"LOG");
 		public static const DEBUG : LogLevel = new LogLevel(0xccffff,"DEBUG");
+		public static const CONFIG : LogLevel = new LogLevel(0xccffff,"CONFIG");
+		public static const SYSTEM : LogLevel = new LogLevel(0xffffff,"SYSTEM");
+		public static const TEMP : LogLevel = new LogLevel(0xccfF00,"TEMP");
 	
 		public static const START : LogLevel = new LogLevel(0x63CF00,"START");
 		public static const END : LogLevel = new LogLevel(0xCC6666,"END");

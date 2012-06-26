@@ -73,12 +73,13 @@ package com.troyworks.logging {
 					
 					if(logL != null){
 				//	trace("LogLevel " + logL.name + " " + logL.color);
-					csock.send("<setKey><name>"+_appKeyName+"_"+logL.name+"</name><color>"+logL.color+"</color></setKey>\n");
-					
+				     sos.showMessage("",'<key rgb="'+ Number(logL.color)+'" visible="1"><![CDATA['+logL.name+']]></key>');
+					//csock.send("<setKey><name>"+logL.name+"</name><color>"+logL.color+"</color></setKey>\n");
+					sos.showMessage("FINE","setup styles");
 					}
 				}catch(err:Error){
 					//ignore
-					
+						sos.showMessage("ERROR","could not setup styles");
 					trace("SOS.setupStyles " + err);
 				}
 			}
@@ -94,7 +95,7 @@ package com.troyworks.logging {
 		//Outputs to SOS	//trace("<showMessage key='"+nLevel.name + "'>"+nLevel.name + " : "+sMessage+"</showMessage>\n");
 		
 		override public function logLevel(nLevel : LogLevel, sMessage : String) : void{
-			var key:String = _appKeyName+"_"+nLevel.name;
+			var key:String = nLevel.name;// _appKeyName+"_"+nLevel.name;
 			if(nLevel == LogLevel.FATAL){
 				sos.showMessage(key,sMessage);
 				if(promptOnFatal){
