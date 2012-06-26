@@ -114,7 +114,7 @@ package com.troyworks.controls.tbutton {
 		}
 
 		
-		function onENTER_FRAME(evt : Event) : void {
+		public function onENTER_FRAME(evt : Event) : void {
 			var mc : MovieClip = view;
 			var stpFrame : Number;
 			//trace( bnds + " " + mc.mouseX + " " + mc.mouseY);

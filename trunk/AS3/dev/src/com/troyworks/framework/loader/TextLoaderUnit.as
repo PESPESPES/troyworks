@@ -37,7 +37,8 @@ package com.troyworks.framework.loader {
 		
 		public static var FORMAT_TEXT:String = "FORMAT_TEXT";
 		public static var FORMAT_XML:String = "FORMAT_XML";
-		public var format:String = FORMAT_TEXT;
+		public var format : String = FORMAT_TEXT;
+	
 		
 		public function TextLoaderUnit(initState : String = "s__haventStarted", aMode : Boolean = SEQUENTIAL_MODE) {
 			super(initState, aMode);

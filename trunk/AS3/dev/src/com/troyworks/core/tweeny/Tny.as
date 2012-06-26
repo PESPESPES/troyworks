@@ -628,7 +628,7 @@ package com.troyworks.core.tweeny {
 		//	public function get duration():Number{
 		//		return d;
 		//	}
-
+		
 
 		/*******************************************
 		 *  The primary render loop
